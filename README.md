@@ -18,7 +18,7 @@ A dart package for many helper methods fitting common situations
 Update pubspec.yaml and add the following line to your dependencies.
 ```yaml
 dependencies:
-  common_utils: ^0.1.0
+  common_utils: ^1.0.0
 ```
 
 ## Import
