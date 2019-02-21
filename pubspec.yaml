@@ -1,0 +1,12 @@
+name: common_utils
+description: Common util classes for different situations
+version: 1.0.0
+author: Daniel Linsenmeier <daniel@ephenodrom.de>
+homepage: https://github.com/Ephenodrom/Dart-Common-Utils
+publish_to: https://pub.dartlang.org
+
+environment:
+  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+
+dev_dependencies:
+  test: '>=0.12.42 <2.0.0'

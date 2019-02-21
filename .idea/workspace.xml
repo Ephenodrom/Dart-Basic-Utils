@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="0c2a57a5-da12-4326-a1ab-e7aa4787b49d" name="Default Changelist" comment="" />
+    <ignored path="$PROJECT_DIR$/.dart_tool/" />
+    <ignored path="$PROJECT_DIR$/.idea/" />
+    <ignored path="$PROJECT_DIR$/.pub/" />
+    <ignored path="$PROJECT_DIR$/build/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="1999074784">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="1" />
+          <entry key="project.open.time.0" value="1" />
+          <entry key="project.open.time.7" value="1" />
+          <entry key="project.opened" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="dart" value="29" />
+          <entry key="md" value="2" />
+          <entry key="yaml" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Dart" value="29" />
+          <entry key="Markdown" value="2" />
+          <entry key="YAML" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="dart" value="4021" />
+          <entry key="md" value="405" />
+          <entry key="yaml" value="23" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="Dart" value="4021" />
+          <entry key="Markdown" value="405" />
+          <entry key="YAML" value="23" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/src/StringUtils.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-662">
+              <caret line="30" column="42" selection-start-line="30" selection-start-column="16" selection-end-line="30" selection-end-column="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="144">
+              <caret line="10" column="3" selection-start-line="10" selection-start-column="3" selection-end-line="10" selection-end-column="3" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/domain_utils_test.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-666">
+              <caret line="2" column="32" selection-start-line="2" selection-start-column="32" selection-end-line="2" selection-end-column="32" />
+              <folding>
+                <element signature="e#0#48#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/string_utils_test.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="18">
+              <caret line="1" column="32" selection-start-line="1" selection-start-column="32" selection-end-line="1" selection-end-column="32" />
+              <folding>
+                <element signature="e#0#48#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/example/main.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="11" selection-start-line="11" selection-end-line="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pubspec.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="72">
+              <caret line="4" column="57" selection-start-line="4" selection-start-column="57" selection-end-line="4" selection-end-column="57" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>assertEquals</find>
+      <find>asciiName</find>
+      <find>example</find>
+    </findStrings>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/lib/src.dart" />
+        <option value="$PROJECT_DIR$/test/common_utils_test.dart" />
+        <option value="$PROJECT_DIR$/lib/src/StringUtils.dart" />
+        <option value="$PROJECT_DIR$/lib/src/model/Domain.dart" />
+        <option value="$PROJECT_DIR$/lib/common_utils.dart" />
+        <option value="$PROJECT_DIR$/lib/src/DomainUtils.dart" />
+        <option value="$PROJECT_DIR$/lib/src/model/PublicSuffix.dart" />
+        <option value="$PROJECT_DIR$/example/main.dart" />
+        <option value="$PROJECT_DIR$/test/string_utils_test.dart" />
+        <option value="$PROJECT_DIR$/test/domain_utils_test.dart" />
+        <option value="$PROJECT_DIR$/pubspec.yaml" />
+        <option value="$PROJECT_DIR$/README.md" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="30" />
+    <option name="y" value="143" />
+    <option name="width" value="1502" />
+    <option name="height" value="592" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="common_utils" type="b2602c69:ProjectViewProjectNode" />
+              <item name="common_utils" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="common_utils" type="b2602c69:ProjectViewProjectNode" />
+              <item name="common_utils" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+        <option name="show-excluded-files" value="false" />
+      </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="dart.analysis.tool.window.force.activate" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/test" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Flutter Test.tests in test">
+    <configuration name="common_utils_test.dart" type="FlutterBazelTestConfigurationType" factoryName="Flutter Test (Bazel)">
+      <option name="entryFile" value="$PROJECT_DIR$/test/common_utils_test.dart" />
+      <option name="bazelTarget" value="//a" />
+      <method v="2" />
+    </configuration>
+    <configuration name="string_utils_test.dart (bla)" type="FlutterBazelTestConfigurationType" factoryName="Flutter Test (Bazel)" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="bla" />
+      <option name="entryFile" value="$PROJECT_DIR$/test/string_utils_test.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test parseDomain" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="Test parseDomain" />
+      <option name="testFile" value="$PROJECT_DIR$/test/domain_utils_test.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="tests in string_utils_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testFile" value="$PROJECT_DIR$/test/string_utils_test.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="tests in test" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testDir" value="$PROJECT_DIR$/test" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Flutter Test (Bazel).common_utils_test.dart" />
+      <item itemvalue="Flutter Test.tests in test" />
+      <item itemvalue="Flutter Test (Bazel).string_utils_test.dart (bla)" />
+      <item itemvalue="Flutter Test.tests in string_utils_test.dart" />
+      <item itemvalue="Flutter Test.Test parseDomain" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Flutter Test.tests in test" />
+        <item itemvalue="Flutter Test.Test parseDomain" />
+        <item itemvalue="Flutter Test.tests in string_utils_test.dart" />
+        <item itemvalue="Flutter Test (Bazel).string_utils_test.dart (bla)" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0c2a57a5-da12-4326-a1ab-e7aa4787b49d" name="Default Changelist" comment="" />
+      <created>1550654559217</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1550654559217</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="Test_parseDomain - 2019.02.20 at 16h 31m 50s.xml">
+      <configuration name="Test parseDomain" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_parseDomain - 2019.02.20 at 16h 34m 38s.xml">
+      <configuration name="Test parseDomain" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_parseDomain - 2019.02.20 at 16h 35m 12s.xml">
+      <configuration name="Test parseDomain" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_parseDomain - 2019.02.20 at 16h 36m 43s.xml">
+      <configuration name="Test parseDomain" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_parseDomain - 2019.02.20 at 16h 36m 58s.xml">
+      <configuration name="Test parseDomain" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_parseDomain - 2019.02.21 at 09h 34m 16s.xml">
+      <configuration name="Test parseDomain" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_parseDomain - 2019.02.21 at 09h 39m 40s.xml">
+      <configuration name="Test parseDomain" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="Test_parseDomain - 2019.02.21 at 09h 42m 01s.xml">
+      <configuration name="Test parseDomain" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="tests_in_test - 2019.02.21 at 10h 03m 28s.xml">
+      <configuration name="tests in test" configurationId="FlutterTestConfigType" />
+    </history-entry>
+    <history-entry file="tests_in_test - 2019.02.21 at 10h 04m 29s.xml">
+      <configuration name="tests in test" configurationId="FlutterTestConfigType" />
+    </history-entry>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="25" width="1920" height="1006" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.255603" />
+      <window_info id="Structure" order="1" side_tool="true" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="Capture Tool" order="4" />
+      <window_info id="Favorites" order="5" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" weight="0.32915717" />
+      <window_info anchor="bottom" id="Dart Analysis" order="0" weight="0.32915717" />
+      <window_info anchor="bottom" id="Run" order="1" weight="0.34624144" />
+      <window_info anchor="bottom" id="TODO" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.32900432" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="4" visible="true" weight="0.32915717" />
+      <window_info anchor="bottom" id="Event Log" order="5" side_tool="true" />
+      <window_info anchor="bottom" id="Flutter Performance" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Find" order="8" />
+      <window_info anchor="right" id="Capture Analysis" order="0" />
+      <window_info anchor="right" id="Theme Preview" order="1" />
+      <window_info anchor="right" id="Flutter Inspector" order="2" />
+      <window_info anchor="right" id="Flutter Outline" order="3" />
+      <window_info anchor="right" id="Palette&#9;" order="4" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/lib/src.dart" />
+    <entry file="file://$USER_HOME$/Flutter/flutter/bin/cache/pkg/sky_engine/lib/convert/ascii.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="56" column="9" selection-start-line="56" selection-start-column="9" selection-end-line="56" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/model/Domain.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="179">
+          <caret line="15" column="61" selection-start-line="15" selection-start-column="61" selection-end-line="15" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/common_utils.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="5" column="36" selection-start-line="5" selection-start-column="36" selection-end-line="5" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.1/lib/src/frontend/expect.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="269">
+          <caret line="159" column="29" selection-start-line="159" selection-start-column="29" selection-end-line="159" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/DomainUtils.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="373">
+          <caret line="136" column="39" selection-start-line="136" selection-start-column="39" selection-end-line="136" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/model/PublicSuffix.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="42" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/example/main.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/string_utils_test.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" column="32" selection-start-line="1" selection-start-column="32" selection-end-line="1" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#48#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/src/StringUtils.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-662">
+          <caret line="30" column="42" selection-start-line="30" selection-start-column="16" selection-end-line="30" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/domain_utils_test.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-666">
+          <caret line="2" column="32" selection-start-line="2" selection-start-column="32" selection-end-line="2" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#48#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pubspec.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="57" selection-start-line="4" selection-start-column="57" selection-end-line="4" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="10" column="3" selection-start-line="10" selection-start-column="3" selection-end-line="10" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
