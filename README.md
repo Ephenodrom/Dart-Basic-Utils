@@ -18,13 +18,13 @@ A dart package for many helper methods fitting different situations.
 Update pubspec.yaml and add the following line to your dependencies.
 ```yaml
 dependencies:
-  common_utils: ^1.0.0
+  basic_utils: ^1.0.0
 ```
 
 ## Import
 Import the package with :
 ```dart
-import 'package:general_utils/common_utils.dart';
+import 'package:basic_utils/basic_utils.dart';
 ```
 
 ## Util Classes
