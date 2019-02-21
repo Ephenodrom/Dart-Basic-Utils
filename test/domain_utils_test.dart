@@ -1,5 +1,5 @@
-import 'package:common_utils/common_utils.dart';
-import 'package:common_utils/src/model/Domain.dart';
+import 'package:basic_utils/basic_utils.dart';
+import 'package:basic_utils/src/model/Domain.dart';
 import "package:test/test.dart";
 
 void main() {

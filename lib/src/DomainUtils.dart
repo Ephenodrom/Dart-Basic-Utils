@@ -1,4 +1,4 @@
-part of common_utils;
+part of basic_utils;
 
 ///
 /// Helper class for domain names

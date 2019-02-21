@@ -1,4 +1,4 @@
-library common_utils;
+library basic_utils;
 
 import 'dart:convert';
 

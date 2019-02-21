@@ -1,6 +1,6 @@
-# Common Utils
+# Basic Utils
 
-A dart package for many helper methods fitting common situations
+A dart package for many helper methods fitting different situations.
 
 ## Table of Contents
 1. [Install](#install)
@@ -24,11 +24,11 @@ dependencies:
 ## Import
 Import the package with :
 ```dart
-import 'package:common_utils/common_utils.dart';
+import 'package:general_utils/common_utils.dart';
 ```
 
 ## Util Classes
-The package contains different classes. Each class contains of methods that provide a solution for common problems.
+The package contains different classes. Each class contains methods that provide a solution for certain problems.
 ### StringUtils
 Helper class for String operations.
 

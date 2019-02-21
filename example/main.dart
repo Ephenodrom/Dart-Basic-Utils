@@ -1,4 +1,4 @@
-import 'package:common_utils/common_utils.dart';
+import 'package:basic_utils/basic_utils.dart';
 
 void main() async {
   print("Convert to lowercase underscore: " +
