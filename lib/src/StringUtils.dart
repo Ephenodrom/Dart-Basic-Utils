@@ -17,7 +17,7 @@ class StringUtils {
   /// Checks if the given string is null or empty
   ///
   static bool isNullOrEmpty(String s) =>
-      (s == null || s.length == 0) ? true : false;
+      (s == null || s.isEmpty) ? true : false;
 
   ///
   /// Checks if the given string is not null or empty
