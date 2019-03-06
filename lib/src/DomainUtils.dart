@@ -8,23 +8,94 @@ class DomainUtils {
   /// Checks if the given string is a domain name
   ///
   static bool isDomainName(String s) {
+    return parseDomain(s) != null;
+  }
+
+  ///
+  /// Checks if the given string is a subTld
+  ///
+  static bool isSubTld(String tld, String subTld) {
+    List<String> subTLDs = suffixList[tld];
+
+    if (subTLDs.contains(subTld)) {
+      return true;
+    }
     return false;
   }
 
-  static bool isSubTld(String s) {
-    return false;
+  ///
+  /// Check if the given string is a subdomain
+  /// Example:
+  ///
+  ///
+  static bool isSubDomain(String s) {
+    if (StringUtils.isNotNullOrEmpty(s)) {
+      List<String> labels = splitDomainName(s);
+      if (labels.length == 2) {
+        // Only 2 labels, so it has to be a normal domain name
+        return false;
+      }
+      if (labels.length == 3) {
+        // 3 labels, check for www and if the second label is a subtld
+        if (labels.elementAt(0) == "www") {
+          // Found www at the first label, it is a subdomain
+          return true;
+        }
+        // If the domain name has a subtld, return false otherwise return true
+        return !isSubTld(labels.elementAt(2), labels.elementAt(1));
+      }
+      if (labels.length > 3) {
+        // More than 3 labels, so it is a sub domain name
+        return true;
+      }
+      return false;
+    } else {
+      return false;
+    }
   }
 
+  ///
+  /// Checks if the given string is a cctld.
+  /// Example :
+  /// de => true
+  /// com => false
+  ///
   static bool isCCTLD(String s) {
-    return false;
+    return idnCountryCodeList.containsKey(s) ||
+        countryCodeList.contains(s.toUpperCase());
   }
 
+  ///
+  /// Checks if the given string is a ngtld.
+  /// Example :
+  /// car => true
+  /// com => false
+  /// de => false
+  ///
   static bool isNGTLD(String s) {
-    return false;
+    return (!isCCTLD(s) && !isGTLD(s) && isTld(s));
   }
 
+  ///
+  /// Checks if the given string is a tld.
+  /// Example :
+  /// car => true
+  /// com => true
+  /// de => true
+  /// qwertzu => false
+  ///
+  static bool isTld(String s) {
+    return suffixList.containsKey(s);
+  }
+
+  ///
+  /// Checks if the given string is a gtld.
+  /// Example :
+  /// de => false
+  /// com => true
+  ///
   static bool isGTLD(String s) {
-    return false;
+    return gtldList.contains(s);
   }
 
   ///
@@ -38,22 +109,15 @@ class DomainUtils {
   }
 
   ///
-  /// Fetches the domain name from the given url
+  /// Fetches the domain from the given url
   ///
-  static String getDomainFromUrl(String s) {
-    String name = "";
-
-    return name;
-  }
-
-  ///
-  /// Converts the given domain string to the utf8 representation.
-  /// If the given string is not ascii it returns null.
-  ///
-  static String toAscii(String domain) {
-    if (domain.endsWith("de")) {
-    } else {}
-    return domain;
+  static Domain getDomainFromUrl(String s) {
+    s = s.replaceFirst("https://", "");
+    s = s.replaceFirst("http://", "");
+    if (s.contains("/")) {
+      s = s.substring(0, s.indexOf("/"));
+    }
+    return parseDomain(s);
   }
 
   ///
