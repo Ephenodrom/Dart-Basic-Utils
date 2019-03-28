@@ -89,4 +89,12 @@ class StringUtils {
     }
     return true;
   }
+  
+  ///
+  /// Capitalize the given string
+  /// Example : world => World, WORLD => World
+  ///
+  static String capitalize(String s) {
+    return s.codeUnitAt(0).toUpperCase() + s.substring(1).toLowerCase();
+  }
 }
