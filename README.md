@@ -9,6 +9,7 @@ A dart package for many helper methods fitting different situations.
 3. [Util Classes](#util-classes)
    * [StringUtils](#stringutils)
    * [DomainUtils](#domainutils)
+   * [MathUtils](#mathutils)
 4. [Changelog](#changelog)
 5. [Support](#support)
 6. [Copyright and license](#copyright-and-license)
@@ -18,7 +19,7 @@ A dart package for many helper methods fitting different situations.
 Update pubspec.yaml and add the following line to your dependencies.
 ```yaml
 dependencies:
-  basic_utils: ^1.0.2
+  basic_utils: ^1.0.3
 ```
 
 ## Import
@@ -34,6 +35,9 @@ Helper class for String operations.
 
 ### DomainUtils
 Helper class for operations on domain names.
+
+### MathUtils
+Helper class for simple math operations like calculating circular area or converting length units.
 
 ## Changelog
 For a detailed changelog, see the [CHANGELOG.md](CHANGELOG.md) file

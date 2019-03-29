@@ -1,44 +1,46 @@
 import 'package:basic_utils/basic_utils.dart';
+import 'package:basic_utils/src/model/LengthUnits.dart';
 import "package:test/test.dart";
 
 void main() {
-  test('Test defaultString', () {
-    expect(StringUtils.defaultString("Hello", "World"), "Hello");
-    expect(StringUtils.defaultString(null, "World"), "World");
+
+  test('Test convertUnit with mile', () {
+    expect(MathUtils.convertUnit(1000, LengthUnits.mile, LengthUnits.mile), 1000);
   });
 
-  test('Test camelCaseToUpperUnderscore', () {
-    expect(StringUtils.camelCaseToUpperUnderscore("camelCase"), "CAMEL_CASE");
+  test('Test convertUnit with kilometer', () {
+    expect(MathUtils.convertUnit(1000, LengthUnits.meter, LengthUnits.mile), 0.621371192237334);
+    expect(MathUtils.convertUnit(1, LengthUnits.kilometer, LengthUnits.meter), 1000);
   });
 
-  test('Test camelCaseToLowerUnderscore', () {
-    expect(StringUtils.camelCaseToLowerUnderscore("camelCase"), "camel_case");
+  test('Test convertUnit with meter', () {
+    expect(MathUtils.convertUnit(1000, LengthUnits.meter, LengthUnits.mile), 0.621371192237334);
+    expect(MathUtils.convertUnit(1000, LengthUnits.meter, LengthUnits.kilometer), 1);
+    expect(MathUtils.convertUnit(1000, LengthUnits.meter, LengthUnits.meter), 1000);
+    expect(MathUtils.convertUnit(1000, LengthUnits.meter, LengthUnits.decimeter), 10000);
+    expect(MathUtils.convertUnit(1000, LengthUnits.meter, LengthUnits.centimeter), 100000);
+    expect(MathUtils.convertUnit(1, LengthUnits.meter, LengthUnits.millimeter), 1000);
+    expect(MathUtils.convertUnit(1, LengthUnits.meter, LengthUnits.micrometers), 1000000.0);
+    expect(MathUtils.convertUnit(1, LengthUnits.meter, LengthUnits.nanometer), 1000000000.0);
+    expect(MathUtils.convertUnit(1, LengthUnits.meter, LengthUnits.picometer), 1000000000000.0);
+    expect(MathUtils.convertUnit(1, LengthUnits.meter, LengthUnits.femtometer), 1000000000000000.0);
+    expect(MathUtils.convertUnit(1, LengthUnits.meter, LengthUnits.attometer), 1000000000000000000.0);
   });
 
-  test('Test isLowerCase', () {
-    expect(StringUtils.isLowerCase("c"), true);
-    expect(StringUtils.isLowerCase("C"), false);
+  test('Test convertUnit with decimeter', () {
+    expect(MathUtils.convertUnit(1000, LengthUnits.decimeter, LengthUnits.decimeter), 1000);
   });
 
-  test('Test isUpperCase', () {
-    expect(StringUtils.isUpperCase("C"), true);
-    expect(StringUtils.isUpperCase("c"), false);
+  test('Test convertUnit with centimeter', () {
+    expect(MathUtils.convertUnit(1000, LengthUnits.centimeter, LengthUnits.centimeter), 1000);
   });
 
-  test('Test isNullOrEmpty', () {
-    expect(StringUtils.isNullOrEmpty(""), true);
-    expect(StringUtils.isNullOrEmpty(null), true);
-    expect(StringUtils.isNullOrEmpty("Hello"), false);
+  test('Test convertUnit with millimeter', () {
+    expect(MathUtils.convertUnit(1000, LengthUnits.millimeter, LengthUnits.millimeter), 1000);
   });
 
-  test('Test isNotNullOrEmpty', () {
-    expect(StringUtils.isNotNullOrEmpty(""), false);
-    expect(StringUtils.isNotNullOrEmpty(null), false);
-    expect(StringUtils.isNotNullOrEmpty("Hello"), true);
+  test('Test convertUnit with micrometers', () {
+    expect(MathUtils.convertUnit(1000, LengthUnits.micrometers, LengthUnits.micrometers), 1000);
   });
 
-  test('Test isAscii', () {
-    expect(StringUtils.isAscii("I am pure ascii"), true);
-    expect(StringUtils.isAscii("I am nö ascii"), false);
-  });
 }
