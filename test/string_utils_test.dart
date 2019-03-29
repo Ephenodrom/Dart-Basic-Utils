@@ -41,4 +41,10 @@ void main() {
     expect(StringUtils.isAscii("I am pure ascii"), true);
     expect(StringUtils.isAscii("I am nö ascii"), false);
   });
+
+  test('Test capitalize', () {
+    expect(StringUtils.capitalize("HELLO"), "Hello");
+    expect(StringUtils.capitalize("World"), "World");
+    expect(StringUtils.capitalize("helloworld"), "Helloworld");
+  });
 }
