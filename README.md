@@ -9,6 +9,7 @@ A dart package for many helper methods fitting different situations.
 3. [Util Classes](#util-classes)
    * [StringUtils](#stringutils)
    * [DomainUtils](#domainutils)
+   * [EmailUtils](#emailutils)
    * [MathUtils](#mathutils)
 4. [Changelog](#changelog)
 5. [Support](#support)
@@ -35,6 +36,9 @@ Helper class for String operations.
 
 ### DomainUtils
 Helper class for operations on domain names.
+
+### EmailUtils
+Helper class for operations on email addresses.
 
 ### MathUtils
 Helper class for simple math operations like calculating circular area or converting length units.

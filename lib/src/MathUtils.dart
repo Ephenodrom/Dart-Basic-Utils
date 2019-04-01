@@ -4,46 +4,42 @@ part of basic_utils;
 /// Helper class for common math operations
 ///
 class MathUtils {
-
   ///
   /// Calculate the circumference of a circle with the given radius
   ///
-  static double calculateCircumference(double radius){
+  static double calculateCircumference(double radius) {
     return 2 * pi * radius;
   }
 
   ///
   /// Calculate the area of a circle with the given radius
   ///
-  static double calculateCircularArea(double radius){
+  static double calculateCircularArea(double radius) {
     return pi * (radius * radius);
   }
 
   ///
   /// Calculate the diameter of a circle with the given radius
   ///
-  static double calculateCircleDiameter(double radius){
+  static double calculateCircleDiameter(double radius) {
     return 2 * radius;
   }
 
   ///
   /// Calculate the area of a square or rectangle
   ///
-  static double calculateSquareArea(double a, {double b}){
-    if(b == null){
-      return a *a;
-    }else{
-      return a * b;
-    }
+  static double calculateSquareArea(double a, {double b}) {
+    return b == null ? a * a : a * b;
   }
 
   ///
   /// Converts the given value from one unit to another unit
   ///
-  static double convertUnit(double value, LengthUnits sourceUnit, LengthUnits targetUnit){
-    switch(sourceUnit){
+  static double convertUnit(
+      double value, LengthUnits sourceUnit, LengthUnits targetUnit) {
+    switch (sourceUnit) {
       case LengthUnits.attometer:
-        switch(targetUnit){
+        switch (targetUnit) {
           case LengthUnits.attometer:
             return value;
           case LengthUnits.femtometer:
@@ -63,13 +59,11 @@ class MathUtils {
           case LengthUnits.meter:
             break;
           case LengthUnits.kilometer:
-            break;
-          case LengthUnits.mile:
             break;
         }
         break;
       case LengthUnits.femtometer:
-        switch(targetUnit){
+        switch (targetUnit) {
           case LengthUnits.attometer:
             break;
           case LengthUnits.femtometer:
@@ -89,13 +83,11 @@ class MathUtils {
           case LengthUnits.meter:
             break;
           case LengthUnits.kilometer:
-            break;
-          case LengthUnits.mile:
             break;
         }
         break;
       case LengthUnits.picometer:
-        switch(targetUnit){
+        switch (targetUnit) {
           case LengthUnits.attometer:
             break;
           case LengthUnits.femtometer:
@@ -115,13 +107,11 @@ class MathUtils {
           case LengthUnits.meter:
             break;
           case LengthUnits.kilometer:
-            break;
-          case LengthUnits.mile:
             break;
         }
         break;
       case LengthUnits.nanometer:
-        switch(targetUnit){
+        switch (targetUnit) {
           case LengthUnits.attometer:
             break;
           case LengthUnits.femtometer:
@@ -141,13 +131,11 @@ class MathUtils {
           case LengthUnits.meter:
             break;
           case LengthUnits.kilometer:
-            break;
-          case LengthUnits.mile:
             break;
         }
         break;
       case LengthUnits.micrometers:
-        switch(targetUnit){
+        switch (targetUnit) {
           case LengthUnits.attometer:
             break;
           case LengthUnits.femtometer:
@@ -167,65 +155,59 @@ class MathUtils {
           case LengthUnits.meter:
             break;
           case LengthUnits.kilometer:
-            break;
-          case LengthUnits.mile:
             break;
         }
         break;
       case LengthUnits.millimeter:
-        switch(targetUnit){
+        switch (targetUnit) {
           case LengthUnits.attometer:
-            break;
+            return value * pow(10, 15);
           case LengthUnits.femtometer:
-            break;
+            return value * pow(10, 12);
           case LengthUnits.picometer:
-            break;
+            return value * pow(10, 9);
           case LengthUnits.nanometer:
-            return value * 100000;
+            return value * pow(10, 6);
           case LengthUnits.micrometers:
-            return value * 1000;
+            return value * pow(10, 3);
           case LengthUnits.millimeter:
             return value;
           case LengthUnits.centimeter:
-            return value / 10;
+            return value / pow(10, 1);
           case LengthUnits.decimeter:
-            return value / 100;
+            return value / pow(10, 2);
           case LengthUnits.meter:
-            return value / 1000;
+            return value / pow(10, 3);
           case LengthUnits.kilometer:
-            return value / 1000000;
-          case LengthUnits.mile:
-            break;
+            return value / pow(10, 6);
         }
         break;
       case LengthUnits.centimeter:
-        switch(targetUnit){
+        switch (targetUnit) {
           case LengthUnits.attometer:
-            return value * 10000000000000000;
+            return value * pow(10, 16);
           case LengthUnits.femtometer:
-            return value * 10000000000000;
+            return value * pow(10, 13);
           case LengthUnits.picometer:
-            return value * 10000000000;
+            return value * pow(10, 10);
           case LengthUnits.nanometer:
-            return value * 10000000;
+            return value * pow(10, 7);
           case LengthUnits.micrometers:
-            return value * 10000;
+            return value * pow(10, 4);
           case LengthUnits.millimeter:
-            return value * 10;
+            return value * pow(10, 1);
           case LengthUnits.centimeter:
             return value;
           case LengthUnits.decimeter:
-            return value / 10;
+            return value / pow(10, 1);
           case LengthUnits.meter:
-            return value / 100;
+            return value / pow(10, 2);
           case LengthUnits.kilometer:
-            return value / 100000;
-          case LengthUnits.mile:
-            return value / 160934.4;
+            return value / pow(10, 5);
         }
         break;
       case LengthUnits.decimeter:
-        switch(targetUnit){
+        switch (targetUnit) {
           case LengthUnits.attometer:
             break;
           case LengthUnits.femtometer:
@@ -246,12 +228,10 @@ class MathUtils {
             return value / 10;
           case LengthUnits.kilometer:
             return value / 10000;
-          case LengthUnits.mile:
-            break;
         }
         break;
       case LengthUnits.meter:
-        switch(targetUnit){
+        switch (targetUnit) {
           case LengthUnits.attometer:
             return value * 1000000000000000000;
           case LengthUnits.femtometer:
@@ -272,12 +252,10 @@ class MathUtils {
             return value;
           case LengthUnits.kilometer:
             return value / 1000;
-          case LengthUnits.mile:
-            return value / 1609.344;
         }
         break;
       case LengthUnits.kilometer:
-        switch(targetUnit){
+        switch (targetUnit) {
           case LengthUnits.attometer:
             return value * 1000000000;
           case LengthUnits.femtometer:
@@ -298,38 +276,9 @@ class MathUtils {
             return value * 1000;
           case LengthUnits.kilometer:
             return value;
-          case LengthUnits.mile:
-            return value / 1.609;
-        }
-        break;
-      case LengthUnits.mile:
-        switch(targetUnit){
-          case LengthUnits.attometer:
-            return null;
-          case LengthUnits.femtometer:
-            return value * 1609344000000000000;
-          case LengthUnits.picometer:
-            return value * 1609344000000000;
-          case LengthUnits.nanometer:
-            return value * 1609344000000;
-          case LengthUnits.micrometers:
-            return value * 1609344000;
-          case LengthUnits.millimeter:
-            return value * 1609344;
-          case LengthUnits.centimeter:
-            return value * 160934.4;
-          case LengthUnits.decimeter:
-            return value * 16093.44;
-          case LengthUnits.meter:
-            return value * 1609.344;
-          case LengthUnits.kilometer:
-            return value * 1.609;
-          case LengthUnits.mile:
-            return value;
         }
         break;
     }
     return null;
   }
-
 }

@@ -1,4 +1,4 @@
-enum LengthUnits{
+enum LengthUnits {
   attometer,
   femtometer,
   picometer,
@@ -8,6 +8,5 @@ enum LengthUnits{
   centimeter,
   decimeter,
   meter,
-  kilometer,
-  mile
+  kilometer
 }
