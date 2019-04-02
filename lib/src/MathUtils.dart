@@ -43,237 +43,237 @@ class MathUtils {
           case LengthUnits.attometer:
             return value;
           case LengthUnits.femtometer:
-            break;
+            return value / pow(10.0, 3);
           case LengthUnits.picometer:
-            break;
+            return value / pow(10.0, 6);
           case LengthUnits.nanometer:
-            break;
+            return value / pow(10.0, 9);
           case LengthUnits.micrometers:
-            break;
+            return value / pow(10.0, 12);
           case LengthUnits.millimeter:
-            break;
+            return value / pow(10.0, 15);
           case LengthUnits.centimeter:
-            break;
+            return value / pow(10.0, 16);
           case LengthUnits.decimeter:
-            break;
+            return value / pow(10.0, 17);
           case LengthUnits.meter:
-            break;
+            return value / pow(10.0, 18);
           case LengthUnits.kilometer:
-            break;
+            return value / pow(10.0, 21.0);
         }
         break;
       case LengthUnits.femtometer:
         switch (targetUnit) {
           case LengthUnits.attometer:
-            break;
+            return value * pow(10.0, 3);
           case LengthUnits.femtometer:
             return value;
           case LengthUnits.picometer:
-            break;
+            return value / pow(10.0, 3);
           case LengthUnits.nanometer:
-            break;
+            return value / pow(10.0, 6);
           case LengthUnits.micrometers:
-            break;
+            return value / pow(10.0, 9);
           case LengthUnits.millimeter:
-            break;
+            return value / pow(10.0, 12);
           case LengthUnits.centimeter:
-            break;
+            return value / pow(10.0, 13);
           case LengthUnits.decimeter:
-            break;
+            return value / pow(10.0, 14);
           case LengthUnits.meter:
-            break;
+            return value / pow(10.0, 15);
           case LengthUnits.kilometer:
-            break;
+            return value / pow(10.0, 18);
         }
         break;
       case LengthUnits.picometer:
         switch (targetUnit) {
           case LengthUnits.attometer:
-            break;
+            return value * pow(10.0, 6);
           case LengthUnits.femtometer:
-            break;
+            return value * pow(10.0, 3);
           case LengthUnits.picometer:
             return value;
           case LengthUnits.nanometer:
-            break;
+            return value / pow(10.0, 3);
           case LengthUnits.micrometers:
-            break;
+            return value / pow(10.0, 6);
           case LengthUnits.millimeter:
-            break;
+            return value / pow(10.0, 9);
           case LengthUnits.centimeter:
-            break;
+            return value / pow(10.0, 10);
           case LengthUnits.decimeter:
-            break;
+            return value / pow(10.0, 11);
           case LengthUnits.meter:
-            break;
+            return value / pow(10.0, 12);
           case LengthUnits.kilometer:
-            break;
+            return value / pow(10.0, 15);
         }
         break;
       case LengthUnits.nanometer:
         switch (targetUnit) {
           case LengthUnits.attometer:
-            break;
+            return value * pow(10.0, 9);
           case LengthUnits.femtometer:
-            break;
+            return value * pow(10.0, 6);
           case LengthUnits.picometer:
-            break;
+            return value * pow(10.0, 3);
           case LengthUnits.nanometer:
             return value;
           case LengthUnits.micrometers:
-            break;
+            return value / pow(10.0, 3);
           case LengthUnits.millimeter:
-            break;
+            return value / pow(10.0, 6);
           case LengthUnits.centimeter:
-            break;
+            return value / pow(10.0, 7);
           case LengthUnits.decimeter:
-            break;
+            return value / pow(10.0, 8);
           case LengthUnits.meter:
-            break;
+            return value / pow(10.0, 9);
           case LengthUnits.kilometer:
-            break;
+            return value / pow(10.0, 12);
         }
         break;
       case LengthUnits.micrometers:
         switch (targetUnit) {
           case LengthUnits.attometer:
-            break;
+            return value * pow(10.0, 12);
           case LengthUnits.femtometer:
-            break;
+            return value * pow(10.0, 9);
           case LengthUnits.picometer:
-            break;
+            return value * pow(10.0, 6);
           case LengthUnits.nanometer:
-            break;
+            return value * pow(10.0, 3);
           case LengthUnits.micrometers:
             return value;
           case LengthUnits.millimeter:
-            break;
+            return value / pow(10.0, 3);
           case LengthUnits.centimeter:
-            break;
+            return value / pow(10.0, 4);
           case LengthUnits.decimeter:
-            break;
+            return value / pow(10.0, 5);
           case LengthUnits.meter:
-            break;
+            return value / pow(10.0, 6);
           case LengthUnits.kilometer:
-            break;
+            return value / pow(10.0,9);
         }
         break;
       case LengthUnits.millimeter:
         switch (targetUnit) {
           case LengthUnits.attometer:
-            return value * pow(10, 15);
+            return value * pow(10.0, 15);
           case LengthUnits.femtometer:
-            return value * pow(10, 12);
+            return value * pow(10.0, 12);
           case LengthUnits.picometer:
-            return value * pow(10, 9);
+            return value * pow(10.0, 9);
           case LengthUnits.nanometer:
-            return value * pow(10, 6);
+            return value * pow(10.0, 6);
           case LengthUnits.micrometers:
-            return value * pow(10, 3);
+            return value * pow(10.0, 3);
           case LengthUnits.millimeter:
             return value;
           case LengthUnits.centimeter:
-            return value / pow(10, 1);
+            return value / pow(10.0, 1);
           case LengthUnits.decimeter:
-            return value / pow(10, 2);
+            return value / pow(10.0, 2);
           case LengthUnits.meter:
-            return value / pow(10, 3);
+            return value / pow(10.0, 3);
           case LengthUnits.kilometer:
-            return value / pow(10, 6);
+            return value / pow(10.0, 6);
         }
         break;
       case LengthUnits.centimeter:
         switch (targetUnit) {
           case LengthUnits.attometer:
-            return value * pow(10, 16);
+            return value * pow(10.0, 16);
           case LengthUnits.femtometer:
-            return value * pow(10, 13);
+            return value * pow(10.0, 13);
           case LengthUnits.picometer:
-            return value * pow(10, 10);
+            return value * pow(10.0, 10);
           case LengthUnits.nanometer:
-            return value * pow(10, 7);
+            return value * pow(10.0, 7);
           case LengthUnits.micrometers:
-            return value * pow(10, 4);
+            return value * pow(10.0, 4);
           case LengthUnits.millimeter:
-            return value * pow(10, 1);
+            return value * pow(10.0, 1);
           case LengthUnits.centimeter:
             return value;
           case LengthUnits.decimeter:
-            return value / pow(10, 1);
+            return value / pow(10.0, 1);
           case LengthUnits.meter:
-            return value / pow(10, 2);
+            return value / pow(10.0, 2);
           case LengthUnits.kilometer:
-            return value / pow(10, 5);
+            return value / pow(10.0, 5);
         }
         break;
       case LengthUnits.decimeter:
         switch (targetUnit) {
           case LengthUnits.attometer:
-            break;
+            return value * pow(10.0,17);
           case LengthUnits.femtometer:
-            break;
+            return value * pow(10.0,14);
           case LengthUnits.picometer:
-            break;
+            return value * pow(10.0,11);
           case LengthUnits.nanometer:
-            return value * 100000000;
+            return value * pow(10.0,8);
           case LengthUnits.micrometers:
-            return value * 100000;
+            return value * pow(10.0,5);
           case LengthUnits.millimeter:
-            return value * 100;
+            return value * pow(10.0,2);
           case LengthUnits.centimeter:
-            return value * 10;
+            return value * pow(10.0,1);
           case LengthUnits.decimeter:
             return value;
           case LengthUnits.meter:
-            return value / 10;
+            return value / pow(10.0,1);
           case LengthUnits.kilometer:
-            return value / 10000;
+            return value / pow(10.0,4);
         }
         break;
       case LengthUnits.meter:
         switch (targetUnit) {
           case LengthUnits.attometer:
-            return value * 1000000000000000000;
+            return value * pow(10.0, 18);
           case LengthUnits.femtometer:
-            return value * 1000000000000000;
+            return value * pow(10.0, 15);
           case LengthUnits.picometer:
-            return value * 1000000000000;
+            return value * pow(10.0, 12);
           case LengthUnits.nanometer:
-            return value * 1000000000;
+            return value * pow(10.0, 9);
           case LengthUnits.micrometers:
-            return value * 1000000;
+            return value * pow(10.0, 6);
           case LengthUnits.millimeter:
-            return value * 1000;
+            return value * pow(10.0, 3);
           case LengthUnits.centimeter:
-            return value * 100;
+            return value * pow(10.0, 2);
           case LengthUnits.decimeter:
-            return value * 10;
+            return value * pow(10.0, 1);
           case LengthUnits.meter:
             return value;
           case LengthUnits.kilometer:
-            return value / 1000;
+            return value / pow(10.0, 3);
         }
         break;
       case LengthUnits.kilometer:
         switch (targetUnit) {
           case LengthUnits.attometer:
-            return value * 1000000000;
+            return value * pow(10.0, 21);
           case LengthUnits.femtometer:
-            return value * 100000000;
+            return value * pow(10.0, 18);
           case LengthUnits.picometer:
-            return value * 10000000;
+            return value * pow(10.0, 15);
           case LengthUnits.nanometer:
-            return value * 1000000;
+            return value * pow(10.0, 12);
           case LengthUnits.micrometers:
-            return value * 100000;
+            return value * pow(10.0, 9);
           case LengthUnits.millimeter:
-            return value * 10000;
+            return value * pow(10.0, 6);
           case LengthUnits.centimeter:
-            return value * 1000;
+            return value * pow(10.0, 5);
           case LengthUnits.decimeter:
-            return value * 100;
+            return value * pow(10.0, 4);
           case LengthUnits.meter:
-            return value * 1000;
+            return value * pow(10.0, 3);
           case LengthUnits.kilometer:
             return value;
         }
