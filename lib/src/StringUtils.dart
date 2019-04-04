@@ -97,4 +97,32 @@ class StringUtils {
   static String capitalize(String s) {
     return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
   }
+
+  ///
+  /// Reverse the given string
+  /// Example : hello => olleh
+  ///
+  static String reverse(String s) {
+    return new String.fromCharCodes(s.runes.toList().reversed);
+  }
+
+  ///
+  /// Counts how offen the given char apears in the given string
+  ///
+  static int countChars(String s, String char, {bool caseSensitive = true}) {
+    int count = 0;
+    s.codeUnits.toList().forEach((i) {
+      if (caseSensitive) {
+        if (i == char.runes.first) {
+          count++;
+        }
+      } else {
+        if (i == char.toLowerCase().runes.first ||
+            i == char.toUpperCase().runes.first) {
+          count++;
+        }
+      }
+    });
+    return count;
+  }
 }

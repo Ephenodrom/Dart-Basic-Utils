@@ -47,4 +47,21 @@ void main() {
     expect(StringUtils.capitalize("World"), "World");
     expect(StringUtils.capitalize("helloworld"), "Helloworld");
   });
+
+  test('Test reverse', () {
+    expect(StringUtils.reverse("hello"), "olleh");
+  });
+
+  test('Test count char', () {
+    expect(StringUtils.countChars("Hello my name is Jon Doe.", "e"), 3);
+    expect(StringUtils.countChars("Hello my name is Jon Doe.", "E"), 0);
+    expect(
+        StringUtils.countChars("Hello my namE is Jon Doe.", "e",
+            caseSensitive: false),
+        3);
+    expect(
+        StringUtils.countChars("Hello my namE is Jon Doe.", "E",
+            caseSensitive: false),
+        3);
+  });
 }
