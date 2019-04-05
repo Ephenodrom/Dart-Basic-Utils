@@ -64,4 +64,15 @@ void main() {
             caseSensitive: false),
         3);
   });
+
+  test('Test equalsIgnoreCase', () {
+    expect(StringUtils.equalsIgnoreCase("hello", "HELLO"), true);
+  });
+
+  test('Test isDigit', () {
+    expect(StringUtils.isDigit("1"), true);
+    expect(StringUtils.isDigit("12345"), true);
+    expect(StringUtils.isDigit("1a356"), false);
+    expect(StringUtils.isDigit("q3dm16"), false);
+  });
 }

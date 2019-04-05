@@ -107,7 +107,10 @@ class StringUtils {
   }
 
   ///
-  /// Counts how offen the given char apears in the given string
+  /// Counts how offen the given char apears in the given string.
+  /// The value caseSensitive controlls whether it should only look for the given char
+  /// or also the equivalent lower/upper case version.
+  /// Example: Hello and char l => 2
   ///
   static int countChars(String s, String char, {bool caseSensitive = true}) {
     int count = 0;
@@ -125,4 +128,27 @@ class StringUtils {
     });
     return count;
   }
+
+  ///
+  /// Checks if the given string [s] is a digit
+  ///
+  static bool isDigit(String s){
+    if(s.length > 1){
+      for(int r in s.runes){
+        if(r ^ 0x30 > 9){
+          return false;
+        }
+      }
+      return true;
+    }else{
+      return s.runes.first ^ 0x30 <= 9;
+    }
+  }
+
+///
+/// Compares the given strings [a] and [b].
+/// 
+static bool equalsIgnoreCase(String a, String b) =>
+    (a == null && b == null) ||
+    (a != null && b != null && a.toLowerCase() == b.toLowerCase());
 }
