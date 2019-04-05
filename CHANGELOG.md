@@ -1,6 +1,7 @@
-## [1.0.3] - 2019-04-01
+## [1.0.3] - 2019-04-02
 
 * Added new MathUtils
+* Added new EmailUtils
 * Added new unit tests
 
 ## [1.0.2] - 2019-03-06
