@@ -14,18 +14,18 @@ class StringUtils {
   }
 
   ///
-  /// Checks if the given string is null or empty
+  /// Checks if the given String [s] is null or empty
   ///
   static bool isNullOrEmpty(String s) =>
       (s == null || s.isEmpty) ? true : false;
 
   ///
-  /// Checks if the given string is not null or empty
+  /// Checks if the given String [s] is not null or empty
   ///
   static bool isNotNullOrEmpty(String s) => !isNullOrEmpty(s);
 
   ///
-  /// Transfers the given String from camcelCase to upperCaseUnderscore
+  /// Transfers the given String [s] from camcelCase to upperCaseUnderscore
   /// Example : helloWorld => HELLO_WORLD
   ///
   static String camelCaseToUpperUnderscore(String s) {
@@ -45,7 +45,7 @@ class StringUtils {
   }
 
   ///
-  /// Transfers the given String from camcelCase to lpperCaseUnderscore
+  /// Transfers the given String [s] from camcelCase to lpperCaseUnderscore
   /// Example : helloWorld => hello_world
   ///
   static String camelCaseToLowerUnderscore(String s) {
@@ -65,21 +65,21 @@ class StringUtils {
   }
 
   ///
-  /// Checks if the given string is lower case
+  /// Checks if the given string [s] is lower case
   ///
   static bool isLowerCase(String s) {
     return s == s.toLowerCase();
   }
 
   ///
-  /// Checks if the given string is upper case
+  /// Checks if the given string [s] is upper case
   ///
   static bool isUpperCase(String s) {
     return s == s.toUpperCase();
   }
 
   ///
-  /// Checks if the given string contains only ascii chars
+  /// Checks if the given string [s] contains only ascii chars
   ///
   static bool isAscii(String s) {
     try {
@@ -91,7 +91,7 @@ class StringUtils {
   }
 
   ///
-  /// Capitalize the given string
+  /// Capitalize the given string [s]
   /// Example : world => World, WORLD => World
   ///
   static String capitalize(String s) {
@@ -99,7 +99,7 @@ class StringUtils {
   }
 
   ///
-  /// Reverse the given string
+  /// Reverse the given string [s]
   /// Example : hello => olleh
   ///
   static String reverse(String s) {
@@ -107,8 +107,8 @@ class StringUtils {
   }
 
   ///
-  /// Counts how offen the given char apears in the given string.
-  /// The value caseSensitive controlls whether it should only look for the given char
+  /// Counts how offen the given [char] apears in the given string [s].
+  /// The value [caseSensitive] controlls whether it should only look for the given [char]
   /// or also the equivalent lower/upper case version.
   /// Example: Hello and char l => 2
   ///

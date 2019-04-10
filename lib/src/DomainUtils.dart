@@ -5,14 +5,14 @@ part of basic_utils;
 ///
 class DomainUtils {
   ///
-  /// Checks if the given string is a domain name
+  /// Checks if the given string [s] is a domain name
   ///
   static bool isDomainName(String s) {
     return parseDomain(s) != null;
   }
 
   ///
-  /// Checks if the given string is a subTld
+  /// Checks if the given string [s] is a subTld
   ///
   static bool isSubTld(String tld, String subTld) {
     List<String> subTLDs = suffixList[tld];
@@ -24,9 +24,9 @@ class DomainUtils {
   }
 
   ///
-  /// Check if the given string is a subdomain
-  /// Example:
-  ///
+  /// Check if the given string [s] is a subdomain
+  /// Example: api.domain.com => true
+  /// domain.de.com => false
   ///
   static bool isSubDomain(String s) {
     if (StringUtils.isNotNullOrEmpty(s)) {
@@ -55,7 +55,7 @@ class DomainUtils {
   }
 
   ///
-  /// Checks if the given string is a cctld.
+  /// Checks if the given string [s] is a cctld.
   /// Example :
   /// de => true
   /// com => false
@@ -66,7 +66,7 @@ class DomainUtils {
   }
 
   ///
-  /// Checks if the given string is a ngtld.
+  /// Checks if the given string [s] is a ngtld.
   /// Example :
   /// car => true
   /// com => false
@@ -77,7 +77,7 @@ class DomainUtils {
   }
 
   ///
-  /// Checks if the given string is a tld.
+  /// Checks if the given string [s] is a tld.
   /// Example :
   /// car => true
   /// com => true
@@ -89,7 +89,7 @@ class DomainUtils {
   }
 
   ///
-  /// Checks if the given string is a gtld.
+  /// Checks if the given string [s] is a gtld.
   /// Example :
   /// de => false
   /// com => true
@@ -99,29 +99,31 @@ class DomainUtils {
   }
 
   ///
-  /// Splits the given domain name.
+  /// Splits the given [domainName].
   /// Examples :
   /// example.com => ["example","com"]
   /// subdomain.example.com => ["subdomain","example","com"]
   ///
-  static List<String> splitDomainName(String s) {
-    return s.split(".");
+  static List<String> splitDomainName(String domainName) {
+    return domainName.split(".");
   }
 
   ///
-  /// Fetches the domain from the given url
+  /// Fetches the domain from the given [url]
+  /// Returns null if the given [url] is not parsable.
   ///
-  static Domain getDomainFromUrl(String s) {
-    s = s.replaceFirst("https://", "");
-    s = s.replaceFirst("http://", "");
-    if (s.contains("/")) {
-      s = s.substring(0, s.indexOf("/"));
+  static Domain getDomainFromUrl(String url) {
+    url = url.replaceFirst("https://", "");
+    url = url.replaceFirst("http://", "");
+    if (url.contains("/")) {
+      url = url.substring(0, url.indexOf("/"));
     }
-    return parseDomain(s);
+    return parseDomain(url);
   }
 
   ///
-  /// Parse the given domain string to a domain object
+  /// Parse the given [domainName] to a [Domain] object.
+  /// Returns null if the given [domainName] is not parsable.
   ///
   static Domain parseDomain(String domainName) {
     if (!domainName.contains(".")) {

@@ -20,7 +20,7 @@ A dart package for many helper methods fitting different situations.
 Update pubspec.yaml and add the following line to your dependencies.
 ```yaml
 dependencies:
-  basic_utils: ^1.0.3
+  basic_utils: ^1.0.4
 ```
 
 ## Import

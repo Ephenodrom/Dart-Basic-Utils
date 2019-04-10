@@ -1,3 +1,9 @@
+## [1.0.4] - 2019-04-10
+
+* Added new StringUtils
+* Added new unit tests
+* Improve documentation
+
 ## [1.0.3] - 2019-04-02
 
 * Added new MathUtils

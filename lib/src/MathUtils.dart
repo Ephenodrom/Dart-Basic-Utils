@@ -5,35 +5,36 @@ part of basic_utils;
 ///
 class MathUtils {
   ///
-  /// Calculate the circumference of a circle with the given radius
+  /// Calculate the circumference of a circle with the given [radius]
   ///
   static double calculateCircumference(double radius) {
     return 2 * pi * radius;
   }
 
   ///
-  /// Calculate the area of a circle with the given radius
+  /// Calculate the area of a circle with the given [radius]
   ///
   static double calculateCircularArea(double radius) {
     return pi * (radius * radius);
   }
 
   ///
-  /// Calculate the diameter of a circle with the given radius
+  /// Calculate the diameter of a circle with the given [radius]
   ///
   static double calculateCircleDiameter(double radius) {
     return 2 * radius;
   }
 
   ///
-  /// Calculate the area of a square or rectangle
+  /// Calculate the area of a square or rectangle with length [a] and/or length[b]
   ///
   static double calculateSquareArea(double a, {double b}) {
     return b == null ? a * a : a * b;
   }
 
   ///
-  /// Converts the given value from one unit to another unit
+  /// Converts the given [value] from the [sourceUnit] to the [targetUnit].
+  /// Returns null if converting is not possible
   ///
   static double convertUnit(
       double value, LengthUnits sourceUnit, LengthUnits targetUnit) {
