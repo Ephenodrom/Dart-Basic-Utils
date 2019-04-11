@@ -11,6 +11,7 @@ A dart package for many helper methods fitting different situations.
    * [DomainUtils](#domainutils)
    * [EmailUtils](#emailutils)
    * [MathUtils](#mathutils)
+   * [HttpUtils](#httputils)
 4. [Changelog](#changelog)
 5. [Support](#support)
 6. [Copyright and license](#copyright-and-license)
@@ -20,7 +21,7 @@ A dart package for many helper methods fitting different situations.
 Update pubspec.yaml and add the following line to your dependencies.
 ```yaml
 dependencies:
-  basic_utils: ^1.0.4
+  basic_utils: ^1.0.5
 ```
 
 ## Import
@@ -42,6 +43,9 @@ Helper class for operations on email addresses.
 
 ### MathUtils
 Helper class for simple math operations like calculating circular area or converting length units.
+
+### HttpUtils
+Helper class for simple http operations like sending requsts. Includes logging of requests and responses.
 
 ## Changelog
 For a detailed changelog, see the [CHANGELOG.md](CHANGELOG.md) file

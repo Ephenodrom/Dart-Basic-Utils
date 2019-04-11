@@ -1,3 +1,8 @@
+## [1.0.5] - 2019-04-15
+
+* Added new HttpUtils
+* Added new unit tests
+
 ## [1.0.4] - 2019-04-10
 
 * Added new StringUtils
