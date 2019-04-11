@@ -45,7 +45,7 @@ Helper class for operations on email addresses.
 Helper class for simple math operations like calculating circular area or converting length units.
 
 ### HttpUtils
-Helper class for simple http operations like sending requsts. Includes logging of requests and responses.
+Helper class for simple http operations like sending requests.
 
 ## Changelog
 For a detailed changelog, see the [CHANGELOG.md](CHANGELOG.md) file
