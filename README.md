@@ -3,6 +3,7 @@
 A dart package for many helper methods fitting different situations.
 
 ## Table of Contents
+
 1. [Install](#install)
    * [pubspec.yaml](#pubspec.yaml)
 2. [Import](#import)
@@ -17,44 +18,59 @@ A dart package for many helper methods fitting different situations.
 6. [Copyright and license](#copyright-and-license)
 
 ## Install
+
 ### pubspec.yaml
+
 Update pubspec.yaml and add the following line to your dependencies.
+
 ```yaml
 dependencies:
   basic_utils: ^1.0.5
 ```
 
 ## Import
+
 Import the package with :
+
 ```dart
 import 'package:basic_utils/basic_utils.dart';
 ```
 
 ## Util Classes
+
 The package contains different classes. Each class contains methods that provide a solution for certain problems.
+
 ### StringUtils
+
 Helper class for String operations.
 
 ### DomainUtils
+
 Helper class for operations on domain names.
 
 ### EmailUtils
+
 Helper class for operations on email addresses.
 
 ### MathUtils
+
 Helper class for simple math operations like calculating circular area or converting length units.
 
 ### HttpUtils
+
 Helper class for simple http operations like sending requsts. Includes logging of requests and responses.
 
 ## Changelog
+
 For a detailed changelog, see the [CHANGELOG.md](CHANGELOG.md) file
 
 ## Support
-You like this repository or even use it in one of your projects? Feel free to donate a cup of coffee! 
-Flattr : https://flattr.com/@Ephenodrom
+
+You like this repository or even use it in one of your projects? Feel free to donate a cup of coffee!
+Flattr : <https://flattr.com/@Ephenodrom>
 
 ## Copyright and license
+
 MIT License
 
 Copyright (c) 2019 Ephenodrom

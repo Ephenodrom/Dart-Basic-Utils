@@ -57,4 +57,12 @@ void main() {
     expect(HttpUtils.get("api.com/item"),
         throwsA(TypeMatcher<HttpResponseException>()));
   });
+
+  test("Test post", () async {
+    // TODO
+  });
+
+  test("Test put", () async {
+    // TODO
+  });
 }

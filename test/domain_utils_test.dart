@@ -126,6 +126,13 @@ void main() {
     expect(DomainUtils.isDomainName("example.qwertzu"), false);
   });
 
+  test('Test isSubDomainOf', () {
+    expect(DomainUtils.isSubDomainOf("sub1.domain.com", "domain.com"), true);
+    expect(DomainUtils.isSubDomainOf("sub2.sub1.domain.com", "sub1.domain.com"),
+        true);
+    expect(DomainUtils.isSubDomainOf("sub1.domain2.com", "domain.com"), false);
+  });
+
   test('Test getDomainFromUrl', () {
     expect(DomainUtils.getDomainFromUrl("http://example.com").toString(),
         "example.com");

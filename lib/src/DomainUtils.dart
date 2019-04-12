@@ -55,6 +55,17 @@ class DomainUtils {
   }
 
   ///
+  /// Checks if the given [sub] is a subdomain of the given [domain].
+  /// Example :
+  /// sub1.domain.com & domain.com => true
+  /// sub1.domain2.com & domain.com => false
+  ///
+  static bool isSubDomainOf(String sub, String domain) {
+    String rightPart = sub.substring(sub.indexOf(".") + 1);
+    return rightPart == domain;
+  }
+
+  ///
   /// Checks if the given string [s] is a cctld.
   /// Example :
   /// de => true
