@@ -132,23 +132,23 @@ class StringUtils {
   ///
   /// Checks if the given string [s] is a digit
   ///
-  static bool isDigit(String s){
-    if(s.length > 1){
-      for(int r in s.runes){
-        if(r ^ 0x30 > 9){
+  static bool isDigit(String s) {
+    if (s.length > 1) {
+      for (int r in s.runes) {
+        if (r ^ 0x30 > 9) {
           return false;
         }
       }
       return true;
-    }else{
+    } else {
       return s.runes.first ^ 0x30 <= 9;
     }
   }
 
-///
-/// Compares the given strings [a] and [b].
-/// 
-static bool equalsIgnoreCase(String a, String b) =>
-    (a == null && b == null) ||
-    (a != null && b != null && a.toLowerCase() == b.toLowerCase());
+  ///
+  /// Compares the given strings [a] and [b].
+  ///
+  static bool equalsIgnoreCase(String a, String b) =>
+      (a == null && b == null) ||
+      (a != null && b != null && a.toLowerCase() == b.toLowerCase());
 }

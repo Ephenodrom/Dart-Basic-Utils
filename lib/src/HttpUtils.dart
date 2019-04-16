@@ -62,7 +62,7 @@ class HttpUtils {
   }
 
   ///
-  /// Basic function which handle response and decode JSON throw [HttpClientException] if status code not 200-290
+  /// Basic function which handle response and decode JSON. Throws [HttpClientException] if status code not 200-290
   ///
   static Object _responseHandler(http.Response response) {
     if (response.statusCode >= 200 && response.statusCode <= 299) {

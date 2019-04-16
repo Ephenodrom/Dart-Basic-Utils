@@ -58,11 +58,29 @@ void main() {
         throwsA(TypeMatcher<HttpResponseException>()));
   });
 
+  test("Test get with 500", () async {
+    HttpUtils.client = MockClient((request) async {
+      return Response(json.encode({}), 500);
+    });
+    expect(HttpUtils.get("api.com/item"),
+        throwsA(TypeMatcher<HttpResponseException>()));
+  });
+
   test("Test post", () async {
-    // TODO
+    HttpUtils.client = MockClient((request) async {
+      final mapJson = {'id': 123};
+      return Response(json.encode(mapJson), 200);
+    });
+    final item = await HttpUtils.post("api.com/item", "{'id': 123}");
+    expect(item["id"], 123);
   });
 
   test("Test put", () async {
-    // TODO
+    HttpUtils.client = MockClient((request) async {
+      final mapJson = {'id': 124};
+      return Response(json.encode(mapJson), 200);
+    });
+    final item = await HttpUtils.put("api.com/item", "{'id': 124}");
+    expect(item["id"], 124);
   });
 }
