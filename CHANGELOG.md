@@ -1,3 +1,5 @@
+# Changelog
+
 ## [1.0.5] - 2019-04-16
 
 * Added new HttpUtils
