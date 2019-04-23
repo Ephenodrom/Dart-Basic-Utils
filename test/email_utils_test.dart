@@ -28,5 +28,9 @@ void main() {
     EmailAddress email = EmailUtils.parseEmailAddress("test@test.de");
     expect(email.local, "test");
     expect(email.domain.toString(), "test.de");
+
+    email = EmailUtils.parseEmailAddress("jon.doe@test.de");
+    expect(email.local, "jon.doe");
+    expect(email.domain.toString(), "test.de");
   });
 }
