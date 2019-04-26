@@ -13,6 +13,7 @@ A dart package for many helper methods fitting different situations.
    * [EmailUtils](#emailutils)
    * [MathUtils](#mathutils)
    * [HttpUtils](#httputils)
+   * [DnsUtils](#dnsutils)
 4. [Changelog](#changelog)
 5. [Support](#support)
 6. [Copyright and license](#copyright-and-license)
@@ -59,6 +60,10 @@ Helper class for simple math operations like calculating circular area or conver
 ### HttpUtils
 
 Helper class for simple http operations like sending requests.
+
+### DnsUtils
+
+Helper class for lookup resource records. Uses google dns resolver api.
 
 ## Changelog
 

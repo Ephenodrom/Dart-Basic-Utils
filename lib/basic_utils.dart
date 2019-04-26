@@ -14,9 +14,13 @@ import "src/model/IdnCountryCodeList.dart";
 import "src/model/PublicSuffix.dart";
 import "src/model/LengthUnits.dart";
 import "src/model/exception/HttpResponseException.dart";
+import "src/model/RRecordType.dart";
+import "src/model/RRecord.dart";
+import "src/model/ResolveResponse.dart";
 
 part "src/DomainUtils.dart";
 part "src/EmailUtils.dart";
 part "src/StringUtils.dart";
 part "src/MathUtils.dart";
 part "src/HttpUtils.dart";
+part "src/DnsUtils.dart";

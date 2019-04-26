@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.6] - 2019-04-26
+
+* Added new DnsUtils
+* Added new unit tests
+
 ## [1.0.5] - 2019-04-16
 
 * Added new HttpUtils
