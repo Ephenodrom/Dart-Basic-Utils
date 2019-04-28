@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.7] - 2019-04-28
+
+* Added new StringUtils method
+* Added new unit tests
+
 ## [1.0.6] - 2019-04-26
 
 * Added new DnsUtils
