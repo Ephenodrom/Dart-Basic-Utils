@@ -75,4 +75,12 @@ void main() {
     expect(StringUtils.isDigit("1a356"), false);
     expect(StringUtils.isDigit("q3dm16"), false);
   });
+
+  test('Test inList', () {
+    List<String> list = ["a", "b", "c", "A"];
+    expect(StringUtils.inList("c", list), true);
+    expect(StringUtils.inList("d", list), false);
+    expect(StringUtils.inList("A", list, ignoreCase: true), true);
+    expect(StringUtils.inList("D", list, ignoreCase: true), false);
+  });
 }

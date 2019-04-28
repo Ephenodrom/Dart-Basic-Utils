@@ -151,4 +151,22 @@ class StringUtils {
   static bool equalsIgnoreCase(String a, String b) =>
       (a == null && b == null) ||
       (a != null && b != null && a.toLowerCase() == b.toLowerCase());
+
+  ///
+  /// Checks if the given [list] contains the string [s]
+  ///
+  static bool inList(String s, List<String> list, {bool ignoreCase = false}){
+    for(String l in list){
+      if(ignoreCase){
+        if(equalsIgnoreCase(s, l)){
+          return true;
+        }
+      }else{
+        if(s == l){
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 }
