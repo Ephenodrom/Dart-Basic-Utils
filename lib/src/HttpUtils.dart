@@ -28,10 +28,10 @@ class HttpUtils {
   static Future<Map<String, dynamic>> getForJson(String url,
       {Map<String, dynamic> queryParameters,
       Map<String, String> headers}) async {
-    return _get(url,
+    return await _get(url,
         queryParameters: queryParameters,
         headers: headers,
-        returnType: HttpRequestReturnType.JSON);
+        returnType: HttpRequestReturnType.JSON) as Map<String, dynamic>;
   }
 
   ///
@@ -41,10 +41,10 @@ class HttpUtils {
   static Future<String> getForString(String url,
       {Map<String, dynamic> queryParameters,
       Map<String, String> headers}) async {
-    return _get(url,
+    return await _get(url,
         queryParameters: queryParameters,
         headers: headers,
-        returnType: HttpRequestReturnType.STRING);
+        returnType: HttpRequestReturnType.STRING) as String;
   }
 
   ///
@@ -70,10 +70,11 @@ class HttpUtils {
       {Map<String, String> queryParameters,
       Map<String, String> headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    return _post(url, body,
+    return await _post(url, body,
         queryParameters: queryParameters,
         headers: headers,
-        returnType: HttpRequestReturnType.JSON);
+        returnType: HttpRequestReturnType.JSON) as Map<String, dynamic>;
+    ;
   }
 
   ///
@@ -84,10 +85,10 @@ class HttpUtils {
       {Map<String, String> queryParameters,
       Map<String, String> headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    return _post(url, body,
+    return await _post(url, body,
         queryParameters: queryParameters,
         headers: headers,
-        returnType: HttpRequestReturnType.STRING);
+        returnType: HttpRequestReturnType.STRING) as String;
   }
 
   ///
@@ -113,10 +114,11 @@ class HttpUtils {
       {Map<String, String> queryParameters,
       Map<String, String> headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    return _put(url, body,
+    return await _put(url, body,
         queryParameters: queryParameters,
         headers: headers,
-        returnType: HttpRequestReturnType.JSON);
+        returnType: HttpRequestReturnType.JSON) as Map<String, dynamic>;
+    ;
   }
 
   ///
@@ -127,10 +129,10 @@ class HttpUtils {
       {Map<String, String> queryParameters,
       Map<String, String> headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    return _put(url, body,
+    return await _put(url, body,
         queryParameters: queryParameters,
         headers: headers,
-        returnType: HttpRequestReturnType.STRING);
+        returnType: HttpRequestReturnType.STRING) as String;
   }
 
   ///
@@ -155,10 +157,11 @@ class HttpUtils {
       {Map<String, String> queryParameters,
       Map<String, String> headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    return _delete(url,
+    return await _delete(url,
         queryParameters: queryParameters,
         headers: headers,
-        returnType: HttpRequestReturnType.JSON);
+        returnType: HttpRequestReturnType.JSON) as Map<String, dynamic>;
+    ;
   }
 
   ///
@@ -169,10 +172,10 @@ class HttpUtils {
       {Map<String, String> queryParameters,
       Map<String, String> headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    return _delete(url,
+    return await _delete(url,
         queryParameters: queryParameters,
         headers: headers,
-        returnType: HttpRequestReturnType.STRING);
+        returnType: HttpRequestReturnType.STRING) as String;
   }
 
   ///

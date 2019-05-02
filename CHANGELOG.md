@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.8] - 2019-05-02
+
+* Improve HttpUtils to handle simple string responses.
+
 ## [1.0.7] - 2019-04-28
 
 * Added new StringUtils method
