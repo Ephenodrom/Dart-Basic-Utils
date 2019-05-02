@@ -38,7 +38,7 @@ void main() {
       final mapJson = {'id': 123};
       return Response(json.encode(mapJson), 200);
     });
-    final item = await HttpUtils.get("api.com/item");
+    final item = await HttpUtils.getForJson("api.com/item");
     expect(item["id"], 123);
   });
 
@@ -46,7 +46,8 @@ void main() {
     HttpUtils.client = MockClient((request) async {
       return Response(json.encode({}), 200);
     });
-    Map<String, dynamic> response = await HttpUtils.delete("api.com/item/1");
+    Map<String, dynamic> response =
+        await HttpUtils.deleteForJson("api.com/item/1");
     expect(response.isEmpty, true);
   });
 
@@ -54,7 +55,7 @@ void main() {
     HttpUtils.client = MockClient((request) async {
       return Response(json.encode({}), 404);
     });
-    expect(HttpUtils.get("api.com/item"),
+    expect(HttpUtils.getForJson("api.com/item"),
         throwsA(TypeMatcher<HttpResponseException>()));
   });
 
@@ -62,7 +63,7 @@ void main() {
     HttpUtils.client = MockClient((request) async {
       return Response(json.encode({}), 500);
     });
-    expect(HttpUtils.get("api.com/item"),
+    expect(HttpUtils.getForJson("api.com/item"),
         throwsA(TypeMatcher<HttpResponseException>()));
   });
 
@@ -71,7 +72,7 @@ void main() {
       final mapJson = {'id': 123};
       return Response(json.encode(mapJson), 200);
     });
-    final item = await HttpUtils.post("api.com/item", "{'id': 123}");
+    final item = await HttpUtils.postForJson("api.com/item", "{'id': 123}");
     expect(item["id"], 123);
   });
 
@@ -80,7 +81,7 @@ void main() {
       final mapJson = {'id': 124};
       return Response(json.encode(mapJson), 200);
     });
-    final item = await HttpUtils.put("api.com/item", "{'id': 124}");
+    final item = await HttpUtils.putForJson("api.com/item", "{'id': 124}");
     expect(item["id"], 124);
   });
 }

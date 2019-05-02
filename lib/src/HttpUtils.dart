@@ -10,63 +10,183 @@ class HttpUtils {
   ///
   /// Sends a HTTP GET request to the given [url] with the given [queryParameters] and [headers].
   ///
-  static Future<Map<String, dynamic>> get(String url,
+  static Future<dynamic> _get(String url,
       {Map<String, dynamic> queryParameters,
-      Map<String, String> headers}) async {
+      Map<String, String> headers,
+      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
     String finalUrl = addQueryParameterToUrl(url, queryParameters);
     Logger(TAG).info("GET $finalUrl");
     var response = await client.get(finalUrl, headers: headers);
     Logger(TAG).finest("Got response: " + response.body);
-    return _responseHandler(response);
+    return _handleResponse(response, returnType);
+  }
+
+  ///
+  /// Sends a HTTP GET request to the given [url] with the given [queryParameters] and [headers].
+  /// Returns the response as a map using json.decode.
+  ///
+  static Future<Map<String, dynamic>> getForJson(String url,
+      {Map<String, dynamic> queryParameters,
+      Map<String, String> headers}) async {
+    return _get(url,
+        queryParameters: queryParameters,
+        headers: headers,
+        returnType: HttpRequestReturnType.JSON);
+  }
+
+  ///
+  /// Sends a HTTP GET request to the given [url] with the given [queryParameters] and [headers].
+  /// Returns the response as a string.
+  ///
+  static Future<String> getForString(String url,
+      {Map<String, dynamic> queryParameters,
+      Map<String, String> headers}) async {
+    return _get(url,
+        queryParameters: queryParameters,
+        headers: headers,
+        returnType: HttpRequestReturnType.STRING);
   }
 
   ///
   /// Sends a HTTP POST request to the given [url] with the given [body], [queryParameters] and [headers].
   ///
-  static Future<Map<String, dynamic>> post(String url, String body,
+  static Future<dynamic> _post(String url, String body,
       {Map<String, String> queryParameters,
-      Map<String, String> headers}) async {
+      Map<String, String> headers,
+      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
     String finalUrl = addQueryParameterToUrl(url, queryParameters);
     Logger(TAG).info("POST $finalUrl");
     Logger(TAG).finest("Request body: " + body);
     var response = await client.post(finalUrl, body: body, headers: headers);
     Logger(TAG).finest("Response body: " + response.body);
-    return _responseHandler(response);
+    return _handleResponse(response, returnType);
+  }
+
+  ///
+  /// Sends a HTTP POST request to the given [url] with the given [body], [queryParameters] and [headers].
+  /// Returns the response as a map using json.decode.
+  ///
+  static Future<Map<String, dynamic>> postForJson(String url, String body,
+      {Map<String, String> queryParameters,
+      Map<String, String> headers,
+      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
+    return _post(url, body,
+        queryParameters: queryParameters,
+        headers: headers,
+        returnType: HttpRequestReturnType.JSON);
+  }
+
+  ///
+  /// Sends a HTTP POST request to the given [url] with the given [body], [queryParameters] and [headers].
+  /// Returns the response as a string.
+  ///
+  static Future<String> postForString(String url, String body,
+      {Map<String, String> queryParameters,
+      Map<String, String> headers,
+      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
+    return _post(url, body,
+        queryParameters: queryParameters,
+        headers: headers,
+        returnType: HttpRequestReturnType.STRING);
   }
 
   ///
   /// Sends a HTTP PUT request to the given [url] with the given [body], [queryParameters] and [headers].
   ///
-  static Future<Map<String, dynamic>> put(String url, String body,
+  static Future<dynamic> _put(String url, String body,
       {Map<String, String> queryParameters,
-      Map<String, String> headers}) async {
+      Map<String, String> headers,
+      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
     String finalUrl = addQueryParameterToUrl(url, queryParameters);
     Logger(TAG).info("PUT $finalUrl");
     Logger(TAG).finest("Request body: " + body);
     var response = await client.put(finalUrl, body: body, headers: headers);
     Logger(TAG).finest("Response body: " + response.body);
-    return _responseHandler(response);
+    return _handleResponse(response, returnType);
+  }
+
+  ///
+  /// Sends a HTTP PUT request to the given [url] with the given [body], [queryParameters] and [headers].
+  /// Returns the response as a map using json.decode.
+  ///
+  static Future<Map<String, dynamic>> putForJson(String url, String body,
+      {Map<String, String> queryParameters,
+      Map<String, String> headers,
+      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
+    return _put(url, body,
+        queryParameters: queryParameters,
+        headers: headers,
+        returnType: HttpRequestReturnType.JSON);
+  }
+
+  ///
+  /// Sends a HTTP PUT request to the given [url] with the given [body], [queryParameters] and [headers].
+  /// Returns the response as a string.
+  ///
+  static Future<String> putForString(String url, String body,
+      {Map<String, String> queryParameters,
+      Map<String, String> headers,
+      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
+    return _put(url, body,
+        queryParameters: queryParameters,
+        headers: headers,
+        returnType: HttpRequestReturnType.STRING);
   }
 
   ///
   /// Sends a HTTP DELETE request to the given [url] with the given [queryParameters] and [headers].
   ///
-  static Future<Map<String, dynamic>> delete(String url,
+  static Future<dynamic> _delete(String url,
       {Map<String, String> queryParameters,
-      Map<String, String> headers}) async {
+      Map<String, String> headers,
+      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
     String finalUrl = addQueryParameterToUrl(url, queryParameters);
     Logger(TAG).info("DELETE $finalUrl");
     var response = await client.delete(finalUrl, headers: headers);
     Logger(TAG).finest("Response body: " + response.body);
-    return _responseHandler(response);
+    return _handleResponse(response, returnType);
+  }
+
+  ///
+  /// Sends a HTTP DELETE request to the given [url] with the given [queryParameters] and [headers].
+  /// Returns the response as a map using json.decode.
+  ///
+  static Future<Map<String, dynamic>> deleteForJson(String url,
+      {Map<String, String> queryParameters,
+      Map<String, String> headers,
+      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
+    return _delete(url,
+        queryParameters: queryParameters,
+        headers: headers,
+        returnType: HttpRequestReturnType.JSON);
+  }
+
+  ///
+  /// Sends a HTTP DELETE request to the given [url] with the given [queryParameters] and [headers].
+  /// Returns the response as a string.
+  ///
+  static Future<String> deleteForString(String url,
+      {Map<String, String> queryParameters,
+      Map<String, String> headers,
+      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
+    return _delete(url,
+        queryParameters: queryParameters,
+        headers: headers,
+        returnType: HttpRequestReturnType.STRING);
   }
 
   ///
   /// Basic function which handle response and decode JSON. Throws [HttpClientException] if status code not 200-290
   ///
-  static Object _responseHandler(http.Response response) {
+  static dynamic _handleResponse(
+      http.Response response, HttpRequestReturnType returnType) {
     if (response.statusCode >= 200 && response.statusCode <= 299) {
-      return json.decode(response.body);
+      switch (returnType) {
+        case HttpRequestReturnType.JSON:
+          return json.decode(response.body);
+        case HttpRequestReturnType.STRING:
+          return response.body;
+      }
     } else {
       throw HttpResponseException(
           "Response error ...", response.statusCode.toString(),

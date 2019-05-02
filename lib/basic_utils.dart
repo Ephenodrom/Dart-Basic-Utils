@@ -17,6 +17,7 @@ import "src/model/exception/HttpResponseException.dart";
 import "src/model/RRecordType.dart";
 import "src/model/RRecord.dart";
 import "src/model/ResolveResponse.dart";
+import "src/model/HttpRequestReturnType.dart";
 
 part "src/DomainUtils.dart";
 part "src/EmailUtils.dart";

@@ -19,7 +19,7 @@ class DnsUtils {
     queryParameters.putIfAbsent("type", () => _getTypeFromType(type));
     queryParameters.putIfAbsent("dnssec", () => dnssec.toString());
     Map<String, dynamic> body =
-        await HttpUtils.get(_baseUrl, queryParameters: queryParameters);
+        await HttpUtils.getForJson(_baseUrl, queryParameters: queryParameters);
     ResolveResponse response = ResolveResponse.fromJson(body);
     return response.answer;
   }

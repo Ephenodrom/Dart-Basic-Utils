@@ -1,0 +1,4 @@
+enum HttpRequestReturnType {
+  JSON,
+  STRING,
+}
