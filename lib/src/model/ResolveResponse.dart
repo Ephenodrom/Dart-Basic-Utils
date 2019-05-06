@@ -22,6 +22,8 @@ class ResolveResponse {
   List<Question> question;
   @JsonKey(name: "Answer")
   List<RRecord> answer;
+  @JsonKey(name: "Comment")
+  String comment;
 
   ResolveResponse(
       {this.status,
@@ -31,7 +33,8 @@ class ResolveResponse {
       this.ad,
       this.cd,
       this.question,
-      this.answer});
+      this.answer,
+      this.comment});
 
   /*
    * Json to ResolveResponse object

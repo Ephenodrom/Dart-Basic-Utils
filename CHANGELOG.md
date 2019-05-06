@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.1] - 2019-05-06
+
+* Improve DnsUtils
+
 ## [1.1.0] - 2019-05-06
 
 * Fix DnsUtils

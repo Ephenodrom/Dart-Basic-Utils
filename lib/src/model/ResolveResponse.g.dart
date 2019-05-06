@@ -21,7 +21,8 @@ ResolveResponse _$ResolveResponseFromJson(Map<String, dynamic> json) {
       answer: (json['Answer'] as List)
           ?.map((e) =>
               e == null ? null : RRecord.fromJson(e as Map<String, dynamic>))
-          ?.toList());
+          ?.toList(),
+      comment: json['Comment'] as String);
 }
 
 Map<String, dynamic> _$ResolveResponseToJson(ResolveResponse instance) {
@@ -39,7 +40,8 @@ Map<String, dynamic> _$ResolveResponseToJson(ResolveResponse instance) {
   writeNotNull('RA', instance.ra);
   writeNotNull('AD', instance.ad);
   writeNotNull('CD', instance.cd);
-  writeNotNull('question', instance.question);
-  writeNotNull('answer', instance.answer);
+  writeNotNull('Question', instance.question);
+  writeNotNull('Answer', instance.answer);
+  writeNotNull('Comment', instance.comment);
   return val;
 }
