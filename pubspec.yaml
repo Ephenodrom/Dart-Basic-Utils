@@ -1,6 +1,6 @@
 name: basic_utils
 description: Common util classes providing a solution for different situations.
-version: 1.0.8
+version: 1.0.9
 author: Daniel Linsenmeier <daniel@ephenodrom.de>
 homepage: https://github.com/Ephenodrom/Dart-Basic-Utils
 publish_to: https://pub.dartlang.org

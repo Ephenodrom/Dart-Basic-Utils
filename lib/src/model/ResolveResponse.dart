@@ -6,22 +6,28 @@ part 'ResolveResponse.g.dart';
 
 @JsonSerializable(includeIfNull: false)
 class ResolveResponse {
-  int Status;
-  bool TC;
-  bool RD;
-  bool RA;
-  bool AD;
-  bool CD;
+  @JsonKey(name: "Status")
+  int status;
+  @JsonKey(name: "TC")
+  bool tc;
+  @JsonKey(name: "RD")
+  bool rd;
+  @JsonKey(name: "RA")
+  bool ra;
+  @JsonKey(name: "AD")
+  bool ad;
+  @JsonKey(name: "CD")
+  bool cd;
   List<Question> question;
   List<RRecord> answer;
 
   ResolveResponse(
-      {this.Status,
-      this.TC,
-      this.RD,
-      this.RA,
-      this.AD,
-      this.CD,
+      {this.status,
+      this.tc,
+      this.rd,
+      this.ra,
+      this.ad,
+      this.cd,
       this.question,
       this.answer});
 

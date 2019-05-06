@@ -8,7 +8,7 @@ class RRecord {
   String name;
 
   /// The type of the record
-  int type;
+  int rType;
 
   /// The time to live of the record
   int TTL;
@@ -16,7 +16,7 @@ class RRecord {
   /// The data of the record
   String data;
 
-  RRecord({this.name, this.type, this.TTL, this.data});
+  RRecord({this.name, this.rType, this.TTL, this.data});
 
   /*
    * Json to RRecord object

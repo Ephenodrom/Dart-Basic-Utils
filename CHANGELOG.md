@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.9] - 2019-05-06
+
+* Clear and improve code.
+
 ## [1.0.8] - 2019-05-02
 
 * Improve HttpUtils to handle simple string responses.

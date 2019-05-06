@@ -155,14 +155,14 @@ class StringUtils {
   ///
   /// Checks if the given [list] contains the string [s]
   ///
-  static bool inList(String s, List<String> list, {bool ignoreCase = false}){
-    for(String l in list){
-      if(ignoreCase){
-        if(equalsIgnoreCase(s, l)){
+  static bool inList(String s, List<String> list, {bool ignoreCase = false}) {
+    for (String l in list) {
+      if (ignoreCase) {
+        if (equalsIgnoreCase(s, l)) {
           return true;
         }
-      }else{
-        if(s == l){
+      } else {
+        if (s == l) {
           return true;
         }
       }

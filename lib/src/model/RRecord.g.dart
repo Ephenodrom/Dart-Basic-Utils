@@ -9,7 +9,7 @@ part of 'RRecord.dart';
 RRecord _$RRecordFromJson(Map<String, dynamic> json) {
   return RRecord(
       name: json['name'] as String,
-      type: json['type'] as int,
+      rType: json['rType'] as int,
       TTL: json['TTL'] as int,
       data: json['data'] as String);
 }
@@ -24,7 +24,7 @@ Map<String, dynamic> _$RRecordToJson(RRecord instance) {
   }
 
   writeNotNull('name', instance.name);
-  writeNotNull('type', instance.type);
+  writeNotNull('rType', instance.rType);
   writeNotNull('TTL', instance.TTL);
   writeNotNull('data', instance.data);
   return val;

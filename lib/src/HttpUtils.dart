@@ -74,7 +74,6 @@ class HttpUtils {
         queryParameters: queryParameters,
         headers: headers,
         returnType: HttpRequestReturnType.JSON) as Map<String, dynamic>;
-    ;
   }
 
   ///
@@ -118,7 +117,6 @@ class HttpUtils {
         queryParameters: queryParameters,
         headers: headers,
         returnType: HttpRequestReturnType.JSON) as Map<String, dynamic>;
-    ;
   }
 
   ///
@@ -161,7 +159,6 @@ class HttpUtils {
         queryParameters: queryParameters,
         headers: headers,
         returnType: HttpRequestReturnType.JSON) as Map<String, dynamic>;
-    ;
   }
 
   ///

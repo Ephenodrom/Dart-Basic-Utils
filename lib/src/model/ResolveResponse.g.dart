@@ -8,17 +8,17 @@ part of 'ResolveResponse.dart';
 
 ResolveResponse _$ResolveResponseFromJson(Map<String, dynamic> json) {
   return ResolveResponse(
-      Status: json['Status'] as int,
-      TC: json['TC'] as bool,
-      RD: json['RD'] as bool,
-      RA: json['RA'] as bool,
-      AD: json['AD'] as bool,
-      CD: json['CD'] as bool,
-      question: (json['Question'] as List)
+      status: json['Status'] as int,
+      tc: json['TC'] as bool,
+      rd: json['RD'] as bool,
+      ra: json['RA'] as bool,
+      ad: json['AD'] as bool,
+      cd: json['CD'] as bool,
+      question: (json['question'] as List)
           ?.map((e) =>
               e == null ? null : Question.fromJson(e as Map<String, dynamic>))
           ?.toList(),
-      answer: (json['Answer'] as List)
+      answer: (json['answer'] as List)
           ?.map((e) =>
               e == null ? null : RRecord.fromJson(e as Map<String, dynamic>))
           ?.toList());
@@ -33,12 +33,12 @@ Map<String, dynamic> _$ResolveResponseToJson(ResolveResponse instance) {
     }
   }
 
-  writeNotNull('Status', instance.Status);
-  writeNotNull('TC', instance.TC);
-  writeNotNull('RD', instance.RD);
-  writeNotNull('RA', instance.RA);
-  writeNotNull('AD', instance.AD);
-  writeNotNull('CD', instance.CD);
+  writeNotNull('Status', instance.status);
+  writeNotNull('TC', instance.tc);
+  writeNotNull('RD', instance.rd);
+  writeNotNull('RA', instance.ra);
+  writeNotNull('AD', instance.ad);
+  writeNotNull('CD', instance.cd);
   writeNotNull('question', instance.question);
   writeNotNull('answer', instance.answer);
   return val;

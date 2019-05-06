@@ -156,7 +156,7 @@ class MathUtils {
           case LengthUnits.meter:
             return value / pow(10.0, 6);
           case LengthUnits.kilometer:
-            return value / pow(10.0,9);
+            return value / pow(10.0, 9);
         }
         break;
       case LengthUnits.millimeter:
@@ -210,25 +210,25 @@ class MathUtils {
       case LengthUnits.decimeter:
         switch (targetUnit) {
           case LengthUnits.attometer:
-            return value * pow(10.0,17);
+            return value * pow(10.0, 17);
           case LengthUnits.femtometer:
-            return value * pow(10.0,14);
+            return value * pow(10.0, 14);
           case LengthUnits.picometer:
-            return value * pow(10.0,11);
+            return value * pow(10.0, 11);
           case LengthUnits.nanometer:
-            return value * pow(10.0,8);
+            return value * pow(10.0, 8);
           case LengthUnits.micrometers:
-            return value * pow(10.0,5);
+            return value * pow(10.0, 5);
           case LengthUnits.millimeter:
-            return value * pow(10.0,2);
+            return value * pow(10.0, 2);
           case LengthUnits.centimeter:
-            return value * pow(10.0,1);
+            return value * pow(10.0, 1);
           case LengthUnits.decimeter:
             return value;
           case LengthUnits.meter:
-            return value / pow(10.0,1);
+            return value / pow(10.0, 1);
           case LengthUnits.kilometer:
-            return value / pow(10.0,4);
+            return value / pow(10.0, 4);
         }
         break;
       case LengthUnits.meter:
