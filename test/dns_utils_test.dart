@@ -7,6 +7,6 @@ void main() {
   test('Test lookupRecord', () async {
     List<RRecord> records =
         await DnsUtils.lookupRecord("google.de", RRecordType.A);
-    expect(records.elementAt(0).data, "216.58.205.227");
+    expect(records.elementAt(0).data.isEmpty, false);
   });
 }

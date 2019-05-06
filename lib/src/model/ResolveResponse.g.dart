@@ -14,11 +14,11 @@ ResolveResponse _$ResolveResponseFromJson(Map<String, dynamic> json) {
       ra: json['RA'] as bool,
       ad: json['AD'] as bool,
       cd: json['CD'] as bool,
-      question: (json['question'] as List)
+      question: (json['Question'] as List)
           ?.map((e) =>
               e == null ? null : Question.fromJson(e as Map<String, dynamic>))
           ?.toList(),
-      answer: (json['answer'] as List)
+      answer: (json['Answer'] as List)
           ?.map((e) =>
               e == null ? null : RRecord.fromJson(e as Map<String, dynamic>))
           ?.toList());

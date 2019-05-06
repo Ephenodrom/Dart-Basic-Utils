@@ -18,7 +18,9 @@ class ResolveResponse {
   bool ad;
   @JsonKey(name: "CD")
   bool cd;
+  @JsonKey(name: "Question")
   List<Question> question;
+  @JsonKey(name: "Answer")
   List<RRecord> answer;
 
   ResolveResponse(
