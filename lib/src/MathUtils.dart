@@ -282,4 +282,23 @@ class MathUtils {
     }
     return null;
   }
+
+  ///
+  /// Calculates the mixing temperature for substance A represented with [mA], [tA], [cA] and substance B
+  /// represented with [mB], [tB], [cB]
+  ///
+  /// If [cA] or [cB] is null, it is assumed that both values are equal.
+  ///
+  /// [mA] and [mB] are the masses of the substances and must be expressed in kilograms (kg)
+  /// [tA] and [tB] are the temperatur of the substances and must be expressed in celsius (C)
+  /// [cA] and [cB] are the specific heat capacity of the substances and must be expressed in joule per kilogram times Celsius (J/kg*C)
+  ///
+  static double calculateMixingTemperature(
+      double mA, double tA, double mB, double tB,
+      {double cA, double cB}) {
+    if (cA == null || cB == null) {
+      return ((mA * tA) + (mB * tB)) / (mA + mB);
+    }
+    return ((mA * cA * tA) + (mB * cB * tB)) / ((mA * cA) + (mB * cB));
+  }
 }

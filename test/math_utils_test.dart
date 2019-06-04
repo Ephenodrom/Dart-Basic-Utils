@@ -284,7 +284,8 @@ void main() {
             1000000000, LengthUnits.picometer, LengthUnits.micrometers),
         1000);
     expect(
-        MathUtils.convertUnit(1000000000, LengthUnits.picometer, LengthUnits.nanometer),
+        MathUtils.convertUnit(
+            1000000000, LengthUnits.picometer, LengthUnits.nanometer),
         1000000);
     expect(
         MathUtils.convertUnit(1, LengthUnits.picometer, LengthUnits.picometer),
@@ -379,5 +380,9 @@ void main() {
     expect(
         MathUtils.convertUnit(1, LengthUnits.attometer, LengthUnits.attometer),
         1);
+  });
+
+  test('Test calculate mixed temperature', () {
+    expect(MathUtils.calculateMixingTemperature(12, 20, 18, 40), 32);
   });
 }

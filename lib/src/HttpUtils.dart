@@ -68,8 +68,7 @@ class HttpUtils {
   ///
   static Future<Map<String, dynamic>> postForJson(String url, String body,
       {Map<String, String> queryParameters,
-      Map<String, String> headers,
-      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
+      Map<String, String> headers}) async {
     return await _post(url, body,
         queryParameters: queryParameters,
         headers: headers,
@@ -82,8 +81,7 @@ class HttpUtils {
   ///
   static Future<String> postForString(String url, String body,
       {Map<String, String> queryParameters,
-      Map<String, String> headers,
-      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
+      Map<String, String> headers}) async {
     return await _post(url, body,
         queryParameters: queryParameters,
         headers: headers,
@@ -111,8 +109,7 @@ class HttpUtils {
   ///
   static Future<Map<String, dynamic>> putForJson(String url, String body,
       {Map<String, String> queryParameters,
-      Map<String, String> headers,
-      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
+      Map<String, String> headers}) async {
     return await _put(url, body,
         queryParameters: queryParameters,
         headers: headers,
@@ -125,8 +122,7 @@ class HttpUtils {
   ///
   static Future<String> putForString(String url, String body,
       {Map<String, String> queryParameters,
-      Map<String, String> headers,
-      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
+      Map<String, String> headers}) async {
     return await _put(url, body,
         queryParameters: queryParameters,
         headers: headers,
@@ -153,8 +149,7 @@ class HttpUtils {
   ///
   static Future<Map<String, dynamic>> deleteForJson(String url,
       {Map<String, String> queryParameters,
-      Map<String, String> headers,
-      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
+      Map<String, String> headers}) async {
     return await _delete(url,
         queryParameters: queryParameters,
         headers: headers,
@@ -167,8 +162,7 @@ class HttpUtils {
   ///
   static Future<String> deleteForString(String url,
       {Map<String, String> queryParameters,
-      Map<String, String> headers,
-      HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
+      Map<String, String> headers}) async {
     return await _delete(url,
         queryParameters: queryParameters,
         headers: headers,

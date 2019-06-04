@@ -45,25 +45,87 @@ The package contains different classes. Each class contains methods that provide
 
 Helper class for String operations.
 
+```dart
+String defaultString(String str, [String defaultStr = '']);
+bool isNullOrEmpty(String s);
+bool isNotNullOrEmpty(String s);
+String camelCaseToUpperUnderscore(String s);
+String camelCaseToLowerUnderscore(String s);
+bool isLowerCase(String s);
+bool isUpperCase(String s);
+bool isAscii(String s);
+String capitalize(String s);
+String reverse(String s);
+int countChars(String s, String char, {bool caseSensitive = true});
+bool isDigit(String s);
+bool equalsIgnoreCase(String a, String b);
+bool inList(String s, List<String> list, {bool ignoreCase = false});
+```
+
 ### DomainUtils
 
 Helper class for operations on domain names.
+
+```dart
+bool isDomainName(String s);
+bool isSubTld(String tld, String subTld);
+bool isSubDomain(String s);
+bool isSubDomainOf(String sub, String domain);
+bool isCCTLD(String s);
+bool isNGTLD(String s);
+bool isTld(String s);
+bool isGTLD(String s);
+List<String> splitDomainName(String domainName);
+Domain getDomainFromUrl(String url);
+Domain parseDomain(String domainName);
+```
 
 ### EmailUtils
 
 Helper class for operations on email addresses.
 
+```dart
+bool isEmail(String s);
+EmailAddress parseEmailAddress(String s);
+```
+
 ### MathUtils
 
 Helper class for simple math operations like calculating circular area or converting length units.
+
+```dart
+double calculateCircumference(double radius);
+double calculateCircularArea(double radius);
+double calculateCircleDiameter(double radius);
+double calculateSquareArea(double a, {double b});
+double convertUnit(double value, LengthUnits sourceUnit, LengthUnits targetUnit);
+double calculateMixingTemperature(double mA, double tA, double mB, double tB,{double cA, double cB});
+```
 
 ### HttpUtils
 
 Helper class for simple http operations like sending requests.
 
+```dart
+Future<Map<String, dynamic>> getForJson(String url,{Map<String, dynamic> queryParameters,Map<String, String> headers});
+Future<String> getForString(String url,{Map<String, dynamic> queryParameters,Map<String, String> headers});
+Future<Map<String, dynamic>> postForJson(String url, String body,{Map<String, String> queryParameters,Map<String, String> headers});
+Future<String> postForString(String url, String body,{Map<String, String> queryParameters,Map<String, String> headers});
+Future<Map<String, dynamic>> putForJson(String url, String body,{Map<String, String> queryParameters,Map<String, String> headers});
+Future<String> putForString(String url, String body,{Map<String, String> queryParameters,Map<String, String> headers});
+Future<Map<String, dynamic>> deleteForJson(String url,{Map<String, String> queryParameters,Map<String, String> headers});
+Future<String> deleteForString(String url,{Map<String, String> queryParameters,Map<String, String> headers});
+Map<String, dynamic> getQueryParameterFromUrl(String url);
+String addQueryParameterToUrl(String url, Map<String, dynamic> queryParameters);
+```
+
 ### DnsUtils
 
 Helper class for lookup resource records. Uses google dns resolver api.
+
+```dart
+Future<List<RRecord>> lookupRecord(String name, RRecordType type,{bool dnssec = false});
+```
 
 ## Changelog
 
