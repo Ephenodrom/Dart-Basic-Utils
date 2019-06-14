@@ -83,4 +83,11 @@ void main() {
     expect(StringUtils.inList("A", list, ignoreCase: true), true);
     expect(StringUtils.inList("D", list, ignoreCase: true), false);
   });
+
+  test('Test isPalindrome', () {
+    expect(StringUtils.isPalindrome("aha"), true);
+    expect(StringUtils.isPalindrome("123454321"), true);
+    expect(StringUtils.isPalindrome("1a356"), false);
+    expect(StringUtils.isPalindrome("hello"), false);
+  });
 }

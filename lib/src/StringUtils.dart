@@ -169,4 +169,17 @@ class StringUtils {
     }
     return false;
   }
+
+  ///
+  /// Checks if the given string [s] is a palindrome
+  /// Example :
+  /// aha => true
+  /// hello => false
+  ///
+  static bool isPalindrome(String s) {
+    for (int i = 0; i < s.length / 2; i++) {
+      if (s[i] != s[s.length - 1 - i]) return false;
+    }
+    return true;
+  }
 }

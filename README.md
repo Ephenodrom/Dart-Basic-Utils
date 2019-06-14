@@ -14,6 +14,7 @@ A dart package for many helper methods fitting different situations.
    * [MathUtils](#mathutils)
    * [HttpUtils](#httputils)
    * [DnsUtils](#dnsutils)
+   * [SortUtils](#sortutils)
 4. [Changelog](#changelog)
 5. [Support](#support)
 6. [Copyright and license](#copyright-and-license)
@@ -60,6 +61,7 @@ int countChars(String s, String char, {bool caseSensitive = true});
 bool isDigit(String s);
 bool equalsIgnoreCase(String a, String b);
 bool inList(String s, List<String> list, {bool ignoreCase = false});
+bool isPalindrome(String s);
 ```
 
 ### DomainUtils
@@ -100,6 +102,7 @@ double calculateCircleDiameter(double radius);
 double calculateSquareArea(double a, {double b});
 double convertUnit(double value, LengthUnits sourceUnit, LengthUnits targetUnit);
 double calculateMixingTemperature(double mA, double tA, double mB, double tB,{double cA, double cB});
+num mean(List<num> l);
 ```
 
 ### HttpUtils
@@ -125,6 +128,16 @@ Helper class for lookup resource records. Uses google dns resolver api.
 
 ```dart
 Future<List<RRecord>> lookupRecord(String name, RRecordType type,{bool dnssec = false});
+```
+
+### SortUtils
+
+Helper class for sorting lists. Implementation of different sorting algorithms.
+
+```dart
+List quickSort(List list);
+List bubbleSort(List list);
+List heapSort(List list);
 ```
 
 ## Changelog

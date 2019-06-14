@@ -385,4 +385,8 @@ void main() {
   test('Test calculate mixed temperature', () {
     expect(MathUtils.calculateMixingTemperature(12, 20, 18, 40), 32);
   });
+
+  test('Test calculate mean', () {
+    expect(MathUtils.mean([1, 2, 3, 4]), 2.5);
+  });
 }

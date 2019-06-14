@@ -301,4 +301,9 @@ class MathUtils {
     }
     return ((mA * cA * tA) + (mB * cB * tB)) / ((mA * cA) + (mB * cB));
   }
+
+  ///
+  /// Calculates the arithmetic average of the given list of numbers
+  ///
+  static num mean(List<num> l) => l.reduce((num p, num n) => p + n) / l.length;
 }

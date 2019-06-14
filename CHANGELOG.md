@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.0] - 2019-06-14
+
+* Add SortUtils
+* Improve MathUtils
+
 ## [1.1.1] - 2019-05-06
 
 * Improve DnsUtils

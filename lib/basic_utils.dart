@@ -25,3 +25,4 @@ part "src/StringUtils.dart";
 part "src/MathUtils.dart";
 part "src/HttpUtils.dart";
 part "src/DnsUtils.dart";
+part "src/SortUtils.dart";
