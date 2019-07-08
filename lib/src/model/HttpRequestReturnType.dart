@@ -1,4 +1,1 @@
-enum HttpRequestReturnType {
-  JSON,
-  STRING,
-}
+enum HttpRequestReturnType { JSON, STRING, FULLRESPONSE }

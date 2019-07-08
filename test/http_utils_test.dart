@@ -84,4 +84,18 @@ void main() {
     final item = await HttpUtils.putForJson("api.com/item", "{'id': 124}");
     expect(item["id"], 124);
   });
+
+  test("Test response headers", () async {
+    Map<String, String> headers = {
+      "authorization":
+          "ShelfAuthJwtSession eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV..."
+    };
+    HttpUtils.client = MockClient((request) async {
+      final mapJson = {'id': 123};
+      return Response(json.encode(mapJson), 200, headers: headers);
+    });
+    Response response = await HttpUtils.getForFullResponse("api.com/item");
+    expect(response.headers["authorization"],
+        "ShelfAuthJwtSession eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV...");
+  });
 }

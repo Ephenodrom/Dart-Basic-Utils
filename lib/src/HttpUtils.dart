@@ -23,6 +23,19 @@ class HttpUtils {
 
   ///
   /// Sends a HTTP GET request to the given [url] with the given [queryParameters] and [headers].
+  /// Returns the full [Response] object.
+  ///
+  static Future<Response> getForFullResponse(String url,
+      {Map<String, dynamic> queryParameters,
+      Map<String, String> headers}) async {
+    return await _get(url,
+        queryParameters: queryParameters,
+        headers: headers,
+        returnType: HttpRequestReturnType.FULLRESPONSE) as Response;
+  }
+
+  ///
+  /// Sends a HTTP GET request to the given [url] with the given [queryParameters] and [headers].
   /// Returns the response as a map using json.decode.
   ///
   static Future<Map<String, dynamic>> getForJson(String url,
@@ -60,6 +73,19 @@ class HttpUtils {
     var response = await client.post(finalUrl, body: body, headers: headers);
     Logger(TAG).finest("Response body: " + response.body);
     return _handleResponse(response, returnType);
+  }
+
+  ///
+  /// Sends a HTTP POST request to the given [url] with the given [body], [queryParameters] and [headers].
+  /// Returns the full [Response] object.
+  ///
+  static Future<Response> postForFullResponse(String url, String body,
+      {Map<String, String> queryParameters,
+      Map<String, String> headers}) async {
+    return await _post(url, body,
+        queryParameters: queryParameters,
+        headers: headers,
+        returnType: HttpRequestReturnType.FULLRESPONSE) as Response;
   }
 
   ///
@@ -105,6 +131,19 @@ class HttpUtils {
 
   ///
   /// Sends a HTTP PUT request to the given [url] with the given [body], [queryParameters] and [headers].
+  /// Returns the full [Response] object.
+  ///
+  static Future<Response> putForFullResponse(String url, String body,
+      {Map<String, String> queryParameters,
+      Map<String, String> headers}) async {
+    return await _put(url, body,
+        queryParameters: queryParameters,
+        headers: headers,
+        returnType: HttpRequestReturnType.FULLRESPONSE) as Response;
+  }
+
+  ///
+  /// Sends a HTTP PUT request to the given [url] with the given [body], [queryParameters] and [headers].
   /// Returns the response as a map using json.decode.
   ///
   static Future<Map<String, dynamic>> putForJson(String url, String body,
@@ -145,6 +184,19 @@ class HttpUtils {
 
   ///
   /// Sends a HTTP DELETE request to the given [url] with the given [queryParameters] and [headers].
+  /// Returns the full [Response] object.
+  ///
+  static Future<Response> deleteForFullResponse(String url,
+      {Map<String, String> queryParameters,
+      Map<String, String> headers}) async {
+    return await _delete(url,
+        queryParameters: queryParameters,
+        headers: headers,
+        returnType: HttpRequestReturnType.FULLRESPONSE) as Response;
+  }
+
+  ///
+  /// Sends a HTTP DELETE request to the given [url] with the given [queryParameters] and [headers].
   /// Returns the response as a map using json.decode.
   ///
   static Future<Map<String, dynamic>> deleteForJson(String url,
@@ -180,6 +232,8 @@ class HttpUtils {
           return json.decode(response.body);
         case HttpRequestReturnType.STRING:
           return response.body;
+        case HttpRequestReturnType.FULLRESPONSE:
+          return response;
       }
     } else {
       throw HttpResponseException(

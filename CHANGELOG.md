@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.3.0] - 2019-07-08
+
+* Improve HttpUtils
+
 ## [1.2.0] - 2019-06-14
 
 * Add SortUtils
