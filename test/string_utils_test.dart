@@ -3,8 +3,8 @@ import "package:test/test.dart";
 
 void main() {
   test('Test defaultString', () {
-    expect(StringUtils.defaultString("Hello", "World"), "Hello");
-    expect(StringUtils.defaultString(null, "World"), "World");
+    expect(StringUtils.defaultString("Hello", defaultStr: "World"), "Hello");
+    expect(StringUtils.defaultString(null, defaultStr: "World"), "World");
   });
 
   test('Test camelCaseToUpperUnderscore', () {

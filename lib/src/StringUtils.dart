@@ -9,7 +9,7 @@ class StringUtils {
   ///
   /// Returns the given string or the default string if the given string is null
   ///
-  static String defaultString(String str, [String defaultStr = '']) {
+  static String defaultString(String str, {String defaultStr = ''}) {
     return str == null ? defaultStr : str;
   }
 

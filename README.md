@@ -47,7 +47,7 @@ The package contains different classes. Each class contains methods that provide
 Helper class for String operations.
 
 ```dart
-String defaultString(String str, [String defaultStr = '']);
+String defaultString(String str, {String defaultStr = ''});
 bool isNullOrEmpty(String s);
 bool isNotNullOrEmpty(String s);
 String camelCaseToUpperUnderscore(String s);
@@ -62,7 +62,7 @@ bool isDigit(String s);
 bool equalsIgnoreCase(String a, String b);
 bool inList(String s, List<String> list, {bool ignoreCase = false});
 bool isPalindrome(String s);
-String hidePartial(String s,{int begin = 0, int end, String replace = "*"});
+String hidePartial(String s, {int begin = 0, int end, String replace = "*"});
 ```
 
 ### DomainUtils
