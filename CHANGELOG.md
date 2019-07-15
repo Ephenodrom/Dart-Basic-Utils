@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.4.0] - 2019-07-15
+
+* Improve StringUtils
+
 ## [1.3.0] - 2019-07-08
 
 * Improve HttpUtils

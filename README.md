@@ -27,7 +27,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^1.3.0
+  basic_utils: ^1.4.0
 ```
 
 ## Import
@@ -62,6 +62,7 @@ bool isDigit(String s);
 bool equalsIgnoreCase(String a, String b);
 bool inList(String s, List<String> list, {bool ignoreCase = false});
 bool isPalindrome(String s);
+String hidePartial(String s,{int begin = 0, int end, String replace = "*"});
 ```
 
 ### DomainUtils

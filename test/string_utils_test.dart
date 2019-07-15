@@ -90,4 +90,13 @@ void main() {
     expect(StringUtils.isPalindrome("1a356"), false);
     expect(StringUtils.isPalindrome("hello"), false);
   });
+
+  test('Test hidePartial', () {
+    expect(StringUtils.hidePartial("1234567890"), "*****67890");
+    expect(
+        StringUtils.hidePartial("1234567890", begin: 2, end: 6), "12****7890");
+    expect(StringUtils.hidePartial("1234567890", begin: 1), "1****67890");
+    expect(
+        StringUtils.hidePartial("1234567890", begin: 2, end: 14), "12********");
+  });
 }
