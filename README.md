@@ -27,7 +27,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^1.4.0
+  basic_utils: ^1.5.0
 ```
 
 ## Import
@@ -63,6 +63,7 @@ bool equalsIgnoreCase(String a, String b);
 bool inList(String s, List<String> list, {bool ignoreCase = false});
 bool isPalindrome(String s);
 String hidePartial(String s, {int begin = 0, int end, String replace = "*"});
+String addCharAtPosition(String s, String char, int position,{bool repeat = false});
 ```
 
 ### DomainUtils
@@ -111,18 +112,18 @@ num mean(List<num> l);
 Helper class for simple http operations like sending requests.
 
 ```dart
-Future<Map<Response> getForFullResponse(String url,{Map<String, dynamic> queryParameters,Map<String, String> headers});
-Future<Map<String, dynamic>> getForJson(String url,{Map<String, dynamic> queryParameters,Map<String, String> headers});
-Future<String> getForString(String url,{Map<String, dynamic> queryParameters,Map<String, String> headers});
-Future<Map<Response> postForFullResponse(String url, String body,{Map<String, String> queryParameters,Map<String, String> headers});
-Future<Map<String, dynamic>> postForJson(String url, String body,{Map<String, String> queryParameters,Map<String, String> headers});
-Future<String> postForString(String url, String body,{Map<String, String> queryParameters,Map<String, String> headers});
-Future<Response> putForFullResponse(String url, String body,{Map<String, String> queryParameters,Map<String, String> headers});
-Future<Map<String, dynamic>> putForJson(String url, String body,{Map<String, String> queryParameters,Map<String, String> headers});
-Future<String> putForString(String url, String body,{Map<String, String> queryParameters,Map<String, String> headers});
-Future<Response deleteForFullResponse(String url,{Map<String, String> queryParameters,Map<String, String> headers});
-Future<Map<String, dynamic>> deleteForJson(String url,{Map<String, String> queryParameters,Map<String, String> headers});
-Future<String> deleteForString(String url,{Map<String, String> queryParameters,Map<String, String> headers});
+Future<Map<Response> getForFullResponse(String url, {Map<String, dynamic> queryParameters, Map<String, String> headers});
+Future<Map<String, dynamic>> getForJson(String url, {Map<String, dynamic> queryParameters, Map<String, String> headers});
+Future<String> getForString(String url, {Map<String, dynamic> queryParameters, Map<String, String> headers});
+Future<Map<Response> postForFullResponse(String url, String body, {Map<String, String> queryParameters, Map<String, String> headers});
+Future<Map<String, dynamic>> postForJson(String url, String body, {Map<String, String> queryParameters, Map<String, String> headers});
+Future<String> postForString(String url, String body, {Map<String, String> queryParameters, Map<String, String> headers});
+Future<Response> putForFullResponse(String url, String body, {Map<String, String> queryParameters, Map<String, String> headers});
+Future<Map<String, dynamic>> putForJson(String url, String body, {Map<String, String> queryParameters, Map<String, String> headers});
+Future<String> putForString(String url, String body, {Map<String, String> queryParameters, Map<String, String> headers});
+Future<Response deleteForFullResponse(String url, {Map<String, String> queryParameters, Map<String, String> headers});
+Future<Map<String, dynamic>> deleteForJson(String url, {Map<String, String> queryParameters, Map<String, String> headers});
+Future<String> deleteForString(String url, {Map<String, String> queryParameters, Map<String, String> headers});
 Map<String, dynamic> getQueryParameterFromUrl(String url);
 String addQueryParameterToUrl(String url, Map<String, dynamic> queryParameters);
 ```

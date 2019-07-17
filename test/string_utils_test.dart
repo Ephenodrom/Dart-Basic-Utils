@@ -99,4 +99,11 @@ void main() {
     expect(
         StringUtils.hidePartial("1234567890", begin: 2, end: 14), "12********");
   });
+
+  test('Test addCharAtPosition', () {
+    expect(StringUtils.addCharAtPosition("1234567890", "-", 3), "123-4567890");
+    expect(StringUtils.addCharAtPosition("1234567890", "-", 3, repeat: true),
+        "123-456-789-0");
+    expect(StringUtils.addCharAtPosition("1234567890", "-", 12), "1234567890");
+  });
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.5.0] - 2019-07-17
+
+* Improve StringUtils
+
 ## [1.4.0] - 2019-07-15
 
 * Improve StringUtils

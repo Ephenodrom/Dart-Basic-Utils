@@ -222,4 +222,39 @@ class StringUtils {
     }
     return buffer.toString();
   }
+
+  ///
+  /// Add a [char] at a [position] with the given String [s].
+  ///
+  /// The boolean [repeat] defines whether to add the [char] at every [position].
+  /// If [position] is greater than the length of [s], it will return [s].
+  /// If [repeat] is true and [position] is 0, it will return [s].
+  ///
+  /// Example :
+  /// 1234567890 , "-", 3 => 123-4567890
+  /// 1234567890 , "-", 3, true => 123-456-789-0
+  ///
+  static String addCharAtPosition(String s, String char, int position,
+      {bool repeat = false}) {
+    if (!repeat) {
+      if (s.length < position) {
+        return s;
+      }
+      String before = s.substring(0, position);
+      String after = s.substring(position, s.length);
+      return before + char + after;
+    } else {
+      if (position == 0) {
+        return s;
+      }
+      StringBuffer buffer = new StringBuffer();
+      for (int i = 0; i < s.length; i++) {
+        if (i != 0 && i % position == 0) {
+          buffer.write(char);
+        }
+        buffer.write(String.fromCharCode(s.runes.elementAt(i)));
+      }
+      return buffer.toString();
+    }
+  }
 }
