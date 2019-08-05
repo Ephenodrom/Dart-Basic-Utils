@@ -45,7 +45,7 @@ class StringUtils {
   }
 
   ///
-  /// Transfers the given String [s] from camcelCase to lpperCaseUnderscore
+  /// Transfers the given String [s] from camcelCase to lowerCaseUnderscore
   /// Example : helloWorld => hello_world
   ///
   static String camelCaseToLowerUnderscore(String s) {
