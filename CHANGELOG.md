@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.5.1] - 2019-08-05
+
+* Fix "Health suggestions" from pub.dev
+
 ## [1.5.0] - 2019-07-17
 
 * Improve StringUtils

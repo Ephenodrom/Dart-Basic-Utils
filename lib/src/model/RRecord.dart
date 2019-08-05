@@ -11,12 +11,13 @@ class RRecord {
   int rType;
 
   /// The time to live of the record
-  int TTL;
+  @JsonKey(name: "TTL")
+  int ttl;
 
   /// The data of the record
   String data;
 
-  RRecord({this.name, this.rType, this.TTL, this.data});
+  RRecord({this.name, this.rType, this.ttl, this.data});
 
   /*
    * Json to RRecord object

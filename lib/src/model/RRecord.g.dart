@@ -10,7 +10,7 @@ RRecord _$RRecordFromJson(Map<String, dynamic> json) {
   return RRecord(
       name: json['name'] as String,
       rType: json['rType'] as int,
-      TTL: json['TTL'] as int,
+      ttl: json['TTL'] as int,
       data: json['data'] as String);
 }
 
@@ -25,7 +25,7 @@ Map<String, dynamic> _$RRecordToJson(RRecord instance) {
 
   writeNotNull('name', instance.name);
   writeNotNull('rType', instance.rType);
-  writeNotNull('TTL', instance.TTL);
+  writeNotNull('TTL', instance.ttl);
   writeNotNull('data', instance.data);
   return val;
 }
