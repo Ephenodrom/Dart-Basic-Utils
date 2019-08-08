@@ -1,4 +1,4 @@
-part of basic_utils;
+import 'package:basic_utils/basic_utils.dart';
 
 ///
 /// Helper class for dns record lookups

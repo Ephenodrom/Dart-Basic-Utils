@@ -1,5 +1,3 @@
-part of basic_utils;
-
 ///
 /// Helper class for dns record lookups
 ///

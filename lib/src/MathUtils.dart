@@ -1,4 +1,6 @@
-part of basic_utils;
+import 'dart:math';
+
+import 'package:basic_utils/src/model/LengthUnits.dart';
 
 ///
 /// Helper class for common math operations

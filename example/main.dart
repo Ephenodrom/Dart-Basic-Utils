@@ -1,6 +1,4 @@
 import 'package:basic_utils/basic_utils.dart';
-import 'package:basic_utils/src/model/Domain.dart';
-import 'package:basic_utils/src/model/LengthUnits.dart';
 
 void main() async {
   // StringUtils

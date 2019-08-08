@@ -1,4 +1,4 @@
-part of basic_utils;
+import 'dart:convert';
 
 ///
 /// Helper class for String operations

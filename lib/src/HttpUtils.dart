@@ -1,10 +1,15 @@
-part of basic_utils;
+import 'dart:convert';
+
+import 'package:basic_utils/src/model/HttpRequestReturnType.dart';
+import 'package:basic_utils/src/model/exception/HttpResponseException.dart';
+import 'package:http/http.dart';
+import 'package:logging/logging.dart';
 
 ///
 /// Helper class for http requests
 ///
 class HttpUtils {
-  static http.Client client = http.Client();
+  static Client client = Client();
   static const String TAG = "HttpUtils";
 
   ///
@@ -225,7 +230,7 @@ class HttpUtils {
   /// Basic function which handle response and decode JSON. Throws [HttpClientException] if status code not 200-290
   ///
   static dynamic _handleResponse(
-      http.Response response, HttpRequestReturnType returnType) {
+      Response response, HttpRequestReturnType returnType) {
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       switch (returnType) {
         case HttpRequestReturnType.JSON:
@@ -237,8 +242,10 @@ class HttpUtils {
       }
     } else {
       throw HttpResponseException(
-          "Response error ...", response.statusCode.toString(),
-          body: response.body, headers: response.headers);
+          "Error: Received status code ${response.statusCode.toString()}",
+          response.statusCode.toString(),
+          body: response.body,
+          headers: response.headers);
     }
   }
 

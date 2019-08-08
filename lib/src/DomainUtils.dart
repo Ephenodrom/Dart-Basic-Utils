@@ -1,4 +1,9 @@
-part of basic_utils;
+import 'package:basic_utils/basic_utils.dart';
+import 'package:basic_utils/src/model/CountryCodeList.dart';
+import 'package:basic_utils/src/model/Domain.dart';
+import 'package:basic_utils/src/model/GtldList.dart';
+import 'package:basic_utils/src/model/IdnCountryCodeList.dart';
+import 'package:basic_utils/src/model/PublicSuffix.dart';
 
 ///
 /// Helper class for domain names

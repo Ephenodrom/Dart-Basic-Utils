@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.6.0] - 2019-08-08
+
+* Switch from import files to export files
+* Improve error handling in HttpUtils
+
 ## [1.5.1] - 2019-08-05
 
 * Fix "Health suggestions" from pub.dev
