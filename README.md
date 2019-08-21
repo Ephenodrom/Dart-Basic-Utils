@@ -3,11 +3,11 @@
 A dart package for many helper methods fitting different situations.
 
 ## Table of Contents
-
-1. [Install](#install)
+1. [Preamble](#preamble)
+2. [Install](#install)
    * [pubspec.yaml](#pubspec.yaml)
-2. [Import](#import)
-3. [Util Classes](#util-classes)
+3. [Import](#import)
+4. [Util Classes](#util-classes)
    * [StringUtils](#stringutils)
    * [DomainUtils](#domainutils)
    * [EmailUtils](#emailutils)
@@ -15,9 +15,13 @@ A dart package for many helper methods fitting different situations.
    * [HttpUtils](#httputils)
    * [DnsUtils](#dnsutils)
    * [SortUtils](#sortutils)
-4. [Changelog](#changelog)
-5. [Support](#support)
-6. [Copyright and license](#copyright-and-license)
+5. [Changelog](#changelog)
+6. [Support](#support)
+7. [Copyright and license](#copyright-and-license)
+
+## Preamble
+
+This package is also part of the [EZ Flutter Framework](https://ez-flutter.de). 
 
 ## Install
 
