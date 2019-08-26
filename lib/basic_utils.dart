@@ -20,3 +20,4 @@ export "src/MathUtils.dart";
 export "src/HttpUtils.dart";
 export "src/DnsUtils.dart";
 export "src/SortUtils.dart";
+export "src/ColorUtils.dart";

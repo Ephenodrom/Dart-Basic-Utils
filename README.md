@@ -15,6 +15,7 @@ A dart package for many helper methods fitting different situations.
    * [HttpUtils](#httputils)
    * [DnsUtils](#dnsutils)
    * [SortUtils](#sortutils)
+   * [ColorUtils](#colorutils)
 4. [Changelog](#changelog)
 5. [Support](#support)
 6. [Copyright and license](#copyright-and-license)
@@ -27,7 +28,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^1.6.0
+  basic_utils: ^1.7.0
 ```
 
 ## Import
@@ -144,6 +145,14 @@ Helper class for sorting lists. Implementation of different sorting algorithms.
 List quickSort(List list);
 List bubbleSort(List list);
 List heapSort(List list);
+```
+
+### ColorUtils
+
+Helper class for color operations.
+
+```dart
+int hexToInt(String hex);
 ```
 
 ## Changelog

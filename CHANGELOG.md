@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.7.0] - 2019-08-26
+
+* Add ColorUtils
+* Add unit tests
+
 ## [1.6.0] - 2019-08-08
 
 * Switch from import files to export files
