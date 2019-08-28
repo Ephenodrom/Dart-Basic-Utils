@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.8.0] - 2019-08-28
+
+* Add new ColorUtils
+* Add new unit tests
+
 ## [1.7.0] - 2019-08-26
 
 * Add ColorUtils

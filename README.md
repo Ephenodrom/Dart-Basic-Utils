@@ -32,7 +32,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^1.7.0
+  basic_utils: ^1.8.0
 ```
 
 ## Import
@@ -157,6 +157,8 @@ Helper class for color operations.
 
 ```dart
 int hexToInt(String hex);
+String shadeColor(String hex, int percent);
+String fillUpHex(String hex);
 ```
 
 ## Changelog
