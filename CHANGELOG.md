@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.8.1] - 2019-08-28
+
+* Fix minor bug
+
 ## [1.8.0] - 2019-08-28
 
 * Add new ColorUtils

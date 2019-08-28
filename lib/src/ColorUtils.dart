@@ -25,7 +25,7 @@ class ColorUtils {
   /// Will add a # to the [hex] string if it is missing.
   ///
   ///
-  static String shadeColor(String hex, int percent) {
+  static String shadeColor(String hex, double percent) {
     hex = fillUpHex(hex);
 
     if (!hex.startsWith("#")) {
@@ -35,10 +35,12 @@ class ColorUtils {
     int R = int.parse(hex.substring(1, 3), radix: 16);
     int G = int.parse(hex.substring(3, 5), radix: 16);
     int B = int.parse(hex.substring(5, 7), radix: 16);
+    print("$R $G $B");
 
     R = (R * (100 + percent) / 100).round();
     G = (G * (100 + percent) / 100).round();
     B = (B * (100 + percent) / 100).round();
+    print("$R $G $B");
 
     if (R > 255) {
       R = 255;
@@ -74,13 +76,9 @@ class ColorUtils {
   ///
   /// Fills up the given 3 char [hex] string to 6 char hex string.
   ///
-  /// Returns null if the given [hex] string is not 3 chars long.
   /// Will add a # to the [hex] string if it is missing.
   ///
   static String fillUpHex(String hex) {
-    if (hex.length != 3) {
-      return null;
-    }
     if (!hex.startsWith("#")) {
       hex = "#" + hex;
     }

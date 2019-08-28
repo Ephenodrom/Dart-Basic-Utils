@@ -11,8 +11,7 @@ void main() {
   test('Test shade hex', () async {
     expect(ColorUtils.shadeColor("#6699CC", 20), "#7ab8f5");
     expect(ColorUtils.shadeColor("#69C", -50), "#334d66");
-    //expect(ColorUtils.shadeColor("fb1ef8", 40), "");
-    //expect(ColorUtils.shadeColor("fb1ef8", -40), "");
+    expect(ColorUtils.shadeColor("#9c27b0", -32.1), "#6a1a78");
   });
 
   test('Test fill up hex', () async {
