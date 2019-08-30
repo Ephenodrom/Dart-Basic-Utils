@@ -27,9 +27,15 @@ class DateUtils {
       return _parseNext(s, now);
     } else if (s.startsWith("last")) {
       return _parseLast(s, now);
-    }
+    } else if (s.startsWith("yesterday")){
+      return _parseYesterdayTomorrow(s, now, tomorrow: true);
+    } 
     return DateTime.now();
   }
+
+  static Datetime _parseYesterdayTomorrow(String s, DateTime now, {bool tomorrow = false}){
+    return null;
+  } 
 
   static DateTime _parseAddRem(String s, DateTime now, {bool rem = false}) {
     // Remove the +
