@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.8.2] - 2019-08-30
+
+* Fix minor bug
+* Update dependecies
+
 ## [1.8.1] - 2019-08-28
 
 * Fix minor bug

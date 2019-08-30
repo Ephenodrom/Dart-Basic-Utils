@@ -35,12 +35,10 @@ class ColorUtils {
     int R = int.parse(hex.substring(1, 3), radix: 16);
     int G = int.parse(hex.substring(3, 5), radix: 16);
     int B = int.parse(hex.substring(5, 7), radix: 16);
-    print("$R $G $B");
 
     R = (R * (100 + percent) / 100).round();
     G = (G * (100 + percent) / 100).round();
     B = (B * (100 + percent) / 100).round();
-    print("$R $G $B");
 
     if (R > 255) {
       R = 255;
