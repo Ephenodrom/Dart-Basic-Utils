@@ -1,6 +1,6 @@
 ///
 /// Helper class for date operations.
-///
+/// 
 class DateUtils {
   static RegExp REGEX_YEAR = RegExp("^(y|year|years)\$");
   static RegExp REGEX_MONTH = RegExp("^(m|month|months)\$");
@@ -9,6 +9,9 @@ class DateUtils {
   static RegExp REGEX_HOUR = RegExp("^(h|hour|hours)\$");
   static RegExp REGEX_MINUTES = RegExp("^(m|minute|minutes)\$");
   static RegExp REGEX_SECONDS = RegExp("^(s|second|seconds)\$");
+  static RegExp REGEX_MONDAY = RegExp("^(mo|Mo|monday|Monday)\$");
+  static RegExp REGEX_TUESDAY = RegExp("^(tu|Tu|tuesday|Tuesday)\$");
+  static RegExp REGEX_WEDNESDAY = RegExp("^(we|We|wednesday|Wednesday)\$");
 
   ///
   /// Converts English textual datetime description to a [DateTime] object.
