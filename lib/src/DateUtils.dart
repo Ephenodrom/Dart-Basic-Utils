@@ -28,13 +28,26 @@ class DateUtils {
     } else if (s.startsWith("last")) {
       return _parseLast(s, now);
     } else if (s.startsWith("yesterday")){
+      return _parseYesterdayTomorrow(s, now);
+    } else if (s.startsWith("tomorrow")){
       return _parseYesterdayTomorrow(s, now, tomorrow: true);
     } 
     return DateTime.now();
   }
 
-  static Datetime _parseYesterdayTomorrow(String s, DateTime now, {bool tomorrow = false}){
-    return null;
+  static DateTime _parseYesterdayTomorrow(String s, DateTime now, {bool tomorrow = false}){
+    DateTime time;
+    if(tomorrow){
+      time = now.add(Duration(days: 1));
+    }else{
+      time = now.subtract(Duration(days: 1));
+    }
+    if (s.contains("at")) {
+      List<String> list = s.split("at");
+      String setTime = list.elementAt(1).trim();
+      time = _parseSetTime(setTime, time);
+    }
+    return time;
   } 
 
   static DateTime _parseAddRem(String s, DateTime now, {bool rem = false}) {
@@ -120,5 +133,31 @@ class DateUtils {
 
   static DateTime _parseLast(String s, DateTime now) {
     return null;
+  }
+
+  static DateTime _parseSetTime(String setTime, DateTime time){
+    if (setTime.contains(":")) {
+        DateTime hhmmss = DateTime.parse("1970-01-01 " + setTime);
+        return DateTime(time.year, time.month, time.day, hhmmss.hour,
+            hhmmss.minute, hhmmss.second);
+      } else {
+        List<String> list = setTime.split(" ");
+        for (int i = 1; i < list.length; i += 2) {
+          String value = list.elementAt(i - 1);
+          int valueAsInt = int.parse(value);
+          String type = list.elementAt(i);
+          if (REGEX_HOUR.hasMatch(type)) {
+            time = DateTime(time.year, time.month, time.day, valueAsInt,
+                time.minute, time.second);
+          } else if (REGEX_MINUTES.hasMatch(type)) {
+            time = DateTime(
+                time.year, time.month, time.day, time.hour, valueAsInt, time.second);
+          } else if (REGEX_SECONDS.hasMatch(type)) {
+            time = DateTime(
+                time.year, time.month, time.day, time.hour, time.minute, valueAsInt);
+          }
+        }
+        return time;
+      }
   }
 }

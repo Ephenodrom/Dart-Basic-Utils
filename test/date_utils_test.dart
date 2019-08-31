@@ -73,6 +73,24 @@ void main() {
     expect(actual.hour, 0);
     expect(actual.minute, 0);
     expect(actual.second, 0);
+
+    time = DateTime.parse("2019-07-11 13:27:00");
+    actual = DateUtils.stringToDateTime("tomorrow", time: time);
+    expect(actual.year, 2019);
+    expect(actual.month, 7);
+    expect(actual.day, 12);
+    expect(actual.hour, 13);
+    expect(actual.minute, 27);
+    expect(actual.second, 0);
+
+    time = DateTime.parse("2019-07-11 13:27:00");
+    actual = DateUtils.stringToDateTime("tomorrow at 00:00:00", time: time);
+    expect(actual.year, 2019);
+    expect(actual.month, 7);
+    expect(actual.day, 12);
+    expect(actual.hour, 0);
+    expect(actual.minute, 0);
+    expect(actual.second, 0);
   });
 
 /*
