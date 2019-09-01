@@ -14,7 +14,7 @@ class DateUtils {
   static RegExp REGEX_WEDNESDAY = RegExp("^(wed|Wed|wednesday|Wednesday)\$");
   static RegExp REGEX_THURSDAY = RegExp("^(thu|Thu|thursday|Thursday)\$");
   static RegExp REGEX_FRIDAY = RegExp("^(fri|Fri|friday|Friday)\$");
-  statix RegExp REGEX_SATURDAY = RegExp("^(sat|Sat|saturday|Saturday)\$");
+  static RegExp REGEX_SATURDAY = RegExp("^(sat|Sat|saturday|Saturday)\$");
   static RegExp REGEX_SUNDAY = RegExp("^(sun|Sun|sunday|Sunday)\$");
 
   ///
