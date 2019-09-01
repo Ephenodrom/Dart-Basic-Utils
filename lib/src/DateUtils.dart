@@ -9,9 +9,13 @@ class DateUtils {
   static RegExp REGEX_HOUR = RegExp("^(h|hour|hours)\$");
   static RegExp REGEX_MINUTES = RegExp("^(m|minute|minutes)\$");
   static RegExp REGEX_SECONDS = RegExp("^(s|second|seconds)\$");
-  static RegExp REGEX_MONDAY = RegExp("^(mo|Mo|monday|Monday)\$");
-  static RegExp REGEX_TUESDAY = RegExp("^(tu|Tu|tuesday|Tuesday)\$");
-  static RegExp REGEX_WEDNESDAY = RegExp("^(we|We|wednesday|Wednesday)\$");
+  static RegExp REGEX_MONDAY = RegExp("^(mon|Mon|monday|Monday)\$");
+  static RegExp REGEX_TUESDAY = RegExp("^(tue|Tue|tuesday|Tuesday)\$");
+  static RegExp REGEX_WEDNESDAY = RegExp("^(wed|Wed|wednesday|Wednesday)\$");
+  static RegExp REGEX_THURSDAY = RegExp("^(thu|Thu|thursday|Thursday)\$");
+  static RegExp REGEX_FRIDAY = RegExp("^(fri|Fri|friday|Friday)\$");
+  statix RegExp REGEX_SATURDAY = RegExp("^(sat|Sat|saturday|Saturday)\$");
+  static RegExp REGEX_SUNDAY = RegExp("^(sun|Sun|sunday|Sunday)\$");
 
   ///
   /// Converts English textual datetime description to a [DateTime] object.
