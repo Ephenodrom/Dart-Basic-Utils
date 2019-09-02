@@ -17,6 +17,7 @@ class DateUtils {
   static String regexMay = "may|May";
   static String regexJune = "june|June";
   static String regexJuly = "july|July";
+  static String regexAugust = "aug|Aug|august|August";
   static String regexSeptember = "sep|Sep|september|September";
   static String regexOctober = "oct|Oct|october|October";
   static String regexNovember = "nov|Nov|november|November";
@@ -35,12 +36,27 @@ class DateUtils {
   static RegExp REGEX_FRIDAY = RegExp("^($regexFriday)\$");
   static RegExp REGEX_SATURDAY = RegExp("^($regexSaturday)\$");
   static RegExp REGEX_SUNDAY = RegExp("^($regexSunday)\$");
+  static RegExp REGEX_JANUARY = RegExp("^($regexJanuary)\$");
+  static RegExp REGEX_FEBRUARY = RegExp("^($regexFebruary)\$");
+  static RegExp REGEX_MARCH = RegExp("^($regexMarch)\$");
+  static RegExp REGEX_APRIL = RegExp("^($regexApril)\$");
+  static RegExp REGEX_MAY = RegExp("^($regexMay)\$");
+  static RegExp REGEX_JUNE = RegExp("^($regexJune)\$");
+  static RegExp REGEX_JULY = RegExp("^($regexJuly)\$");
+  static RegExp REGEX_AUGUST = RegExp("^($regexAugust)\$");
+  static RegExp REGEX_SEPTEMBER = RegExp("^($regexSeptember)\$");
+  static RegExp REGEX_OCTOBER = RegExp("^($regexOctober)\$");
+  static RegExp REGEX_NOVEMBER = RegExp("^($regexNovember)\$");
+  static RegExp REGEX_DECEMBER = RegExp("^($regexDecember)\$");
+
   static RegExp REGEX_AM_PM = RegExp(
-      "^(\\d\\s(pm|am)|\\d{1,2}(\\.|:)\\d{2}\\s(pm|am)|\\d{1,2}(\\.|:)\\d{2}(\\.|:)\\d{2}\\s(pm|am))\$");
+      "^(\\d{1,2}\\s(pm|am)|\\d{1,2}(\\.|:)\\d{2}\\s(pm|am)|\\d{1,2}(\\.|:)\\d{2}(\\.|:)\\d{2}\\s(pm|am))\$");
   static RegExp REGEX_WEEKDAY = RegExp(
       "^($regexMonday|$regexTuesday|$regexWednesday|$regexThursday|$regexFriday|$regexSaturday|$regexSunday)\$");
   static RegExp REGEX_MONTHS = RegExp(
       "^($regexJanuary|$regexFebruary|$regexMarch|$regexApril|$regexMay|$regexJune|$regexJuly|$regexSeptember|$regexOctober||$regexNovember||$regexDecember)\$");
+  static RegExp REGEX_DATE = RegExp(
+      "^\\d{1,2}\\s($regexJanuary|$regexFebruary|$regexMarch|$regexApril|$regexMay|$regexJune|$regexJuly|$regexAugust|$regexSeptember|$regexOctober||$regexNovember||$regexDecember)\\s\\d{2,4}.*\$");
 
   ///
   /// Converts English textual datetime description to a [DateTime] object.
@@ -63,8 +79,75 @@ class DateUtils {
       return _parseYesterdayTomorrow(s, now);
     } else if (s.startsWith("tomorrow")) {
       return _parseYesterdayTomorrow(s, now, tomorrow: true);
+    } else if (s.contains("ago")) {
+      return _parseAgo(s, now);
+    } else {
+      if (REGEX_DATE.hasMatch(s)) {
+        return _parseDate(s);
+      }
     }
     return DateTime.now();
+  }
+
+  static DateTime _parseDate(String s) {
+    String date;
+    String setTime;
+    if (s.contains("at")) {
+      List<String> list = s.split("at");
+      date = list.elementAt(0).trim();
+      setTime = list.elementAt(1).trim();
+    } else {
+      date = s.trim();
+    }
+    List<String> dateSplitted = date.split(" ");
+    String monthAsInt = "";
+    if (REGEX_JANUARY.hasMatch(dateSplitted.elementAt(1))) {
+      monthAsInt = "0" + DateTime.january.toString();
+    }
+    if (REGEX_FEBRUARY.hasMatch(dateSplitted.elementAt(1))) {
+      monthAsInt = "0" + DateTime.february.toString();
+    }
+    if (REGEX_MARCH.hasMatch(dateSplitted.elementAt(1))) {
+      monthAsInt = "0" + DateTime.march.toString();
+    }
+    if (REGEX_APRIL.hasMatch(dateSplitted.elementAt(1))) {
+      monthAsInt = "0" + DateTime.april.toString();
+    }
+    if (REGEX_MAY.hasMatch(dateSplitted.elementAt(1))) {
+      monthAsInt = "0" + DateTime.may.toString();
+    }
+    if (REGEX_JUNE.hasMatch(dateSplitted.elementAt(1))) {
+      monthAsInt = "0" + DateTime.june.toString();
+    }
+    if (REGEX_JULY.hasMatch(dateSplitted.elementAt(1))) {
+      monthAsInt = "0" + DateTime.july.toString();
+    }
+    if (REGEX_AUGUST.hasMatch(dateSplitted.elementAt(1))) {
+      monthAsInt = "0" + DateTime.august.toString();
+    }
+    if (REGEX_SEPTEMBER.hasMatch(dateSplitted.elementAt(1))) {
+      monthAsInt = "0" + DateTime.september.toString();
+    }
+    if (REGEX_OCTOBER.hasMatch(dateSplitted.elementAt(1))) {
+      monthAsInt = DateTime.october.toString();
+    }
+    if (REGEX_NOVEMBER.hasMatch(dateSplitted.elementAt(1))) {
+      monthAsInt = DateTime.november.toString();
+    }
+    if (REGEX_DECEMBER.hasMatch(dateSplitted.elementAt(1))) {
+      monthAsInt = DateTime.december.toString();
+    }
+    DateTime time = DateTime.parse(
+        "${dateSplitted.elementAt(2)}-$monthAsInt-${dateSplitted.elementAt(0)} 00:00:00");
+    if (setTime != null) {
+      time = _parseSetTime(setTime, time);
+    }
+    return time;
+  }
+
+  static DateTime _parseAgo(String s, DateTime now) {
+    s = s.substring(0, s.length - 3).trim();
+    return _parseAddRem(s, now, rem: true);
   }
 
   static DateTime _parseYesterdayTomorrow(String s, DateTime now,
@@ -85,7 +168,9 @@ class DateUtils {
 
   static DateTime _parseAddRem(String s, DateTime now, {bool rem = false}) {
     // Remove the + or -
-    s = s.substring(1);
+    if (s.startsWith("+") || s.startsWith("-")) {
+      s = s.substring(1);
+    }
 
     String addRem;
     String setTime;
@@ -114,7 +199,7 @@ class DateUtils {
         now = new DateTime(now.year, now.month + valueAsInt, now.day, now.hour,
             now.minute, now.second);
       } else if (REGEX_WEEK.hasMatch(type)) {
-        //print("Add $valueAsInt week(s)");
+        // print("Add / Rem $valueAsInt week(s)");
         now = now.add(Duration(days: 7 * valueAsInt));
       } else if (REGEX_DAY.hasMatch(type)) {
         //print("Add $valueAsInt day(s)");
