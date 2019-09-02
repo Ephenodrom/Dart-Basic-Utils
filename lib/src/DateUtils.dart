@@ -322,7 +322,7 @@ class DateUtils {
     }
     if (REGEX_WEEK.hasMatch(lastNext)) {
       if (last) {
-        now = now.add(Duration(hours: 7 * -1));
+        now = now.add(Duration(days: 7 * -1));
       } else {
         now = now.add(Duration(days: 7));
       }
