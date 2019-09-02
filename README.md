@@ -17,6 +17,7 @@ A dart package for many helper methods fitting different situations.
    * [DnsUtils](#dnsutils)
    * [SortUtils](#sortutils)
    * [ColorUtils](#colorutils)
+   * [DateUtils](#dateutils)
 5. [Changelog](#changelog)
 6. [Copyright and license](#copyright-and-license)
 
