@@ -2,7 +2,7 @@ import 'package:basic_utils/src/DateUtils.dart';
 import "package:test/test.dart";
 
 void main() {
-  test('Test stringToDateTime', () {
+  test('Test stringToDateTime with now', () {
     DateTime now = DateTime.now();
     DateTime actual = DateUtils.stringToDateTime("now");
     expect(actual.year, now.year);
@@ -11,8 +11,12 @@ void main() {
     expect(actual.hour, now.hour);
     expect(actual.minute, now.minute);
     expect(actual.second, now.second);
+  });
+
+  test('Test stringToDateTime with add rem', () {
     DateTime time = DateTime.parse("2019-07-11 13:27:00");
-    actual = DateUtils.stringToDateTime("+1 week 2 days 4 hours 2 seconds",
+    DateTime actual = DateUtils.stringToDateTime(
+        "+1 week 2 days 4 hours 2 seconds",
         time: time);
     expect(actual.year, 2019);
     expect(actual.month, 7);
@@ -73,9 +77,11 @@ void main() {
     expect(actual.hour, 0);
     expect(actual.minute, 0);
     expect(actual.second, 0);
+  });
 
-    time = DateTime.parse("2019-07-11 13:27:00");
-    actual = DateUtils.stringToDateTime("tomorrow", time: time);
+  test('Test stringToDateTime with yesterday tomorrow', () {
+    DateTime time = DateTime.parse("2019-07-11 13:27:00");
+    DateTime actual = DateUtils.stringToDateTime("tomorrow", time: time);
     expect(actual.year, 2019);
     expect(actual.month, 7);
     expect(actual.day, 12);
@@ -93,13 +99,35 @@ void main() {
     expect(actual.second, 0);
   });
 
-/*
-echo strtotime("now"), "\n";
-echo strtotime("10 September 2000"), "\n";
-echo strtotime("+1 day"), "\n";
-echo strtotime("+1 week"), "\n";
-echo strtotime("+1 week 2 days 4 hours 2 seconds"), "\n";
-echo strtotime("next Thursday"), "\n";
-echo strtotime("last Monday"), "\n";
-*/
+  test('Test stringToDateTime with last and next', () {
+    DateTime time = DateTime.parse("2019-09-02 13:27:00");
+    DateTime actual = DateUtils.stringToDateTime("next sunday", time: time);
+    expect(actual.year, 2019);
+    expect(actual.month, 9);
+    expect(actual.day, 8);
+    expect(actual.hour, 13);
+    expect(actual.minute, 27);
+    expect(actual.second, 0);
+    actual = DateUtils.stringToDateTime("last sunday", time: time);
+    expect(actual.year, 2019);
+    expect(actual.month, 9);
+    expect(actual.day, 1);
+    expect(actual.hour, 13);
+    expect(actual.minute, 27);
+    expect(actual.second, 0);
+    actual = DateUtils.stringToDateTime("last friday at 10:27:00", time: time);
+    expect(actual.year, 2019);
+    expect(actual.month, 8);
+    expect(actual.day, 30);
+    expect(actual.hour, 10);
+    expect(actual.minute, 27);
+    expect(actual.second, 0);
+    actual = DateUtils.stringToDateTime("next friday at 2 pm", time: time);
+    expect(actual.year, 2019);
+    expect(actual.month, 9);
+    expect(actual.day, 6);
+    expect(actual.hour, 14);
+    expect(actual.minute, 0);
+    expect(actual.second, 0);
+  });
 }

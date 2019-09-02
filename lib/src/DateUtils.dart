@@ -1,7 +1,26 @@
 ///
 /// Helper class for date operations.
-/// 
+///
 class DateUtils {
+  static int daysOfWeek = 7;
+  static String regexMonday = "mon|Mon|monday|Monday";
+  static String regexTuesday = "tue|Tue|tuesday|Tuesday";
+  static String regexWednesday = "wed|Wed|wednesday|Wednesday";
+  static String regexThursday = "thu|Thu|thursday|Thursday";
+  static String regexFriday = "fri|Fri|friday|Friday";
+  static String regexSaturday = "sat|Sat|saturday|Saturday";
+  static String regexSunday = "sun|Sun|sunday|Sunday";
+  static String regexJanuary = "jan|Jan|january|January";
+  static String regexFebruary = "feb|Feb|february|February";
+  static String regexMarch = "mar|Mar|march|March";
+  static String regexApril = "apr|Apr|april|April";
+  static String regexMay = "may|May";
+  static String regexJune = "june|June";
+  static String regexJuly = "july|July";
+  static String regexSeptember = "sep|Sep|september|September";
+  static String regexOctober = "oct|Oct|october|October";
+  static String regexNovember = "nov|Nov|november|November";
+  static String regexDecember = "dec|Dec|december|December";
   static RegExp REGEX_YEAR = RegExp("^(y|year|years)\$");
   static RegExp REGEX_MONTH = RegExp("^(m|month|months)\$");
   static RegExp REGEX_WEEK = RegExp("^(w|week|weeks)\$");
@@ -9,13 +28,19 @@ class DateUtils {
   static RegExp REGEX_HOUR = RegExp("^(h|hour|hours)\$");
   static RegExp REGEX_MINUTES = RegExp("^(m|minute|minutes)\$");
   static RegExp REGEX_SECONDS = RegExp("^(s|second|seconds)\$");
-  static RegExp REGEX_MONDAY = RegExp("^(mon|Mon|monday|Monday)\$");
-  static RegExp REGEX_TUESDAY = RegExp("^(tue|Tue|tuesday|Tuesday)\$");
-  static RegExp REGEX_WEDNESDAY = RegExp("^(wed|Wed|wednesday|Wednesday)\$");
-  static RegExp REGEX_THURSDAY = RegExp("^(thu|Thu|thursday|Thursday)\$");
-  static RegExp REGEX_FRIDAY = RegExp("^(fri|Fri|friday|Friday)\$");
-  static RegExp REGEX_SATURDAY = RegExp("^(sat|Sat|saturday|Saturday)\$");
-  static RegExp REGEX_SUNDAY = RegExp("^(sun|Sun|sunday|Sunday)\$");
+  static RegExp REGEX_MONDAY = RegExp("^($regexMonday)\$");
+  static RegExp REGEX_TUESDAY = RegExp("^($regexTuesday)\$");
+  static RegExp REGEX_WEDNESDAY = RegExp("^($regexWednesday)\$");
+  static RegExp REGEX_THURSDAY = RegExp("^($regexThursday)\$");
+  static RegExp REGEX_FRIDAY = RegExp("^($regexFriday)\$");
+  static RegExp REGEX_SATURDAY = RegExp("^($regexSaturday)\$");
+  static RegExp REGEX_SUNDAY = RegExp("^($regexSunday)\$");
+  static RegExp REGEX_AM_PM = RegExp(
+      "^(\\d\\s(pm|am)|\\d{1,2}(\\.|:)\\d{2}\\s(pm|am)|\\d{1,2}(\\.|:)\\d{2}(\\.|:)\\d{2}\\s(pm|am))\$");
+  static RegExp REGEX_WEEKDAY = RegExp(
+      "^($regexMonday|$regexTuesday|$regexWednesday|$regexThursday|$regexFriday|$regexSaturday|$regexSunday)\$");
+  static RegExp REGEX_MONTHS = RegExp(
+      "^($regexJanuary|$regexFebruary|$regexMarch|$regexApril|$regexMay|$regexJune|$regexJuly|$regexSeptember|$regexOctober||$regexNovember||$regexDecember)\$");
 
   ///
   /// Converts English textual datetime description to a [DateTime] object.
@@ -31,22 +56,23 @@ class DateUtils {
     } else if (s.startsWith("-")) {
       return _parseAddRem(s, now, rem: true);
     } else if (s.startsWith("next")) {
-      return _parseNext(s, now);
+      return _parseNextLast(s, now);
     } else if (s.startsWith("last")) {
-      return _parseLast(s, now);
-    } else if (s.startsWith("yesterday")){
+      return _parseNextLast(s, now, last: true);
+    } else if (s.startsWith("yesterday")) {
       return _parseYesterdayTomorrow(s, now);
-    } else if (s.startsWith("tomorrow")){
+    } else if (s.startsWith("tomorrow")) {
       return _parseYesterdayTomorrow(s, now, tomorrow: true);
-    } 
+    }
     return DateTime.now();
   }
 
-  static DateTime _parseYesterdayTomorrow(String s, DateTime now, {bool tomorrow = false}){
+  static DateTime _parseYesterdayTomorrow(String s, DateTime now,
+      {bool tomorrow = false}) {
     DateTime time;
-    if(tomorrow){
+    if (tomorrow) {
       time = now.add(Duration(days: 1));
-    }else{
+    } else {
       time = now.subtract(Duration(days: 1));
     }
     if (s.contains("at")) {
@@ -55,10 +81,10 @@ class DateUtils {
       time = _parseSetTime(setTime, time);
     }
     return time;
-  } 
+  }
 
   static DateTime _parseAddRem(String s, DateTime now, {bool rem = false}) {
-    // Remove the +
+    // Remove the + or -
     s = s.substring(1);
 
     String addRem;
@@ -134,37 +160,109 @@ class DateUtils {
     return now;
   }
 
-  static DateTime _parseNext(String s, DateTime now) {
-    return null;
-  }
-
-  static DateTime _parseLast(String s, DateTime now) {
-    return null;
-  }
-
-  static DateTime _parseSetTime(String setTime, DateTime time){
-    if (setTime.contains(":")) {
-        DateTime hhmmss = DateTime.parse("1970-01-01 " + setTime);
-        return DateTime(time.year, time.month, time.day, hhmmss.hour,
-            hhmmss.minute, hhmmss.second);
-      } else {
-        List<String> list = setTime.split(" ");
-        for (int i = 1; i < list.length; i += 2) {
-          String value = list.elementAt(i - 1);
-          int valueAsInt = int.parse(value);
-          String type = list.elementAt(i);
-          if (REGEX_HOUR.hasMatch(type)) {
-            time = DateTime(time.year, time.month, time.day, valueAsInt,
-                time.minute, time.second);
-          } else if (REGEX_MINUTES.hasMatch(type)) {
-            time = DateTime(
-                time.year, time.month, time.day, time.hour, valueAsInt, time.second);
-          } else if (REGEX_SECONDS.hasMatch(type)) {
-            time = DateTime(
-                time.year, time.month, time.day, time.hour, time.minute, valueAsInt);
-          }
-        }
-        return time;
+  static DateTime _parseNextLast(String s, DateTime now, {bool last = false}) {
+    if (s.startsWith("next") || s.startsWith("last")) {
+      s = s.substring(4);
+    }
+    String lastNext;
+    String setTime;
+    if (s.contains("at")) {
+      List<String> list = s.split("at");
+      lastNext = list.elementAt(0).trim();
+      setTime = list.elementAt(1).trim();
+    } else {
+      lastNext = s.trim();
+    }
+    if (REGEX_WEEKDAY.hasMatch(lastNext)) {
+      int currentDay = now.weekday;
+      int daysToAdd;
+      int targetDay;
+      if (REGEX_SUNDAY.hasMatch(lastNext)) {
+        targetDay = DateTime.sunday;
       }
+      if (REGEX_SATURDAY.hasMatch(lastNext)) {
+        targetDay = DateTime.saturday;
+      }
+      if (REGEX_FRIDAY.hasMatch(lastNext)) {
+        targetDay = DateTime.friday;
+      }
+      if (REGEX_THURSDAY.hasMatch(lastNext)) {
+        targetDay = DateTime.thursday;
+      }
+      if (REGEX_WEDNESDAY.hasMatch(lastNext)) {
+        targetDay = DateTime.wednesday;
+      }
+      if (REGEX_TUESDAY.hasMatch(lastNext)) {
+        targetDay = DateTime.tuesday;
+      }
+      if (REGEX_MONDAY.hasMatch(lastNext)) {
+        targetDay = DateTime.monday;
+      }
+
+      if (last) {
+        if (currentDay < targetDay) {
+          daysToAdd = daysOfWeek - targetDay + currentDay;
+        } else {
+          daysToAdd = targetDay - (daysOfWeek - currentDay);
+        }
+        now = now.add(Duration(days: daysToAdd * -1));
+      } else {
+        daysToAdd = targetDay - currentDay;
+        now = now.add(Duration(days: daysToAdd));
+      }
+      if (setTime != null) {
+        now = _parseSetTime(setTime, now);
+      }
+      return now;
+    }
+    if (REGEX_MONTHS.hasMatch(lastNext)) {
+      // handle months
+    }
+    return null;
+  }
+
+  static DateTime _parseSetTime(String setTime, DateTime time) {
+    if (setTime.contains(":")) {
+      DateTime hhmmss = DateTime.parse("1970-01-01 " + setTime);
+      return DateTime(time.year, time.month, time.day, hhmmss.hour,
+          hhmmss.minute, hhmmss.second);
+    } else if (REGEX_AM_PM.hasMatch(setTime)) {
+      int baseTime = 0;
+      if (setTime.endsWith("pm") || setTime.endsWith("PM")) {
+        baseTime = 12;
+      }
+      setTime = setTime.substring(0, setTime.length - 2).trim();
+      setTime = setTime.replaceAll("\.", ":");
+      if (setTime.length == 1) {
+        setTime = "0$setTime:00:00";
+      } else if (setTime.length == 3) {
+        setTime = "0$setTime:00";
+      } else if (setTime.length == 4) {
+        setTime = "$setTime:00:00";
+      } else if (setTime.length == 5) {
+        setTime = "0$setTime";
+      }
+      DateTime hhmmss = DateTime.parse("1970-01-01 " + setTime);
+      return DateTime(time.year, time.month, time.day, hhmmss.hour + baseTime,
+          hhmmss.minute, hhmmss.second);
+    } else {
+      List<String> list = setTime.split(" ");
+      for (int i = 1; i < list.length; i += 2) {
+        String value = list.elementAt(i - 1);
+        int valueAsInt = int.parse(value);
+        String type = list.elementAt(i);
+        if (REGEX_HOUR.hasMatch(type)) {
+          time = DateTime(time.year, time.month, time.day, valueAsInt,
+              time.minute, time.second);
+        } else if (REGEX_MINUTES.hasMatch(type)) {
+          time = DateTime(time.year, time.month, time.day, time.hour,
+              valueAsInt, time.second);
+        } else if (REGEX_SECONDS.hasMatch(type)) {
+          time = DateTime(time.year, time.month, time.day, time.hour,
+              time.minute, valueAsInt);
+        }
+      }
+      return time;
+    }
   }
 }
