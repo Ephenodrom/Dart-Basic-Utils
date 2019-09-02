@@ -32,7 +32,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^1.8.2
+  basic_utils: ^1.9.0
 ```
 
 ## Import
@@ -159,6 +159,14 @@ Helper class for color operations.
 int hexToInt(String hex);
 String shadeColor(String hex, int percent);
 String fillUpHex(String hex);
+```
+
+### DateUtils
+
+Helper class for date operations like converting textual datetime description.
+
+```dart
+static DateTime stringToDateTime(String s, {DateTime time});
 ```
 
 ## Changelog

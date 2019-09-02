@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.9.0] - 2019-09-02
+
+* Add DateUtils
+* Add unit tests
+
 ## [1.8.2] - 2019-08-30
 
 * Fix minor bug

@@ -129,6 +129,30 @@ void main() {
     expect(actual.hour, 14);
     expect(actual.minute, 0);
     expect(actual.second, 0);
+
+    actual = DateUtils.stringToDateTime("10:27:00 last friday", time: time);
+    expect(actual.year, 2019);
+    expect(actual.month, 8);
+    expect(actual.day, 30);
+    expect(actual.hour, 10);
+    expect(actual.minute, 27);
+    expect(actual.second, 0);
+
+    actual = DateUtils.stringToDateTime("2 pm next friday", time: time);
+    expect(actual.year, 2019);
+    expect(actual.month, 9);
+    expect(actual.day, 6);
+    expect(actual.hour, 14);
+    expect(actual.minute, 0);
+    expect(actual.second, 0);
+
+    actual = DateUtils.stringToDateTime("2 pm next week", time: time);
+    expect(actual.year, 2019);
+    expect(actual.month, 9);
+    expect(actual.day, 9);
+    expect(actual.hour, 14);
+    expect(actual.minute, 0);
+    expect(actual.second, 0);
   });
 
   test('Test stringToDateTime with yesterday tomorrow', () {

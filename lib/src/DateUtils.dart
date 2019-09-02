@@ -60,6 +60,18 @@ class DateUtils {
 
   ///
   /// Converts English textual datetime description to a [DateTime] object.
+  /// 
+  /// Supported strings:
+  /// * now
+  /// * + 1 year|y 2 month|m 3 weeks|w 4 hours|h 5 minutes|m 6 seconds|s
+  /// * - 1 year|y 2 month|m 3 weeks|w 4 hours|h 5 minutes|m 6 seconds|s
+  /// * yesterday (at 1 pm|1 hour|13:00:00)
+  /// * tomorrow (at 1 pm|1 hour|13:00:00)
+  /// * last monday (at 1 pm|1 hour|13:00:00)
+  /// * next monday (at 1 pm|1 hour|13:00:00)
+  /// * 10 September 2019 (at 1 pm|1 hour|13:00:00)
+  /// * 1 day(s)|week(s)|month(s) ago
+  /// * 2 pm next monday|week
   ///
   static DateTime stringToDateTime(String s, {DateTime time}) {
     DateTime now = DateTime.now();
@@ -73,7 +85,15 @@ class DateUtils {
       return _parseAddRem(s, now, rem: true);
     } else if (s.startsWith("next")) {
       return _parseNextLast(s, now);
+    } else if (s.contains("next")) {
+      List<String> splitted = s.split("next");
+      s = "next " + splitted.elementAt(1) + " at " + splitted.elementAt(0);
+      return _parseNextLast(s, now);
     } else if (s.startsWith("last")) {
+      return _parseNextLast(s, now, last: true);
+    } else if (s.contains("last")) {
+      List<String> splitted = s.split("last");
+      s = "last " + splitted.elementAt(1) + " at " + splitted.elementAt(0);
       return _parseNextLast(s, now, last: true);
     } else if (s.startsWith("yesterday")) {
       return _parseYesterdayTomorrow(s, now);
@@ -300,8 +320,16 @@ class DateUtils {
       }
       return now;
     }
-    if (REGEX_MONTHS.hasMatch(lastNext)) {
-      // handle months
+    if (REGEX_WEEK.hasMatch(lastNext)) {
+      if (last) {
+        now = now.add(Duration(hours: 7 * -1));
+      } else {
+        now = now.add(Duration(days: 7));
+      }
+      if (setTime != null) {
+        now = _parseSetTime(setTime, now);
+      }
+      return now;
     }
     return null;
   }
