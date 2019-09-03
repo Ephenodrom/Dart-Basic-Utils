@@ -21,3 +21,4 @@ export "src/HttpUtils.dart";
 export "src/DnsUtils.dart";
 export "src/SortUtils.dart";
 export "src/ColorUtils.dart";
+export "src/DateUtils.dart";
