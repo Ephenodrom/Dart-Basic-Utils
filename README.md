@@ -33,7 +33,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^1.9.2
+  basic_utils: ^1.9.3
 ```
 
 ## Import
@@ -167,7 +167,7 @@ String fillUpHex(String hex);
 Helper class for date operations like converting textual datetime description.
 
 ```dart
-static DateTime stringToDateTime(String s, {DateTime time});
+DateTime stringToDateTime(String s, {DateTime time});
 ```
 
 ## Changelog

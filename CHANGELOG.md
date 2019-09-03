@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.9.3] - 2019-09-03
+
+* Improve documentation of DateUtils
+
 ## [1.9.2] - 2019-09-03
 
 * Fix minor bug

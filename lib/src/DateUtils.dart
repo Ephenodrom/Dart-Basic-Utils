@@ -23,7 +23,7 @@ class DateUtils {
   static String regexNovember = "nov|Nov|november|November";
   static String regexDecember = "dec|Dec|december|December";
   static RegExp REGEX_YEAR = RegExp("^(y|year|years)\$");
-  static RegExp REGEX_MONTH = RegExp("^(m|month|months)\$");
+  static RegExp REGEX_MONTH = RegExp("^(mo|month|months)\$");
   static RegExp REGEX_WEEK = RegExp("^(w|week|weeks)\$");
   static RegExp REGEX_DAY = RegExp("^(d|day|days)\$");
   static RegExp REGEX_HOUR = RegExp("^(h|hour|hours)\$");
@@ -60,11 +60,20 @@ class DateUtils {
 
   ///
   /// Converts English textual datetime description to a [DateTime] object.
-  /// 
+  ///
+  /// If [time] is set, it will be used to determine the desired date.
+  /// If [time] is null (the default), now is used to determine the date.
+  ///
+  /// Example :
+  /// ```dart
+  /// stringToDateTime("yesterday"); // will receive yesterday from now
+  /// stringToDateTime("yesterday", time: time); // will receive yesterday from the given date.
+  /// ```
+  ///
   /// Supported strings:
   /// * now
-  /// * + 1 year|y 2 month|m 3 weeks|w 4 hours|h 5 minutes|m 6 seconds|s
-  /// * - 1 year|y 2 month|m 3 weeks|w 4 hours|h 5 minutes|m 6 seconds|s
+  /// * \+ 1 year(s)|y 2 month(s)|mo 3 week(s)|w 4 hour(s)|h 5 minute(s)|m 6 second(s)|s
+  /// * \- 1 year(s)|y 2 month(s)|mo 3 week(s)|w 4 hour(s)|h 5 minute(s)|m 6 second(s)|s
   /// * yesterday (at 1 pm|1 hour|13:00:00)
   /// * tomorrow (at 1 pm|1 hour|13:00:00)
   /// * last monday (at 1 pm|1 hour|13:00:00)
