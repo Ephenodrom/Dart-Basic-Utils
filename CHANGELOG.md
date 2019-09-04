@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.0.0] - 2019-09-04
+
+* Improve ColorUtils
+* Add Unit test
+
 ## [1.9.3] - 2019-09-03
 
 * Improve documentation of DateUtils

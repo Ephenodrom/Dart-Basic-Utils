@@ -18,6 +18,18 @@ class ColorUtils {
   }
 
   ///
+  /// Converts the given integer [i] to a hex string with a leading #.
+  ///
+  static String intToHex(int i){
+    String s = i.toRadixString(16);
+    if(s.length == 8){
+      return "#"+s.substring(2).toUpperCase();
+    }else{
+      return "#"+ s.toUpperCase();
+    }
+  }
+
+  ///
   /// Lightens or darkens the given [hex] color by the given [percent].
   ///
   /// To lighten a color, set the [percent] value to > 0.
