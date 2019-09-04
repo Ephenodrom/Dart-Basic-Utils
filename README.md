@@ -158,6 +158,7 @@ Helper class for color operations.
 
 ```dart
 int hexToInt(String hex);
+String intToHex(int i);
 String shadeColor(String hex, int percent);
 String fillUpHex(String hex);
 ```
