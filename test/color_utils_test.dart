@@ -11,6 +11,8 @@ void main() {
   test('Test int to hex', () {
     expect(ColorUtils.intToHex(0xFFFFFFFF), "#FFFFFF");
     expect(ColorUtils.intToHex(0xFFEF5350), "#EF5350");
+    expect(ColorUtils.intToHex(16777215), "#FFFFFF");
+    expect(ColorUtils.intToHex(15684432), "#EF5350");
   });
 
   test('Test shade hex', () {

@@ -26,10 +26,15 @@ class ColorUtils {
   }
 
   ///
-  /// Converts the given [color] integer to the corresponding hex string with a leading #.
+  /// Converts the given integer [i] to a hex string with a leading #.
   ///
-  static String intToHex(int color) {
-    return "#" + color.toRadixString(16).substring(2).toUpperCase();
+  static String intToHex(int i) {
+    String s = i.toRadixString(16);
+    if (s.length == 8) {
+      return "#" + s.substring(2).toUpperCase();
+    } else {
+      return "#" + s.toUpperCase();
+    }
   }
 
   ///
