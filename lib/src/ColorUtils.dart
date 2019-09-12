@@ -110,9 +110,7 @@ class ColorUtils {
   }
 
   ///
-  /// Fills up the given 3 char [hex] string to 6 char hex string.
-  ///
-  /// Will add a # to the [hex] string if it is missing.
+  /// Returns true or false if the calculated relative luminance from the given [hex] is less than 0.5.
   ///
   static bool isDark(String hex) {
     Map<String, int> bC = basicColorsFromHex(hex);
@@ -151,6 +149,8 @@ class ColorUtils {
 
   ///
   /// Calculates the relative luminance for the given [red], [green], [blue] values.
+  ///
+  /// The returned value is between 0 and 1 with the given [decimals].
   ///
   static double calculateRelativeLuminance(int red, int green, int blue,
       {int decimals = 2}) {
