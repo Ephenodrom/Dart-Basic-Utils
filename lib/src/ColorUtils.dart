@@ -134,6 +134,11 @@ class ColorUtils {
   ///
   /// Fetches the basic color int values for red, green, blue from the given [hex] string.
   ///
+  /// The values are returned inside a map with the following keys :
+  /// * red
+  /// * green
+  /// * blue
+  ///
   static Map<String, int> basicColorsFromHex(String hex) {
     hex = fillUpHex(hex);
 
