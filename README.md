@@ -111,6 +111,7 @@ double calculateSquareArea(double a, {double b});
 double convertUnit(double value, LengthUnits sourceUnit, LengthUnits targetUnit);
 double calculateMixingTemperature(double mA, double tA, double mB, double tB,{double cA, double cB});
 num mean(List<num> l);
+double round(double value, int decimals);
 ```
 
 ### HttpUtils
@@ -158,8 +159,13 @@ Helper class for color operations.
 
 ```dart
 int hexToInt(String hex);
+String intToHex(int color);
 String shadeColor(String hex, int percent);
 String fillUpHex(String hex);
+bool isDark(String hex);
+String contrastColor(String hex);
+Map<String, int> basicColorsFromHex(String hex);
+double calculateRelativeLuminance(int red, int green, int blue,{int decimals = 2});
 ```
 
 ### DateUtils

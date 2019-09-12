@@ -389,4 +389,11 @@ void main() {
   test('Test calculate mean', () {
     expect(MathUtils.mean([1, 2, 3, 4]), 2.5);
   });
+
+  test('Test round', () {
+    expect(MathUtils.round(0.3426, 1), 0.3);
+    expect(MathUtils.round(0.3426, 2), 0.34);
+    expect(MathUtils.round(0.3426, 3), 0.343);
+    expect(MathUtils.round(0.3426, 4), 0.3426);
+  });
 }

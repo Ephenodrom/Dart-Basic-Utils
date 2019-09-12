@@ -3,32 +3,32 @@ import 'dart:math';
 import 'package:basic_utils/src/model/LengthUnits.dart';
 
 ///
-/// Helper class for common math operations
+/// Helper class for common math operations.
 ///
 class MathUtils {
   ///
-  /// Calculate the circumference of a circle with the given [radius]
+  /// Calculate the circumference of a circle with the given [radius].
   ///
   static double calculateCircumference(double radius) {
     return 2 * pi * radius;
   }
 
   ///
-  /// Calculate the area of a circle with the given [radius]
+  /// Calculate the area of a circle with the given [radius].
   ///
   static double calculateCircularArea(double radius) {
     return pi * (radius * radius);
   }
 
   ///
-  /// Calculate the diameter of a circle with the given [radius]
+  /// Calculate the diameter of a circle with the given [radius].
   ///
   static double calculateCircleDiameter(double radius) {
     return 2 * radius;
   }
 
   ///
-  /// Calculate the area of a square or rectangle with length [a] and/or length[b]
+  /// Calculate the area of a square or rectangle with length [a] and/or length[b].
   ///
   static double calculateSquareArea(double a, {double b}) {
     return b == null ? a * a : a * b;
@@ -36,7 +36,7 @@ class MathUtils {
 
   ///
   /// Converts the given [value] from the [sourceUnit] to the [targetUnit].
-  /// Returns null if converting is not possible
+  /// Returns null if converting is not possible.
   ///
   static double convertUnit(
       double value, LengthUnits sourceUnit, LengthUnits targetUnit) {
@@ -287,13 +287,13 @@ class MathUtils {
 
   ///
   /// Calculates the mixing temperature for substance A represented with [mA], [tA], [cA] and substance B
-  /// represented with [mB], [tB], [cB]
+  /// represented with [mB], [tB], [cB].
   ///
   /// If [cA] or [cB] is null, it is assumed that both values are equal.
   ///
-  /// [mA] and [mB] are the masses of the substances and must be expressed in kilograms (kg)
-  /// [tA] and [tB] are the temperatur of the substances and must be expressed in celsius (C)
-  /// [cA] and [cB] are the specific heat capacity of the substances and must be expressed in joule per kilogram times Celsius (J/kg*C)
+  /// [mA] and [mB] are the masses of the substances and must be expressed in kilograms (kg).
+  /// [tA] and [tB] are the temperatur of the substances and must be expressed in celsius (C).
+  /// [cA] and [cB] are the specific heat capacity of the substances and must be expressed in joule per kilogram times Celsius (J/kg*C).
   ///
   static double calculateMixingTemperature(
       double mA, double tA, double mB, double tB,
@@ -305,7 +305,13 @@ class MathUtils {
   }
 
   ///
-  /// Calculates the arithmetic average of the given list of numbers
+  /// Calculates the arithmetic average of the given list of numbers.
   ///
   static num mean(List<num> l) => l.reduce((num p, num n) => p + n) / l.length;
+
+  ///
+  /// Rounds the give double [value] to the given [decimals].
+  ///
+  static double round(double value, int decimals) =>
+      (value * pow(10, decimals)).round() / pow(10, decimals);
 }
