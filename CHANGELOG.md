@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.1] - 2019-09-12
+
+* Improve ColorUtils
+* Improve MathUtils
+* Add Unit test
+
 ## [2.0.0] - 2019-09-04
 
 * Improve ColorUtils
