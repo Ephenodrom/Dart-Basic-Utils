@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:basic_utils/src/ColorUtils.dart';
 import "package:test/test.dart";
 
@@ -46,5 +48,20 @@ void main() {
 
   test('Test calculate relative luminance', () {
     expect(ColorUtils.calculateRelativeLuminance(255, 0, 0), 0.3);
+  });
+
+  test('Test swatch color', () {
+    List<String> colors = ColorUtils.swatchColor("#f44336");
+    expect(colors.elementAt(0), "#ff755f");
+    expect(colors.elementAt(1), "#ff6b56");
+    expect(colors.elementAt(2), "#ff614e");
+    expect(colors.elementAt(3), "#ff5746");
+    expect(colors.elementAt(4), "#ff4d3e");
+    expect(colors.elementAt(5), "#f44336");
+    expect(colors.elementAt(6), "#cf392e");
+    expect(colors.elementAt(7), "#ab2f26");
+    expect(colors.elementAt(8), "#86251e");
+    expect(colors.elementAt(9), "#621b16");
+    expect(colors.elementAt(10), "#3d110e");
   });
 }

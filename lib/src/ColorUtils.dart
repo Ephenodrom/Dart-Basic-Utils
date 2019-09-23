@@ -162,4 +162,28 @@ class ColorUtils {
     return MathUtils.round(
         (0.299 * red + 0.587 * green + 0.114 * blue) / 255, decimals);
   }
+
+  ///
+  /// Swatch the given [hex] color.
+  ///
+  /// It creates lighter and darker colors from the given [hex] returned in a list with the given [hex].
+  ///
+  /// The [amount] defines how much lighter or darker colors a generated.
+  /// The specified [percentage] value defines the color spacing of the individual colors. As a default,
+  /// each color is 15 percent lighter or darker than the previous one.
+  ///
+  static List<String> swatchColor(String hex,
+      {double percentage = 15, int amount = 5}) {
+    hex = fillUpHex(hex);
+
+    List<String> colors = [];
+    for (int i = 1; i <= amount; i++) {
+      colors.add(shadeColor(hex, (6 - i) * percentage));
+    }
+    colors.add(hex);
+    for (int i = 1; i <= amount; i++) {
+      colors.add(shadeColor(hex, (0 - i) * percentage));
+    }
+    return colors;
+  }
 }
