@@ -154,4 +154,23 @@ void main() {
     expect(DomainUtils.getDomainFromUrl("https://sub1.example.com").toString(),
         "example.com");
   });
+
+  test('Test splitSubdomainInDomains', () {
+    List<String> splitted =
+        DomainUtils.splitSubdomainInDomains("sub3.sub2.sub1.domain.com");
+    expect(splitted.length, 4);
+    expect(splitted.elementAt(0), "sub3.sub2.sub1.domain.com");
+    expect(splitted.elementAt(1), "sub2.sub1.domain.com");
+    expect(splitted.elementAt(2), "sub1.domain.com");
+    expect(splitted.elementAt(3), "domain.com");
+
+    splitted =
+        DomainUtils.splitSubdomainInDomains("sub3.sub2.sub1.domain.de.com");
+
+    expect(splitted.length, 4);
+    expect(splitted.elementAt(0), "sub3.sub2.sub1.domain.de.com");
+    expect(splitted.elementAt(1), "sub2.sub1.domain.de.com");
+    expect(splitted.elementAt(2), "sub1.domain.de.com");
+    expect(splitted.elementAt(3), "domain.de.com");
+  });
 }

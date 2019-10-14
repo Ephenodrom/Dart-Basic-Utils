@@ -33,7 +33,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.0.2
+  basic_utils: ^2.0.3
 ```
 
 ## Import
@@ -88,6 +88,7 @@ bool isGTLD(String s);
 List<String> splitDomainName(String domainName);
 Domain getDomainFromUrl(String url);
 Domain parseDomain(String domainName);
+List<String> splitSubdomainInDomains(String name);
 ```
 
 ### EmailUtils

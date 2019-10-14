@@ -239,4 +239,38 @@ class DomainUtils {
     if (!value.contains(".")) return value;
     return value.substring(value.lastIndexOf(".") + 1);
   }
+
+  ///
+  /// Splits the given [domain] in seperate domain names for each subdomain.
+  ///
+  /// Example:
+  /// sub2.sub1.domain.com => ["sub2.sub1.domain.com", "sub1.domain.com", "domain.com"]
+  ///
+  static List<String> splitSubdomainInDomains(String name) {
+    List<String> domains = [];
+    List<String> ar = name.split("\.");
+
+    for (int i = 0; i < ar.length; i++) {
+      StringBuffer sb = new StringBuffer();
+      for (int j = i; j < ar.length; j++) {
+        sb.write(ar[j]);
+        sb.write(".");
+      }
+      String domain = sb.toString();
+      domain = domain.substring(0, domain.length - 1);
+      if (ar.length - i == 3) {
+        List<String> splitted = splitDomainName(domain);
+        if (isSubTld(splitted.elementAt(2), splitted.elementAt(1))) {
+          domains.add(domain);
+          break;
+        }
+      }
+      if (ar.length - i == 2) {
+        domains.add(domain);
+        break;
+      }
+      domains.add(domain);
+    }
+    return domains;
+  }
 }
