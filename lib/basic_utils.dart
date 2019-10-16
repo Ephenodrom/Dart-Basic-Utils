@@ -22,3 +22,4 @@ export "src/DnsUtils.dart";
 export "src/SortUtils.dart";
 export "src/ColorUtils.dart";
 export "src/DateUtils.dart";
+export "src/X509Utils.dart";

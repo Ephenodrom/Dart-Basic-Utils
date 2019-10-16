@@ -106,4 +106,13 @@ void main() {
         "123-456-789-0");
     expect(StringUtils.addCharAtPosition("1234567890", "-", 12), "1234567890");
   });
+
+  test('Test chunk', () {
+    List<String> chunked = StringUtils.chunk("aaaabbbbccccdddd", 4);
+    expect(chunked.length, 4);
+    expect(chunked.elementAt(0), "aaaa");
+    expect(chunked.elementAt(1), "bbbb");
+    expect(chunked.elementAt(2), "cccc");
+    expect(chunked.elementAt(3), "dddd");
+  });
 }

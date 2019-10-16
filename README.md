@@ -18,6 +18,7 @@ A dart package for many helper methods fitting different situations.
    * [SortUtils](#sortutils)
    * [ColorUtils](#colorutils)
    * [DateUtils](#dateutils)
+   * [X509Utils](#x509utils)
 5. [Changelog](#changelog)
 6. [Copyright and license](#copyright-and-license)
 
@@ -33,7 +34,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.0.3
+  basic_utils: ^2.1.0
 ```
 
 ## Import
@@ -70,6 +71,7 @@ bool inList(String s, List<String> list, {bool ignoreCase = false});
 bool isPalindrome(String s);
 String hidePartial(String s, {int begin = 0, int end, String replace = "*"});
 String addCharAtPosition(String s, String char, int position,{bool repeat = false});
+List<String> chunk(String s, chunkSize);
 ```
 
 ### DomainUtils
@@ -176,6 +178,28 @@ Helper class for date operations like converting textual datetime description.
 
 ```dart
 DateTime stringToDateTime(String s, {DateTime time});
+```
+
+### X509Utils
+
+Helper class for operations on x509 certificates, like generating key pairs, generating csr and many more.
+
+```dart
+AsymmetricKeyPair generateKeyPair({int keySize = 2048});
+String formatKeyString(String key, String begin, String end,{int chunkSize = 64, String lineDelimiter = "\n"});
+String generateRsaCsrPem(Map<String, String> attributes,RSAPrivateKey privateKey, RSAPublicKey publicKey);
+String encodeASN1ObjectToPem(ASN1Object asn1Object, String begin, String end);
+String encodeRSAPublicKeyToPem(RSAPublicKey publicKey);
+String encodeRSAPrivateKeyToPem(RSAPrivateKey rsaPrivateKey);
+RSAPrivateKey privateKeyFromPem(String pem);
+RSAPublicKey publicKeyFromPem(String pem);
+Uint8List getBytesFromPEMString(String pem);
+RSAPrivateKey privateKeyFromDERBytes(Uint8List bytes);
+RSAPrivateKey privateKeyFromASN1Sequence(ASN1Sequence asnSequence);
+Uint8List rsaPublicKeyModulusToBytes(RSAPublicKey publicKey);
+Uint8List rsaPublicKeyExponentToBytes(RSAPublicKey publicKey);
+Uint8List rsaPrivateKeyToBytes(RSAPrivateKey privateKey);
+ASN1Object encodeDN(Map<String, String> dn);
 ```
 
 ## Changelog

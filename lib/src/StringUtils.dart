@@ -257,4 +257,16 @@ class StringUtils {
       return buffer.toString();
     }
   }
+
+  ///
+  /// Splits the given String [s] in chunks with the given [chunkSize].
+  ///
+  static List<String> chunk(String s, int chunkSize) {
+    List<String> chunked = [];
+    for (int i = 0; i < s.length; i += chunkSize) {
+      int end = (i + chunkSize < s.length) ? i + chunkSize : s.length;
+      chunked.add(s.substring(i, end));
+    }
+    return chunked;
+  }
 }

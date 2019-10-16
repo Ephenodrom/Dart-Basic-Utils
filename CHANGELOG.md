@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.0] - 2019-10-14
+
+* Improve StringUtils
+* Add X509Utils
+* Add Unit test
+
 ## [2.0.3] - 2019-10-14
 
 * Improve DomainUtils
