@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.1.0] - 2019-10-14
+## [2.1.0] - 2019-10-16
 
 * Improve StringUtils
 * Add X509Utils
