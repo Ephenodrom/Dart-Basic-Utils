@@ -3,6 +3,8 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:asn1lib/asn1lib.dart';
+import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
+import 'package:basic_utils/src/model/x509/X509CertificateValidity.dart';
 import 'package:pointycastle/export.dart';
 import 'package:pointycastle/pointycastle.dart';
 
@@ -20,6 +22,50 @@ class X509Utils {
 
   static final String BEGIN_CSR = "-----BEGIN CERTIFICATE REQUEST-----";
   static final String END_CSR = "-----END CERTIFICATE REQUEST-----";
+
+  static final Map<String, String> DN = {
+    "cn": "2.5.4.3",
+    "sn": "2.5.4.4",
+    "c": "2.5.4.6",
+    "l": "2.5.4.7",
+    "st": "2.5.4.8",
+    "s": "2.5.4.8",
+    "o": "2.5.4.10",
+    "ou": "2.5.4.11",
+    "title": "2.5.4.12",
+    "registeredAddress": "2.5.4.26",
+    "member": "2.5.4.31",
+    "owner": "2.5.4.32",
+    "roleOccupant": "2.5.4.33",
+    "seeAlso": "2.5.4.34",
+    "givenName": "2.5.4.42",
+    "initials": "2.5.4.43",
+    "generationQualifier": "2.5.4.44",
+    "dmdName": "2.5.4.54",
+    "alias": "2.5.6.1",
+    "country": "2.5.6.2",
+    "locality": "2.5.6.3",
+    "organization": "2.5.6.4",
+    "organizationalUnit": "2.5.6.5",
+    "person": "2.5.6.6",
+    "organizationalPerson": "2.5.6.7",
+    "organizationalRole": "2.5.6.8",
+    "groupOfNames": "2.5.6.9",
+    "residentialPerson": "2.5.6.10",
+    "applicationProcess": "2.5.6.11",
+    "applicationEntity": "2.5.6.12",
+    "dSA": "2.5.6.13",
+    "device": "2.5.6.14",
+    "strongAuthenticationUser": "2.5.6.15",
+    "certificationAuthority": "2.5.6.16",
+    "groupOfUniqueNames": "2.5.6.17",
+    "userSecurityInformation": "2.5.6.18",
+    "certificationAuthority-V2": "2.5.6.16.2",
+    "cRLDistributionPoint": "2.5.6.19",
+    "dmd": "2.5.6.20",
+    "md5WithRSAEncryption": "1.2.840.113549.1.1.4",
+    "rsaEncryption": "1.2.840.113549.1.1.1",
+  };
 
   ///
   /// Generates a [AsymmetricKeyPair] with the given [keySize].
@@ -207,6 +253,77 @@ class X509Utils {
     return rsaPublicKey;
   }
 
+  static X509CertificateData x509CertificateFromPem(String pem) {
+    if (pem == null) {
+      throw ArgumentError('Argument must not be null.');
+    }
+    ASN1ObjectIdentifier.registerFrequentNames();
+    Uint8List bytes = getBytesFromPEMString(pem);
+    ASN1Parser asn1Parser = ASN1Parser(bytes);
+    ASN1Sequence topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
+    ASN1Sequence dataSequence =
+        topLevelSeq.elements.elementAt(0) as ASN1Sequence;
+
+    // Version
+    ASN1Object versionObject = dataSequence.elements.elementAt(0);
+    int version = versionObject.valueBytes().elementAt(2);
+
+    // Serialnumber
+    ASN1Integer serialInteger =
+        dataSequence.elements.elementAt(1) as ASN1Integer;
+    BigInt serialNumber = serialInteger.valueAsBigInteger;
+
+    // Signature
+    ASN1Sequence signatureSequence =
+        dataSequence.elements.elementAt(2) as ASN1Sequence;
+    String signatureAlgorithm;
+
+    // Issuer
+    ASN1Sequence issuerSequence =
+        dataSequence.elements.elementAt(3) as ASN1Sequence;
+    Map<String, String> issuer = {};
+    for (ASN1Set s in issuerSequence.elements) {
+      ASN1Sequence setSequence = s.elements.elementAt(0) as ASN1Sequence;
+      ASN1ObjectIdentifier o =
+          setSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
+      String dn = _getDNFromBytes(o.encodedBytes.sublist(2, 5));
+
+      ASN1PrintableString value = setSequence.elements.elementAt(1);
+      issuer.putIfAbsent(dn, () => value.stringValue);
+    }
+
+    // Validity
+    ASN1Sequence validitySequence =
+        dataSequence.elements.elementAt(4) as ASN1Sequence;
+    ASN1UtcTime asn1From =
+        validitySequence.elements.elementAt(0) as ASN1UtcTime;
+    ASN1UtcTime asn1To = validitySequence.elements.elementAt(1) as ASN1UtcTime;
+    X509CertificateValidity validity = X509CertificateValidity(
+        notBefore: asn1From.dateTimeValue, notAfter: asn1To.dateTimeValue);
+
+    // Subject
+    ASN1Sequence subjectSequence =
+        dataSequence.elements.elementAt(5) as ASN1Sequence;
+    Map<String, String> subject = {};
+    for (ASN1Set s in subjectSequence.elements) {
+      ASN1Sequence setSequence = s.elements.elementAt(0) as ASN1Sequence;
+      ASN1ObjectIdentifier o =
+          setSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
+      String dn = _getDNFromBytes(o.encodedBytes.sublist(2, 5));
+
+      ASN1PrintableString value = setSequence.elements.elementAt(1);
+      subject.putIfAbsent(dn, () => value.stringValue);
+    }
+
+    return X509CertificateData(
+        version: version,
+        serialNumber: serialNumber,
+        signatureAlgorithm: signatureAlgorithm,
+        issuer: issuer,
+        validity: validity,
+        subject: subject);
+  }
+
   ///
   /// Helper function for decoding the base64 in [pem].
   ///
@@ -386,5 +503,60 @@ class X509Utils {
     outer.add(blockPublicKey);
 
     return outer;
+  }
+
+  static String _getDNFromBytes(Uint8List bytes) {
+    int value = 0;
+    bool first = true;
+    //BigInt bigValue = null;
+    StringBuffer objId = StringBuffer();
+    for (int i = 0; i != bytes.length; i++) {
+      int b = bytes[i] & 0xff;
+
+      if (value < 0x80000000000000) {
+        value = value * 128 + (b & 0x7f);
+        if ((b & 0x80) == 0) {
+          if (first) {
+            switch (value ~/ 40) {
+              case 0:
+                objId.write('0');
+                break;
+              case 1:
+                objId.write('1');
+                value -= 40;
+                break;
+              default:
+                objId.write('2');
+                value -= 80;
+            }
+            first = false;
+          }
+
+          objId.write('.');
+          objId.write(value);
+          value = 0;
+        }
+      } else {
+        /*
+        if (bigValue == null) {
+          bigValue = BigInt.from(value);
+        }
+        bigValue = bigValue.shiftLeft(7);
+        bigValue = bigValue.or(BigInteger.valueOf(b & 0x7f));
+        if ((b & 0x80) == 0) {
+          objId.append('.');
+          objId.append(bigValue);
+          bigValue = null;
+          value = 0;
+        }
+        */
+      }
+    }
+    for (String k in DN.keys) {
+      if (DN[k] == objId.toString()) {
+        return k;
+      }
+    }
+    return null;
   }
 }

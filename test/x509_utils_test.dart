@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:asn1lib/asn1lib.dart';
 import 'package:basic_utils/src/X509Utils.dart';
+import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
 import 'package:pointycastle/impl.dart';
 import 'package:pointycastle/pointycastle.dart';
 import "package:test/test.dart";
@@ -68,6 +70,39 @@ void main() {
 
   String unformattedKey =
       "MIICvzCCAacCAQAwejELMAkGA1UEBhMCREUxEjAQBgNVBAgMCUZha2VzdGF0ZTERMA8GA1UEBwwIRmFrZXRvd24xEzARBgNVBAoMCkVwaGVub2Ryb20xFTATBgNVBAsMDERldmVsb3BlbWVudDEYMBYGA1UEAwwPYmFzaWMtdXRpbHMuZGV2MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0QX4e8oAKpD91eKKLL/EdrH02N/Ulg35bdCJSozHubnoDG7ZXiELTFuPDANNmG4HmxVUpHv1uxmVrbzECnqBBEzjLW5NaW2T9U74ACo23HmDFQJqiTF/aVFcfEzKwHXtZeVVCrXU5MEvnFjDrEOrgZIFd46AElSt/IU6d6zKRlFx6pYgB64mPW3L50sNrg6ONkCfXt7HT5u2ftzo/iP5qi41BtzJUk2dS9DskbweQ8mv4KRstjawioQf2Qjew/lgaVSf5V5YEFWnvHLCh15/LwbN5Z6EN0Ks7i0gkefKfg+7ydd7eU4jHKhmE15Kbu59uWgS9cswJ4jmXPPqukusZQIDAQABoAAwDQYJKoZIhvcNAQELBQADggEBAMLfJml1DbYOnUA7Nwlutk6suMmS0FDkQLXFiJQkKs5Fy6rfNtV1Z8KL/xGqAzyAcuAXL+0cQMZRsNTd9sT5ZriSzoikwaeIKOoRqhFqbKXqlhYSbgmVUiYKm9HI3w+rzyZ+JXhiRXZ1ZGZXwEjBSu+Ne+SPE12mYlK+4zBxgPTDMrvb73QiqHqiGc/l5UjwFyrOUsq5GtiMc6QU+rAQjj6Ix6KqOzJIxyVdRzOCc47tT30d2tJEJbDHGutbqLQFRr7xx7uHP/LGggTFN8Zs2u+cQxPRFsIhQdpDY1MFtHAaI8r/tlZQWf3fu4FVZMbxrYTMA5cwz/TxweMKWTroN5c=";
+
+  String x509Pem = "-----BEGIN CERTIFICATE-----\n" +
+      "MIIFhTCCBG2gAwIBAgIQCsPCl13VasnM97sWbV7o+TANBgkqhkiG9w0BAQsFADBu\n" +
+      "MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\n" +
+      "d3cuZGlnaWNlcnQuY29tMS0wKwYDVQQDEyRFbmNyeXB0aW9uIEV2ZXJ5d2hlcmUg\n" +
+      "RFYgVExTIENBIC0gRzEwHhcNMTkxMDE2MDAwMDAwWhcNMjAxMDE2MTIwMDAwWjAZ\n" +
+      "MRcwFQYDVQQDEw5qdW5rZHJhZ29ucy5kZTCCASIwDQYJKoZIhvcNAQEBBQADggEP\n" +
+      "ADCCAQoCggEBAKDSIKp1yUheQqq239dbS3gPxtYipab0GdC2V+MOLg6RNPtVsGU/\n" +
+      "cIyYETt7H5fAP1gBye1gtMFmyYVJO9W25yBuAPK1vPTZjwpgIaFbkJuJl/7MmxKU\n" +
+      "H9QDhgbU5t8Uh0xKp2MYDNqBoKVEim9yNE12cFUndSXo/1y775g97jqPTjPPhNZq\n" +
+      "hmLrW0o8DMrD3iUeS+0N0/maRrPcxUWQgFFmA7v0CsZMPuhrmbVoBWo7FqbYGo1j\n" +
+      "4NDn0F2Yp6z2s85uqJOnkNjbzLW4xBz/Sk3xDAgihVfyXOMsDtLPZK+TGEAXNjZ2\n" +
+      "SFzj7VV9iQg7yN5XiO1VMPhmsmgQiTLrEYcCAwEAAaOCAnIwggJuMB8GA1UdIwQY\n" +
+      "MBaAFFV0T7JyT/VgulDR1+ZRXJoBhxrXMB0GA1UdDgQWBBS5TXU4GGulj0oVxurj\n" +
+      "4iMuqmPXwzAZBgNVHREEEjAQgg5qdW5rZHJhZ29ucy5kZTAOBgNVHQ8BAf8EBAMC\n" +
+      "BaAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMEwGA1UdIARFMEMwNwYJ\n" +
+      "YIZIAYb9bAECMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2ljZXJ0LmNv\n" +
+      "bS9DUFMwCAYGZ4EMAQIBMIGABggrBgEFBQcBAQR0MHIwJAYIKwYBBQUHMAGGGGh0\n" +
+      "dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBKBggrBgEFBQcwAoY+aHR0cDovL2NhY2Vy\n" +
+      "dHMuZGlnaWNlcnQuY29tL0VuY3J5cHRpb25FdmVyeXdoZXJlRFZUTFNDQS1HMS5j\n" +
+      "cnQwCQYDVR0TBAIwADCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2ALvZ37wfinG1\n" +
+      "k5Qjl6qSe0c4V5UKq1LoGpCWZDaOHtGFAAABbdPp/3kAAAQDAEcwRQIhALxeOuwu\n" +
+      "avAowNhDJE4uRpk93ET0uLREKIcR69o1WurPAiBmv5ig+kag8mitfxM+G9PSAcOO\n" +
+      "TS6qUBOkMunocrHnKwB2AF6nc/nfVsDntTZIfdBJ4DJ6kZoMhKESEoQYdZaBcUVY\n" +
+      "AAABbdPp/yIAAAQDAEcwRQIgfaIVeRjb6CNBD2mUMgC2ZlibmxlRwWGrqBYDmbxo\n" +
+      "FaMCIQDkIdSLaliDj8N10FGmikgtrKJ351oQs1sk/PqdwSGQsDANBgkqhkiG9w0B\n" +
+      "AQsFAAOCAQEAbW+DFt7HvqFr8+kzoBfUQ7UW2SwXqH16UOfAK/GFFeu/0z19BtnF\n" +
+      "ChOW7j3wlfzO9TpnmLr/7yw7lL5UXJwXhsnzqf+BYQ2ULE0gPFK9/624WX/fxYEe\n" +
+      "SVBbEOpP6hsb1uNVrv6G8M98dXoUDP/zX+jCPXMQAmciH5T+LyTgrq/kw1E81HHh\n" +
+      "GJNIB43b4FcyJGcbFA8P24HTpwWaZwg5WqqoNFwdSkeav51wd1INQHFc3H8ulEyD\n" +
+      "2mrJ2GqJ8srncAMyV2GdIwxLoCkKS8NRA+EK2agm1iBT7J3wKjak1Rrp4gNlNbtq\n" +
+      "zvE4WdYIQHPX0Y36+mjPnSMTXcrCPd+9yQ==\n" +
+      "-----END CERTIFICATE-----";
 
   test('Test getBytesFromPEMString', () {
     Uint8List bytes = X509Utils.getBytesFromPEMString(csr);
@@ -193,5 +228,14 @@ void main() {
     String hexString = hex.encode(bytes);
     expect(hexString,
         "65ac4bbaeaf35ce6882730cbf51268b97dee6e4a5e1366a81c234e797bd7c9bb0f7ecae791202deeac4237849ee5cd062f7f5e87c272bca75510585ee59f546960f9c3de08d91f848ab036b66ca4e0afc9431ebc91ecd04b9d4d52c9dc06352eaaf923fee8dc7eb69b4fc7de5e9f40368e0eae0d4be7cb6d3d26ae072096ea715146caac773a85fcad5412808e77059281ab43acc3589c2fc1e4d4b50a55e565ed75c0ca4c7c5c51697f31896a02158379dc362a00f84ef5936d694d6e2de34c04817a0ac4bcad9519bbf57ba454159b076e984d030c8f5b4c0b215ed96e0ce8b9b9c78c4a89d06df90d96d4dfd8f4b176c4bf2c8ae2d5fd902a00ca7bf805d1");
+  });
+
+  test('Test x509CertificateFromPem', () {
+    X509CertificateData data = X509Utils.x509CertificateFromPem(x509Pem);
+    expect(data.version, 2);
+    expect(
+        data.serialNumber.toString(), "14308724625219209600953969390500374777");
+    expect(data.subject.containsKey("cn"), true);
+    expect(data.subject["cn"], "junkdragons.de");
   });
 }
