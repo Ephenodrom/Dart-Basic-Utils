@@ -34,7 +34,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.1.0
+  basic_utils: ^2.2.0
 ```
 
 ## Import
@@ -200,6 +200,14 @@ Uint8List rsaPublicKeyModulusToBytes(RSAPublicKey publicKey);
 Uint8List rsaPublicKeyExponentToBytes(RSAPublicKey publicKey);
 Uint8List rsaPrivateKeyToBytes(RSAPrivateKey privateKey);
 ASN1Object encodeDN(Map<String, String> dn);
+```
+
+### IterableUtils
+
+Helper class for operations on iterables
+
+```dart
+static T randomItem<T>(Iterable<T> iterable);
 ```
 
 ## Changelog

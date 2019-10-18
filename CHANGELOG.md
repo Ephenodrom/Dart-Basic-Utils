@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.2.0] - 2019-10-18
+
+* Add IterableUtils (Pull Request)
+* Add Unit test
+
 ## [2.1.0] - 2019-10-16
 
 * Improve StringUtils

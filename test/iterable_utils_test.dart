@@ -2,7 +2,7 @@ import 'package:basic_utils/src/IterableUtils.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('Happy test', () {
+  test('Test randomItem', () {
     var list = [1, 2, 3];
     expect(IterableUtils.randomItem(list), isIn(list));
   });
