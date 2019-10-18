@@ -19,6 +19,7 @@ A dart package for many helper methods fitting different situations.
    * [ColorUtils](#colorutils)
    * [DateUtils](#dateutils)
    * [X509Utils](#x509utils)
+   * [IterableUtils](#iterableutils)
 5. [Changelog](#changelog)
 6. [Copyright and license](#copyright-and-license)
 
