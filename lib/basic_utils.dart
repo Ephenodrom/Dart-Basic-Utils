@@ -23,3 +23,4 @@ export "src/SortUtils.dart";
 export "src/ColorUtils.dart";
 export "src/DateUtils.dart";
 export "src/X509Utils.dart";
+export "src/IterableUtils.dart";

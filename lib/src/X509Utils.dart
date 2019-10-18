@@ -310,7 +310,7 @@ class X509Utils {
       ASN1ObjectIdentifier o =
           setSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
       String dn = _getDNFromBytes(o.encodedBytes.sublist(2, 5));
-
+      //String dn = o.identifier;
       ASN1PrintableString value = setSequence.elements.elementAt(1);
       subject.putIfAbsent(dn, () => value.stringValue);
     }
