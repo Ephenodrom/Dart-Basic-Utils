@@ -238,4 +238,8 @@ void main() {
     expect(data.subject.containsKey("cn"), true);
     expect(data.subject["cn"], "junkdragons.de");
   });
+
+  test('Test checkCertificate', () async {
+    await X509Utils.fetchCertificate(Uri.parse("http://ephenodrom.de"));
+  });
 }

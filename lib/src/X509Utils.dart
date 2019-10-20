@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -558,5 +559,22 @@ class X509Utils {
       }
     }
     return null;
+  }
+
+
+  ///
+  /// Fetch the certificate from the given [uri].
+  /// 
+  /// Throws a [HandshakeException] if the given [uri] is secured with a self signed certificate.
+  /// Returns null if no certificate is found.
+  ///
+  static Future<X509CertificateData> fetchCertificate(Uri uri) async{
+    HttpClientRequest request = await HttpClient().getUrl(uri);
+    HttpClientResponse response = await request.close();
+    if(response.certificate == null){
+      return null;
+    }
+    String pem = response.certificate.pem;
+    return x509CertificateFromPem(pem);
   }
 }
