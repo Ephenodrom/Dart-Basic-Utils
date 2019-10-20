@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:asn1lib/asn1lib.dart';
@@ -240,6 +239,6 @@ void main() {
   });
 
   test('Test checkCertificate', () async {
-    await X509Utils.fetchCertificate(Uri.parse("http://ephenodrom.de"));
+    await X509Utils.fetchCertificate(Uri.parse("http://google.de"));
   });
 }

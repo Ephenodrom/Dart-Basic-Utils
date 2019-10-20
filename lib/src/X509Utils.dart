@@ -277,7 +277,9 @@ class X509Utils {
     // Signature
     ASN1Sequence signatureSequence =
         dataSequence.elements.elementAt(2) as ASN1Sequence;
-    String signatureAlgorithm;
+    ASN1ObjectIdentifier o =
+        signatureSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
+    String signatureAlgorithm = o.identifier;
 
     // Issuer
     ASN1Sequence issuerSequence =
@@ -287,10 +289,16 @@ class X509Utils {
       ASN1Sequence setSequence = s.elements.elementAt(0) as ASN1Sequence;
       ASN1ObjectIdentifier o =
           setSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
-      String dn = _getDNFromBytes(o.encodedBytes.sublist(2, 5));
-
-      ASN1PrintableString value = setSequence.elements.elementAt(1);
-      issuer.putIfAbsent(dn, () => value.stringValue);
+      ASN1Object object = setSequence.elements.elementAt(1);
+      String value = "";
+      if (object is ASN1UTF8String) {
+        ASN1UTF8String objectAsUtf8 = object;
+        value = objectAsUtf8.utf8StringValue;
+      } else if (object is ASN1PrintableString) {
+        ASN1PrintableString objectPrintable = object;
+        value = objectPrintable.stringValue;
+      }
+      issuer.putIfAbsent(o.identifier, () => value);
     }
 
     // Validity
@@ -310,10 +318,16 @@ class X509Utils {
       ASN1Sequence setSequence = s.elements.elementAt(0) as ASN1Sequence;
       ASN1ObjectIdentifier o =
           setSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
-      String dn = _getDNFromBytes(o.encodedBytes.sublist(2, 5));
-      //String dn = o.identifier;
-      ASN1PrintableString value = setSequence.elements.elementAt(1);
-      subject.putIfAbsent(dn, () => value.stringValue);
+      ASN1Object object = setSequence.elements.elementAt(1);
+      String value = "";
+      if (object is ASN1UTF8String) {
+        ASN1UTF8String objectAsUtf8 = object;
+        value = objectAsUtf8.utf8StringValue;
+      } else if (object is ASN1PrintableString) {
+        ASN1PrintableString objectPrintable = object;
+        value = objectPrintable.stringValue;
+      }
+      subject.putIfAbsent(o.identifier, () => value);
     }
 
     return X509CertificateData(
@@ -506,67 +520,11 @@ class X509Utils {
     return outer;
   }
 
-  static String _getDNFromBytes(Uint8List bytes) {
-    int value = 0;
-    bool first = true;
-    //BigInt bigValue = null;
-    StringBuffer objId = StringBuffer();
-    for (int i = 0; i != bytes.length; i++) {
-      int b = bytes[i] & 0xff;
-
-      if (value < 0x80000000000000) {
-        value = value * 128 + (b & 0x7f);
-        if ((b & 0x80) == 0) {
-          if (first) {
-            switch (value ~/ 40) {
-              case 0:
-                objId.write('0');
-                break;
-              case 1:
-                objId.write('1');
-                value -= 40;
-                break;
-              default:
-                objId.write('2');
-                value -= 80;
-            }
-            first = false;
-          }
-
-          objId.write('.');
-          objId.write(value);
-          value = 0;
-        }
-      } else {
-        /*
-        if (bigValue == null) {
-          bigValue = BigInt.from(value);
-        }
-        bigValue = bigValue.shiftLeft(7);
-        bigValue = bigValue.or(BigInteger.valueOf(b & 0x7f));
-        if ((b & 0x80) == 0) {
-          objId.append('.');
-          objId.append(bigValue);
-          bigValue = null;
-          value = 0;
-        }
-        */
-      }
-    }
-    for (String k in DN.keys) {
-      if (DN[k] == objId.toString()) {
-        return k;
-      }
-    }
-    return null;
-  }
-
-
   ///
-  /// Fetch the certificate from the given [uri].
+  /// Fetch the certificate from the given [uri] by making a GET request.
   /// 
   /// Throws a [HandshakeException] if the given [uri] is secured with a self signed certificate.
-  /// Returns null if no certificate is found.
+  /// Returns null if the connection is not a secure TLS or SSL connection.
   ///
   static Future<X509CertificateData> fetchCertificate(Uri uri) async{
     HttpClientRequest request = await HttpClient().getUrl(uri);

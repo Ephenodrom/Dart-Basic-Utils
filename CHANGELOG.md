@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.2.2] - 2019-10-21
+
+* Improve X509Utils
+* Add Unit test
+
+## [2.2.1] - 2019-10-18
+
+* Minor fix
+
 ## [2.2.0] - 2019-10-18
 
 * Add IterableUtils (Pull Request)
