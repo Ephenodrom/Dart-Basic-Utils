@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.2.3] - 2019-10-21
+
+* Improve X509Utils
+
 ## [2.2.2] - 2019-10-21
 
 * Improve X509Utils

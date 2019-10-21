@@ -255,36 +255,4 @@ void main() {
     expect(data.subject.containsKey("2.5.4.3"), true);
     expect(data.subject["2.5.4.3"], "junkdragons.de");
   });
-
-  ///
-  /// This test may fail in the future!
-  ///
-  test('Test fetchCertificate', () async {
-    X509CertificateData data =
-        await X509Utils.fetchCertificate(Uri.parse("http://google.de"));
-
-    expect(data, null);
-
-    data = await X509Utils.fetchCertificate(Uri.parse("https://google.de"));
-
-    expect(data.version, 2);
-
-    expect(data.issuer.containsKey("2.5.4.6"), true);
-    expect(data.issuer["2.5.4.6"], "US");
-    expect(data.issuer.containsKey("2.5.4.10"), true);
-    expect(data.issuer["2.5.4.10"], "Google Trust Services");
-    expect(data.issuer.containsKey("2.5.4.3"), true);
-    expect(data.issuer["2.5.4.3"], "GTS CA 1O1");
-
-    expect(data.subject.containsKey("2.5.4.6"), true);
-    expect(data.subject["2.5.4.6"], "US");
-    expect(data.subject.containsKey("2.5.4.8"), true);
-    expect(data.subject["2.5.4.8"], "California");
-    expect(data.subject.containsKey("2.5.4.7"), true);
-    expect(data.subject["2.5.4.7"], "Mountain View");
-    expect(data.subject.containsKey("2.5.4.10"), true);
-    expect(data.subject["2.5.4.10"], "Google LLC");
-    expect(data.subject.containsKey("2.5.4.3"), true);
-    expect(data.subject["2.5.4.3"], "www.google.de");
-  });
 }
