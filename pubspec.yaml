@@ -13,7 +13,7 @@ dependencies:
   logging: ^0.11.3+2
   json_annotation: ^3.0.0
   pointycastle: ^1.0.1
-  asn1lib: ^0.5.8
+  asn1lib: ^0.5.10
   convert: ^2.1.1
 
 

@@ -232,13 +232,59 @@ void main() {
   test('Test x509CertificateFromPem', () {
     X509CertificateData data = X509Utils.x509CertificateFromPem(x509Pem);
     expect(data.version, 2);
+
     expect(
         data.serialNumber.toString(), "14308724625219209600953969390500374777");
-    expect(data.subject.containsKey("cn"), true);
-    expect(data.subject["cn"], "junkdragons.de");
+
+    expect(data.signatureAlgorithm, "1.2.840.113549.1.1.11");
+
+    expect(data.issuer.containsKey("2.5.4.6"), true);
+    expect(data.issuer["2.5.4.6"], "US");
+    expect(data.issuer.containsKey("2.5.4.10"), true);
+    expect(data.issuer["2.5.4.10"], "DigiCert Inc");
+    expect(data.issuer.containsKey("2.5.4.11"), true);
+    expect(data.issuer["2.5.4.11"], "www.digicert.com");
+    expect(data.issuer.containsKey("2.5.4.3"), true);
+    expect(data.issuer["2.5.4.3"], "Encryption Everywhere DV TLS CA - G1");
+
+    expect(
+        data.validity.notBefore.toIso8601String(), "2019-10-16T00:00:00.000Z");
+    expect(
+        data.validity.notAfter.toIso8601String(), "2020-10-16T12:00:00.000Z");
+
+    expect(data.subject.containsKey("2.5.4.3"), true);
+    expect(data.subject["2.5.4.3"], "junkdragons.de");
   });
 
-  test('Test checkCertificate', () async {
-    await X509Utils.fetchCertificate(Uri.parse("http://google.de"));
+  ///
+  /// This test may fail in the future!
+  ///
+  test('Test fetchCertificate', () async {
+    X509CertificateData data =
+        await X509Utils.fetchCertificate(Uri.parse("http://google.de"));
+
+    expect(data, null);
+
+    data = await X509Utils.fetchCertificate(Uri.parse("https://google.de"));
+
+    expect(data.version, 2);
+
+    expect(data.issuer.containsKey("2.5.4.6"), true);
+    expect(data.issuer["2.5.4.6"], "US");
+    expect(data.issuer.containsKey("2.5.4.10"), true);
+    expect(data.issuer["2.5.4.10"], "Google Trust Services");
+    expect(data.issuer.containsKey("2.5.4.3"), true);
+    expect(data.issuer["2.5.4.3"], "GTS CA 1O1");
+
+    expect(data.subject.containsKey("2.5.4.6"), true);
+    expect(data.subject["2.5.4.6"], "US");
+    expect(data.subject.containsKey("2.5.4.8"), true);
+    expect(data.subject["2.5.4.8"], "California");
+    expect(data.subject.containsKey("2.5.4.7"), true);
+    expect(data.subject["2.5.4.7"], "Mountain View");
+    expect(data.subject.containsKey("2.5.4.10"), true);
+    expect(data.subject["2.5.4.10"], "Google LLC");
+    expect(data.subject.containsKey("2.5.4.3"), true);
+    expect(data.subject["2.5.4.3"], "www.google.de");
   });
 }
