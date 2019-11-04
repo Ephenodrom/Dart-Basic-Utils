@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:asn1lib/asn1lib.dart';
 import 'package:basic_utils/src/X509Utils.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
+import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:pointycastle/impl.dart';
 import 'package:pointycastle/pointycastle.dart';
 import "package:test/test.dart";
@@ -254,5 +256,27 @@ void main() {
 
     expect(data.subject.containsKey("2.5.4.3"), true);
     expect(data.subject["2.5.4.3"], "junkdragons.de");
+
+    expect(data.sha1Thumbprint, "65aa0349076ec56ba663f128074f426705b41fb1");
+    expect(data.md5Thumbprint, "ea0a4e97fb79ac590c4de08dd4f5e331");
+
+    X509CertificatePublicKeyData publicKeyData = data.publicKeyData;
+
+    expect(publicKeyData.length, 2048);
+    expect(publicKeyData.algorithm, "1.2.840.113549.1.1.1");
+    expect(publicKeyData.bytesAsString(),
+        "3082010A0282010100A0D220AA75C9485E42AAB6DFD75B4B780FC6D622A5A6F419D0B657E30E2E0E9134FB55B0653F708C98113B7B1F97C03F5801C9ED60B4C166C985493BD5B6E7206E00F2B5BCF4D98F0A6021A15B909B8997FECC9B12941FD4038606D4E6DF14874C4AA763180CDA81A0A5448A6F72344D767055277525E8FF5CBBEF983DEE3A8F4E33CF84D66A8662EB5B4A3C0CCAC3DE251E4BED0DD3F99A46B3DCC5459080516603BBF40AC64C3EE86B99B568056A3B16A6D81A8D63E0D0E7D05D98A7ACF6B3CE6EA893A790D8DBCCB5B8C41CFF4A4DF10C08228557F25CE32C0ED2CF64AF93184017363676485CE3ED557D89083BC8DE5788ED5530F866B268108932EB11870203010001");
+  });
+
+  test('Test getThumbprintFromCertBytes', () {
+    Uint8List bytes = X509Utils.getBytesFromPEMString(x509Pem);
+    String thumbprint = X509Utils.getSha1ThumbprintFromCertBytes(bytes);
+    expect(thumbprint, "65aa0349076ec56ba663f128074f426705b41fb1");
+  });
+
+  test('Test getMd5ThumbprintFromCertBytes', () {
+    Uint8List bytes = X509Utils.getBytesFromPEMString(x509Pem);
+    String thumbprint = X509Utils.getMd5ThumbprintFromCertBytes(bytes);
+    expect(thumbprint, "ea0a4e97fb79ac590c4de08dd4f5e331");
   });
 }

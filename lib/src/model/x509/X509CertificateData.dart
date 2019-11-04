@@ -1,3 +1,5 @@
+import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
+
 import 'X509CertificateValidity.dart';
 
 ///
@@ -22,11 +24,23 @@ class X509CertificateData {
   /// The subject data of the certificate
   Map<String, String> subject;
 
+  /// The sha1 thumbprint for the certificate
+  String sha1Thumbprint;
+
+  /// The md5 thumbprint for the certificate
+  String md5Thumbprint;
+
+  /// The public key data from the certificate
+  X509CertificatePublicKeyData publicKeyData;
+
   X509CertificateData(
       {this.version,
       this.serialNumber,
       this.signatureAlgorithm,
       this.issuer,
       this.validity,
-      this.subject});
+      this.subject,
+      this.sha1Thumbprint,
+      this.md5Thumbprint,
+      this.publicKeyData});
 }

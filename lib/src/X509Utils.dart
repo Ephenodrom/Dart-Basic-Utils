@@ -4,9 +4,12 @@ import 'dart:typed_data';
 
 import 'package:asn1lib/asn1lib.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
+import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateValidity.dart';
+import 'package:crypto/crypto.dart';
 import 'package:pointycastle/export.dart';
 import 'package:pointycastle/pointycastle.dart';
+import 'package:crypto/src/digest.dart' as crypto;
 
 import '../basic_utils.dart';
 
@@ -329,13 +332,51 @@ class X509Utils {
       subject.putIfAbsent(o.identifier, () => value);
     }
 
+    // Public Key
+    ASN1Sequence pubKeySequence =
+        dataSequence.elements.elementAt(6) as ASN1Sequence;
+
+    ASN1Sequence algoSequence =
+        pubKeySequence.elements.elementAt(0) as ASN1Sequence;
+    ASN1ObjectIdentifier pubKeyOid =
+        algoSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
+
+    ASN1BitString pubKey =
+        pubKeySequence.elements.elementAt(1) as ASN1BitString;
+    ASN1Parser asn1PubKeyParser = ASN1Parser(pubKey.contentBytes());
+    ASN1Object next = asn1PubKeyParser.nextObject();
+    int pubKeyLength = 0;
+
+    Uint8List pubKeyAsBytes = pubKeySequence.contentBytes();
+    // 30 82 01 22
+    // 48 130 1 34
+    //pubKeyAsBytes.insert(0, pubKeySequence.tag);
+
+    if (next is ASN1Sequence) {
+      ASN1Sequence s = next;
+      ASN1Integer key = s.elements.elementAt(0) as ASN1Integer;
+      pubKeyLength = key.valueAsBigInteger.bitLength;
+    } else {}
+    String pubKeyThumbprint = getSha1ThumbprintFromCertBytes(pubKeyAsBytes);
+    X509CertificatePublicKeyData publicKeyData = X509CertificatePublicKeyData(
+        algorithm: pubKeyOid.identifier,
+        bytes: pubKeyAsBytes,
+        length: pubKeyLength,
+        sha1Thumbprint: pubKeyThumbprint);
+
+    String sha1String = getSha1ThumbprintFromCertBytes(bytes);
+    String md5String = getMd5ThumbprintFromCertBytes(bytes);
+
     return X509CertificateData(
         version: version,
         serialNumber: serialNumber,
         signatureAlgorithm: signatureAlgorithm,
         issuer: issuer,
         validity: validity,
-        subject: subject);
+        subject: subject,
+        sha1Thumbprint: sha1String,
+        md5Thumbprint: md5String,
+        publicKeyData: publicKeyData);
   }
 
   ///
@@ -517,5 +558,21 @@ class X509Utils {
     outer.add(blockPublicKey);
 
     return outer;
+  }
+
+  ///
+  /// Get a SHA1 Thumbprint for the given [bytes].
+  ///
+  static String getSha1ThumbprintFromCertBytes(Uint8List bytes) {
+    crypto.Digest digest = sha1.convert(bytes);
+    return digest.toString();
+  }
+
+  ///
+  /// Get a MD5 Thumbprint for the given [bytes].
+  ///
+  static String getMd5ThumbprintFromCertBytes(Uint8List bytes) {
+    crypto.Digest digest = md5.convert(bytes);
+    return digest.toString();
   }
 }
