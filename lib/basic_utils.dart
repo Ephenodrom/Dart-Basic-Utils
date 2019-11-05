@@ -27,3 +27,4 @@ export "src/ColorUtils.dart";
 export "src/DateUtils.dart";
 export "src/X509Utils.dart";
 export "src/IterableUtils.dart";
+export "src/CryptoUtils.dart";

@@ -20,6 +20,7 @@ A dart package for many helper methods fitting different situations.
    * [DateUtils](#dateutils)
    * [X509Utils](#x509utils)
    * [IterableUtils](#iterableutils)
+   * [CryptoUtils](#cryptoutils)
 5. [Changelog](#changelog)
 6. [Copyright and license](#copyright-and-license)
 
@@ -35,7 +36,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.2.4
+  basic_utils: ^2.3.0
 ```
 
 ## Import
@@ -202,8 +203,8 @@ Uint8List rsaPublicKeyExponentToBytes(RSAPublicKey publicKey);
 Uint8List rsaPrivateKeyToBytes(RSAPrivateKey privateKey);
 ASN1Object encodeDN(Map<String, String> dn);
 X509CertificateData x509CertificateFromPem(String pem);
-String getSha1ThumbprintFromCertBytes(Uint8List bytes);
-String getMd5ThumbprintFromCertBytes(Uint8List bytes);
+String getSha1ThumbprintFromBytes(Uint8List bytes);
+String getMd5ThumbprintFromBytes(Uint8List bytes);
 ```
 
 ### IterableUtils
@@ -212,6 +213,15 @@ Helper class for operations on iterables
 
 ```dart
 T randomItem<T>(Iterable<T> iterable);
+```
+
+### CryptoUtils
+
+Helper class for cryptographic operations.
+
+```dart
+String getSha1ThumbprintFromBytes(Uint8List bytes);
+String getMd5ThumbprintFromBytes(Uint8List bytes);
 ```
 
 ## Changelog

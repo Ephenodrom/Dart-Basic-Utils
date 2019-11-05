@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0] - 2019-11-06
+
+* Added CryptoUtils
+* Improve X509Utils
+* Improve X509CertificateData Model
+* Improve and add Unit tests
+
 ## [2.2.5] - 2019-11-04
 
 * Improve X509Utils

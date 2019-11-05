@@ -6,10 +6,8 @@ import 'package:asn1lib/asn1lib.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateValidity.dart';
-import 'package:crypto/crypto.dart';
 import 'package:pointycastle/export.dart';
 import 'package:pointycastle/pointycastle.dart';
-import 'package:crypto/src/digest.dart' as crypto;
 
 import '../basic_utils.dart';
 
@@ -347,25 +345,24 @@ class X509Utils {
     ASN1Object next = asn1PubKeyParser.nextObject();
     int pubKeyLength = 0;
 
-    Uint8List pubKeyAsBytes = pubKeySequence.contentBytes();
-    // 30 82 01 22
-    // 48 130 1 34
-    //pubKeyAsBytes.insert(0, pubKeySequence.tag);
+    Uint8List pubKeyAsBytes;
 
     if (next is ASN1Sequence) {
       ASN1Sequence s = next;
       ASN1Integer key = s.elements.elementAt(0) as ASN1Integer;
       pubKeyLength = key.valueAsBigInteger.bitLength;
+      pubKeyAsBytes = s.encodedBytes;
     } else {}
-    String pubKeyThumbprint = getSha1ThumbprintFromCertBytes(pubKeyAsBytes);
+    String pubKeyThumbprint =
+        CryptoUtils.getSha1ThumbprintFromBytes(pubKeySequence.encodedBytes);
     X509CertificatePublicKeyData publicKeyData = X509CertificatePublicKeyData(
         algorithm: pubKeyOid.identifier,
         bytes: pubKeyAsBytes,
         length: pubKeyLength,
         sha1Thumbprint: pubKeyThumbprint);
 
-    String sha1String = getSha1ThumbprintFromCertBytes(bytes);
-    String md5String = getMd5ThumbprintFromCertBytes(bytes);
+    String sha1String = CryptoUtils.getSha1ThumbprintFromBytes(bytes);
+    String md5String = CryptoUtils.getMd5ThumbprintFromBytes(bytes);
 
     return X509CertificateData(
         version: version,
@@ -558,21 +555,5 @@ class X509Utils {
     outer.add(blockPublicKey);
 
     return outer;
-  }
-
-  ///
-  /// Get a SHA1 Thumbprint for the given [bytes].
-  ///
-  static String getSha1ThumbprintFromCertBytes(Uint8List bytes) {
-    crypto.Digest digest = sha1.convert(bytes);
-    return digest.toString();
-  }
-
-  ///
-  /// Get a MD5 Thumbprint for the given [bytes].
-  ///
-  static String getMd5ThumbprintFromCertBytes(Uint8List bytes) {
-    crypto.Digest digest = md5.convert(bytes);
-    return digest.toString();
   }
 }
