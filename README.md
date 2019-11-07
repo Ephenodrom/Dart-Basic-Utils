@@ -203,8 +203,6 @@ Uint8List rsaPublicKeyExponentToBytes(RSAPublicKey publicKey);
 Uint8List rsaPrivateKeyToBytes(RSAPrivateKey privateKey);
 ASN1Object encodeDN(Map<String, String> dn);
 X509CertificateData x509CertificateFromPem(String pem);
-String getSha1ThumbprintFromBytes(Uint8List bytes);
-String getMd5ThumbprintFromBytes(Uint8List bytes);
 ```
 
 ### IterableUtils
