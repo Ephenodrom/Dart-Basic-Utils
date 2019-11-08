@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.3.1] - 2019-11-08
+
+* Update pubspec.yaml
+
 ## [2.3.0] - 2019-11-06
 
 * Added CryptoUtils
