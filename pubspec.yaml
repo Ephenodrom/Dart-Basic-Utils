@@ -1,6 +1,6 @@
 name: basic_utils
 description: Common util classes providing a solution for different situations.
-version: 2.3.1
+version: 2.3.2
 homepage: https://github.com/Ephenodrom/Dart-Basic-Utils
 publish_to: https://pub.dartlang.org
 
@@ -12,7 +12,7 @@ dependencies:
   logging: ^0.11.3+2
   json_annotation: ">=2.0.0 <=3.0.0"
   pointycastle: ^1.0.1
-  asn1lib: ^0.5.13
+  asn1lib: ^0.5.14
   convert: ^2.1.1
   crypto: ^2.1.3
 

@@ -33,6 +33,8 @@ class X509CertificateData {
   /// The public key data from the certificate
   X509CertificatePublicKeyData publicKeyData;
 
+  List<String> subjectAlternativNames;
+
   X509CertificateData(
       {this.version,
       this.serialNumber,
@@ -42,5 +44,6 @@ class X509CertificateData {
       this.subject,
       this.sha1Thumbprint,
       this.md5Thumbprint,
-      this.publicKeyData});
+      this.publicKeyData,
+      this.subjectAlternativNames});
 }

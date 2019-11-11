@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.3.2] - 2019-11-11
+
+* Improve X509CertificateData Model
+* Improve X509Utils
+
 ## [2.3.1] - 2019-11-08
 
 * Update pubspec.yaml

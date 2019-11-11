@@ -364,6 +364,21 @@ class X509Utils {
     String sha1String = CryptoUtils.getSha1ThumbprintFromBytes(bytes);
     String md5String = CryptoUtils.getMd5ThumbprintFromBytes(bytes);
 
+    // Extensions
+    ASN1Object extensionObject = dataSequence.elements.elementAt(7);
+    ASN1Parser extParser = ASN1Parser(extensionObject.valueBytes());
+    ASN1Sequence extSequence = extParser.nextObject() as ASN1Sequence;
+
+    List<String> sans;
+    extSequence.elements.forEach((ASN1Object subseq) {
+      ASN1Sequence seq = subseq as ASN1Sequence;
+      ASN1ObjectIdentifier oi =
+          seq.elements.elementAt(0) as ASN1ObjectIdentifier;
+      if (oi.identifier == "2.5.29.17") {
+        sans = _fetchSansFromExtension(seq.elements.elementAt(1));
+      }
+    });
+
     return X509CertificateData(
         version: version,
         serialNumber: serialNumber,
@@ -373,7 +388,8 @@ class X509Utils {
         subject: subject,
         sha1Thumbprint: sha1String,
         md5Thumbprint: md5String,
-        publicKeyData: publicKeyData);
+        publicKeyData: publicKeyData,
+        subjectAlternativNames: sans);
   }
 
   ///
@@ -555,5 +571,20 @@ class X509Utils {
     outer.add(blockPublicKey);
 
     return outer;
+  }
+
+  ///
+  /// Fetches a list of subject alternative names from the given [extData]
+  ///
+  static List<String> _fetchSansFromExtension(ASN1Object extData) {
+    List<String> sans = [];
+    ASN1OctetString octet = extData as ASN1OctetString;
+    ASN1Parser sanParser = ASN1Parser(octet.valueBytes());
+    ASN1Sequence sanSeq = sanParser.nextObject();
+    sanSeq.elements.forEach((ASN1Object san) {
+      String s = String.fromCharCodes(san.contentBytes());
+      sans.add(s);
+    });
+    return sans;
   }
 }
