@@ -357,7 +357,7 @@ class X509Utils {
         CryptoUtils.getSha1ThumbprintFromBytes(pubKeySequence.encodedBytes);
     X509CertificatePublicKeyData publicKeyData = X509CertificatePublicKeyData(
         algorithm: pubKeyOid.identifier,
-        bytes: pubKeyAsBytes,
+        bytes: _bytesAsString(pubKeyAsBytes),
         length: pubKeyLength,
         sha1Thumbprint: pubKeyThumbprint);
 
@@ -586,5 +586,21 @@ class X509Utils {
       sans.add(s);
     });
     return sans;
+  }
+
+  ///
+  /// Converts the bytes to a hex string
+  ///
+  static String _bytesAsString(Uint8List bytes) {
+    StringBuffer b = StringBuffer();
+    bytes.forEach((v) {
+      String s = v.toRadixString(16);
+      if (s.length == 1) {
+        b.write("0$s");
+      } else {
+        b.write(s);
+      }
+    });
+    return b.toString().toUpperCase();
   }
 }

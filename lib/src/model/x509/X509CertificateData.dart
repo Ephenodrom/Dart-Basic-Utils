@@ -1,10 +1,14 @@
 import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'X509CertificateValidity.dart';
+
+part 'X509CertificateData.g.dart';
 
 ///
 /// Model that represents the data of a x509Certificate
 ///
+@JsonSerializable(includeIfNull: false)
 class X509CertificateData {
   /// The version of the certificate
   int version;
@@ -46,4 +50,15 @@ class X509CertificateData {
       this.md5Thumbprint,
       this.publicKeyData,
       this.subjectAlternativNames});
+
+  /*
+   * Json to X509CertificateData object
+   */
+  factory X509CertificateData.fromJson(Map<String, dynamic> json) =>
+      _$X509CertificateDataFromJson(json);
+
+  /*
+   * X509CertificateData object to json
+   */
+  Map<String, dynamic> toJson() => _$X509CertificateDataToJson(this);
 }

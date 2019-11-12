@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.3.3] - 2019-11-12
+
+* Add Json Serialization To X509CertificateData Model
+
 ## [2.3.2] - 2019-11-11
 
 * Improve X509CertificateData Model

@@ -1,8 +1,11 @@
-import 'dart:typed_data';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'X509CertificatePublicKeyData.g.dart';
 
 ///
 /// Model that a public key from a X509Certificate
 ///
+@JsonSerializable(includeIfNull: false)
 class X509CertificatePublicKeyData {
   /// The algorithm of the public key
   String algorithm;
@@ -13,25 +16,20 @@ class X509CertificatePublicKeyData {
   /// The sha1 thumbprint of the public key
   String sha1Thumbprint;
 
-  /// The bytes representing the public key
-  Uint8List bytes;
+  /// The bytes representing the public key as String
+  String bytes;
 
   X509CertificatePublicKeyData(
       {this.algorithm, this.length, this.sha1Thumbprint, this.bytes});
 
-  ///
-  /// Converts the bytes to a hex string
-  ///
-  String bytesAsString() {
-    StringBuffer b = StringBuffer();
-    bytes.forEach((v) {
-      String s = v.toRadixString(16);
-      if (s.length == 1) {
-        b.write("0$s");
-      } else {
-        b.write(s);
-      }
-    });
-    return b.toString().toUpperCase();
-  }
+  /*
+   * Json to X509CertificatePublicKeyData object
+   */
+  factory X509CertificatePublicKeyData.fromJson(Map<String, dynamic> json) =>
+      _$X509CertificatePublicKeyDataFromJson(json);
+
+  /*
+   * X509CertificatePublicKeyData object to json
+   */
+  Map<String, dynamic> toJson() => _$X509CertificatePublicKeyDataToJson(this);
 }
