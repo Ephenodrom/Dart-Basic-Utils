@@ -8,6 +8,7 @@ class RRecord {
   String name;
 
   /// The type of the record
+  @JsonKey(name: "TYPE")
   int rType;
 
   /// The time to live of the record

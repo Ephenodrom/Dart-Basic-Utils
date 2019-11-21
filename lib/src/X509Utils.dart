@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:asn1lib/asn1lib.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
+import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateValidity.dart';
 import 'package:pointycastle/export.dart';
 import 'package:pointycastle/pointycastle.dart';
@@ -330,13 +330,66 @@ class X509Utils {
       subject.putIfAbsent(o.identifier, () => value);
     }
 
+    // Public Key
+    ASN1Sequence pubKeySequence =
+        dataSequence.elements.elementAt(6) as ASN1Sequence;
+
+    ASN1Sequence algoSequence =
+        pubKeySequence.elements.elementAt(0) as ASN1Sequence;
+    ASN1ObjectIdentifier pubKeyOid =
+        algoSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
+
+    ASN1BitString pubKey =
+        pubKeySequence.elements.elementAt(1) as ASN1BitString;
+    ASN1Parser asn1PubKeyParser = ASN1Parser(pubKey.contentBytes());
+    ASN1Object next = asn1PubKeyParser.nextObject();
+    int pubKeyLength = 0;
+
+    Uint8List pubKeyAsBytes;
+
+    if (next is ASN1Sequence) {
+      ASN1Sequence s = next;
+      ASN1Integer key = s.elements.elementAt(0) as ASN1Integer;
+      pubKeyLength = key.valueAsBigInteger.bitLength;
+      pubKeyAsBytes = s.encodedBytes;
+    } else {}
+    String pubKeyThumbprint =
+        CryptoUtils.getSha1ThumbprintFromBytes(pubKeySequence.encodedBytes);
+    X509CertificatePublicKeyData publicKeyData = X509CertificatePublicKeyData(
+        algorithm: pubKeyOid.identifier,
+        bytes: _bytesAsString(pubKeyAsBytes),
+        length: pubKeyLength,
+        sha1Thumbprint: pubKeyThumbprint);
+
+    String sha1String = CryptoUtils.getSha1ThumbprintFromBytes(bytes);
+    String md5String = CryptoUtils.getMd5ThumbprintFromBytes(bytes);
+
+    // Extensions
+    ASN1Object extensionObject = dataSequence.elements.elementAt(7);
+    ASN1Parser extParser = ASN1Parser(extensionObject.valueBytes());
+    ASN1Sequence extSequence = extParser.nextObject() as ASN1Sequence;
+
+    List<String> sans;
+    extSequence.elements.forEach((ASN1Object subseq) {
+      ASN1Sequence seq = subseq as ASN1Sequence;
+      ASN1ObjectIdentifier oi =
+          seq.elements.elementAt(0) as ASN1ObjectIdentifier;
+      if (oi.identifier == "2.5.29.17") {
+        sans = _fetchSansFromExtension(seq.elements.elementAt(1));
+      }
+    });
+
     return X509CertificateData(
         version: version,
         serialNumber: serialNumber,
         signatureAlgorithm: signatureAlgorithm,
         issuer: issuer,
         validity: validity,
-        subject: subject);
+        subject: subject,
+        sha1Thumbprint: sha1String,
+        md5Thumbprint: md5String,
+        publicKeyData: publicKeyData,
+        subjectAlternativNames: sans);
   }
 
   ///
@@ -521,18 +574,33 @@ class X509Utils {
   }
 
   ///
-  /// Fetch the certificate from the given [uri] by making a GET request.
-  /// 
-  /// Throws a [HandshakeException] if the given [uri] is secured with a self signed certificate.
-  /// Returns null if the connection is not a secure TLS or SSL connection.
+  /// Fetches a list of subject alternative names from the given [extData]
   ///
-  static Future<X509CertificateData> fetchCertificate(Uri uri) async{
-    HttpClientRequest request = await HttpClient().getUrl(uri);
-    HttpClientResponse response = await request.close();
-    if(response.certificate == null){
-      return null;
-    }
-    String pem = response.certificate.pem;
-    return x509CertificateFromPem(pem);
+  static List<String> _fetchSansFromExtension(ASN1Object extData) {
+    List<String> sans = [];
+    ASN1OctetString octet = extData as ASN1OctetString;
+    ASN1Parser sanParser = ASN1Parser(octet.valueBytes());
+    ASN1Sequence sanSeq = sanParser.nextObject();
+    sanSeq.elements.forEach((ASN1Object san) {
+      String s = String.fromCharCodes(san.contentBytes());
+      sans.add(s);
+    });
+    return sans;
+  }
+
+  ///
+  /// Converts the bytes to a hex string
+  ///
+  static String _bytesAsString(Uint8List bytes) {
+    StringBuffer b = StringBuffer();
+    bytes.forEach((v) {
+      String s = v.toRadixString(16);
+      if (s.length == 1) {
+        b.write("0$s");
+      } else {
+        b.write(s);
+      }
+    });
+    return b.toString().toUpperCase();
   }
 }

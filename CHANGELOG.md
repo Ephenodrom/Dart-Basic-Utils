@@ -1,5 +1,39 @@
 # Changelog
 
+## [2.3.3] - 2019-11-12
+
+* Add Json Serialization To X509CertificateData Model
+
+## [2.3.2] - 2019-11-11
+
+* Improve X509CertificateData Model
+* Improve X509Utils
+
+## [2.3.1] - 2019-11-08
+
+* Update pubspec.yaml
+
+## [2.3.0] - 2019-11-06
+
+* Added CryptoUtils
+* Improve X509Utils
+* Improve X509CertificateData Model
+* Improve and add Unit tests
+
+## [2.2.5] - 2019-11-04
+
+* Improve X509Utils
+* Improve X509CertificateData Model
+* Improve and add Unit tests
+
+## [2.2.4] - 2019-10-21
+
+* Export models
+
+## [2.2.3] - 2019-10-21
+
+* Improve X509Utils
+
 ## [2.2.2] - 2019-10-21
 
 * Improve X509Utils

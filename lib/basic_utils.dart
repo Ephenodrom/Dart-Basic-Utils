@@ -12,6 +12,9 @@ export "src/model/RRecordType.dart";
 export "src/model/RRecord.dart";
 export "src/model/ResolveResponse.dart";
 export "src/model/HttpRequestReturnType.dart";
+export "src/model/x509/X509CertificateData.dart";
+export "src/model/x509/X509CertificateObject.dart";
+export "src/model/x509/X509CertificateValidity.dart";
 
 export "src/DomainUtils.dart";
 export "src/EmailUtils.dart";
@@ -24,3 +27,4 @@ export "src/ColorUtils.dart";
 export "src/DateUtils.dart";
 export "src/X509Utils.dart";
 export "src/IterableUtils.dart";
+export "src/CryptoUtils.dart";
