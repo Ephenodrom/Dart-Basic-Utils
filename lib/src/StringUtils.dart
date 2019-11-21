@@ -4,7 +4,7 @@ import 'dart:convert';
 /// Helper class for String operations
 ///
 class StringUtils {
-  static AsciiCodec asciiCodec = new AsciiCodec();
+  static AsciiCodec asciiCodec = AsciiCodec();
 
   ///
   /// Returns the given string or the default string if the given string is null
@@ -29,7 +29,7 @@ class StringUtils {
   /// Example : helloWorld => HELLO_WORLD
   ///
   static String camelCaseToUpperUnderscore(String s) {
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb = StringBuffer();
     bool first = true;
     s.runes.forEach((int rune) {
       String char = String.fromCharCode(rune);
@@ -49,7 +49,7 @@ class StringUtils {
   /// Example : helloWorld => hello_world
   ///
   static String camelCaseToLowerUnderscore(String s) {
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb = StringBuffer();
     bool first = true;
     s.runes.forEach((int rune) {
       String char = String.fromCharCode(rune);
@@ -103,7 +103,7 @@ class StringUtils {
   /// Example : hello => olleh
   ///
   static String reverse(String s) {
-    return new String.fromCharCodes(s.runes.toList().reversed);
+    return String.fromCharCodes(s.runes.toList().reversed);
   }
 
   ///
@@ -198,7 +198,7 @@ class StringUtils {
   ///
   static String hidePartial(String s,
       {int begin = 0, int end, String replace = "*"}) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuffer buffer = StringBuffer();
     if (s.length <= 1) {
       return null;
     }
@@ -247,7 +247,7 @@ class StringUtils {
       if (position == 0) {
         return s;
       }
-      StringBuffer buffer = new StringBuffer();
+      StringBuffer buffer = StringBuffer();
       for (int i = 0; i < s.length; i++) {
         if (i != 0 && i % position == 0) {
           buffer.write(char);

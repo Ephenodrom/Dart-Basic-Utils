@@ -99,7 +99,7 @@ class ColorUtils {
 
     String filledUp = "";
     hex.runes.forEach((r) {
-      String char = new String.fromCharCode(r);
+      String char = String.fromCharCode(r);
       if (char == "#") {
         filledUp = filledUp + char;
       } else {

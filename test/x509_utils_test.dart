@@ -160,7 +160,7 @@ ga7IcCj2gCeuTdS4Ibhx3hiew7cfuGa9XbVd5JJmV8kIoFlzLrZpKB4eVDKqaNWg
   });
 
   test('Test encodeASN1ObjectToPem', () {
-    ASN1Sequence topLevelSeq = new ASN1Sequence();
+    ASN1Sequence topLevelSeq = ASN1Sequence();
     topLevelSeq.add(ASN1Integer(BigInt.from(0)));
     String pem = X509Utils.encodeASN1ObjectToPem(
         topLevelSeq, "-----BEGIN PUBLIC KEY-----", "-----END PUBLIC KEY-----");

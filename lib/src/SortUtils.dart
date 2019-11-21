@@ -37,7 +37,7 @@ class SortUtils {
   /// Implementation of the bubble sort algorithm
   ///
   static List bubbleSort(List list) {
-    var retList = new List.from(list);
+    var retList = List.from(list);
     var tmp;
     var swapped = false;
     do {

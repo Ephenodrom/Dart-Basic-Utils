@@ -14,7 +14,7 @@ class DnsUtils {
   ///
   static Future<List<RRecord>> lookupRecord(String name, RRecordType type,
       {bool dnssec = false}) async {
-    Map<String, String> queryParameters = new Map();
+    Map<String, String> queryParameters = Map();
     queryParameters.putIfAbsent("name", () => name);
     queryParameters.putIfAbsent("type", () => _getTypeFromType(type));
     queryParameters.putIfAbsent("dnssec", () => dnssec.toString());

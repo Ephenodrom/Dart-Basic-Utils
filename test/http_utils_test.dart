@@ -7,7 +7,7 @@ import 'dart:convert';
 
 void main() {
   test('Test addQueryParameterToUrl', () {
-    Map<String, dynamic> queryParameters = new Map();
+    Map<String, dynamic> queryParameters = Map();
     queryParameters.putIfAbsent("hello", () => "world");
     queryParameters.putIfAbsent("list[]", () => ["item1", "item2"]);
     expect(

@@ -262,7 +262,7 @@ class HttpUtils {
   /// Fetches the query parameter from the given [url]. Returns null if none exist.
   ///
   static Map<String, dynamic> getQueryParameterFromUrl(String url) {
-    Map<String, dynamic> queryParameters = new Map();
+    Map<String, dynamic> queryParameters = Map();
     List<String> splitted = url.split("?");
     if (splitted.length != 2) {
       return null;

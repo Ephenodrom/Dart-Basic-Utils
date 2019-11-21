@@ -221,11 +221,11 @@ class DateUtils {
       String type = list.elementAt(i);
       if (REGEX_YEAR.hasMatch(type)) {
         //print("Add $valueAsInt year(s)");
-        now = new DateTime(now.year + valueAsInt, now.month, now.day, now.hour,
+        now = DateTime(now.year + valueAsInt, now.month, now.day, now.hour,
             now.minute, now.second);
       } else if (REGEX_MONTH.hasMatch(type)) {
         //print("Add $valueAsInt month(s)");
-        now = new DateTime(now.year, now.month + valueAsInt, now.day, now.hour,
+        now = DateTime(now.year, now.month + valueAsInt, now.day, now.hour,
             now.minute, now.second);
       } else if (REGEX_WEEK.hasMatch(type)) {
         // print("Add / Rem $valueAsInt week(s)");
@@ -247,8 +247,8 @@ class DateUtils {
     if (setTime != null) {
       if (setTime.contains(":")) {
         DateTime hhmmss = DateTime.parse("1970-01-01 " + setTime);
-        now = new DateTime(now.year, now.month, now.day, hhmmss.hour,
-            hhmmss.minute, hhmmss.second);
+        now = DateTime(now.year, now.month, now.day, hhmmss.hour, hhmmss.minute,
+            hhmmss.second);
       } else {
         List<String> list = setTime.split(" ");
         for (int i = 1; i < list.length; i += 2) {
@@ -259,13 +259,13 @@ class DateUtils {
           }
           String type = list.elementAt(i);
           if (REGEX_HOUR.hasMatch(type)) {
-            now = new DateTime(now.year, now.month, now.day, valueAsInt,
-                now.minute, now.second);
+            now = DateTime(now.year, now.month, now.day, valueAsInt, now.minute,
+                now.second);
           } else if (REGEX_MINUTES.hasMatch(type)) {
-            now = new DateTime(
+            now = DateTime(
                 now.year, now.month, now.day, now.hour, valueAsInt, now.second);
           } else if (REGEX_SECONDS.hasMatch(type)) {
-            now = new DateTime(
+            now = DateTime(
                 now.year, now.month, now.day, now.hour, now.minute, valueAsInt);
           }
         }

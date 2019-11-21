@@ -198,7 +198,7 @@ class DomainUtils {
             }
             return Domain(sld: sld, subTld: subTldEntry, tld: tld);
           }
-          return new Domain(sld: subTldEntry, tld: tld);
+          return Domain(sld: subTldEntry, tld: tld);
         } else if (subTldEntry.contains("*")) {
           String left = _getLeftPart(domainName, tld);
           int count = left.split(".").length;
@@ -251,7 +251,7 @@ class DomainUtils {
     List<String> ar = name.split("\.");
 
     for (int i = 0; i < ar.length; i++) {
-      StringBuffer sb = new StringBuffer();
+      StringBuffer sb = StringBuffer();
       for (int j = i; j < ar.length; j++) {
         sb.write(ar[j]);
         sb.write(".");

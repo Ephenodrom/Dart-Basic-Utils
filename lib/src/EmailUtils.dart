@@ -11,7 +11,7 @@ class EmailUtils {
   /// Checks whether the given string [s] is a email address
   ///
   static bool isEmail(String s) {
-    RegExp regExp = new RegExp(emailRegex);
+    RegExp regExp = RegExp(emailRegex);
     return regExp.hasMatch(s);
   }
 

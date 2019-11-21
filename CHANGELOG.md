@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.3.4] - 2019-11-21
+
+* Fix health suggestions
+
 ## [2.3.3] - 2019-11-12
 
 * Add Json Serialization To X509CertificateData Model
