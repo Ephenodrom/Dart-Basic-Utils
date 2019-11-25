@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.3.7] - 2019-11-25
+
+* Improve DomainUtils (#7)
+* Improve UnitTests
+
 ## [2.3.6] - 2019-11-25
 
 * Improve DomainUtils (#6)
