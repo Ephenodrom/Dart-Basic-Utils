@@ -130,9 +130,14 @@ class StringUtils {
   }
 
   ///
-  /// Checks if the given string [s] is a digit
+  /// Checks if the given string [s] is a digit.
+  ///
+  /// Will return false if the given string [s] is empty.
   ///
   static bool isDigit(String s) {
+    if (s.isEmpty) {
+      return false;
+    }
     if (s.length > 1) {
       for (int r in s.runes) {
         if (r ^ 0x30 > 9) {

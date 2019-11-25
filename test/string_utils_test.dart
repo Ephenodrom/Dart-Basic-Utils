@@ -74,6 +74,7 @@ void main() {
     expect(StringUtils.isDigit("12345"), true);
     expect(StringUtils.isDigit("1a356"), false);
     expect(StringUtils.isDigit("q3dm16"), false);
+    expect(StringUtils.isDigit(""), false);
   });
 
   test('Test inList', () {
