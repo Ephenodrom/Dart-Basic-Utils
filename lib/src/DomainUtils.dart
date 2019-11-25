@@ -22,11 +22,13 @@ class DomainUtils {
   }
 
   ///
-  /// Checks if the given string [s] is a subTld
+  /// Checks if the given string [subTld] is a subTld
   ///
   static bool isSubTld(String tld, String subTld) {
     List<String> subTLDs = suffixList[tld];
-
+    if (subTLDs == null) {
+      return false;
+    }
     if (subTLDs.contains(subTld)) {
       return true;
     }
@@ -150,6 +152,9 @@ class DomainUtils {
     domainName = domainName.trim();
     if (domainName.endsWith(".")) {
       domainName = domainName.substring(0, domainName.length - 1);
+    }
+    if (domainName.startsWith(".")) {
+      domainName = domainName.substring(1, domainName.length);
     }
     if (!domainName.contains(".")) {
       return null;
