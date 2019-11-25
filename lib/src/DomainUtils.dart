@@ -10,9 +10,14 @@ import 'package:basic_utils/src/model/PublicSuffix.dart';
 ///
 class DomainUtils {
   ///
-  /// Checks if the given string [s] is a domain name
+  /// Checks if the given string [s] is a domain name.
+  ///
+  /// Will return false if the given string [s] starts with www. or *.
   ///
   static bool isDomainName(String s) {
+    if (s.startsWith("*.") || isSubDomain(s)) {
+      return false;
+    }
     return parseDomain(s) != null;
   }
 
