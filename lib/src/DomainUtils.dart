@@ -147,14 +147,13 @@ class DomainUtils {
   /// Returns null if the given [domainName] is not parsable.
   ///
   static Domain parseDomain(String domainName) {
-    if (!domainName.contains(".")) {
-      return null;
-    }
     domainName = domainName.trim();
     if (domainName.endsWith(".")) {
       domainName = domainName.substring(0, domainName.length - 1);
     }
-
+    if (!domainName.contains(".")) {
+      return null;
+    }
     String tld = domainName.substring(
         domainName.lastIndexOf(".") + 1, domainName.length);
     String leftPart = _getLeftPart(domainName, tld);

@@ -126,6 +126,7 @@ void main() {
     expect(DomainUtils.isDomainName("example.qwertzu"), false);
     expect(DomainUtils.isDomainName("www.example.de"), false);
     expect(DomainUtils.isDomainName("*.example.de"), false);
+    expect(DomainUtils.isDomainName("www."), false);
   });
 
   test('Test isSubDomainOf', () {
