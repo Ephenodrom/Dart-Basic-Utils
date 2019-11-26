@@ -102,6 +102,29 @@ ga7IcCj2gCeuTdS4Ibhx3hiew7cfuGa9XbVd5JJmV8kIoFlzLrZpKB4eVDKqaNWg
 /g==
 -----END CERTIFICATE-----""";
 
+  String X509WithSans = """-----BEGIN CERTIFICATE-----
+MIIDsTCCApmgAwIBAgIUDmyV5Jod3FGoVStvzghkIs1xZTcwDQYJKoZIhvcNAQEL
+BQAwajELMAkGA1UEBhMCREUxCzAJBgNVBAgMAkJZMQ0wCwYDVQQHDARDaXR5MRAw
+DgYDVQQKDAdDb21wYW55MRUwEwYDVQQLDAxEZXZlbG9wZW1lbnQxFjAUBgNVBAMM
+DWVwaGVub2Ryb20uZGUwHhcNMTkxMTI2MTA1MjMzWhcNMjExMTI1MTA1MjMzWjBq
+MQswCQYDVQQGEwJERTELMAkGA1UECAwCQlkxDTALBgNVBAcMBENpdHkxEDAOBgNV
+BAoMB0NvbXBhbnkxFTATBgNVBAsMDERldmVsb3BlbWVudDEWMBQGA1UEAwwNZXBo
+ZW5vZHJvbS5kZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALkzNq/p
+4YblpAyXOCZAsTgZau2NvmyJ/B4H4SgGC+A4sJCBRuhsiZTSxUHiF4Y1WkXPNIRJ
+wxMU0BLCbpLP3QYJpXwQhRtVJB2I4BWybAS2zzV1s6x6XLJsuJUQxZXN4rBdSocN
++D9v4qsfaIIkN7CXnEmTFlzUh33YqL/lmCDZcIQe4HIGa7ElfgzMLEcDh60AsUrr
+JSgIDGuAKfxRaZLYY1wpRm3sxkwSSGKYFZK/H34GDC3/PGqyLPxFHIeLRFwIlJH+
+r/puvcKlot8dh3SCDgNGuzszbfN351Kdp01ZHVzoMLVMsC93hux/kfsBFPR7NSO2
+tG9ClLZ23CdqcIcCAwEAAaNPME0wCwYDVR0PBAQDAgQwMBMGA1UdJQQMMAoGCCsG
+AQUFBwMBMCkGA1UdEQQiMCCCEWFwaS5lcGhlbm9kcm9tLmRlggsxOTIuMTY4LjAu
+MTANBgkqhkiG9w0BAQsFAAOCAQEALAS85yXzCcdpN2uPQIx9edN4/0sglP+hVEXA
+XtWgjq8uYpPmSUdjPYMDQzg+A+zgLQc8FB2YK8bk/yuaDRZaRt8xhjaXQsRhrKf8
+pAvj+Cwzy5Sn+L21a1xd+IJHVSh+B0xF8H7D9G2+KwG4GbEkwprDdCh/Ci39/5qg
+eRnR3fZYB8vnirc4pJr8tOoZ3aKsdyFyBhozZNQETihW1vrzegs5/rQlLmSUwb3C
+TQiUAMlBpzuKM6oCy833Ed+uCtCwGAj0unysv9o7pYv4dKW4REyBGQ0lJltpN3Cg
+MrWLubLgMfDzQmOC3oOeNVBDUsQBdFwJwqEEO658U+/OsQYVlw==
+-----END CERTIFICATE-----""";
+
   test('Test getBytesFromPEMString', () {
     Uint8List bytes = X509Utils.getBytesFromPEMString(csr);
     String formatted = X509Utils.formatKeyString(
@@ -269,5 +292,13 @@ ga7IcCj2gCeuTdS4Ibhx3hiew7cfuGa9XbVd5JJmV8kIoFlzLrZpKB4eVDKqaNWg
     expect(sans.elementAt(0), "junkdragons.de");
     expect(sans.elementAt(1), "www.junkdragons.de");
     expect(sans.elementAt(2), "api.junkdragons.de");
+  });
+
+  test('Test x509CertificateFromPem with IP Sans', () {
+    X509CertificateData data = X509Utils.x509CertificateFromPem(X509WithSans);
+    List<String> sans = data.subjectAlternativNames;
+    expect(sans.length, 2);
+    expect(sans.elementAt(0), "api.ephenodrom.de");
+    expect(sans.elementAt(1), "192.168.0.1");
   });
 }
