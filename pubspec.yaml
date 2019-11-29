@@ -3,6 +3,7 @@ description: Common util classes providing a solution for different situations.
 version: 2.3.8
 homepage: https://github.com/Ephenodrom/Dart-Basic-Utils
 publish_to: https://pub.dartlang.org
+author: Daniel Linsenmeier <daniel@ephenodrom.de>
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
