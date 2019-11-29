@@ -582,8 +582,19 @@ class X509Utils {
     ASN1Parser sanParser = ASN1Parser(octet.valueBytes());
     ASN1Sequence sanSeq = sanParser.nextObject();
     sanSeq.elements.forEach((ASN1Object san) {
-      String s = String.fromCharCodes(san.contentBytes());
-      sans.add(s);
+      if (san.tag == 135) {
+        StringBuffer sb = StringBuffer();
+        san.contentBytes().forEach((int b) {
+          if (sb.isNotEmpty) {
+            sb.write(".");
+          }
+          sb.write(b);
+        });
+        sans.add(sb.toString());
+      } else {
+        String s = String.fromCharCodes(san.contentBytes());
+        sans.add(s);
+      }
     });
     return sans;
   }

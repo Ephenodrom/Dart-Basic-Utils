@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.3.8] - 2019-11-29
+
+* Improve X509Utils (#8)
+* Improve UnitTests
+
 ## [2.3.7] - 2019-11-25
 
 * Improve DomainUtils (#7)

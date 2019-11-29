@@ -125,6 +125,41 @@ TQiUAMlBpzuKM6oCy833Ed+uCtCwGAj0unysv9o7pYv4dKW4REyBGQ0lJltpN3Cg
 MrWLubLgMfDzQmOC3oOeNVBDUsQBdFwJwqEEO658U+/OsQYVlw==
 -----END CERTIFICATE-----""";
 
+  String X509WithIpSans = """-----BEGIN CERTIFICATE-----
+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
+h9vE3e4Cq0OS3DA=
+-----END CERTIFICATE-----""";
+
   test('Test getBytesFromPEMString', () {
     Uint8List bytes = X509Utils.getBytesFromPEMString(csr);
     String formatted = X509Utils.formatKeyString(
@@ -300,5 +335,11 @@ MrWLubLgMfDzQmOC3oOeNVBDUsQBdFwJwqEEO658U+/OsQYVlw==
     expect(sans.length, 2);
     expect(sans.elementAt(0), "api.ephenodrom.de");
     expect(sans.elementAt(1), "192.168.0.1");
+
+    data = X509Utils.x509CertificateFromPem(X509WithIpSans);
+    sans = data.subjectAlternativNames;
+    expect(sans.length, 2);
+    expect(sans.elementAt(0), "127.0.0.1");
+    expect(sans.elementAt(1), "0.0.0.0");
   });
 }
