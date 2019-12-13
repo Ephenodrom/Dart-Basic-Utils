@@ -5,7 +5,7 @@ part 'X509CertificateValidity.g.dart';
 ///
 /// Model that represents the validity data of a x509Certificate
 ///
-@JsonSerializable(includeIfNull: false)
+@JsonSerializable(includeIfNull: false, explicitToJson: true)
 class X509CertificateValidity {
   /// The start date
   DateTime notBefore;

@@ -48,11 +48,11 @@ Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {
   writeNotNull('serialNumber', instance.serialNumber?.toString());
   writeNotNull('signatureAlgorithm', instance.signatureAlgorithm);
   writeNotNull('issuer', instance.issuer);
-  writeNotNull('validity', instance.validity);
+  writeNotNull('validity', instance.validity?.toJson());
   writeNotNull('subject', instance.subject);
   writeNotNull('sha1Thumbprint', instance.sha1Thumbprint);
   writeNotNull('md5Thumbprint', instance.md5Thumbprint);
-  writeNotNull('publicKeyData', instance.publicKeyData);
+  writeNotNull('publicKeyData', instance.publicKeyData?.toJson());
   writeNotNull('subjectAlternativNames', instance.subjectAlternativNames);
   return val;
 }

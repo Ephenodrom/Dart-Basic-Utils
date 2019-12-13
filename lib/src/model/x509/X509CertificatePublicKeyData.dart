@@ -5,7 +5,7 @@ part 'X509CertificatePublicKeyData.g.dart';
 ///
 /// Model that a public key from a X509Certificate
 ///
-@JsonSerializable(includeIfNull: false)
+@JsonSerializable(includeIfNull: false, explicitToJson: true)
 class X509CertificatePublicKeyData {
   /// The algorithm of the public key
   String algorithm;

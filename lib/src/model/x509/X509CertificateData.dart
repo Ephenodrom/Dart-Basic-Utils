@@ -8,7 +8,7 @@ part 'X509CertificateData.g.dart';
 ///
 /// Model that represents the data of a x509Certificate
 ///
-@JsonSerializable(includeIfNull: false)
+@JsonSerializable(includeIfNull: false, explicitToJson: true)
 class X509CertificateData {
   /// The version of the certificate
   int version;

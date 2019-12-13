@@ -25,6 +25,6 @@ Map<String, dynamic> _$X509CertificateObjectToJson(
     }
   }
 
-  writeNotNull('data', instance.data);
+  writeNotNull('data', instance.data?.toJson());
   return val;
 }
