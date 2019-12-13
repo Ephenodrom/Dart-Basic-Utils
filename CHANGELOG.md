@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.4.0] - 2019-12-13
+
+* Update dependencies
+
 ## [2.3.9] - 2019-12-13
 
 * Improve json serialization of the X509Certificate models
