@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.4.1] - 2019-12-13
+
+* Improve X509 parsing
+
 ## [2.4.0] - 2019-12-13
 
 * Update dependencies

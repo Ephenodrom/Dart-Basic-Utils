@@ -327,7 +327,8 @@ class X509Utils {
         ASN1PrintableString objectPrintable = object;
         value = objectPrintable.stringValue;
       }
-      subject.putIfAbsent(o.identifier, () => value);
+      String identifier = o.identifier != null ? o.identifier : "unknown";
+      subject.putIfAbsent(identifier, () => value);
     }
 
     // Public Key
