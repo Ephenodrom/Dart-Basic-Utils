@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.4.2] - 2019-12-16
+
+* Improve IterableUtils
+* Add new unit tests
+
 ## [2.4.1] - 2019-12-13
 
 * Improve X509 parsing

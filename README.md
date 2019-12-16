@@ -36,7 +36,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.4.1
+  basic_utils: ^2.4.2
 ```
 
 ## Import
@@ -211,6 +211,9 @@ Helper class for operations on iterables
 
 ```dart
 T randomItem<T>(Iterable<T> iterable);
+bool isNullOrEmpty(Iterable iterable);
+bool isNotNullOrEmpty(Iterable iterable);
+List<List<T>> chunk<T>(List<T> list, int size);
 ```
 
 ### CryptoUtils
