@@ -5,13 +5,13 @@ import 'package:basic_utils/basic_utils.dart';
 ///
 class EmailUtils {
   static final emailRegex =
-      "^([\\w\\d\\-\\+]+)(\\.+[\\w\\d\\-\\+%]+)*@([\\w\\-]+\\.){1,5}(([A-Za-z]){2,30}|xn--[A-Za-z0-9]{1,26})\$";
+      '^([\\w\\d\\-\\+]+)(\\.+[\\w\\d\\-\\+%]+)*@([\\w\\-]+\\.){1,5}(([A-Za-z]){2,30}|xn--[A-Za-z0-9]{1,26})\$';
 
   ///
   /// Checks whether the given string [s] is a email address
   ///
   static bool isEmail(String s) {
-    RegExp regExp = RegExp(emailRegex);
+    var regExp = RegExp(emailRegex);
     return regExp.hasMatch(s);
   }
 
@@ -21,8 +21,8 @@ class EmailUtils {
   ///
   static EmailAddress parseEmailAddress(String s) {
     if (isEmail(s)) {
-      List<String> parts = s.split("@");
-      Domain domain = DomainUtils.parseDomain(parts.elementAt(1));
+      var parts = s.split('@');
+      var domain = DomainUtils.parseDomain(parts.elementAt(1));
       if (domain == null) {
         return null;
       }

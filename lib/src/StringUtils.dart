@@ -10,7 +10,7 @@ class StringUtils {
   /// Returns the given string or the default string if the given string is null
   ///
   static String defaultString(String str, {String defaultStr = ''}) {
-    return str == null ? defaultStr : str;
+    return str ?? defaultStr;
   }
 
   ///
@@ -29,12 +29,12 @@ class StringUtils {
   /// Example : helloWorld => HELLO_WORLD
   ///
   static String camelCaseToUpperUnderscore(String s) {
-    StringBuffer sb = StringBuffer();
-    bool first = true;
+    var sb = StringBuffer();
+    var first = true;
     s.runes.forEach((int rune) {
-      String char = String.fromCharCode(rune);
+      var char = String.fromCharCode(rune);
       if (isUpperCase(char) && !first) {
-        sb.write("_");
+        sb.write('_');
         sb.write(char.toUpperCase());
       } else {
         first = false;
@@ -49,12 +49,12 @@ class StringUtils {
   /// Example : helloWorld => hello_world
   ///
   static String camelCaseToLowerUnderscore(String s) {
-    StringBuffer sb = StringBuffer();
-    bool first = true;
+    var sb = StringBuffer();
+    var first = true;
     s.runes.forEach((int rune) {
-      String char = String.fromCharCode(rune);
+      var char = String.fromCharCode(rune);
       if (isUpperCase(char) && !first) {
-        sb.write("_");
+        sb.write('_');
         sb.write(char.toLowerCase());
       } else {
         first = false;
@@ -113,7 +113,7 @@ class StringUtils {
   /// Example: Hello and char l => 2
   ///
   static int countChars(String s, String char, {bool caseSensitive = true}) {
-    int count = 0;
+    var count = 0;
     s.codeUnits.toList().forEach((i) {
       if (caseSensitive) {
         if (i == char.runes.first) {
@@ -139,7 +139,7 @@ class StringUtils {
       return false;
     }
     if (s.length > 1) {
-      for (int r in s.runes) {
+      for (var r in s.runes) {
         if (r ^ 0x30 > 9) {
           return false;
         }
@@ -161,7 +161,7 @@ class StringUtils {
   /// Checks if the given [list] contains the string [s]
   ///
   static bool inList(String s, List<String> list, {bool ignoreCase = false}) {
-    for (String l in list) {
+    for (var l in list) {
       if (ignoreCase) {
         if (equalsIgnoreCase(s, l)) {
           return true;
@@ -182,7 +182,7 @@ class StringUtils {
   /// hello => false
   ///
   static bool isPalindrome(String s) {
-    for (int i = 0; i < s.length / 2; i++) {
+    for (var i = 0; i < s.length / 2; i++) {
       if (s[i] != s[s.length - 1 - i]) return false;
     }
     return true;
@@ -192,8 +192,8 @@ class StringUtils {
   /// Replaces chars of the given String [s] with [replace].
   ///
   /// The default value of [replace] is *.
-  /// [begin] determines the start of the "replacing". If [begin] is null, it starts from index 0.
-  /// [end] defines the end of the "replacing". If [end] is null, it ends at [s] length divided by 2.
+  /// [begin] determines the start of the 'replacing'. If [begin] is null, it starts from index 0.
+  /// [end] defines the end of the 'replacing'. If [end] is null, it ends at [s] length divided by 2.
   /// If [s] is empty or consists of only 1 char, the method returns null.
   ///
   /// Example :
@@ -202,8 +202,8 @@ class StringUtils {
   /// 1234567890 with begin 1 => 1****67890
   ///
   static String hidePartial(String s,
-      {int begin = 0, int end, String replace = "*"}) {
-    StringBuffer buffer = StringBuffer();
+      {int begin = 0, int end, String replace = '*'}) {
+    var buffer = StringBuffer();
     if (s.length <= 1) {
       return null;
     }
@@ -214,7 +214,7 @@ class StringUtils {
         end = s.length;
       }
     }
-    for (int i = 0; i < s.length; i++) {
+    for (var i = 0; i < s.length; i++) {
       if (i >= end) {
         buffer.write(String.fromCharCode(s.runes.elementAt(i)));
         continue;
@@ -236,8 +236,8 @@ class StringUtils {
   /// If [repeat] is true and [position] is 0, it will return [s].
   ///
   /// Example :
-  /// 1234567890 , "-", 3 => 123-4567890
-  /// 1234567890 , "-", 3, true => 123-456-789-0
+  /// 1234567890 , '-', 3 => 123-4567890
+  /// 1234567890 , '-', 3, true => 123-456-789-0
   ///
   static String addCharAtPosition(String s, String char, int position,
       {bool repeat = false}) {
@@ -245,15 +245,15 @@ class StringUtils {
       if (s.length < position) {
         return s;
       }
-      String before = s.substring(0, position);
-      String after = s.substring(position, s.length);
+      var before = s.substring(0, position);
+      var after = s.substring(position, s.length);
       return before + char + after;
     } else {
       if (position == 0) {
         return s;
       }
-      StringBuffer buffer = StringBuffer();
-      for (int i = 0; i < s.length; i++) {
+      var buffer = StringBuffer();
+      for (var i = 0; i < s.length; i++) {
         if (i != 0 && i % position == 0) {
           buffer.write(char);
         }
@@ -267,9 +267,9 @@ class StringUtils {
   /// Splits the given String [s] in chunks with the given [chunkSize].
   ///
   static List<String> chunk(String s, int chunkSize) {
-    List<String> chunked = [];
-    for (int i = 0; i < s.length; i += chunkSize) {
-      int end = (i + chunkSize < s.length) ? i + chunkSize : s.length;
+    var chunked = <String>[];
+    for (var i = 0; i < s.length; i += chunkSize) {
+      var end = (i + chunkSize < s.length) ? i + chunkSize : s.length;
       chunked.add(s.substring(i, end));
     }
     return chunked;

@@ -10,7 +10,7 @@ class CryptoUtils {
   /// Get a SHA1 Thumbprint for the given [bytes].
   ///
   static String getSha1ThumbprintFromBytes(Uint8List bytes) {
-    Digest digest = sha1.convert(bytes);
+    var digest = sha1.convert(bytes);
     return digest.toString().toUpperCase();
   }
 
@@ -18,7 +18,7 @@ class CryptoUtils {
   /// Get a MD5 Thumbprint for the given [bytes].
   ///
   static String getMd5ThumbprintFromBytes(Uint8List bytes) {
-    Digest digest = md5.convert(bytes);
+    var digest = md5.convert(bytes);
     return digest.toString().toUpperCase();
   }
 }

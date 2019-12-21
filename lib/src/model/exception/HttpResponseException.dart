@@ -10,5 +10,6 @@ class HttpResponseException implements Exception {
   HttpResponseException(this.message, this.statusCode,
       {this.uri, this.body, this.headers});
 
+  @override
   String toString() => message;
 }

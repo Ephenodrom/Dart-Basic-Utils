@@ -4,22 +4,22 @@ import 'package:basic_utils/basic_utils.dart';
 /// Helper class for color operations.
 ///
 class ColorUtils {
-  static const String BASIC_COLOR_RED = "red";
-  static const String BASIC_COLOR_GREEN = "green";
-  static const String BASIC_COLOR_BLUE = "blue";
-  static const String HEX_BLACK = "#000000";
-  static const String HEX_WHITE = "#FFFFFF";
+  static const String BASIC_COLOR_RED = 'red';
+  static const String BASIC_COLOR_GREEN = 'green';
+  static const String BASIC_COLOR_BLUE = 'blue';
+  static const String HEX_BLACK = '#000000';
+  static const String HEX_WHITE = '#FFFFFF';
 
   ///
   /// Converts the given [hex] color string to the corresponding int
   ///
   static int hexToInt(String hex) {
-    if (hex.startsWith("#")) {
-      hex = hex.replaceFirst("#", "FF");
+    if (hex.startsWith('#')) {
+      hex = hex.replaceFirst('#', 'FF');
       return int.parse(hex, radix: 16);
     } else {
       if (hex.length == 6) {
-        hex = "FF" + hex;
+        hex = 'FF' + hex;
       }
       return int.parse(hex, radix: 16);
     }
@@ -29,11 +29,11 @@ class ColorUtils {
   /// Converts the given integer [i] to a hex string with a leading #.
   ///
   static String intToHex(int i) {
-    String s = i.toRadixString(16);
+    var s = i.toRadixString(16);
     if (s.length == 8) {
-      return "#" + s.substring(2).toUpperCase();
+      return '#' + s.substring(2).toUpperCase();
     } else {
-      return "#" + s.toUpperCase();
+      return '#' + s.toUpperCase();
     }
   }
 
@@ -46,11 +46,11 @@ class ColorUtils {
   ///
   ///
   static String shadeColor(String hex, double percent) {
-    Map<String, int> bC = basicColorsFromHex(hex);
+    var bC = basicColorsFromHex(hex);
 
-    int R = (bC[BASIC_COLOR_RED] * (100 + percent) / 100).round();
-    int G = (bC[BASIC_COLOR_GREEN] * (100 + percent) / 100).round();
-    int B = (bC[BASIC_COLOR_BLUE] * (100 + percent) / 100).round();
+    var R = (bC[BASIC_COLOR_RED] * (100 + percent) / 100).round();
+    var G = (bC[BASIC_COLOR_GREEN] * (100 + percent) / 100).round();
+    var B = (bC[BASIC_COLOR_BLUE] * (100 + percent) / 100).round();
 
     if (R > 255) {
       R = 255;
@@ -70,17 +70,17 @@ class ColorUtils {
       B = 0;
     }
 
-    String RR = ((R.toRadixString(16).length == 1)
-        ? "0" + R.toRadixString(16)
+    var RR = ((R.toRadixString(16).length == 1)
+        ? '0' + R.toRadixString(16)
         : R.toRadixString(16));
-    String GG = ((G.toRadixString(16).length == 1)
-        ? "0" + G.toRadixString(16)
+    var GG = ((G.toRadixString(16).length == 1)
+        ? '0' + G.toRadixString(16)
         : G.toRadixString(16));
-    String BB = ((B.toRadixString(16).length == 1)
-        ? "0" + B.toRadixString(16)
+    var BB = ((B.toRadixString(16).length == 1)
+        ? '0' + B.toRadixString(16)
         : B.toRadixString(16));
 
-    return "#" + RR + GG + BB;
+    return '#' + RR + GG + BB;
   }
 
   ///
@@ -89,18 +89,18 @@ class ColorUtils {
   /// Will add a # to the [hex] string if it is missing.
   ///
   static String fillUpHex(String hex) {
-    if (!hex.startsWith("#")) {
-      hex = "#" + hex;
+    if (!hex.startsWith('#')) {
+      hex = '#' + hex;
     }
 
     if (hex.length == 7) {
       return hex;
     }
 
-    String filledUp = "";
+    var filledUp = '';
     hex.runes.forEach((r) {
-      String char = String.fromCharCode(r);
-      if (char == "#") {
+      var char = String.fromCharCode(r);
+      if (char == '#') {
         filledUp = filledUp + char;
       } else {
         filledUp = filledUp + char + char;
@@ -113,7 +113,7 @@ class ColorUtils {
   /// Returns true or false if the calculated relative luminance from the given [hex] is less than 0.5.
   ///
   static bool isDark(String hex) {
-    Map<String, int> bC = basicColorsFromHex(hex);
+    var bC = basicColorsFromHex(hex);
 
     return calculateRelativeLuminance(
             bC[BASIC_COLOR_RED], bC[BASIC_COLOR_GREEN], bC[BASIC_COLOR_BLUE]) <
@@ -124,9 +124,9 @@ class ColorUtils {
   /// Calculates the limunance for the given [hex] color and returns black as hex for bright colors, white as hex for dark colors.
   ///
   static String contrastColor(String hex) {
-    Map<String, int> bC = basicColorsFromHex(hex);
+    var bC = basicColorsFromHex(hex);
 
-    double luminance = calculateRelativeLuminance(
+    var luminance = calculateRelativeLuminance(
         bC[BASIC_COLOR_RED], bC[BASIC_COLOR_GREEN], bC[BASIC_COLOR_BLUE]);
     return luminance > 0.5 ? HEX_BLACK : HEX_WHITE;
   }
@@ -142,13 +142,13 @@ class ColorUtils {
   static Map<String, int> basicColorsFromHex(String hex) {
     hex = fillUpHex(hex);
 
-    if (!hex.startsWith("#")) {
-      hex = "#" + hex;
+    if (!hex.startsWith('#')) {
+      hex = '#' + hex;
     }
 
-    int R = int.parse(hex.substring(1, 3), radix: 16);
-    int G = int.parse(hex.substring(3, 5), radix: 16);
-    int B = int.parse(hex.substring(5, 7), radix: 16);
+    var R = int.parse(hex.substring(1, 3), radix: 16);
+    var G = int.parse(hex.substring(3, 5), radix: 16);
+    var B = int.parse(hex.substring(5, 7), radix: 16);
     return {BASIC_COLOR_RED: R, BASIC_COLOR_GREEN: G, BASIC_COLOR_BLUE: B};
   }
 
@@ -176,12 +176,12 @@ class ColorUtils {
       {double percentage = 15, int amount = 5}) {
     hex = fillUpHex(hex);
 
-    List<String> colors = [];
-    for (int i = 1; i <= amount; i++) {
+    var colors = <String>[];
+    for (var i = 1; i <= amount; i++) {
       colors.add(shadeColor(hex, (6 - i) * percentage));
     }
     colors.add(hex);
-    for (int i = 1; i <= amount; i++) {
+    for (var i = 1; i <= amount; i++) {
       colors.add(shadeColor(hex, (0 - i) * percentage));
     }
     return colors;

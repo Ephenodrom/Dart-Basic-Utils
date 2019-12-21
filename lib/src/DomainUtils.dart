@@ -15,7 +15,7 @@ class DomainUtils {
   /// Will return false if the given string [s] starts with www. or *.
   ///
   static bool isDomainName(String s) {
-    if (s.startsWith("*.") || isSubDomain(s)) {
+    if (s.startsWith('*.') || isSubDomain(s)) {
       return false;
     }
     return parseDomain(s) != null;
@@ -25,7 +25,7 @@ class DomainUtils {
   /// Checks if the given string [subTld] is a subTld
   ///
   static bool isSubTld(String tld, String subTld) {
-    List<String> subTLDs = suffixList[tld];
+    var subTLDs = suffixList[tld];
     if (subTLDs == null) {
       return false;
     }
@@ -42,14 +42,14 @@ class DomainUtils {
   ///
   static bool isSubDomain(String s) {
     if (StringUtils.isNotNullOrEmpty(s)) {
-      List<String> labels = splitDomainName(s);
+      var labels = splitDomainName(s);
       if (labels.length == 2) {
         // Only 2 labels, so it has to be a normal domain name
         return false;
       }
       if (labels.length == 3) {
         // 3 labels, check for www and if the second label is a subtld
-        if (labels.elementAt(0) == "www") {
+        if (labels.elementAt(0) == 'www') {
           // Found www at the first label, it is a subdomain
           return true;
         }
@@ -73,7 +73,7 @@ class DomainUtils {
   /// sub1.domain2.com & domain.com => false
   ///
   static bool isSubDomainOf(String sub, String domain) {
-    String rightPart = sub.substring(sub.indexOf(".") + 1);
+    var rightPart = sub.substring(sub.indexOf('.') + 1);
     return rightPart == domain;
   }
 
@@ -124,11 +124,11 @@ class DomainUtils {
   ///
   /// Splits the given [domainName].
   /// Examples :
-  /// example.com => ["example","com"]
-  /// subdomain.example.com => ["subdomain","example","com"]
+  /// example.com => ['example','com']
+  /// subdomain.example.com => ['subdomain','example','com']
   ///
   static List<String> splitDomainName(String domainName) {
-    return domainName.split(".");
+    return domainName.split('.');
   }
 
   ///
@@ -136,10 +136,10 @@ class DomainUtils {
   /// Returns null if the given [url] is not parsable.
   ///
   static Domain getDomainFromUrl(String url) {
-    url = url.replaceFirst("https://", "");
-    url = url.replaceFirst("http://", "");
-    if (url.contains("/")) {
-      url = url.substring(0, url.indexOf("/"));
+    url = url.replaceFirst('https://', '');
+    url = url.replaceFirst('http://', '');
+    if (url.contains('/')) {
+      url = url.substring(0, url.indexOf('/'));
     }
     return parseDomain(url);
   }
@@ -150,18 +150,18 @@ class DomainUtils {
   ///
   static Domain parseDomain(String domainName) {
     domainName = domainName.trim();
-    if (domainName.endsWith(".")) {
+    if (domainName.endsWith('.')) {
       domainName = domainName.substring(0, domainName.length - 1);
     }
-    if (domainName.startsWith(".")) {
+    if (domainName.startsWith('.')) {
       domainName = domainName.substring(1, domainName.length);
     }
-    if (!domainName.contains(".")) {
+    if (!domainName.contains('.')) {
       return null;
     }
-    String tld = domainName.substring(
-        domainName.lastIndexOf(".") + 1, domainName.length);
-    String leftPart = _getLeftPart(domainName, tld);
+    var tld = domainName.substring(
+        domainName.lastIndexOf('.') + 1, domainName.length);
+    var leftPart = _getLeftPart(domainName, tld);
     // Check if we have a left part
     if (StringUtils.isNullOrEmpty(leftPart)) {
       return null;
@@ -173,32 +173,32 @@ class DomainUtils {
     }
 
     // Fetch subTLDs from the suffix list
-    List<String> subTLDs = suffixList[tld];
+    var subTLDs = suffixList[tld];
     if (subTLDs == null || subTLDs.isEmpty) {
       // No subTLDs for the given tld, build the domain
       return Domain(sld: _trimToLastLabel(leftPart), tld: tld);
     } else {
       // Iterate over each subTLD
-      for (String subTldEntry in subTLDs) {
+      for (var subTldEntry in subTLDs) {
         // Remove uncommon chars
         subTldEntry = _removeUncommonChars(subTldEntry);
-        if (domainName.endsWith(subTldEntry + "." + tld)) {
-          int labelCount = 0;
+        if (domainName.endsWith(subTldEntry + '.' + tld)) {
+          var labelCount = 0;
           // Calculate the allowedLabels
-          if (subTldEntry == "*") {
+          if (subTldEntry == '*') {
             // *.de means that label1.label2.de is allowed
             labelCount = 3;
           } else {
-            labelCount = subTldEntry.split(".").length + 2;
+            labelCount = subTldEntry.split('.').length + 2;
           }
-          String leftPt = "";
-          if (domainName.length > (subTldEntry + "." + tld).length) {
-            leftPt = _getLeftPart(domainName, subTldEntry + "." + tld);
+          var leftPt = '';
+          if (domainName.length > (subTldEntry + '.' + tld).length) {
+            leftPt = _getLeftPart(domainName, subTldEntry + '.' + tld);
             // Calculate the amount of labels in the right part: 1 (tld) + subTld length
-            int rightPartLabels = 1 + subTldEntry.split(".").length;
+            var rightPartLabels = 1 + subTldEntry.split('.').length;
             // Calculate the allowed amount of labels in the left part
-            int leftPartLabelsAllowed = labelCount - rightPartLabels;
-            int cuttingIndex = leftPt.indexOf(".", leftPartLabelsAllowed - 1);
+            var leftPartLabelsAllowed = labelCount - rightPartLabels;
+            var cuttingIndex = leftPt.indexOf('.', leftPartLabelsAllowed - 1);
             String sld;
             if (cuttingIndex >= 0) {
               sld = leftPt.substring(cuttingIndex + 1);
@@ -208,14 +208,14 @@ class DomainUtils {
             return Domain(sld: sld, subTld: subTldEntry, tld: tld);
           }
           return Domain(sld: subTldEntry, tld: tld);
-        } else if (subTldEntry.contains("*")) {
-          String left = _getLeftPart(domainName, tld);
-          int count = left.split(".").length;
+        } else if (subTldEntry.contains('*')) {
+          var left = _getLeftPart(domainName, tld);
+          var count = left.split('.').length;
           if (count > 2) {
-            left = left.substring(left.indexOf(".", (count - 2) - 1) + 1);
-            if (left.split(".").length > 1) {
-              String sld = left.split(".")[0];
-              String subTld = left.substring(sld.length + 1);
+            left = left.substring(left.indexOf('.', (count - 2) - 1) + 1);
+            if (left.split('.').length > 1) {
+              var sld = left.split('.')[0];
+              var subTld = left.substring(sld.length + 1);
               return Domain(sld: sld, subTld: subTld, tld: tld);
             } else {
               return Domain(sld: left, tld: tld);
@@ -231,44 +231,44 @@ class DomainUtils {
   }
 
   static String _removeUncommonChars(String subTldEntry) {
-    if (subTldEntry.startsWith("!")) {
+    if (subTldEntry.startsWith('!')) {
       return subTldEntry.substring(1);
     }
-    if (subTldEntry.startsWith("*.")) {
+    if (subTldEntry.startsWith('*.')) {
       return subTldEntry.substring(2);
     }
     return subTldEntry;
   }
 
   static String _getLeftPart(String domainName, String rightPart) {
-    return domainName.substring(0, domainName.lastIndexOf("." + rightPart));
+    return domainName.substring(0, domainName.lastIndexOf('.' + rightPart));
   }
 
   static String _trimToLastLabel(String value) {
-    if (!value.contains(".")) return value;
-    return value.substring(value.lastIndexOf(".") + 1);
+    if (!value.contains('.')) return value;
+    return value.substring(value.lastIndexOf('.') + 1);
   }
 
   ///
   /// Splits the given [domain] in seperate domain names for each subdomain.
   ///
   /// Example:
-  /// sub2.sub1.domain.com => ["sub2.sub1.domain.com", "sub1.domain.com", "domain.com"]
+  /// sub2.sub1.domain.com => ['sub2.sub1.domain.com', 'sub1.domain.com', 'domain.com']
   ///
   static List<String> splitSubdomainInDomains(String name) {
-    List<String> domains = [];
-    List<String> ar = name.split("\.");
+    var domains = <String>[];
+    var ar = name.split('\.');
 
-    for (int i = 0; i < ar.length; i++) {
-      StringBuffer sb = StringBuffer();
-      for (int j = i; j < ar.length; j++) {
+    for (var i = 0; i < ar.length; i++) {
+      var sb = StringBuffer();
+      for (var j = i; j < ar.length; j++) {
         sb.write(ar[j]);
-        sb.write(".");
+        sb.write('.');
       }
-      String domain = sb.toString();
+      var domain = sb.toString();
       domain = domain.substring(0, domain.length - 1);
       if (ar.length - i == 3) {
-        List<String> splitted = splitDomainName(domain);
+        var splitted = splitDomainName(domain);
         if (isSubTld(splitted.elementAt(2), splitted.elementAt(1))) {
           domains.add(domain);
           break;

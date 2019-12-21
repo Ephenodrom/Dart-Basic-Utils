@@ -8,11 +8,11 @@ class RRecord {
   String name;
 
   /// The type of the record
-  @JsonKey(name: "TYPE")
+  @JsonKey(name: 'TYPE')
   int rType;
 
   /// The time to live of the record
-  @JsonKey(name: "TTL")
+  @JsonKey(name: 'TTL')
   int ttl;
 
   /// The data of the record

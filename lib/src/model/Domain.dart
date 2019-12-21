@@ -54,22 +54,22 @@ class Domain {
 
   @override
   String toString() {
-    List<String> parts = [];
+    var parts = [];
     parts.add(sld);
     if (StringUtils.isNotNullOrEmpty(subTld)) {
       parts.add(subTld);
     }
     parts.add(tld);
-    return parts.join(".");
+    return parts.join('.');
   }
 
   String toAsciiString() {
-    List<String> parts = [];
+    var parts = [];
     parts.add(asciiSld);
     if (StringUtils.isNotNullOrEmpty(asciiSubTld)) {
       parts.add(asciiSubTld);
     }
     parts.add(asciiTld);
-    return parts.join(".");
+    return parts.join('.');
   }
 }

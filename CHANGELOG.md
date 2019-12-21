@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.4.3] - 2019-12-21
+
+* Fix new linter warnings
+
 ## [2.4.2] - 2019-12-16
 
 * Improve IterableUtils

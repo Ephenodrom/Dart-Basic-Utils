@@ -33,12 +33,12 @@ class IterableUtils {
   ///
   static List<List<T>> chunk<T>(List<T> list, int size) {
     if (size <= 1) {
-      throw ArgumentError("size must be >1");
+      throw ArgumentError('size must be >1');
     }
-    List<List<T>> parts = List<List<T>>();
-    final int baseListSize = list.length;
-    for (int i = 0; i < baseListSize; i += size) {
-      List<T> subList = list.sublist(i, min<int>(baseListSize, i + size));
+    var parts = <List<T>>[];
+    final baseListSize = list.length;
+    for (var i = 0; i < baseListSize; i += size) {
+      var subList = list.sublist(i, min<int>(baseListSize, i + size));
       parts.add(subList);
     }
     return parts;

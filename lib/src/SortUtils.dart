@@ -11,9 +11,9 @@ class SortUtils {
     }
 
     var pivot = list[0];
-    List less = [];
-    List more = [];
-    List pivotList = [];
+    var less = [];
+    var more = [];
+    var pivotList = [];
 
     list.forEach((var element) {
       if (element.compareTo(pivot) < 0) {
@@ -42,7 +42,7 @@ class SortUtils {
     var swapped = false;
     do {
       swapped = false;
-      for (int i = 1; i < retList.length; i++) {
+      for (var i = 1; i < retList.length; i++) {
         if (retList[i - 1].compareTo(retList[i]) > 0) {
           tmp = retList[i - 1];
           retList[i - 1] = retList[i];
@@ -59,16 +59,16 @@ class SortUtils {
   /// Implementation of the heap sort algorithm
   ///
   static List heapSort(List a) {
-    int count = a.length;
+    var count = a.length;
 
-    int start = (count - 2) ~/ 2;
+    var start = (count - 2) ~/ 2;
 
     while (start >= 0) {
       _sink(a, start, count - 1);
       start--;
     }
 
-    int end = count - 1;
+    var end = count - 1;
     while (end > 0) {
       var tmp = a[end];
       a[end] = a[0];
@@ -85,10 +85,10 @@ class SortUtils {
   /// Sink a element in the tree
   ///
   static void _sink(List a, int start, int end) {
-    int root = start;
+    var root = start;
 
     while ((root * 2 + 1) <= end) {
-      int child = root * 2 + 1;
+      var child = root * 2 + 1;
       if (child + 1 <= end && a[child].compareTo(a[child + 1]) == -1) {
         child = child + 1;
       }

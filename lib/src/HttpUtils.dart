@@ -10,7 +10,7 @@ import 'package:logging/logging.dart';
 ///
 class HttpUtils {
   static Client client = Client();
-  static const String TAG = "HttpUtils";
+  static const String TAG = 'HttpUtils';
 
   ///
   /// Sends a HTTP GET request to the given [url] with the given [queryParameters] and [headers].
@@ -19,10 +19,10 @@ class HttpUtils {
       {Map<String, dynamic> queryParameters,
       Map<String, String> headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    String finalUrl = addQueryParameterToUrl(url, queryParameters);
-    Logger(TAG).info("GET $finalUrl");
+    var finalUrl = addQueryParameterToUrl(url, queryParameters);
+    Logger(TAG).info('GET $finalUrl');
     var response = await client.get(finalUrl, headers: headers);
-    Logger(TAG).finest("Got response: " + response.body);
+    Logger(TAG).finest('Got response: ' + response.body);
     return _handleResponse(response, returnType);
   }
 
@@ -72,11 +72,11 @@ class HttpUtils {
       {Map<String, String> queryParameters,
       Map<String, String> headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    String finalUrl = addQueryParameterToUrl(url, queryParameters);
-    Logger(TAG).info("POST $finalUrl");
-    Logger(TAG).finest("Request body: " + body);
+    var finalUrl = addQueryParameterToUrl(url, queryParameters);
+    Logger(TAG).info('POST $finalUrl');
+    Logger(TAG).finest('Request body: ' + body);
     var response = await client.post(finalUrl, body: body, headers: headers);
-    Logger(TAG).finest("Response body: " + response.body);
+    Logger(TAG).finest('Response body: ' + response.body);
     return _handleResponse(response, returnType);
   }
 
@@ -126,11 +126,11 @@ class HttpUtils {
       {Map<String, String> queryParameters,
       Map<String, String> headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    String finalUrl = addQueryParameterToUrl(url, queryParameters);
-    Logger(TAG).info("PUT $finalUrl");
-    Logger(TAG).finest("Request body: " + body);
+    var finalUrl = addQueryParameterToUrl(url, queryParameters);
+    Logger(TAG).info('PUT $finalUrl');
+    Logger(TAG).finest('Request body: ' + body);
     var response = await client.put(finalUrl, body: body, headers: headers);
-    Logger(TAG).finest("Response body: " + response.body);
+    Logger(TAG).finest('Response body: ' + response.body);
     return _handleResponse(response, returnType);
   }
 
@@ -180,10 +180,10 @@ class HttpUtils {
       {Map<String, String> queryParameters,
       Map<String, String> headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    String finalUrl = addQueryParameterToUrl(url, queryParameters);
-    Logger(TAG).info("DELETE $finalUrl");
+    var finalUrl = addQueryParameterToUrl(url, queryParameters);
+    Logger(TAG).info('DELETE $finalUrl');
     var response = await client.delete(finalUrl, headers: headers);
-    Logger(TAG).finest("Response body: " + response.body);
+    Logger(TAG).finest('Response body: ' + response.body);
     return _handleResponse(response, returnType);
   }
 
@@ -242,7 +242,7 @@ class HttpUtils {
       }
     } else {
       throw HttpResponseException(
-          "Error: Received status code ${response.statusCode.toString()}",
+          'Error: Received status code ${response.statusCode.toString()}',
           response.statusCode.toString(),
           body: response.body,
           headers: response.headers);
@@ -262,28 +262,28 @@ class HttpUtils {
   /// Fetches the query parameter from the given [url]. Returns null if none exist.
   ///
   static Map<String, dynamic> getQueryParameterFromUrl(String url) {
-    Map<String, dynamic> queryParameters = Map();
-    List<String> splitted = url.split("?");
+    var queryParameters = <String, dynamic>{};
+    var splitted = url.split('?');
     if (splitted.length != 2) {
       return null;
     }
-    String query = splitted.elementAt(1);
+    var query = splitted.elementAt(1);
 
-    List<String> splittedQuery = query.split("&");
+    var splittedQuery = query.split('&');
     splittedQuery.forEach((String q) {
-      List<String> pair = q.split("=");
-      String key = Uri.decodeFull(pair[0]);
-      String value = "";
+      var pair = q.split('=');
+      var key = Uri.decodeFull(pair[0]);
+      var value = '';
       if (pair.length > 1) {
         value = Uri.decodeFull(pair[1]);
       }
 
-      if (key.contains("[]")) {
+      if (key.contains('[]')) {
         if (queryParameters.containsKey(key)) {
-          List<String> values = queryParameters[key];
+          List<dynamic> values = queryParameters[key];
           values.add(value);
         } else {
-          List<String> values = [];
+          var values = [];
           values.add(value);
           queryParameters.putIfAbsent(key, () => values);
         }

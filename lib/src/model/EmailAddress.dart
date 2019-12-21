@@ -14,6 +14,6 @@ class EmailAddress {
 
   @override
   String toString() {
-    return local + "@" + domain.toString();
+    return local + '@' + domain.toString();
   }
 }
