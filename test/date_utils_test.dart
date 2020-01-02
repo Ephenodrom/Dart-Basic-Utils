@@ -215,4 +215,12 @@ void main() {
     expect(actual.minute, 1);
     expect(actual.second, 1);
   });
+
+  test('Test getCalendarWeek', () {
+    var date = DateTime.parse('2020-01-02 13:27:00');
+    expect(DateUtils.getCalendarWeek(date), 1);
+
+    date = DateTime.parse('2019-12-31 13:27:00');
+    expect(DateUtils.getCalendarWeek(date), 53);
+  });
 }

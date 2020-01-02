@@ -36,7 +36,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.4.4
+  basic_utils: ^2.4.5
 ```
 
 ## Import
@@ -180,6 +180,7 @@ Helper class for date operations like converting textual datetime description.
 
 ```dart
 DateTime stringToDateTime(String s, {DateTime time});
+int getCalendarWeek(DateTime date);
 ```
 
 ### X509Utils

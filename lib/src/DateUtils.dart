@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 ///
 /// Helper class for date operations.
 ///
@@ -133,9 +135,7 @@ class DateUtils {
     if (REGEX_JANUARY.hasMatch(dateSplitted.elementAt(1))) {
       monthAsInt = '0' + DateTime.january.toString();
     }
-    if (REGEX_FEBRUARY.hasMatch(dateSplitted.elementAt(1))) {
-      monthAsInt = '0' + DateTime.february.toString();
-    }
+
     if (REGEX_MARCH.hasMatch(dateSplitted.elementAt(1))) {
       monthAsInt = '0' + DateTime.march.toString();
     }
@@ -386,5 +386,13 @@ class DateUtils {
       }
       return time;
     }
+  }
+
+  ///
+  /// Calculates the calendar week for the given [date].
+  ///
+  static int getCalendarWeek(DateTime date) {
+    var dayOfYear = int.parse(DateFormat('D').format(date));
+    return ((dayOfYear - date.weekday + 10) / 7).floor();
   }
 }

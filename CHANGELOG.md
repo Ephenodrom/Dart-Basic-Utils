@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.4.5] - 2019-01-02
+
+* Improve DateUtils
+* Add unit tests
+
 ## [2.4.4] - 2019-01-02
 
 * Update dependencies
