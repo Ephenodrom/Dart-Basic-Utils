@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.4.4] - 2019-01-02
+
+* Update dependencies
+
 ## [2.4.3] - 2019-12-21
 
 * Fix new linter warnings

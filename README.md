@@ -36,7 +36,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.4.3
+  basic_utils: ^2.4.4
 ```
 
 ## Import
