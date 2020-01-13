@@ -122,13 +122,16 @@ class HttpUtils {
   ///
   /// Sends a HTTP PUT request to the given [url] with the given [body], [queryParameters] and [headers].
   ///
-  static Future<dynamic> _put(String url, String body,
-      {Map<String, String> queryParameters,
+  static Future<dynamic> _put(String url,
+      {String body,
+      Map<String, String> queryParameters,
       Map<String, String> headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
     var finalUrl = addQueryParameterToUrl(url, queryParameters);
     Logger(TAG).info('PUT $finalUrl');
-    Logger(TAG).finest('Request body: ' + body);
+    if (body != null) {
+      Logger(TAG).finest('Request body: ' + body);
+    }
     var response = await client.put(finalUrl, body: body, headers: headers);
     Logger(TAG).finest('Response body: ' + response.body);
     return _handleResponse(response, returnType);
@@ -138,10 +141,12 @@ class HttpUtils {
   /// Sends a HTTP PUT request to the given [url] with the given [body], [queryParameters] and [headers].
   /// Returns the full [Response] object.
   ///
-  static Future<Response> putForFullResponse(String url, String body,
-      {Map<String, String> queryParameters,
+  static Future<Response> putForFullResponse(String url,
+      {String body,
+      Map<String, String> queryParameters,
       Map<String, String> headers}) async {
-    return await _put(url, body,
+    return await _put(url,
+        body: body,
         queryParameters: queryParameters,
         headers: headers,
         returnType: HttpRequestReturnType.FULLRESPONSE) as Response;
@@ -151,10 +156,12 @@ class HttpUtils {
   /// Sends a HTTP PUT request to the given [url] with the given [body], [queryParameters] and [headers].
   /// Returns the response as a map using json.decode.
   ///
-  static Future<Map<String, dynamic>> putForJson(String url, String body,
-      {Map<String, String> queryParameters,
+  static Future<Map<String, dynamic>> putForJson(String url,
+      {String body,
+      Map<String, String> queryParameters,
       Map<String, String> headers}) async {
-    return await _put(url, body,
+    return await _put(url,
+        body: body,
         queryParameters: queryParameters,
         headers: headers,
         returnType: HttpRequestReturnType.JSON) as Map<String, dynamic>;
@@ -164,10 +171,12 @@ class HttpUtils {
   /// Sends a HTTP PUT request to the given [url] with the given [body], [queryParameters] and [headers].
   /// Returns the response as a string.
   ///
-  static Future<String> putForString(String url, String body,
-      {Map<String, String> queryParameters,
+  static Future<String> putForString(String url,
+      {String body,
+      Map<String, String> queryParameters,
       Map<String, String> headers}) async {
-    return await _put(url, body,
+    return await _put(url,
+        body: body,
         queryParameters: queryParameters,
         headers: headers,
         returnType: HttpRequestReturnType.STRING) as String;

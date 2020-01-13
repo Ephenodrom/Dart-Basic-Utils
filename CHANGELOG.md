@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.4.6] - 2019-01-13
+
+* Improve HttpUtils, make body within PUT requests optional
+
 ## [2.4.5] - 2019-01-02
 
 * Improve DateUtils
