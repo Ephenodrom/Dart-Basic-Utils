@@ -36,7 +36,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.4.6
+  basic_utils: ^2.4.7
 ```
 
 ## Import
@@ -127,9 +127,9 @@ Helper class for simple http operations like sending requests.
 Future<Map<Response> getForFullResponse(String url, {Map<String, dynamic> queryParameters, Map<String, String> headers});
 Future<Map<String, dynamic>> getForJson(String url, {Map<String, dynamic> queryParameters, Map<String, String> headers});
 Future<String> getForString(String url, {Map<String, dynamic> queryParameters, Map<String, String> headers});
-Future<Map<Response> postForFullResponse(String url, String body, {Map<String, String> queryParameters, Map<String, String> headers});
-Future<Map<String, dynamic>> postForJson(String url, String body, {Map<String, String> queryParameters, Map<String, String> headers});
-Future<String> postForString(String url, String body, {Map<String, String> queryParameters, Map<String, String> headers});
+Future<Map<Response> postForFullResponse(String url, {String body, Map<String, String> queryParameters, Map<String, String> headers});
+Future<Map<String, dynamic>> postForJson(String url, {String body, Map<String, String> queryParameters, Map<String, String> headers});
+Future<String> postForString(String url, {String body, Map<String, String> queryParameters, Map<String, String> headers});
 Future<Response> putForFullResponse(String url, {String body, Map<String, String> queryParameters, Map<String, String> headers});
 Future<Map<String, dynamic>> putForJson(String url, {String body, Map<String, String> queryParameters, Map<String, String> headers});
 Future<String> putForString(String url, {String body, Map<String, String> queryParameters, Map<String, String> headers});

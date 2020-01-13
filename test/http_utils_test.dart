@@ -72,7 +72,8 @@ void main() {
       final mapJson = {'id': 123};
       return Response(json.encode(mapJson), 200);
     });
-    final item = await HttpUtils.postForJson('api.com/item', '{"id": 123}');
+    final item =
+        await HttpUtils.postForJson('api.com/item', body: '{"id": 123}');
     expect(item['id'], 123);
   });
 
