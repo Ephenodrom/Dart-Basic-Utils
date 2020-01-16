@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.4.8] - 2019-01-16
+
+* Update dependencies
+
 ## [2.4.7] - 2019-01-13
 
 * Improve HttpUtils, make body within POST requests optional
