@@ -325,17 +325,24 @@ class X509Utils {
 
     var pubKey = pubKeySequence.elements.elementAt(1) as ASN1BitString;
     var asn1PubKeyParser = ASN1Parser(pubKey.contentBytes());
-    var next = asn1PubKeyParser.nextObject();
+    var next;
+    try {
+      next = asn1PubKeyParser.nextObject();
+    } catch (RangeError) {
+      // continue
+    }
     var pubKeyLength = 0;
 
     Uint8List pubKeyAsBytes;
 
-    if (next is ASN1Sequence) {
+    if (next != null && next is ASN1Sequence) {
       var s = next;
       var key = s.elements.elementAt(0) as ASN1Integer;
       pubKeyLength = key.valueAsBigInteger.bitLength;
       pubKeyAsBytes = s.encodedBytes;
-    } else {}
+    } else {
+      pubKeyAsBytes = pubKey.contentBytes();
+    }
     var pubKeyThumbprint =
         CryptoUtils.getSha1ThumbprintFromBytes(pubKeySequence.encodedBytes);
     var publicKeyData = X509CertificatePublicKeyData(

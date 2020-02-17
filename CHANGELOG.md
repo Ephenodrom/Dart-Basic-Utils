@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.4.9] - 2019-02-17
+
+* Improve X509Utils, fix RangeError while parsing PEM string (#9)
+
 ## [2.4.8] - 2019-01-16
 
 * Update dependencies
