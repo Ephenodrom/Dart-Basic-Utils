@@ -99,6 +99,56 @@ ga7IcCj2gCeuTdS4Ibhx3hiew7cfuGa9XbVd5JJmV8kIoFlzLrZpKB4eVDKqaNWg
 /g==
 -----END CERTIFICATE-----''';
 
+  var x509PemV1 = '''-----BEGIN CERTIFICATE-----
+MIIEGjCCAwICEQCbfgZJoz5iudXukEhxKe9XMA0GCSqGSIb3DQEBBQUAMIHKMQsw
+CQYDVQQGEwJVUzEXMBUGA1UEChMOVmVyaVNpZ24sIEluYy4xHzAdBgNVBAsTFlZl
+cmlTaWduIFRydXN0IE5ldHdvcmsxOjA4BgNVBAsTMShjKSAxOTk5IFZlcmlTaWdu
+LCBJbmMuIC0gRm9yIGF1dGhvcml6ZWQgdXNlIG9ubHkxRTBDBgNVBAMTPFZlcmlT
+aWduIENsYXNzIDMgUHVibGljIFByaW1hcnkgQ2VydGlmaWNhdGlvbiBBdXRob3Jp
+dHkgLSBHMzAeFw05OTEwMDEwMDAwMDBaFw0zNjA3MTYyMzU5NTlaMIHKMQswCQYD
+VQQGEwJVUzEXMBUGA1UEChMOVmVyaVNpZ24sIEluYy4xHzAdBgNVBAsTFlZlcmlT
+aWduIFRydXN0IE5ldHdvcmsxOjA4BgNVBAsTMShjKSAxOTk5IFZlcmlTaWduLCBJ
+bmMuIC0gRm9yIGF1dGhvcml6ZWQgdXNlIG9ubHkxRTBDBgNVBAMTPFZlcmlTaWdu
+IENsYXNzIDMgUHVibGljIFByaW1hcnkgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkg
+LSBHMzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMu6nFL8eB8aHm8b
+N3O9+MlrlBIwT/A2R/XQkQr1F8ilYcEWQE37imGQ5XYgwREGfassbqb1EUGO+i2t
+KmFZpGcmTNDovFJbcCAEWNF6yaRpvIMXZK0Fi7zQWM6NjPXr8EJJC52XJ2cybuGu
+kxUccLwgTS8Y3pKI6GyFVxEa6X7jJhFUokWWVYPKMIno3Nij7SqAP395ZVc+FSBm
+CC+Vk7+qRy+oRpfwEuL+wgorUeZ25rdGt+INpsyow0xZVYnm6FNcHOqd8GIWC6fJ
+Xwzw3sJ2zq/3avL6QaaiMxTJ5Xpj055iN9WFZZ4O5lMkdBteHRJTW8cs54NJOxWu
+imi5V5cCAwEAATANBgkqhkiG9w0BAQUFAAOCAQEAERSWwauSCPc/L8my/uRan2Te
+2yFPhpk0djZX3dAVL8WtfxUfN2JzPtTnX84XA9s1+ivbrmAJXx5fj267Cz3qWhMe
+DGBvtcC1IyIuBwvLqXTLR7sdwdela8wv0kL9Sd2nic9TutoAWii/gt/4uhMdUIaC
+/Y4wjylGsB49Ndo4YhYYSq3mtlFs3q9i6wHQHiT+eo8SGhJouPtmmRQURVyu565p
+F4ErWjfJXir0xuKhXFSbplQAz/DxwceYMBo7Nhbbo27q/a2ywtrvAkcTisDxszGt
+TxzhT5yvDwyd93gN2PQ1VoDat20Xj50egWTh/sVFuq1ruQp6Tk9LhO5L8X3dEQ==
+-----END CERTIFICATE-----''';
+
+  var x509PemWithGeneralizedTime = '''-----BEGIN CERTIFICATE-----
+MIIEAzCCAuugAwIBAgIQVID5oHPtPwBMyonY43HmSjANBgkqhkiG9w0BAQUFADB1
+MQswCQYDVQQGEwJFRTEiMCAGA1UECgwZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1
+czEoMCYGA1UEAwwfRUUgQ2VydGlmaWNhdGlvbiBDZW50cmUgUm9vdCBDQTEYMBYG
+CSqGSIb3DQEJARYJcGtpQHNrLmVlMCIYDzIwMTAxMDMwMTAxMDMwWhgPMjAzMDEy
+MTcyMzU5NTlaMHUxCzAJBgNVBAYTAkVFMSIwIAYDVQQKDBlBUyBTZXJ0aWZpdHNl
+ZXJpbWlza2Vza3VzMSgwJgYDVQQDDB9FRSBDZXJ0aWZpY2F0aW9uIENlbnRyZSBS
+b290IENBMRgwFgYJKoZIhvcNAQkBFglwa2lAc2suZWUwggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQDIIMDs4MVLqwd4lfNE7vsLDP90jmG7sWLqI9iroWUy
+euuOF0+W2Ap7kaJjbMeMTC55v6kF/GlclY1i+blw7cNRfdCT5mzrMEvhvH2/UpvO
+bntl8jixwKIy72KyaOBhU8E2lf/slLo2rpwcpzIP5Xy0xm90/XsY6KxX7QYgSzIw
+WFv9zajmofxwvI6Sc9uXp3whrj3B9UiHbCe9nyV0gVWw93X2PaRka9ZP585ArQ/d
+MtO8ihJTmMmJ+xAdTX7Nfh9WDSFwhfYggx/2uh8Ej+p3iDXE/+pOoYtNP2MbRMNE
+1CV2yreN1x5KZmTNXMWcg+HCCIia7E6j8T4cLNlsHaFLAgMBAAGjgYowgYcwDwYD
+VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFBLyWj7qVhy/
+zQas8fElyalL1BSZMEUGA1UdJQQ+MDwGCCsGAQUFBwMCBggrBgEFBQcDAQYIKwYB
+BQUHAwMGCCsGAQUFBwMEBggrBgEFBQcDCAYIKwYBBQUHAwkwDQYJKoZIhvcNAQEF
+BQADggEBAHv25MANqhlHt01Xo/6tu7Fq1Q+e2+RjxY6hUFaTlrg4wCQiZrxTFGGV
+v9DHKpY5P30osxBAIWrEr7BSdxjhlthWXePdNl4dp1BUoMUq5KqMlIpPnTX/dqQG
+E5Gion0ARD9V04I8GtVbvFZMIi5GQ4okQC3zErg7cBqklrkar4dBGmoYDQZPxz5u
+uSlNDUmJEYcyW+ZLBMjkXOZ0c5RdFpgTlf7727FE5TpwrDdr5rMzcijJs1eg9gIW
+iAYLtqZLICjU3j2LrTcFU3T+bsy8QxdxXvnFzBqpYe73dgzzcvRyrc9yAjYHR8/v
+GVCJYMzpJJUPwssd8m92kMfMdcGWxZ0=
+-----END CERTIFICATE-----''';
+
   var X509WithSans = '''-----BEGIN CERTIFICATE-----
 MIIDsTCCApmgAwIBAgIUDmyV5Jod3FGoVStvzghkIs1xZTcwDQYJKoZIhvcNAQEL
 BQAwajELMAkGA1UEBhMCREUxCzAJBgNVBAgMAkJZMQ0wCwYDVQQHDARDaXR5MRAw
@@ -337,5 +387,81 @@ h9vE3e4Cq0OS3DA=
     expect(sans.length, 2);
     expect(sans.elementAt(0), '127.0.0.1');
     expect(sans.elementAt(1), '0.0.0.0');
+  });
+
+  test('Test x509CertificateFromPem with V1 X509', () {
+    var data = X509Utils.x509CertificateFromPem(x509PemV1);
+    expect(data.version, 1);
+
+    expect(data.serialNumber.toString(),
+        '206684696279472310254277870180966723415');
+
+    expect(data.signatureAlgorithm, '1.2.840.113549.1.1.5');
+
+    expect(data.issuer.containsKey('2.5.4.6'), true);
+    expect(data.issuer['2.5.4.6'], 'US');
+    expect(data.issuer.containsKey('2.5.4.10'), true);
+    expect(data.issuer['2.5.4.10'], 'VeriSign, Inc.');
+    expect(data.issuer.containsKey('2.5.4.3'), true);
+    expect(data.issuer['2.5.4.3'],
+        'VeriSign Class 3 Public Primary Certification Authority - G3');
+
+    expect(
+        data.validity.notBefore.toIso8601String(), '1999-10-01T00:00:00.000Z');
+    expect(
+        data.validity.notAfter.toIso8601String(), '2036-07-16T23:59:59.000Z');
+
+    expect(data.subject.containsKey('2.5.4.3'), true);
+    expect(data.subject['2.5.4.3'],
+        'VeriSign Class 3 Public Primary Certification Authority - G3');
+
+    expect(data.sha1Thumbprint, '132D0D45534B6997CDB2D5C339E25576609B5CC6');
+    expect(data.md5Thumbprint, 'CD68B6A7C7C4CE75E01D4F5744619209');
+
+    var publicKeyData = data.publicKeyData;
+
+    expect(publicKeyData.length, 2048);
+    expect(publicKeyData.sha1Thumbprint,
+        '22F19E2EC6EACCFC5D2346F4C2E8F6C554DD5E07');
+    expect(publicKeyData.algorithm, '1.2.840.113549.1.1.1');
+    expect(publicKeyData.bytes,
+        '3082010A0282010100CBBA9C52FC781F1A1E6F1B3773BDF8C96B9412304FF03647F5D0910AF517C8A561C116404DFB8A6190E57620C111067DAB2C6EA6F511418EFA2DAD2A6159A467264CD0E8BC525B70200458D17AC9A469BC831764AD058BBCD058CE8D8CF5EBF042490B9D972767326EE1AE93151C70BC204D2F18DE9288E86C8557111AE97EE3261154A245965583CA3089E8DCD8A3ED2A803F7F7965573E152066082F9593BFAA472FA84697F012E2FEC20A2B51E676E6B746B7E20DA6CCA8C34C595589E6E8535C1CEA9DF062160BA7C95F0CF0DEC276CEAFF76AF2FA41A6A23314C9E57A63D39E6237D585659E0EE65324741B5E1D12535BC72CE783493B15AE8A68B957970203010001');
+  });
+
+  test('Test x509CertificateFromPem with GeneralizedTime', () {
+    var data = X509Utils.x509CertificateFromPem(x509PemWithGeneralizedTime);
+    expect(data.version, 2);
+
+    expect(data.serialNumber.toString(),
+        '112324828676200291871926431888494945866');
+
+    expect(data.signatureAlgorithm, '1.2.840.113549.1.1.5');
+
+    expect(data.issuer.containsKey('2.5.4.6'), true);
+    expect(data.issuer['2.5.4.6'], 'EE');
+    expect(data.issuer.containsKey('2.5.4.10'), true);
+    expect(data.issuer['2.5.4.10'], 'AS Sertifitseerimiskeskus');
+    expect(data.issuer.containsKey('2.5.4.3'), true);
+    expect(data.issuer['2.5.4.3'], 'EE Certification Centre Root CA');
+
+    expect(
+        data.validity.notBefore.toIso8601String(), '2010-10-30T10:10:30.000Z');
+    expect(
+        data.validity.notAfter.toIso8601String(), '2030-12-17T23:59:59.000Z');
+
+    expect(data.subject.containsKey('2.5.4.3'), true);
+    expect(data.subject['2.5.4.3'], 'EE Certification Centre Root CA');
+
+    expect(data.sha1Thumbprint, 'C9A8B9E755805E58E35377A725EBAFC37B27CCD7');
+    expect(data.md5Thumbprint, '435E88D47D1A4A7EFD842E52EB01D46F');
+
+    var publicKeyData = data.publicKeyData;
+
+    expect(publicKeyData.length, 2048);
+    expect(publicKeyData.sha1Thumbprint,
+        '30B8B08C3E820AD83B4F1F891EAB29C29C49E937');
+    expect(publicKeyData.algorithm, '1.2.840.113549.1.1.1');
+    expect(publicKeyData.bytes,
+        '3082010A0282010100C820C0ECE0C54BAB077895F344EEFB0B0CFF748E61BBB162EA23D8ABA165327AEB8E174F96D80A7B91A2636CC78C4C2E79BFA905FC695C958D62F9B970EDC3517DD093E66CEB304BE1BC7DBF529BCE6E7B65F238B1C0A232EF62B268E06153C13695FFEC94BA36AE9C1CA7320FE57CB4C66F74FD7B18E8AC57ED06204B3230585BFDCDA8E6A1FC70BC8E9273DB97A77C21AE3DC1F548876C27BD9F25748155B0F775F63DA4646BD64FE7CE40AD0FDD32D3BC8A125398C989FB101D4D7ECD7E1F560D217085F620831FF6BA1F048FEA778835C4FFEA4EA18B4D3F631B44C344D42576CAB78DD71E4A6664CD5CC59C83E1C208889AEC4EA3F13E1C2CD96C1DA14B0203010001');
   });
 }
