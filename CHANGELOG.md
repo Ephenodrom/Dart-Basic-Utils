@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.5.1] - 2019-02-20
+
+* Improve X509Utils (#10)
+* Update dependencies
+* Add unit tests
+
 ## [2.5.0] - 2019-02-18
 
 * Improve X509Utils (#10 #11)

@@ -250,6 +250,11 @@ class X509Utils {
     return rsaPublicKey;
   }
 
+  ///
+  /// Parses the given PEM to a [X509CertificateData] object.
+  ///
+  /// Throws an [ASN1Exception] if the pem could not be read by the [ASN1Parser].
+  ///
   static X509CertificateData x509CertificateFromPem(String pem) {
     if (pem == null) {
       throw ArgumentError('Argument must not be null.');
@@ -300,6 +305,9 @@ class X509Utils {
       } else if (object is ASN1PrintableString) {
         var objectPrintable = object;
         value = objectPrintable.stringValue;
+      } else if (object is ASN1TeletextString) {
+        var objectTeletext = object;
+        value = objectTeletext.stringValue;
       }
       issuer.putIfAbsent(o.identifier, () => value);
     }
