@@ -12,6 +12,7 @@ X509CertificatePublicKeyData _$X509CertificatePublicKeyDataFromJson(
     algorithm: json['algorithm'] as String,
     length: json['length'] as int,
     sha1Thumbprint: json['sha1Thumbprint'] as String,
+    sha256Thumbprint: json['sha256Thumbprint'] as String,
     bytes: json['bytes'] as String,
   );
 }
@@ -29,6 +30,7 @@ Map<String, dynamic> _$X509CertificatePublicKeyDataToJson(
   writeNotNull('algorithm', instance.algorithm);
   writeNotNull('length', instance.length);
   writeNotNull('sha1Thumbprint', instance.sha1Thumbprint);
+  writeNotNull('sha256Thumbprint', instance.sha256Thumbprint);
   writeNotNull('bytes', instance.bytes);
   return val;
 }

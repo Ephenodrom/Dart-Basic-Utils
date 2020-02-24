@@ -42,6 +42,13 @@ void main() {
     expect(thumbprint, '65AA0349076EC56BA663F128074F426705B41FB1');
   });
 
+  test('Test getSha256ThumbprintFromCertBytes', () {
+    var bytes = X509Utils.getBytesFromPEMString(x509Pem);
+    var thumbprint = CryptoUtils.getSha256ThumbprintFromBytes(bytes);
+    expect(thumbprint,
+        '2E97B80F5E7AFFFBC0C94D75F0867C5B34B5B49142704FB06CCE7088DBDACF76');
+  });
+
   test('Test getMd5ThumbprintFromCertBytes', () {
     var bytes = X509Utils.getBytesFromPEMString(x509Pem);
     var thumbprint = CryptoUtils.getMd5ThumbprintFromBytes(bytes);

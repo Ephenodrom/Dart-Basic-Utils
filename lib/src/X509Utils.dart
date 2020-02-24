@@ -383,14 +383,18 @@ class X509Utils {
       pubKeyAsBytes = s.encodedBytes;
     } else {
       pubKeyAsBytes = pubKey.contentBytes();
+      pubKeyLength = pubKey.contentBytes().length * 8;
     }
     var pubKeyThumbprint =
         CryptoUtils.getSha1ThumbprintFromBytes(pubKeySequence.encodedBytes);
+    var pubKeySha256Thumbprint =
+        CryptoUtils.getSha256ThumbprintFromBytes(pubKeySequence.encodedBytes);
     var publicKeyData = X509CertificatePublicKeyData(
         algorithm: pubKeyOid.identifier,
         bytes: _bytesAsString(pubKeyAsBytes),
         length: pubKeyLength,
-        sha1Thumbprint: pubKeyThumbprint);
+        sha1Thumbprint: pubKeyThumbprint,
+        sha256Thumbprint: pubKeySha256Thumbprint);
 
     var sha1String = CryptoUtils.getSha1ThumbprintFromBytes(bytes);
     var md5String = CryptoUtils.getMd5ThumbprintFromBytes(bytes);

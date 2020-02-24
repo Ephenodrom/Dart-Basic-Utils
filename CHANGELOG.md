@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.2] - 2019-02-24
+
+* Improve X509Utils (#10)
+* Update dependencies
+* Improve CryptoUtils
+* Add unit tests
+
 ## [2.5.1] - 2019-02-20
 
 * Improve X509Utils (#10)

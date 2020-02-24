@@ -16,11 +16,18 @@ class X509CertificatePublicKeyData {
   /// The sha1 thumbprint of the public key
   String sha1Thumbprint;
 
+  /// The sha256 thumbprint of the public key
+  String sha256Thumbprint;
+
   /// The bytes representing the public key as String
   String bytes;
 
   X509CertificatePublicKeyData(
-      {this.algorithm, this.length, this.sha1Thumbprint, this.bytes});
+      {this.algorithm,
+      this.length,
+      this.sha1Thumbprint,
+      this.sha256Thumbprint,
+      this.bytes});
 
   /*
    * Json to X509CertificatePublicKeyData object

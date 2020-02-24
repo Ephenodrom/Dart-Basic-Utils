@@ -15,6 +15,14 @@ class CryptoUtils {
   }
 
   ///
+  /// Get a SHA256 Thumbprint for the given [bytes].
+  ///
+  static String getSha256ThumbprintFromBytes(Uint8List bytes) {
+    var digest = sha256.convert(bytes);
+    return digest.toString().toUpperCase();
+  }
+
+  ///
   /// Get a MD5 Thumbprint for the given [bytes].
   ///
   static String getMd5ThumbprintFromBytes(Uint8List bytes) {
