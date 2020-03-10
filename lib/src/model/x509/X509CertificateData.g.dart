@@ -24,6 +24,7 @@ X509CertificateData _$X509CertificateDataFromJson(Map<String, dynamic> json) {
       (k, e) => MapEntry(k, e as String),
     ),
     sha1Thumbprint: json['sha1Thumbprint'] as String,
+    sha256Thumbprint: json['sha256Thumbprint'] as String,
     md5Thumbprint: json['md5Thumbprint'] as String,
     publicKeyData: json['publicKeyData'] == null
         ? null
@@ -51,6 +52,7 @@ Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {
   writeNotNull('validity', instance.validity?.toJson());
   writeNotNull('subject', instance.subject);
   writeNotNull('sha1Thumbprint', instance.sha1Thumbprint);
+  writeNotNull('sha256Thumbprint', instance.sha256Thumbprint);
   writeNotNull('md5Thumbprint', instance.md5Thumbprint);
   writeNotNull('publicKeyData', instance.publicKeyData?.toJson());
   writeNotNull('subjectAlternativNames', instance.subjectAlternativNames);

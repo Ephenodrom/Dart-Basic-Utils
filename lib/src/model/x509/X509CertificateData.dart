@@ -31,6 +31,9 @@ class X509CertificateData {
   /// The sha1 thumbprint for the certificate
   String sha1Thumbprint;
 
+  /// The sha256 thumbprint for the certificate
+  String sha256Thumbprint;
+
   /// The md5 thumbprint for the certificate
   String md5Thumbprint;
 
@@ -47,6 +50,7 @@ class X509CertificateData {
       this.validity,
       this.subject,
       this.sha1Thumbprint,
+      this.sha256Thumbprint,
       this.md5Thumbprint,
       this.publicKeyData,
       this.subjectAlternativNames});

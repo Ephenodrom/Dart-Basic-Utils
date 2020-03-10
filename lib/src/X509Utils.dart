@@ -398,6 +398,7 @@ class X509Utils {
 
     var sha1String = CryptoUtils.getSha1ThumbprintFromBytes(bytes);
     var md5String = CryptoUtils.getMd5ThumbprintFromBytes(bytes);
+    var sha256String = CryptoUtils.getSha256ThumbprintFromBytes(bytes);
     List<String> sans;
     if (version > 1) {
       // Extensions
@@ -422,6 +423,7 @@ class X509Utils {
         validity: validity,
         subject: subject,
         sha1Thumbprint: sha1String,
+        sha256Thumbprint: sha256String,
         md5Thumbprint: md5String,
         publicKeyData: publicKeyData,
         subjectAlternativNames: sans);

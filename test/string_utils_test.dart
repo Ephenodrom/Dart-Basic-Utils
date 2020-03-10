@@ -106,6 +106,11 @@ void main() {
     expect(StringUtils.addCharAtPosition('1234567890', '-', 3, repeat: true),
         '123-456-789-0');
     expect(StringUtils.addCharAtPosition('1234567890', '-', 12), '1234567890');
+    expect(
+        StringUtils.addCharAtPosition(
+            '1F6254CEDA7E9E9AEBF8B687BDFB5CC03AD1B3E7', ' ', 2,
+            repeat: true),
+        '1F 62 54 CE DA 7E 9E 9A EB F8 B6 87 BD FB 5C C0 3A D1 B3 E7');
   });
 
   test('Test chunk', () {
