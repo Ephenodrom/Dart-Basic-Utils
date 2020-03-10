@@ -6,5 +6,6 @@ void main() {
   test('Test lookupRecord', () async {
     var records = await DnsUtils.lookupRecord('google.de', RRecordType.A);
     expect(records.elementAt(0).data.isEmpty, false);
+    expect(records.elementAt(0).rType, 1);
   });
 }

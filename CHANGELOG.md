@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.3] - 2019-03-09
+
+* Improve X509Utils (#13)
+* Improve DNSUtils
+* Improve unit tests
+* Update license, changed year to 2020
+
 ## [2.5.2] - 2019-02-24
 
 * Improve X509Utils (#10)
