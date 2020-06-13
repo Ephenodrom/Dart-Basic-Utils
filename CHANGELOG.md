@@ -1,53 +1,58 @@
 # Changelog
 
-## [2.5.3] - 2019-03-09
+## [2.5.4] - 2020-06-13
+
+* Improve DNSUtils (#14)
+* Updated dependencies
+
+## [2.5.3] - 2020-03-09
 
 * Improve X509Utils (#13)
 * Improve DNSUtils
 * Improve unit tests
 * Update license, changed year to 2020
 
-## [2.5.2] - 2019-02-24
+## [2.5.2] - 2020-02-24
 
 * Improve X509Utils (#10)
 * Update dependencies
 * Improve CryptoUtils
 * Add unit tests
 
-## [2.5.1] - 2019-02-20
+## [2.5.1] - 2020-02-20
 
 * Improve X509Utils (#10)
 * Update dependencies
 * Add unit tests
 
-## [2.5.0] - 2019-02-18
+## [2.5.0] - 2020-02-18
 
 * Improve X509Utils (#10 #11)
 * Update dependencies
 * Add unit tests
 
-## [2.4.9] - 2019-02-17
+## [2.4.9] - 2020-02-17
 
 * Improve X509Utils, fix RangeError while parsing PEM string (#9)
 
-## [2.4.8] - 2019-01-16
+## [2.4.8] - 2020-01-16
 
 * Update dependencies
 
-## [2.4.7] - 2019-01-13
+## [2.4.7] - 2020-01-13
 
 * Improve HttpUtils, make body within POST requests optional
 
-## [2.4.6] - 2019-01-13
+## [2.4.6] - 2020-01-13
 
 * Improve HttpUtils, make body within PUT requests optional
 
-## [2.4.5] - 2019-01-02
+## [2.4.5] - 2020-01-02
 
 * Improve DateUtils
 * Add unit tests
 
-## [2.4.4] - 2019-01-02
+## [2.4.4] - 2020-01-02
 
 * Update dependencies
 

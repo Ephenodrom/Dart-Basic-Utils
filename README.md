@@ -36,7 +36,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.5.3
+  basic_utils: ^2.5.4
 ```
 
 ## Import
@@ -145,7 +145,7 @@ String addQueryParameterToUrl(String url, Map<String, dynamic> queryParameters);
 Helper class for lookup resource records. Uses google dns resolver api.
 
 ```dart
-Future<List<RRecord>> lookupRecord(String name, RRecordType type,{bool dnssec = false});
+Future<List<RRecord>> lookupRecord(String name, RRecordType type,{bool dnssec = false, DnsApiProvider provider = DnsApiProvider.GOOGLE});
 RRecordType intToRRecordType(int type);
 int rRecordTypeToInt(RRecordType type);
 ```

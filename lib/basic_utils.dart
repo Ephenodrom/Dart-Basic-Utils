@@ -15,6 +15,7 @@ export 'src/model/HttpRequestReturnType.dart';
 export 'src/model/x509/X509CertificateData.dart';
 export 'src/model/x509/X509CertificateObject.dart';
 export 'src/model/x509/X509CertificateValidity.dart';
+export 'src/model/DnsApiProvider.dart';
 
 export 'src/DomainUtils.dart';
 export 'src/EmailUtils.dart';
