@@ -1,0 +1,1 @@
+enum DnsApiProvider { GOOGLE, CLOUDFLARE }

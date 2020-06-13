@@ -1,4 +1,5 @@
 import 'package:basic_utils/basic_utils.dart';
+import 'package:basic_utils/src/model/DnsApiProvider.dart';
 
 ///
 /// Helper class for dns record lookups
@@ -7,19 +8,36 @@ class DnsUtils {
   ///
   /// Base url of the google dns resolver
   ///
-  static final String _baseUrl = 'https://dns.google.com/resolve';
+  static final String _baseUrlGoogle = 'https://dns.google.com/resolve';
+
+  static final String _baseUrlCloudflare =
+      'https://cloudflare-dns.com/dns-query';
 
   ///
   /// Lookup for records of the given [type] and [name]. It also supports [dnssec]
   ///
   static Future<List<RRecord>> lookupRecord(String name, RRecordType type,
-      {bool dnssec = false}) async {
+      {bool dnssec = false,
+      DnsApiProvider provider = DnsApiProvider.GOOGLE}) async {
     var queryParameters = <String, dynamic>{};
     queryParameters.putIfAbsent('name', () => name);
     queryParameters.putIfAbsent('type', () => _getTypeFromType(type));
     queryParameters.putIfAbsent('dnssec', () => dnssec.toString());
-    var body =
-        await HttpUtils.getForJson(_baseUrl, queryParameters: queryParameters);
+
+    var _baseUrl = '';
+    switch (provider) {
+      case DnsApiProvider.GOOGLE:
+        _baseUrl = _baseUrlGoogle;
+        break;
+      case DnsApiProvider.CLOUDFLARE:
+        _baseUrl = _baseUrlCloudflare;
+        break;
+    }
+
+    var headers = {'Accept': 'application/dns-json'};
+
+    var body = await HttpUtils.getForJson(_baseUrl,
+        queryParameters: queryParameters, headers: headers);
     var response = ResolveResponse.fromJson(body);
     return response.answer;
   }
