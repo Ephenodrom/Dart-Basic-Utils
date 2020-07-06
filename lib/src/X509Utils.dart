@@ -24,6 +24,12 @@ class X509Utils {
   static final String BEGIN_CSR = '-----BEGIN CERTIFICATE REQUEST-----';
   static final String END_CSR = '-----END CERTIFICATE REQUEST-----';
 
+  static final String BEGIN_EC_PRIVATE_KEY = '-----BEGIN EC PRIVATE KEY-----';
+  static final String END_EC_PRIVATE_KEY = '-----END EC PRIVATE KEY-----';
+
+  static final String BEGIN_EC_PUBLIC_KEY = '-----BEGIN EC PUBLIC KEY-----';
+  static final String END_EC_PUBLIC_KEY = '-----END EC PUBLIC KEY-----';
+
   static final Map<String, String> DN = {
     'cn': '2.5.4.3',
     'sn': '2.5.4.4',
@@ -66,6 +72,14 @@ class X509Utils {
     'dmd': '2.5.6.20',
     'md5WithRSAEncryption': '1.2.840.113549.1.1.4',
     'rsaEncryption': '1.2.840.113549.1.1.1',
+    'organizationalUnitName': '2.5.4.11',
+    'organizationName': '2.5.4.10',
+    'stateOrProvinceName': '2.5.4.8',
+    'commonName': '2.5.4.3',
+    'surname': '2.5.4.4',
+    'countryName': '2.5.4.6',
+    'localityName': '2.5.4.7',
+    'streetAddress': '2.5.4.9'
   };
 
   ///
@@ -85,6 +99,27 @@ class X509Utils {
 
     var rngParams = ParametersWithRandom(keyParams, secureRandom);
     var k = RSAKeyGenerator();
+    k.init(rngParams);
+
+    return k.generateKeyPair();
+  }
+
+  ///
+  /// Generates a [AsymmetricKeyPair] with the given [keySize].
+  ///
+  static AsymmetricKeyPair generateEccKeyPair({int keySize = 256}) {
+    var keyParams = ECKeyGeneratorParameters(ECCurve_secp256r1());
+
+    var secureRandom = FortunaRandom();
+    var random = Random.secure();
+    var seeds = <int>[];
+    for (var i = 0; i < 32; i++) {
+      seeds.add(random.nextInt(255));
+    }
+    secureRandom.seed(KeyParameter(Uint8List.fromList(seeds)));
+
+    var rngParams = ParametersWithRandom(keyParams, secureRandom);
+    var k = ECKeyGenerator();
     k.init(rngParams);
 
     return k.generateKeyPair();
@@ -123,15 +158,81 @@ class X509Utils {
     blockDN.add(ASN1Null(tag: 0xA0)); // let's call this WTF
 
     var blockProtocol = ASN1Sequence();
-    blockProtocol.add(ASN1ObjectIdentifier.fromName('md5WithRSAEncryption'));
+    blockProtocol.add(ASN1ObjectIdentifier.fromName('sha256WithRSAEncryption'));
     blockProtocol.add(ASN1Null());
 
     var outer = ASN1Sequence();
     outer.add(blockDN);
     outer.add(blockProtocol);
-    outer.add(ASN1BitString(rsaPrivateKeyModulusToBytes(privateKey)));
+    outer.add(ASN1BitString(_rsaSign(blockDN.encodedBytes, privateKey)));
     var chunks = StringUtils.chunk(base64.encode(outer.encodedBytes), 64);
     return '$BEGIN_CSR\n${chunks.join('\r\n')}\n$END_CSR';
+  }
+
+  static Uint8List _rsaSign(Uint8List inBytes, RSAPrivateKey privateKey) {
+    var signer = Signer('SHA-256/RSA');
+    signer.init(true, PrivateKeyParameter<RSAPrivateKey>(privateKey));
+
+    RSASignature signature = signer.generateSignature(inBytes);
+
+    return signature.bytes;
+  }
+
+  ///
+  /// Generates a eliptic curve Certificate Signing Request with the given [attributes] using the given [privateKey] and [publicKey].
+  ///
+  static String generateEccCsrPem(Map<String, String> attributes,
+      ECPrivateKey privateKey, ECPublicKey publicKey) {
+    ASN1ObjectIdentifier.registerFrequentNames();
+    var encodedDN = encodeDN(attributes);
+    var publicKeySequence = _makeEccPublicKeyBlock(publicKey);
+
+    var blockDN = ASN1Sequence();
+    blockDN.add(ASN1Integer(BigInt.from(0)));
+    blockDN.add(encodedDN);
+    blockDN.add(publicKeySequence);
+    blockDN.add(ASN1Null(tag: 0xA0)); // let's call this WTF
+
+    var blockSignatureAlgorithm = ASN1Sequence();
+    blockSignatureAlgorithm
+        .add(ASN1ObjectIdentifier.fromName('ecdsaWithSHA256'));
+
+    var ecSignature = eccSign(blockDN.encodedBytes, privateKey);
+
+    var bitStringSequence = ASN1Sequence();
+    bitStringSequence.add(ASN1Integer(ecSignature.r));
+    bitStringSequence.add(ASN1Integer(ecSignature.s));
+    var blockSignatureValue = ASN1BitString(bitStringSequence.encodedBytes);
+
+    var outer = ASN1Sequence();
+    outer.add(blockDN);
+    outer.add(blockSignatureAlgorithm);
+    outer.add(blockSignatureValue);
+    var chunks = StringUtils.chunk(base64.encode(outer.encodedBytes), 64);
+    return '$BEGIN_CSR\n${chunks.join('\r\n')}\n$END_CSR';
+  }
+
+  static ECSignature eccSign(Uint8List inBytes, ECPrivateKey privateKey) {
+    var signer = ECDSASigner();
+    var privParams = PrivateKeyParameter<ECPrivateKey>(privateKey);
+    var signParams = ParametersWithRandom(
+      privParams,
+      _getSecureRandom(),
+    );
+    signer.init(true, signParams);
+
+    return signer.generateSignature(inBytes);
+  }
+
+  static SecureRandom _getSecureRandom() {
+    var secureRandom = FortunaRandom();
+    var random = Random.secure();
+    var seeds = <int>[];
+    for (var i = 0; i < 32; i++) {
+      seeds.add(random.nextInt(255));
+    }
+    secureRandom.seed(KeyParameter(Uint8List.fromList(seeds)));
+    return secureRandom;
   }
 
   ///
@@ -167,6 +268,52 @@ class X509Utils {
     var chunks = StringUtils.chunk(dataBase64, 64);
 
     return '$BEGIN_PUBLIC_KEY\n${chunks.join('\n')}\n$END_PUBLIC_KEY';
+  }
+
+  ///
+  /// Enode the given elliptic curve [publicKey] to PEM format.
+  ///
+  static String encodeEcPublicKeyToPem(ECPublicKey publicKey) {
+    ASN1ObjectIdentifier.registerFrequentNames();
+    var outer = ASN1Sequence();
+    var algorithm = ASN1Sequence();
+    algorithm.add(ASN1ObjectIdentifier.fromName('ecPublicKey'));
+    algorithm.add(ASN1ObjectIdentifier.fromName('prime256v1'));
+    var subjectPublicKey = ASN1BitString(publicKey.Q.getEncoded(false));
+
+    outer.add(algorithm);
+    outer.add(subjectPublicKey);
+    var dataBase64 = base64.encode(outer.encodedBytes);
+    var chunks = StringUtils.chunk(dataBase64, 64);
+
+    return '$BEGIN_EC_PUBLIC_KEY\n${chunks.join('\n')}\n$END_EC_PUBLIC_KEY';
+  }
+
+  ///
+  /// Enode the given elliptic curve [publicKey] to PEM format.
+  ///
+  /// This is descripted in https://tools.ietf.org/html/rfc5915
+  ///
+  /// ```ASN1
+  /// ECPrivateKey ::= SEQUENCE {
+  ///   version        INTEGER { ecPrivkeyVer1(1) } (ecPrivkeyVer1),
+  ///   privateKey     OCTET STRING
+  /// }
+  /// ```
+  ///
+  static String encodeEcPrivateKeyToPem(ECPrivateKey ecPrivateKey) {
+    var outer = ASN1Sequence();
+
+    var version = ASN1Integer(BigInt.from(1));
+    var privateKeyAsBytes = _bigIntToBytes(ecPrivateKey.d);
+    var privateKey = ASN1OctetString(privateKeyAsBytes);
+
+    outer.add(version);
+    outer.add(privateKey);
+    var dataBase64 = base64.encode(outer.encodedBytes);
+    var chunks = StringUtils.chunk(dataBase64, 64);
+
+    return '$BEGIN_EC_PRIVATE_KEY\n${chunks.join('\n')}\n$END_EC_PRIVATE_KEY';
   }
 
   ///
@@ -604,6 +751,22 @@ class X509Utils {
     var outer = ASN1Sequence();
     outer.add(blockEncryptionType);
     outer.add(blockPublicKey);
+
+    return outer;
+  }
+
+  ///
+  /// Create  the public key ASN1Sequence for the ECC csr.
+  ///
+  static ASN1Sequence _makeEccPublicKeyBlock(ECPublicKey publicKey) {
+    var algorithm = ASN1Sequence();
+    algorithm.add(ASN1ObjectIdentifier.fromName('ecPublicKey'));
+    algorithm.add(ASN1ObjectIdentifier.fromName('prime256v1'));
+    var subjectPublicKey = ASN1BitString(publicKey.Q.getEncoded(false));
+
+    var outer = ASN1Sequence();
+    outer.add(algorithm);
+    outer.add(subjectPublicKey);
 
     return outer;
   }

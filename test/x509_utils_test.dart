@@ -306,6 +306,21 @@ h9vE3e4Cq0OS3DA=
     expect(pem.endsWith('-----END PUBLIC KEY-----'), true);
   });
 
+  test('Test encodeECPublicKeyToPem', () {
+    var pair = X509Utils.generateEccKeyPair();
+    var pem = X509Utils.encodeEcPublicKeyToPem(pair.publicKey);
+    expect(pem.startsWith('-----BEGIN EC PUBLIC KEY-----'), true);
+    expect(pem.endsWith('-----END EC PUBLIC KEY-----'), true);
+  });
+
+  test('Test encodeECPrivateKeyToPem', () {
+    var pair = X509Utils.generateEccKeyPair();
+    var pem = X509Utils.encodeEcPrivateKeyToPem(pair.privateKey);
+    // TODO Check
+    expect(pem.startsWith('-----BEGIN EC PRIVATE KEY-----'), true);
+    expect(pem.endsWith('-----END EC PRIVATE KEY-----'), true);
+  });
+
   test('Test generateRsaCsrPem', () {
     var pair = X509Utils.generateKeyPair();
     var dn = {
@@ -316,6 +331,29 @@ h9vE3e4Cq0OS3DA=
       'C': 'DE',
     };
     var csr = X509Utils.generateRsaCsrPem(dn, pair.privateKey, pair.publicKey);
+    var bytes = X509Utils.getBytesFromPEMString(csr);
+    var sequence = ASN1Sequence.fromBytes(bytes);
+    ASN1Sequence e1 = sequence.elements.elementAt(0);
+    ASN1Sequence e2 = e1.elements.elementAt(1);
+    ASN1Set e3 = e2.elements.elementAt(0);
+    ASN1Sequence e4 = e3.elements.elementAt(0);
+    ASN1UTF8String e5 = e4.elements.elementAt(1);
+    var cn = e5.utf8StringValue;
+    expect(cn, 'basic-utils.dev');
+  });
+
+  test('Test generateEccCsrPem', () {
+    var pair = X509Utils.generateEccKeyPair();
+    var dn = {
+      'CN': 'basic-utils.dev',
+      'O': 'Magic Company',
+      'L': 'Fakecity',
+      'S': 'FakeState',
+      'C': 'DE',
+    };
+    var csr = X509Utils.generateEccCsrPem(dn, pair.privateKey, pair.publicKey);
+    print(csr);
+    // TODO The CSR is missing a NULL value in its AlgorithmIdentifier parameter.
     var bytes = X509Utils.getBytesFromPEMString(csr);
     var sequence = ASN1Sequence.fromBytes(bytes);
     ASN1Sequence e1 = sequence.elements.elementAt(0);
