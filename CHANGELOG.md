@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.5.5] - 2020-07-07
+
+* Improve X509Utils, enhanced distinguish names list (#16)
+* Improve X509Utils, added new method for elliptic curve cryptographie (#15)
+
 ## [2.5.4] - 2020-06-13
 
 * Improve DNSUtils (#14)
