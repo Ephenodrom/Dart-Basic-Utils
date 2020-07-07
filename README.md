@@ -206,6 +206,10 @@ Uint8List rsaPublicKeyExponentToBytes(RSAPublicKey publicKey);
 Uint8List rsaPrivateKeyToBytes(RSAPrivateKey privateKey);
 ASN1Object encodeDN(Map<String, String> dn);
 X509CertificateData x509CertificateFromPem(String pem);
+AsymmetricKeyPair generateEcKeyPair();
+String encodeEcPublicKeyToPem(ECPublicKey publicKey);
+String encodeEcPrivateKeyToPem(ECPrivateKey ecPrivateKey);
+String generateEccCsrPem(Map<String, String> attributes, ECPrivateKey privateKey, ECPublicKey publicKey);
 ```
 
 ### IterableUtils

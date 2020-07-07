@@ -105,18 +105,12 @@ class X509Utils {
   }
 
   ///
-  /// Generates a [AsymmetricKeyPair] with the given [keySize].
+  /// Generates a elliptic curve [AsymmetricKeyPair] with the **prime256v1** algorithm.
   ///
-  static AsymmetricKeyPair generateEccKeyPair({int keySize = 256}) {
-    var keyParams = ECKeyGeneratorParameters(ECCurve_secp256r1());
+  static AsymmetricKeyPair generateEcKeyPair() {
+    var keyParams = ECKeyGeneratorParameters(ECCurve_prime256v1());
 
-    var secureRandom = FortunaRandom();
-    var random = Random.secure();
-    var seeds = <int>[];
-    for (var i = 0; i < 32; i++) {
-      seeds.add(random.nextInt(255));
-    }
-    secureRandom.seed(KeyParameter(Uint8List.fromList(seeds)));
+    var secureRandom = _getSecureRandom();
 
     var rngParams = ParametersWithRandom(keyParams, secureRandom);
     var k = ECKeyGenerator();
@@ -181,6 +175,8 @@ class X509Utils {
   ///
   /// Generates a eliptic curve Certificate Signing Request with the given [attributes] using the given [privateKey] and [publicKey].
   ///
+  /// The CSR will be signed with algorithm **SHA-256/ECDSA**.
+  ///
   static String generateEccCsrPem(Map<String, String> attributes,
       ECPrivateKey privateKey, ECPublicKey publicKey) {
     ASN1ObjectIdentifier.registerFrequentNames();
@@ -213,7 +209,8 @@ class X509Utils {
   }
 
   static ECSignature eccSign(Uint8List inBytes, ECPrivateKey privateKey) {
-    var signer = ECDSASigner();
+    var signer = Signer('SHA-256/ECDSA');
+    //var signer = ECDSASigner();
     var privParams = PrivateKeyParameter<ECPrivateKey>(privateKey);
     var signParams = ParametersWithRandom(
       privParams,
@@ -273,6 +270,15 @@ class X509Utils {
   ///
   /// Enode the given elliptic curve [publicKey] to PEM format.
   ///
+  /// This is descripted in https://tools.ietf.org/html/rfc5480
+  ///
+  /// ```ASN1
+  /// SubjectPublicKeyInfo  ::=  SEQUENCE  {
+  ///     algorithm         AlgorithmIdentifier,
+  ///     subjectPublicKey  BIT STRING
+  /// }
+  /// ```
+  ///
   static String encodeEcPublicKeyToPem(ECPublicKey publicKey) {
     ASN1ObjectIdentifier.registerFrequentNames();
     var outer = ASN1Sequence();
@@ -298,18 +304,36 @@ class X509Utils {
   /// ECPrivateKey ::= SEQUENCE {
   ///   version        INTEGER { ecPrivkeyVer1(1) } (ecPrivkeyVer1),
   ///   privateKey     OCTET STRING
+  ///   parameters [0] ECParameters {{ NamedCurve }} OPTIONAL
+  ///   publicKey  [1] BIT STRING OPTIONAL
   /// }
+  ///
   /// ```
   ///
+  /// As descripted in the mentioned RFC, all optional values will always be set.
+  ///
   static String encodeEcPrivateKeyToPem(ECPrivateKey ecPrivateKey) {
+    ASN1ObjectIdentifier.registerFrequentNames();
     var outer = ASN1Sequence();
 
     var version = ASN1Integer(BigInt.from(1));
     var privateKeyAsBytes = _bigIntToBytes(ecPrivateKey.d);
     var privateKey = ASN1OctetString(privateKeyAsBytes);
+    var choice = ASN1Sequence(tag: 0xA0);
+
+    choice
+        .add(ASN1ObjectIdentifier.fromName(ecPrivateKey.parameters.domainName));
+
+    var publicKey = ASN1Sequence(tag: 0xA1);
+
+    var subjectPublicKey =
+        ASN1BitString(ecPrivateKey.parameters.G.getEncoded(false));
+    publicKey.add(subjectPublicKey);
 
     outer.add(version);
     outer.add(privateKey);
+    outer.add(choice);
+    outer.add(publicKey);
     var dataBase64 = base64.encode(outer.encodedBytes);
     var chunks = StringUtils.chunk(dataBase64, 64);
 
@@ -761,7 +785,9 @@ class X509Utils {
   static ASN1Sequence _makeEccPublicKeyBlock(ECPublicKey publicKey) {
     var algorithm = ASN1Sequence();
     algorithm.add(ASN1ObjectIdentifier.fromName('ecPublicKey'));
-    algorithm.add(ASN1ObjectIdentifier.fromName('prime256v1'));
+    algorithm
+        .add(ASN1ObjectIdentifier.fromName(publicKey.parameters.domainName));
+
     var subjectPublicKey = ASN1BitString(publicKey.Q.getEncoded(false));
 
     var outer = ASN1Sequence();
