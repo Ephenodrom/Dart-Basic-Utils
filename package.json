@@ -1,0 +1,27 @@
+{
+  "name": "dart-basic-utils-documentation",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "authors": {
+    "name": "Daniel Linsenmeier",
+    "email": "daniel@ephenodrom.de"
+  },
+  "repository": "/dart-basic-utils-documentation",
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@vuepress/plugin-back-to-top": "^1.3.1",
+    "@vuepress/plugin-medium-zoom": "^1.3.1",
+    "markdown-it-admonition": "^1.0.4",
+    "markdown-it-include": "^1.1.1",
+    "vuepress": "^1.3.1",
+    "vuepress-plugin-container": "^2.1.4",
+    "vuepress-plugin-smooth-scroll": "^0.0.9",
+    "vuepress-theme-thindark": "^1.0.1",
+    "vuepress-theme-bulma": "^1.1.0"
+  }
+}
