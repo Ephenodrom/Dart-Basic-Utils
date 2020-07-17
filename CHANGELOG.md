@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.5.6] - 2020-07-17
+
+* Improve StringUtils, enhanced capitalize method (#17)
+
 ## [2.5.5] - 2020-07-07
 
 * Improve X509Utils, enhanced distinguish names list (#16)

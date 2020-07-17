@@ -12,3 +12,4 @@ ios/Runner/GeneratedPluginRegistrant.*
 
 res
 lib/generated
+node_modules

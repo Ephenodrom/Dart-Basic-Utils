@@ -46,6 +46,17 @@ void main() {
     expect(StringUtils.capitalize('HELLO'), 'Hello');
     expect(StringUtils.capitalize('World'), 'World');
     expect(StringUtils.capitalize('helloworld'), 'Helloworld');
+
+    expect(StringUtils.capitalize('the quick lazy fox', allWords: true),
+        'The Quick Lazy Fox');
+
+    expect(StringUtils.capitalize('THE QUICK LAZY FOX', allWords: true),
+        'The Quick Lazy Fox');
+
+    expect(
+        StringUtils.capitalize('hello, my name is Jon. my last name is doe!',
+            allWords: true),
+        'Hello, My Name Is Jon. My Last Name Is Doe!');
   });
 
   test('Test reverse', () {

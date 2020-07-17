@@ -36,7 +36,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.5.5
+  basic_utils: ^2.5.6
 ```
 
 ## Import
@@ -64,7 +64,7 @@ String camelCaseToLowerUnderscore(String s);
 bool isLowerCase(String s);
 bool isUpperCase(String s);
 bool isAscii(String s);
-String capitalize(String s);
+String capitalize(String s, {bool allWords = false});
 String reverse(String s);
 int countChars(String s, String char, {bool caseSensitive = true});
 bool isDigit(String s);
