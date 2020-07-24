@@ -6,6 +6,9 @@ import 'package:asn1lib/asn1lib.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateValidity.dart';
+import 'package:pointycastle/ecc/ecc_fp.dart' as ecc;
+import 'package:pointycastle/src/utils.dart';
+
 import 'package:pointycastle/export.dart';
 import 'package:pointycastle/pointycastle.dart';
 
@@ -285,7 +288,8 @@ class X509Utils {
     var algorithm = ASN1Sequence();
     algorithm.add(ASN1ObjectIdentifier.fromName('ecPublicKey'));
     algorithm.add(ASN1ObjectIdentifier.fromName('prime256v1'));
-    var subjectPublicKey = ASN1BitString(publicKey.Q.getEncoded(false));
+    var encodedBytes = publicKey.Q.getEncoded(false);
+    var subjectPublicKey = ASN1BitString(encodedBytes);
 
     outer.add(algorithm);
     outer.add(subjectPublicKey);
@@ -317,7 +321,7 @@ class X509Utils {
     var outer = ASN1Sequence();
 
     var version = ASN1Integer(BigInt.from(1));
-    var privateKeyAsBytes = _bigIntToBytes(ecPrivateKey.d);
+    var privateKeyAsBytes = encodeBigInt(ecPrivateKey.d);
     var privateKey = ASN1OctetString(privateKeyAsBytes);
     var choice = ASN1Sequence(tag: 0xA0);
 
@@ -396,6 +400,33 @@ class X509Utils {
     }
     var bytes = getBytesFromPEMString(pem);
     return privateKeyFromDERBytes(bytes);
+  }
+
+  ///
+  /// Decode a [ECPrivateKey] from the given [pem] String.
+  ///
+  /// Throws an ArgumentError if the given string [pem] is null or empty.
+  ///
+  static ECPrivateKey ecPrivateKeyFromPem(String pem) {
+    if (StringUtils.isNullOrEmpty(pem)) {
+      throw ArgumentError('Argument must not be null.');
+    }
+    var bytes = getBytesFromPEMString(pem);
+    return ecPrivateKeyFromDerBytes(bytes);
+  }
+
+  ///
+  /// Decode a [ECPublicKey] from the given [pem] String.
+  ///
+  /// Throws an ArgumentError if the given string [pem] is null or empty.
+  ///
+  ///
+  static ECPublicKey ecPublicKeyFromPem(String pem) {
+    if (StringUtils.isNullOrEmpty(pem)) {
+      throw ArgumentError('Argument must not be null.');
+    }
+    var bytes = getBytesFromPEMString(pem);
+    return ecPublicKeyFromDerBytes(bytes);
   }
 
   ///
@@ -623,6 +654,64 @@ class X509Utils {
   }
 
   ///
+  /// Decode the given [bytes] into an [ECPrivateKey].
+  ///
+  static ECPrivateKey ecPrivateKeyFromDerBytes(Uint8List bytes) {
+    var asn1Parser = ASN1Parser(bytes);
+    var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
+    var privateKeyAsOctetString =
+        topLevelSeq.elements.elementAt(1) as ASN1OctetString;
+    var choice = topLevelSeq.elements.elementAt(2);
+    var s = ASN1Sequence();
+    var parser = ASN1Parser(choice.contentBytes());
+    while (parser.hasNext()) {
+      s.add(parser.nextObject());
+    }
+    var curveNameOi = s.elements.elementAt(0) as ASN1ObjectIdentifier;
+    var curveName;
+    ASN1ObjectIdentifier.DN.keys.forEach((element) {
+      if (ASN1ObjectIdentifier.DN[element] == curveNameOi.identifier) {
+        curveName = element;
+      }
+    });
+
+    var x = privateKeyAsOctetString.contentBytes();
+    ECDomainParameters params;
+    if (curveName == 'prime256v1') {
+      params = ECCurve_prime256v1();
+    } else {
+      params = ECCurve_prime256v1();
+    }
+
+    return ECPrivateKey(decodeBigInt(x), params);
+  }
+
+  ///
+  /// Decode the given [bytes] into an [ECPublicKey].
+  ///
+  static ECPublicKey ecPublicKeyFromDerBytes(Uint8List bytes) {
+    var asn1Parser = ASN1Parser(bytes);
+    var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
+
+    var subjectPublicKey = topLevelSeq.elements[1];
+    var compressed = false;
+    var pubBytes = subjectPublicKey.contentBytes();
+    // Looks good so far!
+    var firstByte = pubBytes.elementAt(0);
+    if (firstByte != 4) {
+      compressed = true;
+    }
+    var x = pubBytes.sublist(1, (pubBytes.length / 2).round());
+    var y = pubBytes.sublist(1 + x.length, pubBytes.length);
+    ECDomainParameters params = ECCurve_prime256v1();
+
+    return ECPublicKey(
+        ecc.ECPoint(params.curve, params.curve.fromBigInteger(decodeBigInt(x)),
+            params.curve.fromBigInteger(decodeBigInt(y)), compressed),
+        params);
+  }
+
+  ///
   /// Decode the given [bytes] into an [RSAPrivateKey].
   ///
   static RSAPrivateKey privateKeyFromDERBytes(Uint8List bytes) {
@@ -681,37 +770,23 @@ class X509Utils {
     return key;
   }
 
-  static Uint8List _bigIntToBytes(BigInt n) {
-    var bytes = (n.bitLength + 7) >> 3;
-
-    var b256 = BigInt.from(256);
-    var result = Uint8List(bytes);
-
-    for (var i = 0; i < bytes; i++) {
-      result[i] = n.remainder(b256).toInt();
-      n = n >> 8;
-    }
-
-    return result;
-  }
-
   ///
   /// Converts the [RSAPublicKey.modulus] from the given [publicKey] to a [Uint8List].
   ///
   static Uint8List rsaPublicKeyModulusToBytes(RSAPublicKey publicKey) =>
-      _bigIntToBytes(publicKey.modulus);
+      encodeBigInt(publicKey.modulus);
 
   ///
   /// Converts the [RSAPublicKey.exponent] from the given [publicKey] to a [Uint8List].
   ///
   static Uint8List rsaPublicKeyExponentToBytes(RSAPublicKey publicKey) =>
-      _bigIntToBytes(publicKey.exponent);
+      encodeBigInt(publicKey.exponent);
 
   ///
   /// Converts the [RSAPrivateKey.modulus] from the given [privateKey] to a [Uint8List].
   ///
   static Uint8List rsaPrivateKeyModulusToBytes(RSAPrivateKey privateKey) =>
-      _bigIntToBytes(privateKey.modulus);
+      encodeBigInt(privateKey.modulus);
 
   ///
   /// Encode the given [dn] (Distinguished Name) to a [ASN1Object].

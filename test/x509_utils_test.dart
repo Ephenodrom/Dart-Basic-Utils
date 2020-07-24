@@ -375,7 +375,7 @@ h9vE3e4Cq0OS3DA=
     var bytes = X509Utils.rsaPublicKeyModulusToBytes(key);
     var hexString = hex.encode(bytes);
     expect(hexString,
-        'c7ffc783db5dc3517aa8566448460a6b337fd3ab2e90718af3c01c7d7f893552692a0954c2ca3aa191883d39dc75887fa8120be7e28d62173d711ba05c105c012098a510c16f0cccd6dca80becef1f117e00aa24efcb0b76fe780e52cfa62ec10184ff6a019131590a8356a9fa659625435b81e0ddb12a48467a2b680e9443d5661bcfe8df5cd4057a91953f67ea59bd7f1b505abf39e0e3bbd18c9d4814c22457874d4709363084f54ffa01118b344a5398713aa5fa9b24636c5e10399c57a8cb3734cea06f999ce1b49aa0440c9125071ea5a3f9b19555bfff37a3c492dd5dedad1049c28e261d6708f2f5d2ab28a13ad7de19f6838bcfd45aa513ad0cf08d');
+        '8df00cad13a55ad4cf8b83f619ded73aa128abd2f5f208671d268ec24910aded5ddd92c4a337ffbf5595b1f9a3a51e0725910c44a09ab4e19c996fa0ce3437cba8579c39105e6c63249bfaa53a7198534a348b1101fa4ff584303609474d875724c214489d8cd1bbe3e039bf5a501b7fbd59ea673f95917a05d45cdfe8cf1b66d543940e682b7a46482ab1dde0815b43259665faa956830a593191016aff8401c12ea6cf520e78fe760bcbef24aa007e111fefec0ba8dcd6cc0c6fc110a59820015c105ca01b713d17628de2e70b12a87f8875dc393d8891a13acac254092a695235897f7d1cc0f38a71902eabd37f336b0a46486456a87a51c35ddb83c7ffc7');
   });
 
   test('Test rsaPublicKeyExponentToBytes', () {
@@ -390,7 +390,7 @@ h9vE3e4Cq0OS3DA=
     var bytes = X509Utils.rsaPrivateKeyModulusToBytes(key);
     var hexString = hex.encode(bytes);
     expect(hexString,
-        '65ac4bbaeaf35ce6882730cbf51268b97dee6e4a5e1366a81c234e797bd7c9bb0f7ecae791202deeac4237849ee5cd062f7f5e87c272bca75510585ee59f546960f9c3de08d91f848ab036b66ca4e0afc9431ebc91ecd04b9d4d52c9dc06352eaaf923fee8dc7eb69b4fc7de5e9f40368e0eae0d4be7cb6d3d26ae072096ea715146caac773a85fcad5412808e77059281ab43acc3589c2fc1e4d4b50a55e565ed75c0ca4c7c5c51697f31896a02158379dc362a00f84ef5936d694d6e2de34c04817a0ac4bcad9519bbf57ba454159b076e984d030c8f5b4c0b215ed96e0ce8b9b9c78c4a89d06df90d96d4dfd8f4b176c4bf2c8ae2d5fd902a00ca7bf805d1');
+        'd105f87bca002a90fdd5e28a2cbfc476b1f4d8dfd4960df96dd0894a8cc7b9b9e80c6ed95e210b4c5b8f0c034d986e079b1554a47bf5bb1995adbcc40a7a81044ce32d6e4d696d93f54ef8002a36dc798315026a89317f69515c7c4ccac075ed65e5550ab5d4e4c12f9c58c3ac43ab819205778e801254adfc853a77acca465171ea962007ae263d6dcbe74b0dae0e8e36409f5edec74f9bb67edce8fe23f9aa2e3506dcc9524d9d4bd0ec91bc1e43c9afe0a46cb636b08a841fd908dec3f96069549fe55e581055a7bc72c2875e7f2f06cde59e843742acee2d2091e7ca7e0fbbc9d77b794e231ca866135e4a6eee7db96812f5cb302788e65cf3eaba4bac65');
   });
 
   test('Test x509CertificateFromPem', () {
@@ -563,5 +563,28 @@ h9vE3e4Cq0OS3DA=
     expect(publicKeyData.algorithm, '1.2.840.113549.1.1.1');
     expect(publicKeyData.bytes,
         '3082010A0282010100AD4D4BA91286B2EAA320071516642A2B4BD1BF0B4A4D8EED8076A567B77840C07342C868C0DB532BDD5EB8769835938B1A9D7C133A0E1F5BB71ECFE524141EB181A98D7DB8CC6B4B03F1020CDCABA54024007F7494A19D0829B3880BF587779D55CDE4C37ED76A64AB851486955B9732506F3DC8BA660CE3FCBDB849C176894919FDC0A8BD89A3672FC69FBC711960B82DE92CC99076667B94E2AF78D665535D3CD69CB2CF2903F92FA450B2D448CE0532558AFDB2644C0EE4980775DB7FDFB9085560853029F97B48A46986E3353F1E865D7A7A15BDEF008E1522541700902693BC0E496891BFF847D39D9542C10E4DDF6F26CFC3182162664370D6D5C007E10203010001');
+  });
+
+  test('Test ecPublicKeyFromPem', () {
+    var pair = X509Utils.generateEcKeyPair();
+    var pubKey = pair.publicKey as ECPublicKey;
+    var pubPem = X509Utils.encodeEcPublicKeyToPem(pubKey);
+    var newPubKey = X509Utils.ecPublicKeyFromPem(pubPem);
+
+    expect(newPubKey.Q, pubKey.Q);
+    expect(newPubKey.Q.x.toBigInteger(), pubKey.Q.x.toBigInteger());
+    expect(newPubKey.Q.y.toBigInteger(), pubKey.Q.y.toBigInteger());
+    expect(newPubKey.Q.getEncoded(false), pubKey.Q.getEncoded(false));
+  });
+
+  test('Test ecPrivateKeyFromPem', () {
+    var pair = X509Utils.generateEcKeyPair();
+    var privKey = pair.privateKey as ECPrivateKey;
+
+    var privPem = X509Utils.encodeEcPrivateKeyToPem(privKey);
+    var newPrivKey = X509Utils.ecPrivateKeyFromPem(privPem);
+
+    expect(newPrivKey.d, privKey.d);
+    expect(newPrivKey.parameters.G, privKey.parameters.G);
   });
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.5.7] - 2020-07-24
+
+* Improve X509Utils, add new methods ecPrivateKeyFromPem and ecPublicKeyFromPem
+
 ## [2.5.6] - 2020-07-17
 
 * Improve StringUtils, enhanced capitalize method (#17)

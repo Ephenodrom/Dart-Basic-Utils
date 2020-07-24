@@ -36,7 +36,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.5.6
+  basic_utils: ^2.5.7
 ```
 
 ## Import
@@ -210,6 +210,8 @@ AsymmetricKeyPair generateEcKeyPair();
 String encodeEcPublicKeyToPem(ECPublicKey publicKey);
 String encodeEcPrivateKeyToPem(ECPrivateKey ecPrivateKey);
 String generateEccCsrPem(Map<String, String> attributes, ECPrivateKey privateKey, ECPublicKey publicKey);
+ECPrivateKey ecPrivateKeyFromPem(String pem);
+ECPublicKey ecPublicKeyFromPem(String pem);
 ```
 
 ### IterableUtils
