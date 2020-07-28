@@ -5,7 +5,9 @@ import 'package:basic_utils/src/X509Utils.dart';
 import 'package:pointycastle/impl.dart';
 import 'package:pointycastle/pointycastle.dart';
 import 'package:test/test.dart';
-import 'package:convert/convert.dart';
+
+// ignore: avoid_relative_lib_imports
+import '../lib/src/CryptoUtils.dart';
 
 void main() {
   var privateKey = '''-----BEGIN PRIVATE KEY-----
@@ -36,16 +38,6 @@ hwzQQ6oiL9Qy1SU5wUDLA99PUFPGuUvH1n3uiHkCgYEA8PmSWfXS7tnm6IrqnOWr
 45etmy7kF30PfHdGJureBFI6hr+DIIbSJETKvMU/Ipc/Zcv44IscWbGKVsvw/r0D
 bjBqILerN9h2zFj3Fi+DdT0=
 -----END PRIVATE KEY-----''';
-
-  var publicKey = '''-----BEGIN PUBLIC KEY-----
-      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjfAMrROlWtTPi4P2Gd7X
-      OqEoq9L18ghnHSaOwkkQre1d3ZLEozf/v1WVsfmjpR4HJZEMRKCatOGcmW+gzjQ3
-      y6hXnDkQXmxjJJv6pTpxmFNKNIsRAfpP9YQwNglHTYdXJMIUSJ2M0bvj4Dm/WlAb
-      f71Z6mc/lZF6BdRc3+jPG2bVQ5QOaCt6Rkgqsd3ggVtDJZZl+qlWgwpZMZEBav+E
-      AcEups9SDnj+dgvL7ySqAH4RH+/sC6jc1swMb8EQpZggAVwQXKAbcT0XYo3i5wsS
-      qH+Iddw5PYiRoTrKwlQJKmlSNYl/fRzA84pxkC6r038zawpGSGRWqHpRw13bg8f/
-      xwIDAQAB
-      -----END PUBLIC KEY-----''';
 
   var csr = '''-----BEGIN CERTIFICATE REQUEST-----
 MIICvzCCAacCAQAwejELMAkGA1UEBhMCREUxEjAQBgNVBAgMCUZha2VzdGF0ZTER
@@ -234,7 +226,7 @@ h9vE3e4Cq0OS3DA=
 -----END CERTIFICATE-----''';
 
   test('Test getBytesFromPEMString', () {
-    var bytes = X509Utils.getBytesFromPEMString(csr);
+    var bytes = CryptoUtils.getBytesFromPEMString(csr);
     var formatted = X509Utils.formatKeyString(
         base64Encode(bytes), X509Utils.BEGIN_CSR, X509Utils.END_CSR);
     expect(formatted, csr);
@@ -258,36 +250,14 @@ h9vE3e4Cq0OS3DA=
     expect(object.elements.length, 5);
   });
 
-  test('Test privateKeyFromPem', () {
-    var object = X509Utils.privateKeyFromPem(privateKey);
-    expect(object.n.bitLength, 2048);
-  });
-
-  test('Test publicKeyFromPem', () {
-    var object = X509Utils.publicKeyFromPem(publicKey);
-    expect(object.n.bitLength, 2048);
-  });
-
-  test('Test privateKeyFromDERBytes', () {
-    var bytes = X509Utils.getBytesFromPEMString(privateKey);
-    var object = X509Utils.privateKeyFromDERBytes(bytes);
-    expect(object.n.bitLength, 2048);
-  });
-
   test('Test privateKeyFromASN1Sequence', () {
-    var bytes = X509Utils.getBytesFromPEMString(privateKey);
+    var bytes = CryptoUtils.getBytesFromPEMString(privateKey);
     ASN1Sequence asn = ASN1Parser(bytes).nextObject();
     var objects = asn.elements;
     ASN1OctetString string = objects[2];
     var object = X509Utils.privateKeyFromASN1Sequence(
         ASN1Parser(string.contentBytes()).nextObject());
     expect(object.n.bitLength, 2048);
-  });
-
-  test('Test encodeRSAPrivateKeyToPem', () {
-    var object = X509Utils.privateKeyFromPem(privateKey);
-    var pem = X509Utils.encodeRSAPrivateKeyToPem(object);
-    expect(pem, privateKey);
   });
 
   test('Test encodeASN1ObjectToPem', () {
@@ -299,29 +269,8 @@ h9vE3e4Cq0OS3DA=
         pem, '-----BEGIN PUBLIC KEY-----\nMAMCAQA=\n-----END PUBLIC KEY-----');
   });
 
-  test('Test encodeRSAPublicKeyToPem', () {
-    var pair = X509Utils.generateKeyPair();
-    var pem = X509Utils.encodeRSAPublicKeyToPem(pair.publicKey);
-    expect(pem.startsWith('-----BEGIN PUBLIC KEY-----'), true);
-    expect(pem.endsWith('-----END PUBLIC KEY-----'), true);
-  });
-
-  test('Test encodeECPublicKeyToPem', () {
-    var pair = X509Utils.generateEcKeyPair();
-    var pem = X509Utils.encodeEcPublicKeyToPem(pair.publicKey);
-    expect(pem.startsWith('-----BEGIN EC PUBLIC KEY-----'), true);
-    expect(pem.endsWith('-----END EC PUBLIC KEY-----'), true);
-  });
-
-  test('Test encodeECPrivateKeyToPem', () {
-    var pair = X509Utils.generateEcKeyPair();
-    var pem = X509Utils.encodeEcPrivateKeyToPem(pair.privateKey);
-    expect(pem.startsWith('-----BEGIN EC PRIVATE KEY-----'), true);
-    expect(pem.endsWith('-----END EC PRIVATE KEY-----'), true);
-  });
-
   test('Test generateRsaCsrPem', () {
-    var pair = X509Utils.generateKeyPair();
+    var pair = CryptoUtils.generateRSAKeyPair();
     var dn = {
       'CN': 'basic-utils.dev',
       'O': 'Magic Company',
@@ -330,7 +279,7 @@ h9vE3e4Cq0OS3DA=
       'C': 'DE',
     };
     var csr = X509Utils.generateRsaCsrPem(dn, pair.privateKey, pair.publicKey);
-    var bytes = X509Utils.getBytesFromPEMString(csr);
+    var bytes = CryptoUtils.getBytesFromPEMString(csr);
     var sequence = ASN1Sequence.fromBytes(bytes);
     ASN1Sequence e1 = sequence.elements.elementAt(0);
     ASN1Sequence e2 = e1.elements.elementAt(1);
@@ -342,7 +291,7 @@ h9vE3e4Cq0OS3DA=
   });
 
   test('Test generateEccCsrPem', () {
-    var pair = X509Utils.generateEcKeyPair();
+    var pair = CryptoUtils.generateEcKeyPair();
     var dn = {
       'CN': 'basic-utils.dev',
       'O': 'Magic Company',
@@ -351,7 +300,7 @@ h9vE3e4Cq0OS3DA=
       'C': 'DE',
     };
     var csr = X509Utils.generateEccCsrPem(dn, pair.privateKey, pair.publicKey);
-    var bytes = X509Utils.getBytesFromPEMString(csr);
+    var bytes = CryptoUtils.getBytesFromPEMString(csr);
     var sequence = ASN1Sequence.fromBytes(bytes);
     ASN1Sequence e1 = sequence.elements.elementAt(0);
     ASN1Sequence e2 = e1.elements.elementAt(1);
@@ -363,34 +312,11 @@ h9vE3e4Cq0OS3DA=
   });
 
   test('Test generateKeyPair', () {
-    var pair = X509Utils.generateKeyPair();
+    var pair = CryptoUtils.generateRSAKeyPair();
     RSAPrivateKey private = pair.privateKey;
     RSAPublicKey public = pair.publicKey;
     expect(private.n.bitLength, 2048);
     expect(public.n.bitLength, 2048);
-  });
-
-  test('Test rsaPublicKeyModulusToBytes', () {
-    var key = X509Utils.publicKeyFromPem(publicKey);
-    var bytes = X509Utils.rsaPublicKeyModulusToBytes(key);
-    var hexString = hex.encode(bytes);
-    expect(hexString,
-        '8df00cad13a55ad4cf8b83f619ded73aa128abd2f5f208671d268ec24910aded5ddd92c4a337ffbf5595b1f9a3a51e0725910c44a09ab4e19c996fa0ce3437cba8579c39105e6c63249bfaa53a7198534a348b1101fa4ff584303609474d875724c214489d8cd1bbe3e039bf5a501b7fbd59ea673f95917a05d45cdfe8cf1b66d543940e682b7a46482ab1dde0815b43259665faa956830a593191016aff8401c12ea6cf520e78fe760bcbef24aa007e111fefec0ba8dcd6cc0c6fc110a59820015c105ca01b713d17628de2e70b12a87f8875dc393d8891a13acac254092a695235897f7d1cc0f38a71902eabd37f336b0a46486456a87a51c35ddb83c7ffc7');
-  });
-
-  test('Test rsaPublicKeyExponentToBytes', () {
-    var key = X509Utils.publicKeyFromPem(publicKey);
-    var bytes = X509Utils.rsaPublicKeyExponentToBytes(key);
-    var hexString = hex.encode(bytes);
-    expect(hexString, '010001');
-  });
-
-  test('Test rsaPrivateKeyModulusToBytes', () {
-    var key = X509Utils.privateKeyFromPem(privateKey);
-    var bytes = X509Utils.rsaPrivateKeyModulusToBytes(key);
-    var hexString = hex.encode(bytes);
-    expect(hexString,
-        'd105f87bca002a90fdd5e28a2cbfc476b1f4d8dfd4960df96dd0894a8cc7b9b9e80c6ed95e210b4c5b8f0c034d986e079b1554a47bf5bb1995adbcc40a7a81044ce32d6e4d696d93f54ef8002a36dc798315026a89317f69515c7c4ccac075ed65e5550ab5d4e4c12f9c58c3ac43ab819205778e801254adfc853a77acca465171ea962007ae263d6dcbe74b0dae0e8e36409f5edec74f9bb67edce8fe23f9aa2e3506dcc9524d9d4bd0ec91bc1e43c9afe0a46cb636b08a841fd908dec3f96069549fe55e581055a7bc72c2875e7f2f06cde59e843742acee2d2091e7ca7e0fbbc9d77b794e231ca866135e4a6eee7db96812f5cb302788e65cf3eaba4bac65');
   });
 
   test('Test x509CertificateFromPem', () {
@@ -563,28 +489,5 @@ h9vE3e4Cq0OS3DA=
     expect(publicKeyData.algorithm, '1.2.840.113549.1.1.1');
     expect(publicKeyData.bytes,
         '3082010A0282010100AD4D4BA91286B2EAA320071516642A2B4BD1BF0B4A4D8EED8076A567B77840C07342C868C0DB532BDD5EB8769835938B1A9D7C133A0E1F5BB71ECFE524141EB181A98D7DB8CC6B4B03F1020CDCABA54024007F7494A19D0829B3880BF587779D55CDE4C37ED76A64AB851486955B9732506F3DC8BA660CE3FCBDB849C176894919FDC0A8BD89A3672FC69FBC711960B82DE92CC99076667B94E2AF78D665535D3CD69CB2CF2903F92FA450B2D448CE0532558AFDB2644C0EE4980775DB7FDFB9085560853029F97B48A46986E3353F1E865D7A7A15BDEF008E1522541700902693BC0E496891BFF847D39D9542C10E4DDF6F26CFC3182162664370D6D5C007E10203010001');
-  });
-
-  test('Test ecPublicKeyFromPem', () {
-    var pair = X509Utils.generateEcKeyPair();
-    var pubKey = pair.publicKey as ECPublicKey;
-    var pubPem = X509Utils.encodeEcPublicKeyToPem(pubKey);
-    var newPubKey = X509Utils.ecPublicKeyFromPem(pubPem);
-
-    expect(newPubKey.Q, pubKey.Q);
-    expect(newPubKey.Q.x.toBigInteger(), pubKey.Q.x.toBigInteger());
-    expect(newPubKey.Q.y.toBigInteger(), pubKey.Q.y.toBigInteger());
-    expect(newPubKey.Q.getEncoded(false), pubKey.Q.getEncoded(false));
-  });
-
-  test('Test ecPrivateKeyFromPem', () {
-    var pair = X509Utils.generateEcKeyPair();
-    var privKey = pair.privateKey as ECPrivateKey;
-
-    var privPem = X509Utils.encodeEcPrivateKeyToPem(privKey);
-    var newPrivKey = X509Utils.ecPrivateKeyFromPem(privPem);
-
-    expect(newPrivKey.d, privKey.d);
-    expect(newPrivKey.parameters.G, privKey.parameters.G);
   });
 }

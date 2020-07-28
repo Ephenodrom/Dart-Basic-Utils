@@ -6,8 +6,6 @@ import 'package:asn1lib/asn1lib.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateValidity.dart';
-import 'package:pointycastle/ecc/ecc_fp.dart' as ecc;
-import 'package:pointycastle/src/utils.dart';
 
 import 'package:pointycastle/export.dart';
 import 'package:pointycastle/pointycastle.dart';
@@ -84,43 +82,6 @@ class X509Utils {
     'localityName': '2.5.4.7',
     'streetAddress': '2.5.4.9'
   };
-
-  ///
-  /// Generates a [AsymmetricKeyPair] with the given [keySize].
-  ///
-  static AsymmetricKeyPair generateKeyPair({int keySize = 2048}) {
-    var keyParams =
-        RSAKeyGeneratorParameters(BigInt.parse('65537'), keySize, 12);
-
-    var secureRandom = FortunaRandom();
-    var random = Random.secure();
-    var seeds = <int>[];
-    for (var i = 0; i < 32; i++) {
-      seeds.add(random.nextInt(255));
-    }
-    secureRandom.seed(KeyParameter(Uint8List.fromList(seeds)));
-
-    var rngParams = ParametersWithRandom(keyParams, secureRandom);
-    var k = RSAKeyGenerator();
-    k.init(rngParams);
-
-    return k.generateKeyPair();
-  }
-
-  ///
-  /// Generates a elliptic curve [AsymmetricKeyPair] with the **prime256v1** algorithm.
-  ///
-  static AsymmetricKeyPair generateEcKeyPair() {
-    var keyParams = ECKeyGeneratorParameters(ECCurve_prime256v1());
-
-    var secureRandom = _getSecureRandom();
-
-    var rngParams = ParametersWithRandom(keyParams, secureRandom);
-    var k = ECKeyGenerator();
-    k.init(rngParams);
-
-    return k.generateKeyPair();
-  }
 
   ///
   /// Formats the given [key] by chunking the [key] and adding the [begin] and [end] to the [key].
@@ -245,214 +206,6 @@ class X509Utils {
   }
 
   ///
-  /// Enode the given [publicKey] to PEM format.
-  ///
-  static String encodeRSAPublicKeyToPem(RSAPublicKey publicKey) {
-    var algorithmSeq = ASN1Sequence();
-    var algorithmAsn1Obj = ASN1Object.fromBytes(Uint8List.fromList(
-        [0x6, 0x9, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0xd, 0x1, 0x1, 0x1]));
-    var paramsAsn1Obj = ASN1Object.fromBytes(Uint8List.fromList([0x5, 0x0]));
-    algorithmSeq.add(algorithmAsn1Obj);
-    algorithmSeq.add(paramsAsn1Obj);
-
-    var publicKeySeq = ASN1Sequence();
-    publicKeySeq.add(ASN1Integer(publicKey.modulus));
-    publicKeySeq.add(ASN1Integer(publicKey.exponent));
-    var publicKeySeqBitString =
-        ASN1BitString(Uint8List.fromList(publicKeySeq.encodedBytes));
-
-    var topLevelSeq = ASN1Sequence();
-    topLevelSeq.add(algorithmSeq);
-    topLevelSeq.add(publicKeySeqBitString);
-    var dataBase64 = base64.encode(topLevelSeq.encodedBytes);
-    var chunks = StringUtils.chunk(dataBase64, 64);
-
-    return '$BEGIN_PUBLIC_KEY\n${chunks.join('\n')}\n$END_PUBLIC_KEY';
-  }
-
-  ///
-  /// Enode the given elliptic curve [publicKey] to PEM format.
-  ///
-  /// This is descripted in https://tools.ietf.org/html/rfc5480
-  ///
-  /// ```ASN1
-  /// SubjectPublicKeyInfo  ::=  SEQUENCE  {
-  ///     algorithm         AlgorithmIdentifier,
-  ///     subjectPublicKey  BIT STRING
-  /// }
-  /// ```
-  ///
-  static String encodeEcPublicKeyToPem(ECPublicKey publicKey) {
-    ASN1ObjectIdentifier.registerFrequentNames();
-    var outer = ASN1Sequence();
-    var algorithm = ASN1Sequence();
-    algorithm.add(ASN1ObjectIdentifier.fromName('ecPublicKey'));
-    algorithm.add(ASN1ObjectIdentifier.fromName('prime256v1'));
-    var encodedBytes = publicKey.Q.getEncoded(false);
-    var subjectPublicKey = ASN1BitString(encodedBytes);
-
-    outer.add(algorithm);
-    outer.add(subjectPublicKey);
-    var dataBase64 = base64.encode(outer.encodedBytes);
-    var chunks = StringUtils.chunk(dataBase64, 64);
-
-    return '$BEGIN_EC_PUBLIC_KEY\n${chunks.join('\n')}\n$END_EC_PUBLIC_KEY';
-  }
-
-  ///
-  /// Enode the given elliptic curve [publicKey] to PEM format.
-  ///
-  /// This is descripted in https://tools.ietf.org/html/rfc5915
-  ///
-  /// ```ASN1
-  /// ECPrivateKey ::= SEQUENCE {
-  ///   version        INTEGER { ecPrivkeyVer1(1) } (ecPrivkeyVer1),
-  ///   privateKey     OCTET STRING
-  ///   parameters [0] ECParameters {{ NamedCurve }} OPTIONAL
-  ///   publicKey  [1] BIT STRING OPTIONAL
-  /// }
-  ///
-  /// ```
-  ///
-  /// As descripted in the mentioned RFC, all optional values will always be set.
-  ///
-  static String encodeEcPrivateKeyToPem(ECPrivateKey ecPrivateKey) {
-    ASN1ObjectIdentifier.registerFrequentNames();
-    var outer = ASN1Sequence();
-
-    var version = ASN1Integer(BigInt.from(1));
-    var privateKeyAsBytes = encodeBigInt(ecPrivateKey.d);
-    var privateKey = ASN1OctetString(privateKeyAsBytes);
-    var choice = ASN1Sequence(tag: 0xA0);
-
-    choice
-        .add(ASN1ObjectIdentifier.fromName(ecPrivateKey.parameters.domainName));
-
-    var publicKey = ASN1Sequence(tag: 0xA1);
-
-    var subjectPublicKey =
-        ASN1BitString(ecPrivateKey.parameters.G.getEncoded(false));
-    publicKey.add(subjectPublicKey);
-
-    outer.add(version);
-    outer.add(privateKey);
-    outer.add(choice);
-    outer.add(publicKey);
-    var dataBase64 = base64.encode(outer.encodedBytes);
-    var chunks = StringUtils.chunk(dataBase64, 64);
-
-    return '$BEGIN_EC_PRIVATE_KEY\n${chunks.join('\n')}\n$END_EC_PRIVATE_KEY';
-  }
-
-  ///
-  /// Enode the given [rsaPrivateKey] to PEM format.
-  ///
-  static String encodeRSAPrivateKeyToPem(RSAPrivateKey rsaPrivateKey) {
-    var version = ASN1Integer(BigInt.from(0));
-
-    var algorithmSeq = ASN1Sequence();
-    var algorithmAsn1Obj = ASN1Object.fromBytes(Uint8List.fromList(
-        [0x6, 0x9, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0xd, 0x1, 0x1, 0x1]));
-    var paramsAsn1Obj = ASN1Object.fromBytes(Uint8List.fromList([0x5, 0x0]));
-    algorithmSeq.add(algorithmAsn1Obj);
-    algorithmSeq.add(paramsAsn1Obj);
-
-    var privateKeySeq = ASN1Sequence();
-    var modulus = ASN1Integer(rsaPrivateKey.n);
-    var publicExponent = ASN1Integer(BigInt.parse('65537'));
-    var privateExponent = ASN1Integer(rsaPrivateKey.d);
-    var p = ASN1Integer(rsaPrivateKey.p);
-    var q = ASN1Integer(rsaPrivateKey.q);
-    var dP = rsaPrivateKey.d % (rsaPrivateKey.p - BigInt.from(1));
-    var exp1 = ASN1Integer(dP);
-    var dQ = rsaPrivateKey.d % (rsaPrivateKey.q - BigInt.from(1));
-    var exp2 = ASN1Integer(dQ);
-    var iQ = rsaPrivateKey.q.modInverse(rsaPrivateKey.p);
-    var co = ASN1Integer(iQ);
-
-    privateKeySeq.add(version);
-    privateKeySeq.add(modulus);
-    privateKeySeq.add(publicExponent);
-    privateKeySeq.add(privateExponent);
-    privateKeySeq.add(p);
-    privateKeySeq.add(q);
-    privateKeySeq.add(exp1);
-    privateKeySeq.add(exp2);
-    privateKeySeq.add(co);
-    var publicKeySeqOctetString =
-        ASN1OctetString(Uint8List.fromList(privateKeySeq.encodedBytes));
-
-    var topLevelSeq = ASN1Sequence();
-    topLevelSeq.add(version);
-    topLevelSeq.add(algorithmSeq);
-    topLevelSeq.add(publicKeySeqOctetString);
-    var dataBase64 = base64.encode(topLevelSeq.encodedBytes);
-    var chunks = StringUtils.chunk(dataBase64, 64);
-    return '$BEGIN_PRIVATE_KEY\n${chunks.join('\n')}\n$END_PRIVATE_KEY';
-  }
-
-  ///
-  /// Decode a [RSAPrivateKey] from the given [pem] String.
-  ///
-  static RSAPrivateKey privateKeyFromPem(String pem) {
-    if (pem == null) {
-      throw ArgumentError('Argument must not be null.');
-    }
-    var bytes = getBytesFromPEMString(pem);
-    return privateKeyFromDERBytes(bytes);
-  }
-
-  ///
-  /// Decode a [ECPrivateKey] from the given [pem] String.
-  ///
-  /// Throws an ArgumentError if the given string [pem] is null or empty.
-  ///
-  static ECPrivateKey ecPrivateKeyFromPem(String pem) {
-    if (StringUtils.isNullOrEmpty(pem)) {
-      throw ArgumentError('Argument must not be null.');
-    }
-    var bytes = getBytesFromPEMString(pem);
-    return ecPrivateKeyFromDerBytes(bytes);
-  }
-
-  ///
-  /// Decode a [ECPublicKey] from the given [pem] String.
-  ///
-  /// Throws an ArgumentError if the given string [pem] is null or empty.
-  ///
-  ///
-  static ECPublicKey ecPublicKeyFromPem(String pem) {
-    if (StringUtils.isNullOrEmpty(pem)) {
-      throw ArgumentError('Argument must not be null.');
-    }
-    var bytes = getBytesFromPEMString(pem);
-    return ecPublicKeyFromDerBytes(bytes);
-  }
-
-  ///
-  /// Decode a [RSAPublicKey] from the given [pem] String.
-  ///
-  static RSAPublicKey publicKeyFromPem(String pem) {
-    if (pem == null) {
-      throw ArgumentError('Argument must not be null.');
-    }
-    var bytes = getBytesFromPEMString(pem);
-    var asn1Parser = ASN1Parser(bytes);
-    var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
-    var publicKeyBitString = topLevelSeq.elements[1];
-
-    var publicKeyAsn = ASN1Parser(publicKeyBitString.contentBytes());
-    ASN1Sequence publicKeySeq = publicKeyAsn.nextObject();
-    var modulus = publicKeySeq.elements[0] as ASN1Integer;
-    var exponent = publicKeySeq.elements[1] as ASN1Integer;
-
-    var rsaPublicKey =
-        RSAPublicKey(modulus.valueAsBigInteger, exponent.valueAsBigInteger);
-
-    return rsaPublicKey;
-  }
-
-  ///
   /// Parses the given PEM to a [X509CertificateData] object.
   ///
   /// Throws an [ASN1Exception] if the pem could not be read by the [ASN1Parser].
@@ -462,7 +215,7 @@ class X509Utils {
       throw ArgumentError('Argument must not be null.');
     }
     ASN1ObjectIdentifier.registerFrequentNames();
-    var bytes = getBytesFromPEMString(pem);
+    var bytes = CryptoUtils.getBytesFromPEMString(pem);
     var asn1Parser = ASN1Parser(bytes);
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
 
@@ -632,117 +385,6 @@ class X509Utils {
   }
 
   ///
-  /// Helper function for decoding the base64 in [pem].
-  ///
-  /// Throws an ArgumentError if the given [pem] is not sourounded by begin marker -----BEGIN and
-  /// endmarker -----END or the [pem] consists of less than two lines.
-  ///
-  static Uint8List getBytesFromPEMString(String pem) {
-    var lines = LineSplitter.split(pem)
-        .map((line) => line.trim())
-        .where((line) => line.isNotEmpty)
-        .toList();
-
-    if (lines.length < 2 ||
-        !lines.first.startsWith('-----BEGIN') ||
-        !lines.last.startsWith('-----END')) {
-      throw ArgumentError('The given string does not have the correct '
-          'begin/end markers expected in a PEM file.');
-    }
-    var base64 = lines.sublist(1, lines.length - 1).join('');
-    return Uint8List.fromList(base64Decode(base64));
-  }
-
-  ///
-  /// Decode the given [bytes] into an [ECPrivateKey].
-  ///
-  static ECPrivateKey ecPrivateKeyFromDerBytes(Uint8List bytes) {
-    var asn1Parser = ASN1Parser(bytes);
-    var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
-    var privateKeyAsOctetString =
-        topLevelSeq.elements.elementAt(1) as ASN1OctetString;
-    var choice = topLevelSeq.elements.elementAt(2);
-    var s = ASN1Sequence();
-    var parser = ASN1Parser(choice.contentBytes());
-    while (parser.hasNext()) {
-      s.add(parser.nextObject());
-    }
-    var curveNameOi = s.elements.elementAt(0) as ASN1ObjectIdentifier;
-    var curveName;
-    ASN1ObjectIdentifier.DN.keys.forEach((element) {
-      if (ASN1ObjectIdentifier.DN[element] == curveNameOi.identifier) {
-        curveName = element;
-      }
-    });
-
-    var x = privateKeyAsOctetString.contentBytes();
-    ECDomainParameters params;
-    if (curveName == 'prime256v1') {
-      params = ECCurve_prime256v1();
-    } else {
-      params = ECCurve_prime256v1();
-    }
-
-    return ECPrivateKey(decodeBigInt(x), params);
-  }
-
-  ///
-  /// Decode the given [bytes] into an [ECPublicKey].
-  ///
-  static ECPublicKey ecPublicKeyFromDerBytes(Uint8List bytes) {
-    var asn1Parser = ASN1Parser(bytes);
-    var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
-
-    var subjectPublicKey = topLevelSeq.elements[1];
-    var compressed = false;
-    var pubBytes = subjectPublicKey.contentBytes();
-    // Looks good so far!
-    var firstByte = pubBytes.elementAt(0);
-    if (firstByte != 4) {
-      compressed = true;
-    }
-    var x = pubBytes.sublist(1, (pubBytes.length / 2).round());
-    var y = pubBytes.sublist(1 + x.length, pubBytes.length);
-    ECDomainParameters params = ECCurve_prime256v1();
-
-    return ECPublicKey(
-        ecc.ECPoint(params.curve, params.curve.fromBigInteger(decodeBigInt(x)),
-            params.curve.fromBigInteger(decodeBigInt(y)), compressed),
-        params);
-  }
-
-  ///
-  /// Decode the given [bytes] into an [RSAPrivateKey].
-  ///
-  static RSAPrivateKey privateKeyFromDERBytes(Uint8List bytes) {
-    var asn1Parser = ASN1Parser(bytes);
-    var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
-    //ASN1Object version = topLevelSeq.elements[0];
-    //ASN1Object algorithm = topLevelSeq.elements[1];
-    var privateKey = topLevelSeq.elements[2];
-
-    asn1Parser = ASN1Parser(privateKey.contentBytes());
-    var pkSeq = asn1Parser.nextObject() as ASN1Sequence;
-
-    var modulus = pkSeq.elements[1] as ASN1Integer;
-    //ASN1Integer publicExponent = pkSeq.elements[2] as ASN1Integer;
-    var privateExponent = pkSeq.elements[3] as ASN1Integer;
-    var p = pkSeq.elements[4] as ASN1Integer;
-    var q = pkSeq.elements[5] as ASN1Integer;
-    //ASN1Integer exp1 = pkSeq.elements[6] as ASN1Integer;
-    //ASN1Integer exp2 = pkSeq.elements[7] as ASN1Integer;
-    //ASN1Integer co = pkSeq.elements[8] as ASN1Integer;
-
-    var rsaPrivateKey = RSAPrivateKey(
-        modulus.valueAsBigInteger,
-        privateExponent.valueAsBigInteger,
-        p.valueAsBigInteger,
-        q.valueAsBigInteger);
-
-    return rsaPrivateKey;
-  }
-
-  ///
   /// Decode the given [asnSequence] into an [RSAPrivateKey].
   ///
   static RSAPrivateKey privateKeyFromASN1Sequence(ASN1Sequence asnSequence) {
@@ -769,24 +411,6 @@ class X509Utils {
     }
     return key;
   }
-
-  ///
-  /// Converts the [RSAPublicKey.modulus] from the given [publicKey] to a [Uint8List].
-  ///
-  static Uint8List rsaPublicKeyModulusToBytes(RSAPublicKey publicKey) =>
-      encodeBigInt(publicKey.modulus);
-
-  ///
-  /// Converts the [RSAPublicKey.exponent] from the given [publicKey] to a [Uint8List].
-  ///
-  static Uint8List rsaPublicKeyExponentToBytes(RSAPublicKey publicKey) =>
-      encodeBigInt(publicKey.exponent);
-
-  ///
-  /// Converts the [RSAPrivateKey.modulus] from the given [privateKey] to a [Uint8List].
-  ///
-  static Uint8List rsaPrivateKeyModulusToBytes(RSAPrivateKey privateKey) =>
-      encodeBigInt(privateKey.modulus);
 
   ///
   /// Encode the given [dn] (Distinguished Name) to a [ASN1Object].

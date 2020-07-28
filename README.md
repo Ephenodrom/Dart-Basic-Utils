@@ -36,7 +36,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.5.7
+  basic_utils: ^2.6.0
 ```
 
 ## Import
@@ -187,31 +187,17 @@ int getCalendarWeek(DateTime date);
 
 ### X509Utils
 
-Helper class for operations on x509 certificates, like generating key pairs, generating csr and many more.
+Helper class for operations on x509 certificates, like generating csr and many more.
+
+**IMPORTANT**: A lot of functions, like handling asymetric key pairs moved to the CryptoUtils class with version 2.6.0.
 
 ```dart
-AsymmetricKeyPair generateKeyPair({int keySize = 2048});
 String formatKeyString(String key, String begin, String end,{int chunkSize = 64, String lineDelimiter = "\n"});
 String generateRsaCsrPem(Map<String, String> attributes,RSAPrivateKey privateKey, RSAPublicKey publicKey);
 String encodeASN1ObjectToPem(ASN1Object asn1Object, String begin, String end);
-String encodeRSAPublicKeyToPem(RSAPublicKey publicKey);
-String encodeRSAPrivateKeyToPem(RSAPrivateKey rsaPrivateKey);
-RSAPrivateKey privateKeyFromPem(String pem);
-RSAPublicKey publicKeyFromPem(String pem);
-Uint8List getBytesFromPEMString(String pem);
-RSAPrivateKey privateKeyFromDERBytes(Uint8List bytes);
 RSAPrivateKey privateKeyFromASN1Sequence(ASN1Sequence asnSequence);
-Uint8List rsaPublicKeyModulusToBytes(RSAPublicKey publicKey);
-Uint8List rsaPublicKeyExponentToBytes(RSAPublicKey publicKey);
-Uint8List rsaPrivateKeyToBytes(RSAPrivateKey privateKey);
 ASN1Object encodeDN(Map<String, String> dn);
 X509CertificateData x509CertificateFromPem(String pem);
-AsymmetricKeyPair generateEcKeyPair();
-String encodeEcPublicKeyToPem(ECPublicKey publicKey);
-String encodeEcPrivateKeyToPem(ECPrivateKey ecPrivateKey);
-String generateEccCsrPem(Map<String, String> attributes, ECPrivateKey privateKey, ECPublicKey publicKey);
-ECPrivateKey ecPrivateKeyFromPem(String pem);
-ECPublicKey ecPublicKeyFromPem(String pem);
 ```
 
 ### IterableUtils
@@ -227,12 +213,34 @@ List<List<T>> chunk<T>(List<T> list, int size);
 
 ### CryptoUtils
 
-Helper class for cryptographic operations.
+Helper class for cryptographic operations. This is some kind of high level api for pointycastle and asn1lib.
 
 ```dart
 String getSha1ThumbprintFromBytes(Uint8List bytes);
 String getSha256ThumbprintFromBytes(Uint8List bytes);
 String getMd5ThumbprintFromBytes(Uint8List bytes);
+Uint8List rsaPublicKeyModulusToBytes(RSAPublicKey publicKey);
+Uint8List rsaPublicKeyExponentToBytes(RSAPublicKey publicKey);
+Uint8List rsaPrivateKeyToBytes(RSAPrivateKey privateKey);
+AsymmetricKeyPair generateRSAKeyPair({int keySize = 2048});
+AsymmetricKeyPair generateEcKeyPair({String curve = 'prime256v1'});
+String encodeRSAPublicKeyToPem(RSAPublicKey publicKey);
+String encodeRSAPrivateKeyToPem(RSAPrivateKey rsaPrivateKey);
+RSAPrivateKey rsaPrivateKeyFromPem(String pem);
+RSAPublicKey rsaPublicKeyFromPem(String pem);
+RSAPrivateKey rsaPrivateKeyFromDERBytes(Uint8List bytes);
+RSAPublicKey rsaPublicKeyFromDERBytes(Uint8List bytes);
+Uint8List getBytesFromPEMString(String pem);
+String encodeEcPrivateKeyToPem(ECPrivateKey ecPrivateKey);
+String encodeEcPublicKeyToPem(ECPublicKey publicKey);
+ECPublicKey ecPublicKeyFromPem(String pem);
+ECPrivateKey ecPrivateKeyFromPem(String pem);
+ECPrivateKey ecPrivateKeyFromDerBytes(Uint8List bytes);
+ECPublicKey ecPublicKeyFromDerBytes(Uint8List bytes);
+String rsaEncrypt(String message, RSAPublicKey publicKey);
+String rsaDecrypt(String cipherMessage, RSAPrivateKey privateKey);
+Uint8List rsaSign(RSAPrivateKey privateKey, Uint8List dataToSign, {String algorithmName = 'SHA-256/RSA'});
+bool rsaVerify(RSAPublicKey publicKey, Uint8List signedData, Uint8List signature,{String algorithm = 'SHA-256/RSA'});
 ```
 
 ## Changelog

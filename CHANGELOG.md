@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.6.0] - 2020-07-28
+
+* Moved X509Utils.generateRSAKeyPair() to CryptoUtils.generateRSAKeyPair()
+* Moved X509Utils.encodeRSAPrivateKeyToPem() to CryptoUtils.encodeRSAPrivateKeyToPem()
+* Moved X509Utils.encodeRSAPublicKeyToPem() to CryptoUtils.encodeRSAPublicKeyToPem()
+* Moved X509Utils.privateKeyFromDERBytes() to CryptoUtils.rsaPrivateKeyFromDERBytes()
+* Moved X509Utils.privateKeyFromPem() to CryptoUtils.rsaPrivateKeyFromPem()
+* Moved X509Utils.publicKeyFromPem() to CryptoUtils.rsaPublicKeyFromPem()
+* Add new method RSAPublicKey rsaPublicKeyFromDERBytes(Uint8List bytes) to CryptoUtils class
+* Moved X509Utils.ecPublicKeyFromDerBytes() to CryptoUtils.ecPublicKeyFromDerBytes()
+* Moved X509Utils.ecPrivateKeyFromDerBytes() to CryptoUtils.ecPrivateKeyFromDerBytes()
+* Moved X509Utils.ecPrivateKeyFromPem() to CryptoUtils.ecPrivateKeyFromPem()
+* Moved X509Utils.ecPublicKeyFromPem() to CryptoUtils.ecPublicKeyFromPem()
+* Moved X509Utils.ecPublicKeyFromPem() to CryptoUtils.ecPublicKeyFromPem()
+* Moved X509Utils.encodeEcPublicKeyToPem() to CryptoUtils.encodeEcPrivateKeyToPem()
+* Moved X509Utils.rsaPublicKeyModulusToBytes() to CryptoUtils.rsaPublicKeyModulusToBytes()
+* Moved X509Utils.rsaPublicKeyExponentToBytes() to CryptoUtils.rsaPublicKeyExponentToBytes()
+* Moved X509Utils.rsaPrivateKeyModulusToBytes() to CryptoUtils.rsaPrivateKeyModulusToBytes()
+
 ## [2.5.7] - 2020-07-24
 
 * Improve X509Utils, add new methods ecPrivateKeyFromPem and ecPublicKeyFromPem
