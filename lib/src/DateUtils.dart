@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 ///
 /// Helper class for date operations.
 ///
@@ -392,7 +390,10 @@ class DateUtils {
   /// Calculates the calendar week for the given [date].
   ///
   static int getCalendarWeek(DateTime date) {
-    var dayOfYear = int.parse(DateFormat('D').format(date));
-    return ((dayOfYear - date.weekday + 10) / 7).floor();
+    //var dayOfYear = int.parse(DateFormat('D').format(date));
+    final diff = date.difference(DateTime(date.year, 1, 1));
+    final diffInDays = diff.inDays;
+
+    return ((diffInDays - date.weekday + 10) / 7).floor();
   }
 }
