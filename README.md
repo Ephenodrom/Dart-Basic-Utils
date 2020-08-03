@@ -241,6 +241,8 @@ String rsaEncrypt(String message, RSAPublicKey publicKey);
 String rsaDecrypt(String cipherMessage, RSAPrivateKey privateKey);
 Uint8List rsaSign(RSAPrivateKey privateKey, Uint8List dataToSign, {String algorithmName = 'SHA-256/RSA'});
 bool rsaVerify(RSAPublicKey publicKey, Uint8List signedData, Uint8List signature,{String algorithm = 'SHA-256/RSA'});
+String encodeRSAPrivateKeyToPemPkcs1(RSAPrivateKey rsaPrivateKey);
+String encodeRSAPublicKeyToPemPkcs1(RSAPublicKey rsaPublicKey);
 ```
 
 ## Changelog

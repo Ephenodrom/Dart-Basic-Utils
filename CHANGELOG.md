@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.6.1] - 2020-08-03
+
+* Improved CryptoUtils, add new methods encodeRSAPrivateKeyToPemPkcs1() and encodeRSAPublicKeyToPemPkcs1() (#18)
+* Improved DateUtils to not rely on the intl package
+
 ## [2.6.0] - 2020-07-28
 
 * Moved X509Utils.generateRSAKeyPair() to CryptoUtils.generateRSAKeyPair()
