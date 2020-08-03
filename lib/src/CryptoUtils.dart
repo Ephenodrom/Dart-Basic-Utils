@@ -200,6 +200,78 @@ class CryptoUtils {
   }
 
   ///
+  /// Enode the given [rsaPublicKey] to PEM format using the PKCS#1 standard.
+  ///
+  /// The ASN1 structure is decripted at <https://tools.ietf.org/html/rfc8017#page-53>.
+  ///
+  /// ```
+  /// RSAPublicKey ::= SEQUENCE {
+  ///   modulus           INTEGER,  -- n
+  ///   publicExponent    INTEGER   -- e
+  /// }
+  /// ```
+  ///
+  static String encodeRSAPublicKeyToPemPkcs1(RSAPublicKey rsaPublicKey) {
+    var topLevelSeq = ASN1Sequence();
+    topLevelSeq.add(ASN1Integer(rsaPublicKey.modulus));
+    topLevelSeq.add(ASN1Integer(rsaPublicKey.exponent));
+
+    var dataBase64 = base64.encode(topLevelSeq.encodedBytes);
+    var chunks = StringUtils.chunk(dataBase64, 64);
+
+    return '$BEGIN_RSA_PUBLIC_KEY\n${chunks.join('\n')}\n$END_RSA_PUBLIC_KEY';
+  }
+
+  ///
+  /// Enode the given [rsaPrivateKey] to PEM format using the PKCS#1 standard.
+  ///
+  /// The ASN1 structure is decripted at <https://tools.ietf.org/html/rfc8017#page-54>.
+  ///
+  /// ```
+  /// RSAPrivateKey ::= SEQUENCE {
+  ///   version           Version,
+  ///   modulus           INTEGER,  -- n
+  ///   publicExponent    INTEGER,  -- e
+  ///   privateExponent   INTEGER,  -- d
+  ///   prime1            INTEGER,  -- p
+  ///   prime2            INTEGER,  -- q
+  ///   exponent1         INTEGER,  -- d mod (p-1)
+  ///   exponent2         INTEGER,  -- d mod (q-1)
+  ///   coefficient       INTEGER,  -- (inverse of q) mod p
+  ///   otherPrimeInfos   OtherPrimeInfos OPTIONAL
+  /// }
+  /// ```
+  static String encodeRSAPrivateKeyToPemPkcs1(RSAPrivateKey rsaPrivateKey) {
+    var version = ASN1Integer(BigInt.from(0));
+    var modulus = ASN1Integer(rsaPrivateKey.n);
+    var publicExponent = ASN1Integer(BigInt.parse('65537'));
+    var privateExponent = ASN1Integer(rsaPrivateKey.d);
+
+    var p = ASN1Integer(rsaPrivateKey.p);
+    var q = ASN1Integer(rsaPrivateKey.q);
+    var dP = rsaPrivateKey.d % (rsaPrivateKey.p - BigInt.from(1));
+    var exp1 = ASN1Integer(dP);
+    var dQ = rsaPrivateKey.d % (rsaPrivateKey.q - BigInt.from(1));
+    var exp2 = ASN1Integer(dQ);
+    var iQ = rsaPrivateKey.q.modInverse(rsaPrivateKey.p);
+    var co = ASN1Integer(iQ);
+
+    var topLevelSeq = ASN1Sequence();
+    topLevelSeq.add(version);
+    topLevelSeq.add(modulus);
+    topLevelSeq.add(publicExponent);
+    topLevelSeq.add(privateExponent);
+    topLevelSeq.add(p);
+    topLevelSeq.add(q);
+    topLevelSeq.add(exp1);
+    topLevelSeq.add(exp2);
+    topLevelSeq.add(co);
+    var dataBase64 = base64.encode(topLevelSeq.encodedBytes);
+    var chunks = StringUtils.chunk(dataBase64, 64);
+    return '$BEGIN_RSA_PRIVATE_KEY\n${chunks.join('\n')}\n$END_RSA_PRIVATE_KEY';
+  }
+
+  ///
   /// Enode the given [rsaPrivateKey] to PEM format using the PKCS#8 standard.
   ///
   /// The ASN1 structure is decripted at <https://tools.ietf.org/html/rfc5208>.

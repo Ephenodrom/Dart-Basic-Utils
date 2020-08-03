@@ -135,6 +135,20 @@ bjBqILerN9h2zFj3Fi+DdT0=
     expect(pem.endsWith('-----END PUBLIC KEY-----'), true);
   });
 
+  test('Test encodeRSAPrivateKeyToPemPkcs1', () {
+    var pair = CryptoUtils.generateRSAKeyPair();
+    var pem = CryptoUtils.encodeRSAPrivateKeyToPemPkcs1(pair.privateKey);
+    expect(pem.startsWith('-----BEGIN RSA PRIVATE KEY-----'), true);
+    expect(pem.endsWith('-----END RSA PRIVATE KEY-----'), true);
+  });
+
+  test('Test encodeRSAPublicKeyToPemPkcs1', () {
+    var pair = CryptoUtils.generateRSAKeyPair();
+    var pem = CryptoUtils.encodeRSAPublicKeyToPemPkcs1(pair.publicKey);
+    expect(pem.startsWith('-----BEGIN RSA PUBLIC KEY-----'), true);
+    expect(pem.endsWith('-----END RSA PUBLIC KEY-----'), true);
+  });
+
   test('Test privateKeyFromPem', () {
     var object = CryptoUtils.rsaPrivateKeyFromPem(privateKey);
     expect(object.n.bitLength, 2048);
