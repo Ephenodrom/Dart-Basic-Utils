@@ -239,4 +239,29 @@ bjBqILerN9h2zFj3Fi+DdT0=
     valid = CryptoUtils.rsaVerify(pubKey, bytes, signature);
     expect(valid, false);
   });
+
+  test('Test rsaPrivateKeyFromPemPkcs1', () {
+    var pair = CryptoUtils.generateRSAKeyPair();
+    var pem = CryptoUtils.encodeRSAPrivateKeyToPemPkcs1(pair.privateKey);
+    var generatedKey = pair.privateKey as RSAPrivateKey;
+    var privateKey = CryptoUtils.rsaPrivateKeyFromPemPkcs1(pem);
+    expect(privateKey.p, generatedKey.p);
+    expect(privateKey.q, generatedKey.q);
+    expect(privateKey.d, generatedKey.d);
+    expect(privateKey.n, generatedKey.n);
+    expect(privateKey.modulus, generatedKey.modulus);
+    expect(privateKey.exponent, generatedKey.exponent);
+  });
+
+  test('Test rsaPublicKeyFromPemPkcs1', () {
+    var pair = CryptoUtils.generateRSAKeyPair();
+    var pem = CryptoUtils.encodeRSAPublicKeyToPemPkcs1(pair.publicKey);
+
+    var generatedKey = pair.publicKey as RSAPublicKey;
+    var publicKey = CryptoUtils.rsaPublicKeyFromPemPkcs1(pem);
+    expect(publicKey.e, generatedKey.e);
+    expect(publicKey.exponent, generatedKey.exponent);
+    expect(publicKey.modulus, generatedKey.modulus);
+    expect(publicKey.n, generatedKey.n);
+  });
 }
