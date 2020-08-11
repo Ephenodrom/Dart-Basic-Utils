@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.6.2] - 2020-08-11
+
+* Improved CryptoUtils, add new methods rsaPublicKeyFromPemPkcs1(), rsaPrivateKeyFromPemPkcs1(), rsaPublicKeyFromDERBytesPkcs1() and rsaPrivateKeyFromDERBytesPkcs1() (#18)
+
 ## [2.6.1] - 2020-08-03
 
 * Improved CryptoUtils, add new methods encodeRSAPrivateKeyToPemPkcs1() and encodeRSAPublicKeyToPemPkcs1() (#18)

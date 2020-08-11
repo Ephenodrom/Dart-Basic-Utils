@@ -36,7 +36,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.6.0
+  basic_utils: ^2.6.2
 ```
 
 ## Import
@@ -243,6 +243,10 @@ Uint8List rsaSign(RSAPrivateKey privateKey, Uint8List dataToSign, {String algori
 bool rsaVerify(RSAPublicKey publicKey, Uint8List signedData, Uint8List signature,{String algorithm = 'SHA-256/RSA'});
 String encodeRSAPrivateKeyToPemPkcs1(RSAPrivateKey rsaPrivateKey);
 String encodeRSAPublicKeyToPemPkcs1(RSAPublicKey rsaPublicKey);
+RSAPublicKey rsaPublicKeyFromPemPkcs1(String pem);
+RSAPrivateKey rsaPrivateKeyFromPemPkcs1(String pem);
+RSAPublicKey rsaPublicKeyFromDERBytesPkcs1(Uint8List bytes);
+RSAPrivateKey rsaPrivateKeyFromDERBytesPkcs1(Uint8List bytes);
 ```
 
 ## Changelog
