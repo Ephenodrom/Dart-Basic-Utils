@@ -174,6 +174,7 @@ String contrastColor(String hex);
 Map<String, int> basicColorsFromHex(String hex);
 double calculateRelativeLuminance(int red, int green, int blue,{int decimals = 2});
 List<String> swatchColor(String hex, {double percentage = 15, int amount = 5});
+String invertColor(String color);
 ```
 
 ### DateUtils
