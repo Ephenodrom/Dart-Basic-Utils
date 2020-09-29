@@ -196,8 +196,11 @@ class ColorUtils {
   static String invertColor(String color) {
     List<String> invertedColor = List<String>();
     for (int i = 0; i < color.length; i++) {
+      if (color[i].startsWith("#"))
+        invertedColor.add("#");
+      else
       invertedColor.add(
-          ((~hexToInt(color[i])).toUnsigned(4)).toRadixString(16));
+          ((~int.parse("0x${color[i]}")).toUnsigned(4)).toRadixString(16));
     }
     return invertedColor.join();
   }
