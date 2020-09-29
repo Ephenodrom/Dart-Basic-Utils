@@ -67,5 +67,7 @@ void main() {
     expect(ColorUtils.invertColor("#FFFFFF"), "#000000");
     expect(ColorUtils.invertColor("#FF00FF"), "#00ff00");
     expect(ColorUtils.invertColor("000000"), "ffffff");
+    expect(ColorUtils.invertColor("#FFA8FF"), "#005700");
+
   });
 }
