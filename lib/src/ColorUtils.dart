@@ -186,4 +186,19 @@ class ColorUtils {
     }
     return colors;
   }
+  
+  /// 
+  /// Inverts Color Hex code
+  /// Convert string to (4-bit int) and apply bitwise-NOT operation then convert back to Hex String
+  /// e.g: convert white (FFFFFF) to Dark (000000).
+  /// Returns Inverted String Color.
+  ///
+  static String invertColor(String color) {
+    List<String> invertedColor = List<String>();
+    for (int i = 0; i < color.length; i++) {
+      invertedColor.add(
+          ((~hexToInt(color[i])).toUnsigned(4)).toRadixString(16));
+    }
+    return invertedColor.join();
+  }
 }
