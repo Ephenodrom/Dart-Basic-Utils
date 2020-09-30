@@ -324,7 +324,7 @@ class X509Utils {
     var next;
     try {
       next = asn1PubKeyParser.nextObject();
-    } catch (RangeError) {
+    } catch (e) {
       // continue
     }
     var pubKeyLength = 0;
