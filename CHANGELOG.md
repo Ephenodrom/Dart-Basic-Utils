@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.6.3] - 2020-09-30
+
+* Update ColorUtils, add invertColor method. (PR #22)
+
 ## [2.6.2] - 2020-08-11
 
 * Improved CryptoUtils, add new methods rsaPublicKeyFromPemPkcs1(), rsaPrivateKeyFromPemPkcs1(), rsaPublicKeyFromDERBytesPkcs1() and rsaPrivateKeyFromDERBytesPkcs1() (#18)
