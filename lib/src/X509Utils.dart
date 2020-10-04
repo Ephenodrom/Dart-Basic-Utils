@@ -31,7 +31,7 @@ class X509Utils {
   static const BEGIN_EC_PUBLIC_KEY = '-----BEGIN EC PUBLIC KEY-----';
   static const END_EC_PUBLIC_KEY = '-----END EC PUBLIC KEY-----';
 
-  static final Map<String, String> DN = {
+  static const DN = {
     'cn': '2.5.4.3',
     'sn': '2.5.4.4',
     'c': '2.5.4.6',
