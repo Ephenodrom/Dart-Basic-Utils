@@ -214,6 +214,13 @@ void main() {
     expect(actual.hour, 1);
     expect(actual.minute, 1);
     expect(actual.second, 1);
+    actual = DateUtils.stringToDateTime('29 Feb 2020 at 13:45:59');
+    expect(actual.year, 2020);
+    expect(actual.month, 2);
+    expect(actual.day, 29);
+    expect(actual.hour, 13);
+    expect(actual.minute, 45);
+    expect(actual.second, 59);
   });
 
   test('Test getCalendarWeek', () {

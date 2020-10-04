@@ -2,60 +2,60 @@
 /// Helper class for date operations.
 ///
 class DateUtils {
-  static int daysOfWeek = 7;
-  static String regexMonday = 'mon|Mon|monday|Monday';
-  static String regexTuesday = 'tue|Tue|tuesday|Tuesday';
-  static String regexWednesday = 'wed|Wed|wednesday|Wednesday';
-  static String regexThursday = 'thu|Thu|thursday|Thursday';
-  static String regexFriday = 'fri|Fri|friday|Friday';
-  static String regexSaturday = 'sat|Sat|saturday|Saturday';
-  static String regexSunday = 'sun|Sun|sunday|Sunday';
-  static String regexJanuary = 'jan|Jan|january|January';
-  static String regexFebruary = 'feb|Feb|february|February';
-  static String regexMarch = 'mar|Mar|march|March';
-  static String regexApril = 'apr|Apr|april|April';
-  static String regexMay = 'may|May';
-  static String regexJune = 'june|June';
-  static String regexJuly = 'july|July';
-  static String regexAugust = 'aug|Aug|august|August';
-  static String regexSeptember = 'sep|Sep|september|September';
-  static String regexOctober = 'oct|Oct|october|October';
-  static String regexNovember = 'nov|Nov|november|November';
-  static String regexDecember = 'dec|Dec|december|December';
-  static RegExp REGEX_YEAR = RegExp('^(y|year|years)\$');
-  static RegExp REGEX_MONTH = RegExp('^(mo|month|months)\$');
-  static RegExp REGEX_WEEK = RegExp('^(w|week|weeks)\$');
-  static RegExp REGEX_DAY = RegExp('^(d|day|days)\$');
-  static RegExp REGEX_HOUR = RegExp('^(h|hour|hours)\$');
-  static RegExp REGEX_MINUTES = RegExp('^(m|minute|minutes)\$');
-  static RegExp REGEX_SECONDS = RegExp('^(s|second|seconds)\$');
-  static RegExp REGEX_MONDAY = RegExp('^($regexMonday)\$');
-  static RegExp REGEX_TUESDAY = RegExp('^($regexTuesday)\$');
-  static RegExp REGEX_WEDNESDAY = RegExp('^($regexWednesday)\$');
-  static RegExp REGEX_THURSDAY = RegExp('^($regexThursday)\$');
-  static RegExp REGEX_FRIDAY = RegExp('^($regexFriday)\$');
-  static RegExp REGEX_SATURDAY = RegExp('^($regexSaturday)\$');
-  static RegExp REGEX_SUNDAY = RegExp('^($regexSunday)\$');
-  static RegExp REGEX_JANUARY = RegExp('^($regexJanuary)\$');
-  static RegExp REGEX_FEBRUARY = RegExp('^($regexFebruary)\$');
-  static RegExp REGEX_MARCH = RegExp('^($regexMarch)\$');
-  static RegExp REGEX_APRIL = RegExp('^($regexApril)\$');
-  static RegExp REGEX_MAY = RegExp('^($regexMay)\$');
-  static RegExp REGEX_JUNE = RegExp('^($regexJune)\$');
-  static RegExp REGEX_JULY = RegExp('^($regexJuly)\$');
-  static RegExp REGEX_AUGUST = RegExp('^($regexAugust)\$');
-  static RegExp REGEX_SEPTEMBER = RegExp('^($regexSeptember)\$');
-  static RegExp REGEX_OCTOBER = RegExp('^($regexOctober)\$');
-  static RegExp REGEX_NOVEMBER = RegExp('^($regexNovember)\$');
-  static RegExp REGEX_DECEMBER = RegExp('^($regexDecember)\$');
+  static const daysOfWeek = 7;
+  static const regexMonday = 'mon|Mon|monday|Monday';
+  static const regexTuesday = 'tue|Tue|tuesday|Tuesday';
+  static const regexWednesday = 'wed|Wed|wednesday|Wednesday';
+  static const regexThursday = 'thu|Thu|thursday|Thursday';
+  static const regexFriday = 'fri|Fri|friday|Friday';
+  static const regexSaturday = 'sat|Sat|saturday|Saturday';
+  static const regexSunday = 'sun|Sun|sunday|Sunday';
+  static const regexJanuary = 'jan|Jan|january|January';
+  static const regexFebruary = 'feb|Feb|february|February';
+  static const regexMarch = 'mar|Mar|march|March';
+  static const regexApril = 'apr|Apr|april|April';
+  static const regexMay = 'may|May';
+  static const regexJune = 'june|June';
+  static const regexJuly = 'july|July';
+  static const regexAugust = 'aug|Aug|august|August';
+  static const regexSeptember = 'sep|Sep|september|September';
+  static const regexOctober = 'oct|Oct|october|October';
+  static const regexNovember = 'nov|Nov|november|November';
+  static const regexDecember = 'dec|Dec|december|December';
+  static final REGEX_YEAR = RegExp('^(y|year|years)\$');
+  static final REGEX_MONTH = RegExp('^(mo|month|months)\$');
+  static final REGEX_WEEK = RegExp('^(w|week|weeks)\$');
+  static final REGEX_DAY = RegExp('^(d|day|days)\$');
+  static final REGEX_HOUR = RegExp('^(h|hour|hours)\$');
+  static final REGEX_MINUTES = RegExp('^(m|minute|minutes)\$');
+  static final REGEX_SECONDS = RegExp('^(s|second|seconds)\$');
+  static final REGEX_MONDAY = RegExp('^($regexMonday)\$');
+  static final REGEX_TUESDAY = RegExp('^($regexTuesday)\$');
+  static final REGEX_WEDNESDAY = RegExp('^($regexWednesday)\$');
+  static final REGEX_THURSDAY = RegExp('^($regexThursday)\$');
+  static final REGEX_FRIDAY = RegExp('^($regexFriday)\$');
+  static final REGEX_SATURDAY = RegExp('^($regexSaturday)\$');
+  static final REGEX_SUNDAY = RegExp('^($regexSunday)\$');
+  static final REGEX_JANUARY = RegExp('^($regexJanuary)\$');
+  static final REGEX_FEBRUARY = RegExp('^($regexFebruary)\$');
+  static final REGEX_MARCH = RegExp('^($regexMarch)\$');
+  static final REGEX_APRIL = RegExp('^($regexApril)\$');
+  static final REGEX_MAY = RegExp('^($regexMay)\$');
+  static final REGEX_JUNE = RegExp('^($regexJune)\$');
+  static final REGEX_JULY = RegExp('^($regexJuly)\$');
+  static final REGEX_AUGUST = RegExp('^($regexAugust)\$');
+  static final REGEX_SEPTEMBER = RegExp('^($regexSeptember)\$');
+  static final REGEX_OCTOBER = RegExp('^($regexOctober)\$');
+  static final REGEX_NOVEMBER = RegExp('^($regexNovember)\$');
+  static final REGEX_DECEMBER = RegExp('^($regexDecember)\$');
 
-  static RegExp REGEX_AM_PM = RegExp(
+  static final REGEX_AM_PM = RegExp(
       '^(\\d{1,2}\\s(pm|am)|\\d{1,2}(\\.|:)\\d{2}\\s(pm|am)|\\d{1,2}(\\.|:)\\d{2}(\\.|:)\\d{2}\\s(pm|am))\$');
-  static RegExp REGEX_WEEKDAY = RegExp(
+  static final REGEX_WEEKDAY = RegExp(
       '^($regexMonday|$regexTuesday|$regexWednesday|$regexThursday|$regexFriday|$regexSaturday|$regexSunday)\$');
-  static RegExp REGEX_MONTHS = RegExp(
+  static final REGEX_MONTHS = RegExp(
       '^($regexJanuary|$regexFebruary|$regexMarch|$regexApril|$regexMay|$regexJune|$regexJuly|$regexSeptember|$regexOctober||$regexNovember||$regexDecember)\$');
-  static RegExp REGEX_DATE = RegExp(
+  static final REGEX_DATE = RegExp(
       '^\\d{1,2}\\s($regexJanuary|$regexFebruary|$regexMarch|$regexApril|$regexMay|$regexJune|$regexJuly|$regexAugust|$regexSeptember|$regexOctober||$regexNovember||$regexDecember)\\s\\d{2,4}.*\$');
 
   ///
@@ -129,39 +129,31 @@ class DateUtils {
       date = s.trim();
     }
     var dateSplitted = date.split(' ');
+    final month = dateSplitted.elementAt(1);
     var monthAsInt = '';
-    if (REGEX_JANUARY.hasMatch(dateSplitted.elementAt(1))) {
+    if (REGEX_JANUARY.hasMatch(month)) {
       monthAsInt = '0' + DateTime.january.toString();
-    }
-
-    if (REGEX_MARCH.hasMatch(dateSplitted.elementAt(1))) {
+    } else if (REGEX_FEBRUARY.hasMatch(month)) {
+      monthAsInt = '0' + DateTime.february.toString();
+    } else if (REGEX_MARCH.hasMatch(month)) {
       monthAsInt = '0' + DateTime.march.toString();
-    }
-    if (REGEX_APRIL.hasMatch(dateSplitted.elementAt(1))) {
+    } else if (REGEX_APRIL.hasMatch(month)) {
       monthAsInt = '0' + DateTime.april.toString();
-    }
-    if (REGEX_MAY.hasMatch(dateSplitted.elementAt(1))) {
+    } else if (REGEX_MAY.hasMatch(month)) {
       monthAsInt = '0' + DateTime.may.toString();
-    }
-    if (REGEX_JUNE.hasMatch(dateSplitted.elementAt(1))) {
+    } else if (REGEX_JUNE.hasMatch(month)) {
       monthAsInt = '0' + DateTime.june.toString();
-    }
-    if (REGEX_JULY.hasMatch(dateSplitted.elementAt(1))) {
+    } else if (REGEX_JULY.hasMatch(month)) {
       monthAsInt = '0' + DateTime.july.toString();
-    }
-    if (REGEX_AUGUST.hasMatch(dateSplitted.elementAt(1))) {
+    } else if (REGEX_AUGUST.hasMatch(month)) {
       monthAsInt = '0' + DateTime.august.toString();
-    }
-    if (REGEX_SEPTEMBER.hasMatch(dateSplitted.elementAt(1))) {
+    } else if (REGEX_SEPTEMBER.hasMatch(month)) {
       monthAsInt = '0' + DateTime.september.toString();
-    }
-    if (REGEX_OCTOBER.hasMatch(dateSplitted.elementAt(1))) {
+    } else if (REGEX_OCTOBER.hasMatch(month)) {
       monthAsInt = DateTime.october.toString();
-    }
-    if (REGEX_NOVEMBER.hasMatch(dateSplitted.elementAt(1))) {
+    } else if (REGEX_NOVEMBER.hasMatch(month)) {
       monthAsInt = DateTime.november.toString();
-    }
-    if (REGEX_DECEMBER.hasMatch(dateSplitted.elementAt(1))) {
+    } else if (REGEX_DECEMBER.hasMatch(month)) {
       monthAsInt = DateTime.december.toString();
     }
     var time = DateTime.parse(
@@ -291,23 +283,17 @@ class DateUtils {
       int targetDay;
       if (REGEX_SUNDAY.hasMatch(lastNext)) {
         targetDay = DateTime.sunday;
-      }
-      if (REGEX_SATURDAY.hasMatch(lastNext)) {
+      } else if (REGEX_SATURDAY.hasMatch(lastNext)) {
         targetDay = DateTime.saturday;
-      }
-      if (REGEX_FRIDAY.hasMatch(lastNext)) {
+      } else if (REGEX_FRIDAY.hasMatch(lastNext)) {
         targetDay = DateTime.friday;
-      }
-      if (REGEX_THURSDAY.hasMatch(lastNext)) {
+      } else if (REGEX_THURSDAY.hasMatch(lastNext)) {
         targetDay = DateTime.thursday;
-      }
-      if (REGEX_WEDNESDAY.hasMatch(lastNext)) {
+      } else if (REGEX_WEDNESDAY.hasMatch(lastNext)) {
         targetDay = DateTime.wednesday;
-      }
-      if (REGEX_TUESDAY.hasMatch(lastNext)) {
+      } else if (REGEX_TUESDAY.hasMatch(lastNext)) {
         targetDay = DateTime.tuesday;
-      }
-      if (REGEX_MONDAY.hasMatch(lastNext)) {
+      } else if (REGEX_MONDAY.hasMatch(lastNext)) {
         targetDay = DateTime.monday;
       }
 
