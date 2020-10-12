@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:asn1lib/asn1lib.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateValidity.dart';
@@ -122,8 +121,9 @@ class X509Utils {
     var outer = ASN1Sequence();
     outer.add(blockDN);
     outer.add(blockProtocol);
-    outer.add(ASN1BitString(_rsaSign(blockDN.encodedBytes, privateKey)));
-    var chunks = StringUtils.chunk(base64.encode(outer.encodedBytes), 64);
+    outer.add(
+        ASN1BitString(stringValues: _rsaSign(blockDN.encode(), privateKey)));
+    var chunks = StringUtils.chunk(base64.encode(outer.encode()), 64);
     return '$BEGIN_CSR\n${chunks.join('\r\n')}\n$END_CSR';
   }
 
@@ -143,7 +143,6 @@ class X509Utils {
   ///
   static String generateEccCsrPem(Map<String, String> attributes,
       ECPrivateKey privateKey, ECPublicKey publicKey) {
-    ASN1ObjectIdentifier.registerFrequentNames();
     var encodedDN = encodeDN(attributes);
     var publicKeySequence = _makeEccPublicKeyBlock(publicKey);
 
@@ -157,18 +156,19 @@ class X509Utils {
     blockSignatureAlgorithm
         .add(ASN1ObjectIdentifier.fromName('ecdsaWithSHA256'));
 
-    var ecSignature = eccSign(blockDN.encodedBytes, privateKey);
+    var ecSignature = eccSign(blockDN.encode(), privateKey);
 
     var bitStringSequence = ASN1Sequence();
     bitStringSequence.add(ASN1Integer(ecSignature.r));
     bitStringSequence.add(ASN1Integer(ecSignature.s));
-    var blockSignatureValue = ASN1BitString(bitStringSequence.encodedBytes);
+    var blockSignatureValue =
+        ASN1BitString(stringValues: bitStringSequence.encode());
 
     var outer = ASN1Sequence();
     outer.add(blockDN);
     outer.add(blockSignatureAlgorithm);
     outer.add(blockSignatureValue);
-    var chunks = StringUtils.chunk(base64.encode(outer.encodedBytes), 64);
+    var chunks = StringUtils.chunk(base64.encode(outer.encode()), 64);
     return '$BEGIN_CSR\n${chunks.join('\r\n')}\n$END_CSR';
   }
 
@@ -201,7 +201,8 @@ class X509Utils {
   ///
   static String encodeASN1ObjectToPem(
       ASN1Object asn1Object, String begin, String end) {
-    var chunks = StringUtils.chunk(base64.encode(asn1Object.encodedBytes), 64);
+    var bytes = asn1Object.encode();
+    var chunks = StringUtils.chunk(base64.encode(bytes), 64);
     return '$begin\n${chunks.join('\r\n')}\n$end';
   }
 
@@ -214,7 +215,6 @@ class X509Utils {
     if (pem == null) {
       throw ArgumentError('Argument must not be null.');
     }
-    ASN1ObjectIdentifier.registerFrequentNames();
     var bytes = CryptoUtils.getBytesFromPEMString(pem);
     var asn1Parser = ASN1Parser(bytes);
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
@@ -232,18 +232,18 @@ class X509Utils {
     } else {
       // Version
       var versionObject = dataSequence.elements.elementAt(element + 0);
-      version = versionObject.valueBytes().elementAt(2);
+      version = versionObject.valueBytes.elementAt(2);
       // Serialnumber
       serialInteger =
           dataSequence.elements.elementAt(element + 1) as ASN1Integer;
     }
-    var serialNumber = serialInteger.valueAsBigInteger;
+    var serialNumber = serialInteger.integer;
 
     // Signature
     var signatureSequence =
         dataSequence.elements.elementAt(element + 2) as ASN1Sequence;
     var o = signatureSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
-    var signatureAlgorithm = o.identifier;
+    var signatureAlgorithm = o.objectIdentifierAsString;
 
     // Issuer
     var issuerSequence =
@@ -264,7 +264,7 @@ class X509Utils {
         var objectTeletext = object;
         value = objectTeletext.stringValue;
       }
-      issuer.putIfAbsent(o.identifier, () => value);
+      issuer.putIfAbsent(o.objectIdentifierAsString, () => value);
     }
 
     // Validity
@@ -274,7 +274,7 @@ class X509Utils {
     var asn1ToDateTime;
     if (validitySequence.elements.elementAt(0) is ASN1UtcTime) {
       var asn1From = validitySequence.elements.elementAt(0) as ASN1UtcTime;
-      asn1FromDateTime = asn1From.dateTimeValue;
+      asn1FromDateTime = asn1From.time;
     } else {
       var asn1From =
           validitySequence.elements.elementAt(0) as ASN1GeneralizedTime;
@@ -282,7 +282,7 @@ class X509Utils {
     }
     if (validitySequence.elements.elementAt(1) is ASN1UtcTime) {
       var asn1To = validitySequence.elements.elementAt(1) as ASN1UtcTime;
-      asn1ToDateTime = asn1To.dateTimeValue;
+      asn1ToDateTime = asn1To.time;
     } else {
       var asn1To =
           validitySequence.elements.elementAt(1) as ASN1GeneralizedTime;
@@ -308,7 +308,7 @@ class X509Utils {
         var objectPrintable = object;
         value = objectPrintable.stringValue;
       }
-      var identifier = o.identifier ?? 'unknown';
+      var identifier = o.objectIdentifierAsString ?? 'unknown';
       subject.putIfAbsent(identifier, () => value);
     }
 
@@ -320,7 +320,7 @@ class X509Utils {
     var pubKeyOid = algoSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
 
     var pubKey = pubKeySequence.elements.elementAt(1) as ASN1BitString;
-    var asn1PubKeyParser = ASN1Parser(pubKey.contentBytes());
+    var asn1PubKeyParser = ASN1Parser(pubKey.stringValues);
     var next;
     try {
       next = asn1PubKeyParser.nextObject();
@@ -334,18 +334,18 @@ class X509Utils {
     if (next != null && next is ASN1Sequence) {
       var s = next;
       var key = s.elements.elementAt(0) as ASN1Integer;
-      pubKeyLength = key.valueAsBigInteger.bitLength;
+      pubKeyLength = key.integer.bitLength;
       pubKeyAsBytes = s.encodedBytes;
     } else {
-      pubKeyAsBytes = pubKey.contentBytes();
-      pubKeyLength = pubKey.contentBytes().length * 8;
+      pubKeyAsBytes = pubKey.valueBytes;
+      pubKeyLength = pubKey.valueBytes.length * 8;
     }
     var pubKeyThumbprint =
         CryptoUtils.getSha1ThumbprintFromBytes(pubKeySequence.encodedBytes);
     var pubKeySha256Thumbprint =
         CryptoUtils.getSha256ThumbprintFromBytes(pubKeySequence.encodedBytes);
     var publicKeyData = X509CertificatePublicKeyData(
-        algorithm: pubKeyOid.identifier,
+        algorithm: pubKeyOid.objectIdentifierAsString,
         bytes: _bytesAsString(pubKeyAsBytes),
         length: pubKeyLength,
         sha1Thumbprint: pubKeyThumbprint,
@@ -358,13 +358,13 @@ class X509Utils {
     if (version > 1) {
       // Extensions
       var extensionObject = dataSequence.elements.elementAt(element + 7);
-      var extParser = ASN1Parser(extensionObject.valueBytes());
+      var extParser = ASN1Parser(extensionObject.valueBytes);
       var extSequence = extParser.nextObject() as ASN1Sequence;
 
       extSequence.elements.forEach((ASN1Object subseq) {
         var seq = subseq as ASN1Sequence;
         var oi = seq.elements.elementAt(0) as ASN1ObjectIdentifier;
-        if (oi.identifier == '2.5.29.17') {
+        if (oi.objectIdentifierAsString == '2.5.29.17') {
           sans = _fetchSansFromExtension(seq.elements.elementAt(1));
         }
       });
@@ -393,16 +393,12 @@ class X509Utils {
     var asnIntegers = objects.take(9).map((o) => o as ASN1Integer).toList();
 
     var version = asnIntegers.first;
-    if (version.valueAsBigInteger != BigInt.zero) {
-      throw ArgumentError(
-          'Expected version 0, got: ${version.valueAsBigInteger}.');
+    if (version.integer != BigInt.zero) {
+      throw ArgumentError('Expected version 0, got: ${version.integer}.');
     }
 
-    var key = RSAPrivateKey(
-        asnIntegers[1].valueAsBigInteger,
-        asnIntegers[2].valueAsBigInteger,
-        asnIntegers[3].valueAsBigInteger,
-        asnIntegers[4].valueAsBigInteger);
+    var key = RSAPrivateKey(asnIntegers[1].integer, asnIntegers[2].integer,
+        asnIntegers[3].integer, asnIntegers[4].integer);
 
     var bitLength = key.n.bitLength;
     if (bitLength != 1024 && bitLength != 2048 && bitLength != 4096) {
@@ -419,7 +415,6 @@ class X509Utils {
   ///
   static ASN1Object encodeDN(Map<String, String> dn) {
     var distinguishedName = ASN1Sequence();
-    ASN1ObjectIdentifier.registerFrequentNames();
     dn.forEach((name, value) {
       var oid = ASN1ObjectIdentifier.fromName(name);
       if (oid == null) {
@@ -429,14 +424,14 @@ class X509Utils {
       ASN1Object ovalue;
       switch (name.toUpperCase()) {
         case 'C':
-          ovalue = ASN1PrintableString(value);
+          ovalue = ASN1PrintableString(stringValue: value);
           break;
         case 'CN':
         case 'O':
         case 'L':
         case 'S':
         default:
-          ovalue = ASN1UTF8String(value);
+          ovalue = ASN1UTF8String(utf8StringValue: value);
           break;
       }
 
@@ -469,7 +464,8 @@ class X509Utils {
     publicKeySequence.add(ASN1Integer(publicKey.modulus));
     publicKeySequence.add(ASN1Integer(publicKey.exponent));
 
-    var blockPublicKey = ASN1BitString(publicKeySequence.encodedBytes);
+    var blockPublicKey =
+        ASN1BitString(stringValues: publicKeySequence.encode());
 
     var outer = ASN1Sequence();
     outer.add(blockEncryptionType);
@@ -487,7 +483,8 @@ class X509Utils {
     algorithm
         .add(ASN1ObjectIdentifier.fromName(publicKey.parameters.domainName));
 
-    var subjectPublicKey = ASN1BitString(publicKey.Q.getEncoded(false));
+    var subjectPublicKey =
+        ASN1BitString(stringValues: publicKey.Q.getEncoded(false));
 
     var outer = ASN1Sequence();
     outer.add(algorithm);
@@ -502,12 +499,12 @@ class X509Utils {
   static List<String> _fetchSansFromExtension(ASN1Object extData) {
     var sans = <String>[];
     var octet = extData as ASN1OctetString;
-    var sanParser = ASN1Parser(octet.valueBytes());
+    var sanParser = ASN1Parser(octet.valueBytes);
     ASN1Sequence sanSeq = sanParser.nextObject();
     sanSeq.elements.forEach((ASN1Object san) {
       if (san.tag == 135) {
         var sb = StringBuffer();
-        san.contentBytes().forEach((int b) {
+        san.valueBytes.forEach((int b) {
           if (sb.isNotEmpty) {
             sb.write('.');
           }
@@ -515,7 +512,7 @@ class X509Utils {
         });
         sans.add(sb.toString());
       } else {
-        var s = String.fromCharCodes(san.contentBytes());
+        var s = String.fromCharCodes(san.valueBytes);
         sans.add(s);
       }
     });

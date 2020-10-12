@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:asn1lib/asn1lib.dart';
 import 'package:basic_utils/src/X509Utils.dart';
 import 'package:pointycastle/impl.dart';
 import 'package:pointycastle/pointycastle.dart';
@@ -256,7 +255,7 @@ h9vE3e4Cq0OS3DA=
     var objects = asn.elements;
     ASN1OctetString string = objects[2];
     var object = X509Utils.privateKeyFromASN1Sequence(
-        ASN1Parser(string.contentBytes()).nextObject());
+        ASN1Parser(string.valueBytes).nextObject());
     expect(object.n.bitLength, 2048);
   });
 

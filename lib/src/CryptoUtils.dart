@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:asn1lib/asn1lib.dart';
 import 'package:crypto/crypto.dart';
+import 'package:pointycastle/asn1/object_identifiers.dart';
 import 'package:pointycastle/export.dart';
 import 'package:pointycastle/pointycastle.dart';
 import 'package:pointycastle/src/utils.dart';
@@ -178,7 +178,6 @@ class CryptoUtils {
   /// Enode the given [publicKey] to PEM format using the PKCS#8 standard.
   ///
   static String encodeRSAPublicKeyToPem(RSAPublicKey publicKey) {
-    ASN1ObjectIdentifier.registerFrequentNames();
     var algorithmSeq = ASN1Sequence();
     var paramsAsn1Obj = ASN1Object.fromBytes(Uint8List.fromList([0x5, 0x0]));
     algorithmSeq.add(ASN1ObjectIdentifier.fromName('rsaEncryption'));
@@ -188,12 +187,12 @@ class CryptoUtils {
     publicKeySeq.add(ASN1Integer(publicKey.modulus));
     publicKeySeq.add(ASN1Integer(publicKey.exponent));
     var publicKeySeqBitString =
-        ASN1BitString(Uint8List.fromList(publicKeySeq.encodedBytes));
+        ASN1BitString(stringValues: Uint8List.fromList(publicKeySeq.encode()));
 
     var topLevelSeq = ASN1Sequence();
     topLevelSeq.add(algorithmSeq);
     topLevelSeq.add(publicKeySeqBitString);
-    var dataBase64 = base64.encode(topLevelSeq.encodedBytes);
+    var dataBase64 = base64.encode(topLevelSeq.encode());
     var chunks = StringUtils.chunk(dataBase64, 64);
 
     return '$BEGIN_PUBLIC_KEY\n${chunks.join('\n')}\n$END_PUBLIC_KEY';
@@ -216,7 +215,7 @@ class CryptoUtils {
     topLevelSeq.add(ASN1Integer(rsaPublicKey.modulus));
     topLevelSeq.add(ASN1Integer(rsaPublicKey.exponent));
 
-    var dataBase64 = base64.encode(topLevelSeq.encodedBytes);
+    var dataBase64 = base64.encode(topLevelSeq.encode());
     var chunks = StringUtils.chunk(dataBase64, 64);
 
     return '$BEGIN_RSA_PUBLIC_KEY\n${chunks.join('\n')}\n$END_RSA_PUBLIC_KEY';
@@ -266,7 +265,7 @@ class CryptoUtils {
     topLevelSeq.add(exp1);
     topLevelSeq.add(exp2);
     topLevelSeq.add(co);
-    var dataBase64 = base64.encode(topLevelSeq.encodedBytes);
+    var dataBase64 = base64.encode(topLevelSeq.encode());
     var chunks = StringUtils.chunk(dataBase64, 64);
     return '$BEGIN_RSA_PRIVATE_KEY\n${chunks.join('\n')}\n$END_RSA_PRIVATE_KEY';
   }
@@ -316,13 +315,13 @@ class CryptoUtils {
     privateKeySeq.add(exp2);
     privateKeySeq.add(co);
     var publicKeySeqOctetString =
-        ASN1OctetString(Uint8List.fromList(privateKeySeq.encodedBytes));
+        ASN1OctetString(octets: Uint8List.fromList(privateKeySeq.encode()));
 
     var topLevelSeq = ASN1Sequence();
     topLevelSeq.add(version);
     topLevelSeq.add(algorithmSeq);
     topLevelSeq.add(publicKeySeqOctetString);
-    var dataBase64 = base64.encode(topLevelSeq.encodedBytes);
+    var dataBase64 = base64.encode(topLevelSeq.encode());
     var chunks = StringUtils.chunk(dataBase64, 64);
     return '$BEGIN_PRIVATE_KEY\n${chunks.join('\n')}\n$END_PRIVATE_KEY';
   }
@@ -348,7 +347,7 @@ class CryptoUtils {
     //ASN1Object algorithm = topLevelSeq.elements[1];
     var privateKey = topLevelSeq.elements[2];
 
-    asn1Parser = ASN1Parser(privateKey.contentBytes());
+    asn1Parser = ASN1Parser(privateKey.valueBytes);
     var pkSeq = asn1Parser.nextObject() as ASN1Sequence;
 
     var modulus = pkSeq.elements[1] as ASN1Integer;
@@ -361,10 +360,7 @@ class CryptoUtils {
     //ASN1Integer co = pkSeq.elements[8] as ASN1Integer;
 
     var rsaPrivateKey = RSAPrivateKey(
-        modulus.valueAsBigInteger,
-        privateExponent.valueAsBigInteger,
-        p.valueAsBigInteger,
-        q.valueAsBigInteger);
+        modulus.integer, privateExponent.integer, p.integer, q.integer);
 
     return rsaPrivateKey;
   }
@@ -399,10 +395,7 @@ class CryptoUtils {
     //ASN1Integer co = pkSeq.elements[8] as ASN1Integer;
 
     var rsaPrivateKey = RSAPrivateKey(
-        modulus.valueAsBigInteger,
-        privateExponent.valueAsBigInteger,
-        p.valueAsBigInteger,
-        q.valueAsBigInteger);
+        modulus.integer, privateExponent.integer, p.integer, q.integer);
 
     return rsaPrivateKey;
   }
@@ -446,15 +439,14 @@ class CryptoUtils {
   static RSAPublicKey rsaPublicKeyFromDERBytes(Uint8List bytes) {
     var asn1Parser = ASN1Parser(bytes);
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
-    var publicKeyBitString = topLevelSeq.elements[1];
+    var publicKeyBitString = topLevelSeq.elements[1] as ASN1BitString;
 
-    var publicKeyAsn = ASN1Parser(publicKeyBitString.contentBytes());
+    var publicKeyAsn = ASN1Parser(publicKeyBitString.stringValues);
     ASN1Sequence publicKeySeq = publicKeyAsn.nextObject();
     var modulus = publicKeySeq.elements[0] as ASN1Integer;
     var exponent = publicKeySeq.elements[1] as ASN1Integer;
 
-    var rsaPublicKey =
-        RSAPublicKey(modulus.valueAsBigInteger, exponent.valueAsBigInteger);
+    var rsaPublicKey = RSAPublicKey(modulus.integer, exponent.integer);
 
     return rsaPublicKey;
   }
@@ -481,8 +473,7 @@ class CryptoUtils {
     var modulus = publicKeySeq.elements[0] as ASN1Integer;
     var exponent = publicKeySeq.elements[1] as ASN1Integer;
 
-    var rsaPublicKey =
-        RSAPublicKey(modulus.valueAsBigInteger, exponent.valueAsBigInteger);
+    var rsaPublicKey = RSAPublicKey(modulus.integer, exponent.integer);
     return rsaPublicKey;
   }
 
@@ -504,12 +495,11 @@ class CryptoUtils {
   /// As descripted in the mentioned RFC, all optional values will always be set.
   ///
   static String encodeEcPrivateKeyToPem(ECPrivateKey ecPrivateKey) {
-    ASN1ObjectIdentifier.registerFrequentNames();
     var outer = ASN1Sequence();
 
     var version = ASN1Integer(BigInt.from(1));
     var privateKeyAsBytes = encodeBigInt(ecPrivateKey.d);
-    var privateKey = ASN1OctetString(privateKeyAsBytes);
+    var privateKey = ASN1OctetString(octets: privateKeyAsBytes);
     var choice = ASN1Sequence(tag: 0xA0);
 
     choice
@@ -517,15 +507,15 @@ class CryptoUtils {
 
     var publicKey = ASN1Sequence(tag: 0xA1);
 
-    var subjectPublicKey =
-        ASN1BitString(ecPrivateKey.parameters.G.getEncoded(false));
+    var subjectPublicKey = ASN1BitString(
+        stringValues: ecPrivateKey.parameters.G.getEncoded(false));
     publicKey.add(subjectPublicKey);
 
     outer.add(version);
     outer.add(privateKey);
     outer.add(choice);
     outer.add(publicKey);
-    var dataBase64 = base64.encode(outer.encodedBytes);
+    var dataBase64 = base64.encode(outer.encode());
     var chunks = StringUtils.chunk(dataBase64, 64);
 
     return '$BEGIN_EC_PRIVATE_KEY\n${chunks.join('\n')}\n$END_EC_PRIVATE_KEY';
@@ -544,17 +534,16 @@ class CryptoUtils {
   /// ```
   ///
   static String encodeEcPublicKeyToPem(ECPublicKey publicKey) {
-    ASN1ObjectIdentifier.registerFrequentNames();
     var outer = ASN1Sequence();
     var algorithm = ASN1Sequence();
     algorithm.add(ASN1ObjectIdentifier.fromName('ecPublicKey'));
     algorithm.add(ASN1ObjectIdentifier.fromName('prime256v1'));
     var encodedBytes = publicKey.Q.getEncoded(false);
-    var subjectPublicKey = ASN1BitString(encodedBytes);
+    var subjectPublicKey = ASN1BitString(stringValues: encodedBytes);
 
     outer.add(algorithm);
     outer.add(subjectPublicKey);
-    var dataBase64 = base64.encode(outer.encodedBytes);
+    var dataBase64 = base64.encode(outer.encode());
     var chunks = StringUtils.chunk(dataBase64, 64);
 
     return '$BEGIN_EC_PUBLIC_KEY\n${chunks.join('\n')}\n$END_EC_PUBLIC_KEY';
@@ -597,19 +586,19 @@ class CryptoUtils {
         topLevelSeq.elements.elementAt(1) as ASN1OctetString;
     var choice = topLevelSeq.elements.elementAt(2);
     var s = ASN1Sequence();
-    var parser = ASN1Parser(choice.contentBytes());
+    var parser = ASN1Parser(choice.valueBytes);
     while (parser.hasNext()) {
       s.add(parser.nextObject());
     }
     var curveNameOi = s.elements.elementAt(0) as ASN1ObjectIdentifier;
     var curveName;
-    ASN1ObjectIdentifier.DN.keys.forEach((element) {
-      if (ASN1ObjectIdentifier.DN[element] == curveNameOi.identifier) {
-        curveName = element;
-      }
-    });
+    var data = ObjectIdentifiers.getIdentifierByIdentifier(
+        curveNameOi.objectIdentifierAsString);
+    if (data != null) {
+      curveName = data['readableName'];
+    }
 
-    var x = privateKeyAsOctetString.contentBytes();
+    var x = privateKeyAsOctetString.valueBytes;
 
     return ECPrivateKey(decodeBigInt(x), ECDomainParameters(curveName));
   }
@@ -625,15 +614,15 @@ class CryptoUtils {
     var curveNameOi = algorithmIdentifierSequence.elements.elementAt(1)
         as ASN1ObjectIdentifier;
     var curveName;
-    ASN1ObjectIdentifier.DN.keys.forEach((element) {
-      if (ASN1ObjectIdentifier.DN[element] == curveNameOi.identifier) {
-        curveName = element;
-      }
-    });
+    var data = ObjectIdentifiers.getIdentifierByIdentifier(
+        curveNameOi.objectIdentifierAsString);
+    if (data != null) {
+      curveName = data['readableName'];
+    }
 
     var subjectPublicKey = topLevelSeq.elements[1];
     var compressed = false;
-    var pubBytes = subjectPublicKey.contentBytes();
+    var pubBytes = subjectPublicKey.valueBytes;
     // Looks good so far!
     var firstByte = pubBytes.elementAt(0);
     if (firstByte != 4) {
