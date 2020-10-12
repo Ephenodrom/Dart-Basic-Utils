@@ -365,7 +365,11 @@ class X509Utils {
         var seq = subseq as ASN1Sequence;
         var oi = seq.elements.elementAt(0) as ASN1ObjectIdentifier;
         if (oi.objectIdentifierAsString == '2.5.29.17') {
-          sans = _fetchSansFromExtension(seq.elements.elementAt(1));
+          if (seq.elements.length == 3) {
+            sans = _fetchSansFromExtension(seq.elements.elementAt(2));
+          } else {
+            sans = _fetchSansFromExtension(seq.elements.elementAt(1));
+          }
         }
       });
     }

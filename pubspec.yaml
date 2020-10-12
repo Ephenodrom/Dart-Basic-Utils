@@ -12,8 +12,7 @@ dependencies:
   http: ^0.12.0
   logging: ^0.11.3+2
   json_annotation: ">=2.0.0 <=3.1.0"
-  pointycastle: ^1.0.2
-  asn1lib: ^0.6.5
+  pointycastle: ^2.0.0
   convert: ^2.1.1
   crypto: ^2.1.5
 

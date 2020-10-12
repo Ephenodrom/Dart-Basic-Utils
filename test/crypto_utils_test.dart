@@ -247,7 +247,7 @@ bjBqILerN9h2zFj3Fi+DdT0=
     var privateKey = CryptoUtils.rsaPrivateKeyFromPemPkcs1(pem);
     expect(privateKey.p, generatedKey.p);
     expect(privateKey.q, generatedKey.q);
-    expect(privateKey.d, generatedKey.d);
+    expect(privateKey.privateExponent, generatedKey.privateExponent);
     expect(privateKey.n, generatedKey.n);
     expect(privateKey.modulus, generatedKey.modulus);
     expect(privateKey.exponent, generatedKey.exponent);
@@ -259,7 +259,7 @@ bjBqILerN9h2zFj3Fi+DdT0=
 
     var generatedKey = pair.publicKey as RSAPublicKey;
     var publicKey = CryptoUtils.rsaPublicKeyFromPemPkcs1(pem);
-    expect(publicKey.e, generatedKey.e);
+    expect(publicKey.publicExponent, generatedKey.publicExponent);
     expect(publicKey.exponent, generatedKey.exponent);
     expect(publicKey.modulus, generatedKey.modulus);
     expect(publicKey.n, generatedKey.n);

@@ -244,13 +244,13 @@ class CryptoUtils {
     var version = ASN1Integer(BigInt.from(0));
     var modulus = ASN1Integer(rsaPrivateKey.n);
     var publicExponent = ASN1Integer(BigInt.parse('65537'));
-    var privateExponent = ASN1Integer(rsaPrivateKey.d);
+    var privateExponent = ASN1Integer(rsaPrivateKey.privateExponent);
 
     var p = ASN1Integer(rsaPrivateKey.p);
     var q = ASN1Integer(rsaPrivateKey.q);
-    var dP = rsaPrivateKey.d % (rsaPrivateKey.p - BigInt.from(1));
+    var dP = rsaPrivateKey.privateExponent % (rsaPrivateKey.p - BigInt.from(1));
     var exp1 = ASN1Integer(dP);
-    var dQ = rsaPrivateKey.d % (rsaPrivateKey.q - BigInt.from(1));
+    var dQ = rsaPrivateKey.privateExponent % (rsaPrivateKey.q - BigInt.from(1));
     var exp2 = ASN1Integer(dQ);
     var iQ = rsaPrivateKey.q.modInverse(rsaPrivateKey.p);
     var co = ASN1Integer(iQ);
@@ -295,12 +295,12 @@ class CryptoUtils {
     var privateKeySeq = ASN1Sequence();
     var modulus = ASN1Integer(rsaPrivateKey.n);
     var publicExponent = ASN1Integer(BigInt.parse('65537'));
-    var privateExponent = ASN1Integer(rsaPrivateKey.d);
+    var privateExponent = ASN1Integer(rsaPrivateKey.privateExponent);
     var p = ASN1Integer(rsaPrivateKey.p);
     var q = ASN1Integer(rsaPrivateKey.q);
-    var dP = rsaPrivateKey.d % (rsaPrivateKey.p - BigInt.from(1));
+    var dP = rsaPrivateKey.privateExponent % (rsaPrivateKey.p - BigInt.from(1));
     var exp1 = ASN1Integer(dP);
-    var dQ = rsaPrivateKey.d % (rsaPrivateKey.q - BigInt.from(1));
+    var dQ = rsaPrivateKey.privateExponent % (rsaPrivateKey.q - BigInt.from(1));
     var exp2 = ASN1Integer(dQ);
     var iQ = rsaPrivateKey.q.modInverse(rsaPrivateKey.p);
     var co = ASN1Integer(iQ);

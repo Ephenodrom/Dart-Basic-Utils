@@ -34,7 +34,6 @@ ga7IcCj2gCeuTdS4Ibhx3hiew7cfuGa9XbVd5JJmV8kIoFlzLrZpKB4eVDKqaNWg
 -----END CERTIFICATE-----''';
 
   test('Test dump()', () {
-    var dump = Asn1Utils.dump(x509Pem);
-    print(dump);
+    Asn1Utils.dump(x509Pem);
   });
 }

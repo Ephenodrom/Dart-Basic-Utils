@@ -3,7 +3,7 @@ import 'package:pointycastle/asn1.dart';
 
 class Asn1Utils {
   ///
-  /// Creates an ASN1 dump for the given [pem]
+  /// Creates an ASN1 dump for the given [pem].
   ///
   static String dump(String pem) {
     var bytes = CryptoUtils.getBytesFromPEMString(pem);
