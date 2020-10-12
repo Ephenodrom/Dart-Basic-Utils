@@ -26,7 +26,9 @@ A dart package for many helper methods fitting different situations.
 
 ## Preamble
 
-This package is also part of the [EZ Flutter Framework](https://ez-flutter.de).
+As this package is written in pure [Dart](https://dart.dev), it can be used on all [platforms](https://dart.dev/platforms) on which dart is currently running. This includes the use of frameworks like [Flutter](https://flutter.dev), [Angular Dart](https://angulardart.dev) and many more. This package can also be used for command line tools or rest services compiled with [dart2native](https://dart.dev/tools/dart2native).
+
+**Note:** Feel free to contribute by creating pull requests or file an issue for bugs, questions and feature requests.
 
 ## Install
 
@@ -36,7 +38,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.6.2
+  basic_utils: ^2.6.3
 ```
 
 ## Import
@@ -174,6 +176,7 @@ String contrastColor(String hex);
 Map<String, int> basicColorsFromHex(String hex);
 double calculateRelativeLuminance(int red, int green, int blue,{int decimals = 2});
 List<String> swatchColor(String hex, {double percentage = 15, int amount = 5});
+String invertColor(String color);
 ```
 
 ### DateUtils

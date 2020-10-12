@@ -15,23 +15,23 @@ import 'StringUtils.dart';
 /// Helper class for cryptographic operations
 ///
 class CryptoUtils {
-  static final String BEGIN_PRIVATE_KEY = '-----BEGIN PRIVATE KEY-----';
-  static final String END_PRIVATE_KEY = '-----END PRIVATE KEY-----';
+  static const BEGIN_PRIVATE_KEY = '-----BEGIN PRIVATE KEY-----';
+  static const END_PRIVATE_KEY = '-----END PRIVATE KEY-----';
 
-  static final String BEGIN_PUBLIC_KEY = '-----BEGIN PUBLIC KEY-----';
-  static final String END_PUBLIC_KEY = '-----END PUBLIC KEY-----';
+  static const BEGIN_PUBLIC_KEY = '-----BEGIN PUBLIC KEY-----';
+  static const END_PUBLIC_KEY = '-----END PUBLIC KEY-----';
 
-  static final String BEGIN_EC_PRIVATE_KEY = '-----BEGIN EC PRIVATE KEY-----';
-  static final String END_EC_PRIVATE_KEY = '-----END EC PRIVATE KEY-----';
+  static const BEGIN_EC_PRIVATE_KEY = '-----BEGIN EC PRIVATE KEY-----';
+  static const END_EC_PRIVATE_KEY = '-----END EC PRIVATE KEY-----';
 
-  static final String BEGIN_EC_PUBLIC_KEY = '-----BEGIN EC PUBLIC KEY-----';
-  static final String END_EC_PUBLIC_KEY = '-----END EC PUBLIC KEY-----';
+  static const BEGIN_EC_PUBLIC_KEY = '-----BEGIN EC PUBLIC KEY-----';
+  static const END_EC_PUBLIC_KEY = '-----END EC PUBLIC KEY-----';
 
-  static final String BEGIN_RSA_PRIVATE_KEY = '-----BEGIN RSA PRIVATE KEY-----';
-  static final String END_RSA_PRIVATE_KEY = '-----END RSA PRIVATE KEY-----';
+  static const BEGIN_RSA_PRIVATE_KEY = '-----BEGIN RSA PRIVATE KEY-----';
+  static const END_RSA_PRIVATE_KEY = '-----END RSA PRIVATE KEY-----';
 
-  static final String BEGIN_RSA_PUBLIC_KEY = '-----BEGIN RSA PUBLIC KEY-----';
-  static final String END_RSA_PUBLIC_KEY = '-----END RSA PUBLIC KEY-----';
+  static const BEGIN_RSA_PUBLIC_KEY = '-----BEGIN RSA PUBLIC KEY-----';
+  static const END_RSA_PUBLIC_KEY = '-----END RSA PUBLIC KEY-----';
 
   ///
   /// Converts the [RSAPublicKey.modulus] from the given [publicKey] to a [Uint8List].

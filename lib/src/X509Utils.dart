@@ -15,22 +15,22 @@ import '../basic_utils.dart';
 /// Helper class for certificate operations.
 ///
 class X509Utils {
-  static final String BEGIN_PRIVATE_KEY = '-----BEGIN PRIVATE KEY-----';
-  static final String END_PRIVATE_KEY = '-----END PRIVATE KEY-----';
+  static const BEGIN_PRIVATE_KEY = '-----BEGIN PRIVATE KEY-----';
+  static const END_PRIVATE_KEY = '-----END PRIVATE KEY-----';
 
-  static final String BEGIN_PUBLIC_KEY = '-----BEGIN PUBLIC KEY-----';
-  static final String END_PUBLIC_KEY = '-----END PUBLIC KEY-----';
+  static const BEGIN_PUBLIC_KEY = '-----BEGIN PUBLIC KEY-----';
+  static const END_PUBLIC_KEY = '-----END PUBLIC KEY-----';
 
-  static final String BEGIN_CSR = '-----BEGIN CERTIFICATE REQUEST-----';
-  static final String END_CSR = '-----END CERTIFICATE REQUEST-----';
+  static const BEGIN_CSR = '-----BEGIN CERTIFICATE REQUEST-----';
+  static const END_CSR = '-----END CERTIFICATE REQUEST-----';
 
-  static final String BEGIN_EC_PRIVATE_KEY = '-----BEGIN EC PRIVATE KEY-----';
-  static final String END_EC_PRIVATE_KEY = '-----END EC PRIVATE KEY-----';
+  static const BEGIN_EC_PRIVATE_KEY = '-----BEGIN EC PRIVATE KEY-----';
+  static const END_EC_PRIVATE_KEY = '-----END EC PRIVATE KEY-----';
 
-  static final String BEGIN_EC_PUBLIC_KEY = '-----BEGIN EC PUBLIC KEY-----';
-  static final String END_EC_PUBLIC_KEY = '-----END EC PUBLIC KEY-----';
+  static const BEGIN_EC_PUBLIC_KEY = '-----BEGIN EC PUBLIC KEY-----';
+  static const END_EC_PUBLIC_KEY = '-----END EC PUBLIC KEY-----';
 
-  static final Map<String, String> DN = {
+  static const DN = {
     'cn': '2.5.4.3',
     'sn': '2.5.4.4',
     'c': '2.5.4.6',
@@ -324,7 +324,7 @@ class X509Utils {
     var next;
     try {
       next = asn1PubKeyParser.nextObject();
-    } catch (RangeError) {
+    } catch (e) {
       // continue
     }
     var pubKeyLength = 0;
