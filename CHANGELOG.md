@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.7.0-rc.1] - 2020-10-14
+
+* Change ASN1 lib from asn1lib to pointycastle (#31)
+* Improve code (PR #23 #24 #27 #30)
+* Fix crash in X509Utils if x509 certificate does not have a subject field (#28)
+
 ## [2.6.3] - 2020-09-30
 
 * Update ColorUtils, add invertColor method. (PR #22)
