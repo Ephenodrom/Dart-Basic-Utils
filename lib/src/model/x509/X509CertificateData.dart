@@ -40,7 +40,11 @@ class X509CertificateData {
   /// The public key data from the certificate
   X509CertificatePublicKeyData publicKeyData;
 
+  /// The subject alternative names
   List<String> subjectAlternativNames;
+
+  /// The plain certificate pem string, that was used to decode.
+  String plain;
 
   X509CertificateData(
       {this.version,
@@ -53,7 +57,8 @@ class X509CertificateData {
       this.sha256Thumbprint,
       this.md5Thumbprint,
       this.publicKeyData,
-      this.subjectAlternativNames});
+      this.subjectAlternativNames,
+      this.plain});
 
   /*
    * Json to X509CertificateData object

@@ -33,6 +33,7 @@ X509CertificateData _$X509CertificateDataFromJson(Map<String, dynamic> json) {
     subjectAlternativNames: (json['subjectAlternativNames'] as List)
         ?.map((e) => e as String)
         ?.toList(),
+    plain: json['plain'] as String,
   );
 }
 
@@ -56,5 +57,6 @@ Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {
   writeNotNull('md5Thumbprint', instance.md5Thumbprint);
   writeNotNull('publicKeyData', instance.publicKeyData?.toJson());
   writeNotNull('subjectAlternativNames', instance.subjectAlternativNames);
+  writeNotNull('plain', instance.plain);
   return val;
 }

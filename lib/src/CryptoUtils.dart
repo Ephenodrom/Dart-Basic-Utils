@@ -623,6 +623,9 @@ class CryptoUtils {
     var subjectPublicKey = topLevelSeq.elements[1];
     var compressed = false;
     var pubBytes = subjectPublicKey.valueBytes;
+    if (pubBytes.elementAt(0) == 0) {
+      pubBytes = pubBytes.sublist(1);
+    }
     // Looks good so far!
     var firstByte = pubBytes.elementAt(0);
     if (firstByte != 4) {
@@ -631,13 +634,11 @@ class CryptoUtils {
     var x = pubBytes.sublist(1, (pubBytes.length / 2).round());
     var y = pubBytes.sublist(1 + x.length, pubBytes.length);
     var params = ECDomainParameters(curveName);
-
+    var bigX = decodeBigInt(x);
+    var bigY = decodeBigInt(y);
     return ECPublicKey(
-        ecc_fp.ECPoint(
-            params.curve,
-            params.curve.fromBigInteger(decodeBigInt(x)),
-            params.curve.fromBigInteger(decodeBigInt(y)),
-            compressed),
+        ecc_fp.ECPoint(params.curve, params.curve.fromBigInteger(bigX),
+            params.curve.fromBigInteger(bigY), compressed),
         params);
   }
 

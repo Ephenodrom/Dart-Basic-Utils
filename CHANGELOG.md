@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.7.0-rc.3] - 2020-12-07
+
+* Added new field "plain" to the X509CertificateData model
+
+## [2.7.0-rc.2] - 2020-12-02
+
+* Improve parsing of x509 certificates if no extensions are available
+* Improved parsing of ECC Public key pem
+
 ## [2.7.0-rc.1] - 2020-10-14
 
 * Change ASN1 lib from asn1lib to pointycastle (#31)

@@ -357,21 +357,23 @@ class X509Utils {
     List<String> sans;
     if (version > 1) {
       // Extensions
-      var extensionObject = dataSequence.elements.elementAt(element + 7);
-      var extParser = ASN1Parser(extensionObject.valueBytes);
-      var extSequence = extParser.nextObject() as ASN1Sequence;
+      if (dataSequence.elements.length == 8) {
+        var extensionObject = dataSequence.elements.elementAt(element + 7);
+        var extParser = ASN1Parser(extensionObject.valueBytes);
+        var extSequence = extParser.nextObject() as ASN1Sequence;
 
-      extSequence.elements.forEach((ASN1Object subseq) {
-        var seq = subseq as ASN1Sequence;
-        var oi = seq.elements.elementAt(0) as ASN1ObjectIdentifier;
-        if (oi.objectIdentifierAsString == '2.5.29.17') {
-          if (seq.elements.length == 3) {
-            sans = _fetchSansFromExtension(seq.elements.elementAt(2));
-          } else {
-            sans = _fetchSansFromExtension(seq.elements.elementAt(1));
+        extSequence.elements.forEach((ASN1Object subseq) {
+          var seq = subseq as ASN1Sequence;
+          var oi = seq.elements.elementAt(0) as ASN1ObjectIdentifier;
+          if (oi.objectIdentifierAsString == '2.5.29.17') {
+            if (seq.elements.length == 3) {
+              sans = _fetchSansFromExtension(seq.elements.elementAt(2));
+            } else {
+              sans = _fetchSansFromExtension(seq.elements.elementAt(1));
+            }
           }
-        }
-      });
+        });
+      }
     }
 
     return X509CertificateData(
@@ -385,7 +387,8 @@ class X509Utils {
         sha256Thumbprint: sha256String,
         md5Thumbprint: md5String,
         publicKeyData: publicKeyData,
-        subjectAlternativNames: sans);
+        subjectAlternativNames: sans,
+        plain: pem);
   }
 
   ///
