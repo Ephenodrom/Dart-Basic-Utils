@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.7.0-rc.4] - 2020-12-10
+
+* Updated dependencies (#33)
+
 ## [2.7.0-rc.3] - 2020-12-07
 
 * Added new field "plain" to the X509CertificateData model
