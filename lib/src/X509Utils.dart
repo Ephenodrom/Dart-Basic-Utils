@@ -405,7 +405,7 @@ class X509Utils {
     }
 
     var key = RSAPrivateKey(asnIntegers[1].integer, asnIntegers[2].integer,
-        asnIntegers[3].integer, asnIntegers[4].integer);
+        asnIntegers[4].integer, asnIntegers[5].integer);
 
     var bitLength = key.n.bitLength;
     if (bitLength != 1024 && bitLength != 2048 && bitLength != 4096) {

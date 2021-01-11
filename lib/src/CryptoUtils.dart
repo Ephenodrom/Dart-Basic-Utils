@@ -539,6 +539,7 @@ class CryptoUtils {
     algorithm.add(ASN1ObjectIdentifier.fromName('ecPublicKey'));
     algorithm.add(ASN1ObjectIdentifier.fromName('prime256v1'));
     var encodedBytes = publicKey.Q.getEncoded(false);
+    
     var subjectPublicKey = ASN1BitString(stringValues: encodedBytes);
 
     outer.add(algorithm);
@@ -620,12 +621,13 @@ class CryptoUtils {
       curveName = data['readableName'];
     }
 
-    var subjectPublicKey = topLevelSeq.elements[1];
+    var subjectPublicKey = topLevelSeq.elements[1] as ASN1BitString;
     var compressed = false;
     var pubBytes = subjectPublicKey.valueBytes;
     if (pubBytes.elementAt(0) == 0) {
       pubBytes = pubBytes.sublist(1);
     }
+
     // Looks good so far!
     var firstByte = pubBytes.elementAt(0);
     if (firstByte != 4) {
@@ -634,12 +636,13 @@ class CryptoUtils {
     var x = pubBytes.sublist(1, (pubBytes.length / 2).round());
     var y = pubBytes.sublist(1 + x.length, pubBytes.length);
     var params = ECDomainParameters(curveName);
-    var bigX = decodeBigInt(x);
-    var bigY = decodeBigInt(y);
-    return ECPublicKey(
+    var bigX = decodeBigIntWithSign(1,x);
+    var bigY = decodeBigIntWithSign(1,y);
+    var pubKey = ECPublicKey(
         ecc_fp.ECPoint(params.curve, params.curve.fromBigInteger(bigX),
             params.curve.fromBigInteger(bigY), compressed),
         params);
+        return pubKey;
   }
 
   ///

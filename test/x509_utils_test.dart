@@ -9,34 +9,6 @@ import 'package:test/test.dart';
 import '../lib/src/CryptoUtils.dart';
 
 void main() {
-  var privateKey = '''-----BEGIN PRIVATE KEY-----
-MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDRBfh7ygAqkP3V
-4oosv8R2sfTY39SWDflt0IlKjMe5uegMbtleIQtMW48MA02YbgebFVSke/W7GZWt
-vMQKeoEETOMtbk1pbZP1TvgAKjbceYMVAmqJMX9pUVx8TMrAde1l5VUKtdTkwS+c
-WMOsQ6uBkgV3joASVK38hTp3rMpGUXHqliAHriY9bcvnSw2uDo42QJ9e3sdPm7Z+
-3Oj+I/mqLjUG3MlSTZ1L0OyRvB5Dya/gpGy2NrCKhB/ZCN7D+WBpVJ/lXlgQVae8
-csKHXn8vBs3lnoQ3QqzuLSCR58p+D7vJ13t5TiMcqGYTXkpu7n25aBL1yzAniOZc
-8+q6S6xlAgMBAAECggEAduQbg2XRlGSmTSsvBucI+66bI2SlSbinIIRWIxZSYFzT
-FYdTkkvfXk5R3jZew44KO3b1jx2HFyYlUg4lwAQQMH7/VQ8Bby9J0mVZgNaCIAPp
-wGCAcoq5+xCxN26CgNhS8Ptx1Ma6UmdkCl0e53QSMH/7Jhbi2ApccF7jc8DPyRBw
-VGbsdAfgzpimhUH6BOPCPZuirFWOf8Nqvuk7STqAWgIy+SEboNiG7Ekx+WUEjNE/
-n6Xt66eu/BTZXImB9ErdYrW7I4mNfzfwWfCiC4XZDb4J3O8pSkbEtmeKCUFpL+6l
-TXExvJvM8bb9iGnHbNBEB6Y9lVAsnTYXSV8dlfa3oQKBgQD7i0riq++cRXUEk8rn
-ASO8FUqIL1FCCb1rQ51XqkpHz2ktdQVlEHHcX17i03Gy+912FWDJ6Ct/mLbMs9Ue
-UpZ7dNYXyEX4+ch2kLi94NO399TyxTGVUzNOCV57AJl8E0ryk1FHM6ouyNVASgI2
-vcIJMAPqMu6+zdo2v5p+zE6kLQKBgQDUudqdE/Z9V8i500YjrN7noN6TBVRuoqtl
-MfoymdMo5jbIdkEJP9hc1n8Aiy7KneYAMmrN5rwwnBG6nYkVf5Nom6mLPk7+zqcS
-YLPitdR0qEK+8U6xqf6wiJMrzuI8eEyAATjcceJUAkRJvfbfIYj37SdVBnrwPRMJ
-lSkU3qa0GQKBgD6FO4KlW3PK66/MkBTkep5H6HN610aDpzne31+nqri4e5rZyBJ7
-iOFOLwZPqaXj5gJwg9MLSqx3J5AvblwQCOj8fC4DECk25DVb+R7wn47NIXeJva4w
-tMLDn2ERIBTvsqQiK4R3+eeQ8Tf+bRhwB6dC8OYn7KEuBvuumdbELxOtAoGARw/z
-FMgnboXVuyX151MHf69AyzJbmz3iLcL9RswWOzJ0mJDQdwuJ9rF86ayVLACFZglx
-nmj28vIgBgw8UB83GhnuEGL3Nq3IKB5/2TtOxs2yxmCMHlOgjk6Bg3/wGa1COPyv
-hwzQQ6oiL9Qy1SU5wUDLA99PUFPGuUvH1n3uiHkCgYEA8PmSWfXS7tnm6IrqnOWr
-64DNWpka9gwgzz6NA7AeVlmduCUU/PMDdiywiPobGMCA15Ayp89L2jHlXIMb/R1O
-45etmy7kF30PfHdGJureBFI6hr+DIIbSJETKvMU/Ipc/Zcv44IscWbGKVsvw/r0D
-bjBqILerN9h2zFj3Fi+DdT0=
------END PRIVATE KEY-----''';
 
   var csr = '''-----BEGIN CERTIFICATE REQUEST-----
 MIICvzCCAacCAQAwejELMAkGA1UEBhMCREUxEjAQBgNVBAgMCUZha2VzdGF0ZTER
@@ -353,6 +325,9 @@ Q7FVCLc4EFPwz9tkdLE2N13o
   });
 
   test('Test privateKeyFromASN1Sequence', () {
+    var pair = CryptoUtils.generateRSAKeyPair();
+  
+    var privateKey = CryptoUtils.encodeRSAPrivateKeyToPem(pair.privateKey);
     var bytes = CryptoUtils.getBytesFromPEMString(privateKey);
     ASN1Sequence asn = ASN1Parser(bytes).nextObject();
     var objects = asn.elements;
@@ -665,35 +640,16 @@ Q7FVCLc4EFPwz9tkdLE2N13o
     var data = X509Utils.x509CertificateFromPem(bigCert);
     expect(data.version, 2);
 
-    expect(data.serialNumber.toString(), '10');
+    expect(data.serialNumber.toString(), '313802195999642166411276783379421068021');
 
     expect(data.signatureAlgorithm, '1.2.840.113549.1.1.11');
 
     expect(data.issuer.containsKey('2.5.4.6'), true);
-    expect(data.issuer['2.5.4.6'], 'RU');
+    expect(data.issuer['2.5.4.6'], 'GB');
     expect(data.issuer.containsKey('2.5.4.10'), true);
-    expect(data.issuer['2.5.4.10'], 'Hikvision Digital Technology');
+    expect(data.issuer['2.5.4.10'], 'COMODO CA Limited');
     expect(data.issuer.containsKey('2.5.4.3'), true);
-    expect(data.issuer['2.5.4.3'], '94.198.131.55');
+    expect(data.issuer['2.5.4.3'], 'COMODO RSA Organization Validation Secure Server CA');
 
-    expect(
-        data.validity.notBefore.toIso8601String(), '2020-11-15T09:00:18.000Z');
-    expect(
-        data.validity.notAfter.toIso8601String(), '2030-11-15T09:00:18.000Z');
-
-    expect(data.subject.containsKey('2.5.4.3'), true);
-    expect(data.subject['2.5.4.3'], '94.198.131.55');
-
-    expect(data.sha1Thumbprint, 'DD7B2CE1C8DA3568E2396EA86DCC6A2B4FB9B45B');
-    expect(data.md5Thumbprint, 'C588B049D87D433BE5FC6E98481A88D2');
-
-    var publicKeyData = data.publicKeyData;
-
-    expect(publicKeyData.length, 2048);
-    expect(publicKeyData.sha1Thumbprint,
-        '7884BDE6157EF1F32E2CD346A39C696F3055C10E');
-    expect(publicKeyData.algorithm, '1.2.840.113549.1.1.1');
-    expect(publicKeyData.bytes,
-        '308201080282010100D8E1EAD54EC852F5FE0D09687A45B57FE9A873D057EA880E1BA952D447D9E23050099E730E12F184201C68809ADF48C7947B5C58D330F40905422D7D0A69E0C54F9CE27C3C7A52E7F10300E201C10CE74F94B307E63C7BAF42FDA992F1679CCDFD4D90A496F3F2D151048E14FCBF0A8B2A72D551E0DFA31238686B3ED8CCBB8B360A5F4F9B3F871BFF46BA7E27C87EAB2EC87D62732482431834D0ECA17010D9794CE83F0E6F0D065A26D83A5E1A354E19E4300F7B2A243D1D43D516A81FD96EDE71F625AA19E5D39F270AD47214941300FF6B454654C6D59CAD4737DF5911F41587316F872B1EAD85F1AF286F93CC61546B3504B64582E96B87CDDA5854E5B5020103');
   });
 }

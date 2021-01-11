@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.7.0-rc.5] - 2020-01-11
+
+* Updated dependencies
+* Fix unit tests
+* Add unit tests
+
 ## [2.7.0-rc.4] - 2020-12-10
 
 * Updated dependencies (#33)
