@@ -9,11 +9,10 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
-  http: ^0.12.0
-  logging: ^0.11.3+2
+  http: ^0.12.2
+  logging: ^0.11.4
   json_annotation: ^3.1.1
-  pointycastle: 
-    git: https://github.com/bcgit/pc-dart
+  pointycastle: ^2.0.1
   convert: ^2.1.1
   crypto: ^2.1.5
 

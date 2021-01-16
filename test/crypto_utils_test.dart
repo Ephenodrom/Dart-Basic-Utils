@@ -188,10 +188,8 @@ bjBqILerN9h2zFj3Fi+DdT0=
   test('Test ecPublicKeyFromPem', () {
     var pair = CryptoUtils.generateEcKeyPair();
     var pubKey = pair.publicKey as ECPublicKey;
-    print(pubKey.Q);
     var pubPem = CryptoUtils.encodeEcPublicKeyToPem(pubKey);
     var newPubKey = CryptoUtils.ecPublicKeyFromPem(pubPem);
-    print(newPubKey.Q);
     expect(newPubKey.Q, pubKey.Q);
     expect(newPubKey.Q.x.toBigInteger(), pubKey.Q.x.toBigInteger());
     expect(newPubKey.Q.y.toBigInteger(), pubKey.Q.y.toBigInteger());
