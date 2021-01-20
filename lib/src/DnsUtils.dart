@@ -91,4 +91,54 @@ class DnsUtils {
   ///
   static final _intToRRecordType =
       _rRecordTypeToInt.map((k, v) => MapEntry(v, k));
+
+  ///
+  /// Reverse lookup for the given [ip] to determine a hostname.
+  ///
+  /// Thise reserses the given [ip], adds ".in-addr.arpa" / ".ip6.arpa" and
+  /// tries to fetch a PTR record for the generated name.
+  ///
+  /// Will return null, if no IP address is given or no PTR is found.
+  ///
+  static Future<List<RRecord>> reverseDns(String ip,
+      {DnsApiProvider provider = DnsApiProvider.GOOGLE}) async {
+    var queryParameters = <String, dynamic>{};
+
+    var reverse = getReverseAddr(ip);
+    if (reverse == null) {
+      return null;
+    }
+    queryParameters.putIfAbsent('name', () => reverse);
+    queryParameters.putIfAbsent(
+        'type', () => _getTypeFromType(RRecordType.PTR));
+    //queryParameters.putIfAbsent('dnssec', () => dnssec.toString());
+
+    assert(_dnsApiProviderUrl.length == DnsApiProvider.values.length);
+    var _baseUrl = _dnsApiProviderUrl[provider];
+
+    var headers = {'Accept': 'application/dns-json'};
+
+    var body = await HttpUtils.getForJson(_baseUrl,
+        queryParameters: queryParameters, headers: headers);
+    var response = ResolveResponse.fromJson(body);
+    return response.answer;
+  }
+
+  ///
+  /// Reverses the given [ip] address. Will return null if the given [ip] is not
+  /// an IP address.
+  ///
+  /// Example :
+  /// 172.217.22.14 => 14.22.217.172.in-addr.arpa
+  /// 2a00:1450:4001:81a::200e => e.0.0.2.a.1.8.1.0.0.4.0.5.4.1.0.0.a.2.ip6.arpa
+  ///
+  static String getReverseAddr(String ip) {
+    if (ip.contains('.')) {
+      return ip.split('.').reversed.join('.') + '.in-addr.arpa';
+    } else if (ip.contains(':')) {
+      return ip.split(':').join().split('').reversed.join('.') + '.ip6.arpa';
+    } else {
+      return null;
+    }
+  }
 }

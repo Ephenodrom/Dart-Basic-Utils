@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.7.0-rc.6] - 2020-01-20
+
+* Improved DNS Utils added *reverseDns()* and *getReverseAddr()* methods
+
 ## [2.7.0-rc.5] - 2020-01-16
 
 * Updated dependencies
