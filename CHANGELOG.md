@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.7.0] - 2020-01-29
+
+* Improved DomainUtils added *toIDN()* and *fromIDN()* methods
+
 ## [2.7.0-rc.6] - 2020-01-20
 
 * Improved DNS Utils added *reverseDns()* and *getReverseAddr()* methods

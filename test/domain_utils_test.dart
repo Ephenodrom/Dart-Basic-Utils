@@ -176,4 +176,20 @@ void main() {
     expect(splitted.elementAt(2), 'sub1.domain.de.com');
     expect(splitted.elementAt(3), 'domain.de.com');
   });
+
+  test('Test toIDN', () {
+    expect(DomainUtils.toIDN('24jönköping.se'), 'xn--24jnkping-27ac.se');
+    expect(DomainUtils.toIDN('포르쉐.asia'), 'xn--2w2b25nmlp.asia');
+    expect(DomainUtils.toIDN('едоша33.рф'), 'xn--33-6kcpe9cwd.xn--p1ai');
+    expect(DomainUtils.toIDN('321österreich.de'), 'xn--321sterreich-6ib.de');
+    expect(DomainUtils.toIDN('321österreich'), 'xn--321sterreich-6ib');
+  });
+
+  test('Test fromIDN', () {
+    expect(DomainUtils.fromIDN('xn--24jnkping-27ac.se'), '24jönköping.se');
+    expect(DomainUtils.fromIDN('xn--2w2b25nmlp.asia'), '포르쉐.asia');
+    expect(DomainUtils.fromIDN('xn--33-6kcpe9cwd.xn--p1ai'), 'едоша33.рф');
+    expect(DomainUtils.fromIDN('xn--321sterreich-6ib.de'), '321österreich.de');
+    expect(DomainUtils.fromIDN('xn--321sterreich-6ib'), '321österreich');
+  });
 }

@@ -1,4 +1,5 @@
 import 'package:basic_utils/basic_utils.dart';
+import 'package:basic_utils/src/library/IDNAConverter.dart';
 import 'package:basic_utils/src/model/CountryCodeList.dart';
 import 'package:basic_utils/src/model/Domain.dart';
 import 'package:basic_utils/src/model/GtldList.dart';
@@ -281,5 +282,27 @@ class DomainUtils {
       domains.add(domain);
     }
     return domains;
+  }
+
+  ///
+  /// Converts the given [domain] to IDN.
+  ///
+  /// Example : domän.com => xn--domn-noa.com
+  ///
+  /// This method uses an IDNA converter arcoding to <https://tools.ietf.org/html/rfc3490>
+  ///
+  static String toIDN(String domain) {
+    return IDNAConverter.urlEncode(domain);
+  }
+
+  ///
+  /// Converts the given [domain] from IDN to UTF8.
+  ///
+  /// Example : xn--domn-noa.com =>  domän.com
+  ///
+  /// This method uses an IDNA converter arcoding to <https://tools.ietf.org/html/rfc3490>
+  ///
+  static String fromIDN(String domain) {
+    return IDNAConverter.urlDecode(domain);
   }
 }

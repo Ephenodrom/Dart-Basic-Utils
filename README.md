@@ -38,7 +38,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.7.0-rc.5
+  basic_utils: ^2.7.0
 ```
 
 ## Import
@@ -95,6 +95,8 @@ List<String> splitDomainName(String domainName);
 Domain getDomainFromUrl(String url);
 Domain parseDomain(String domainName);
 List<String> splitSubdomainInDomains(String name);
+String toIDN(String domain);
+String fromIDN(String domain)
 ```
 
 ### EmailUtils
