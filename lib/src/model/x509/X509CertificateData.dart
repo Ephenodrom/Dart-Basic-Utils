@@ -11,54 +11,54 @@ part 'X509CertificateData.g.dart';
 @JsonSerializable(includeIfNull: false, explicitToJson: true)
 class X509CertificateData {
   /// The version of the certificate
-  int? version;
+  int version;
 
   /// The serialNumber of the certificate
-  BigInt? serialNumber;
+  BigInt serialNumber;
 
   /// The signatureAlgorithm of the certificate
-  String? signatureAlgorithm;
+  String signatureAlgorithm;
 
   /// The issuer data of the certificate
-  Map<String, String?>? issuer;
+  Map<String, String?> issuer;
 
   /// The validity of the certificate
-  X509CertificateValidity? validity;
+  X509CertificateValidity validity;
 
   /// The subject data of the certificate
-  Map<String, String?>? subject;
+  Map<String, String?> subject;
 
   /// The sha1 thumbprint for the certificate
-  String? sha1Thumbprint;
+  String sha1Thumbprint;
 
   /// The sha256 thumbprint for the certificate
-  String? sha256Thumbprint;
+  String sha256Thumbprint;
 
   /// The md5 thumbprint for the certificate
-  String? md5Thumbprint;
+  String md5Thumbprint;
 
   /// The public key data from the certificate
-  X509CertificatePublicKeyData? publicKeyData;
+  X509CertificatePublicKeyData publicKeyData;
 
   /// The subject alternative names
   List<String>? subjectAlternativNames;
 
   /// The plain certificate pem string, that was used to decode.
-  String? plain;
+  String plain;
 
   X509CertificateData(
-      {this.version,
-      this.serialNumber,
-      this.signatureAlgorithm,
-      this.issuer,
-      this.validity,
-      this.subject,
-      this.sha1Thumbprint,
-      this.sha256Thumbprint,
-      this.md5Thumbprint,
-      this.publicKeyData,
-      this.subjectAlternativNames,
-      this.plain});
+      {required this.version,
+      required this.serialNumber,
+      required this.signatureAlgorithm,
+      required this.issuer,
+      required this.validity,
+      required this.subject,
+      required this.sha1Thumbprint,
+      required this.sha256Thumbprint,
+      required this.md5Thumbprint,
+      required this.publicKeyData,
+      required this.subjectAlternativNames,
+      required this.plain});
 
   /*
    * Json to X509CertificateData object

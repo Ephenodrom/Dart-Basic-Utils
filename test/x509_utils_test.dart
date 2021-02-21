@@ -320,7 +320,7 @@ Q7FVCLc4EFPwz9tkdLE2N13o
       'S': 'FakeState',
       'C': 'DE',
     };
-    ASN1Sequence object = X509Utils.encodeDN(dn) as ASN1Sequence;
+    var object = X509Utils.encodeDN(dn) as ASN1Sequence;
     expect(object.elements!.length, 5);
   });
 
@@ -329,9 +329,9 @@ Q7FVCLc4EFPwz9tkdLE2N13o
   
     var privateKey = CryptoUtils.encodeRSAPrivateKeyToPem(pair.privateKey as RSAPrivateKey);
     var bytes = CryptoUtils.getBytesFromPEMString(privateKey);
-    ASN1Sequence asn = ASN1Parser(bytes).nextObject() as ASN1Sequence;
+    var asn = ASN1Parser(bytes).nextObject() as ASN1Sequence;
     var objects = asn.elements!;
-    ASN1OctetString string = objects[2] as ASN1OctetString;
+    var string = objects[2] as ASN1OctetString;
     var object = X509Utils.privateKeyFromASN1Sequence(
         ASN1Parser(string.valueBytes).nextObject() as ASN1Sequence);
     expect(object.n!.bitLength, 2048);
@@ -405,25 +405,25 @@ Q7FVCLc4EFPwz9tkdLE2N13o
 
     expect(data.signatureAlgorithm, '1.2.840.113549.1.1.11');
 
-    expect(data.issuer!.containsKey('2.5.4.6'), true);
-    expect(data.issuer!['2.5.4.6'], 'US');
-    expect(data.issuer!.containsKey('2.5.4.10'), true);
-    expect(data.issuer!['2.5.4.10'], 'OEM Test');
-    expect(data.issuer!.containsKey('2.5.4.3'), true);
-    expect(data.issuer!['2.5.4.3'], 'Full OEM Test RSA Sub');
+    expect(data.issuer.containsKey('2.5.4.6'), true);
+    expect(data.issuer['2.5.4.6'], 'US');
+    expect(data.issuer.containsKey('2.5.4.10'), true);
+    expect(data.issuer['2.5.4.10'], 'OEM Test');
+    expect(data.issuer.containsKey('2.5.4.3'), true);
+    expect(data.issuer['2.5.4.3'], 'Full OEM Test RSA Sub');
 
     expect(
-        data.validity!.notBefore!.toIso8601String(), '2019-03-11T00:00:00.000Z');
+        data.validity.notBefore.toIso8601String(), '2019-03-11T00:00:00.000Z');
     expect(
-        data.validity!.notAfter!.toIso8601String(), '2020-03-10T12:00:00.000Z');
+        data.validity.notAfter.toIso8601String(), '2020-03-10T12:00:00.000Z');
 
-    expect(data.subject!.containsKey('2.5.4.3'), true);
-    expect(data.subject!['2.5.4.3'], 'junkdragons.de');
+    expect(data.subject.containsKey('2.5.4.3'), true);
+    expect(data.subject['2.5.4.3'], 'junkdragons.de');
 
     expect(data.sha1Thumbprint, '1F6254CEDA7E9E9AEBF8B687BDFB5CC03AD1B3E7');
     expect(data.md5Thumbprint, '4CBED02D6CF2F161540A3177A55F94F6');
 
-    var publicKeyData = data.publicKeyData!;
+    var publicKeyData = data.publicKeyData;
 
     expect(publicKeyData.length, 2048);
     expect(publicKeyData.sha1Thumbprint,
@@ -462,27 +462,27 @@ Q7FVCLc4EFPwz9tkdLE2N13o
 
     expect(data.signatureAlgorithm, '1.2.840.113549.1.1.5');
 
-    expect(data.issuer!.containsKey('2.5.4.6'), true);
-    expect(data.issuer!['2.5.4.6'], 'US');
-    expect(data.issuer!.containsKey('2.5.4.10'), true);
-    expect(data.issuer!['2.5.4.10'], 'VeriSign, Inc.');
-    expect(data.issuer!.containsKey('2.5.4.3'), true);
-    expect(data.issuer!['2.5.4.3'],
+    expect(data.issuer.containsKey('2.5.4.6'), true);
+    expect(data.issuer['2.5.4.6'], 'US');
+    expect(data.issuer.containsKey('2.5.4.10'), true);
+    expect(data.issuer['2.5.4.10'], 'VeriSign, Inc.');
+    expect(data.issuer.containsKey('2.5.4.3'), true);
+    expect(data.issuer['2.5.4.3'],
         'VeriSign Class 3 Public Primary Certification Authority - G3');
 
     expect(
-        data.validity!.notBefore!.toIso8601String(), '1999-10-01T00:00:00.000Z');
+        data.validity.notBefore.toIso8601String(), '1999-10-01T00:00:00.000Z');
     expect(
-        data.validity!.notAfter!.toIso8601String(), '2036-07-16T23:59:59.000Z');
+        data.validity.notAfter.toIso8601String(), '2036-07-16T23:59:59.000Z');
 
-    expect(data.subject!.containsKey('2.5.4.3'), true);
-    expect(data.subject!['2.5.4.3'],
+    expect(data.subject.containsKey('2.5.4.3'), true);
+    expect(data.subject['2.5.4.3'],
         'VeriSign Class 3 Public Primary Certification Authority - G3');
 
     expect(data.sha1Thumbprint, '132D0D45534B6997CDB2D5C339E25576609B5CC6');
     expect(data.md5Thumbprint, 'CD68B6A7C7C4CE75E01D4F5744619209');
 
-    var publicKeyData = data.publicKeyData!;
+    var publicKeyData = data.publicKeyData;
 
     expect(publicKeyData.length, 2048);
     expect(publicKeyData.sha1Thumbprint,
@@ -501,25 +501,25 @@ Q7FVCLc4EFPwz9tkdLE2N13o
 
     expect(data.signatureAlgorithm, '1.2.840.113549.1.1.5');
 
-    expect(data.issuer!.containsKey('2.5.4.6'), true);
-    expect(data.issuer!['2.5.4.6'], 'EE');
-    expect(data.issuer!.containsKey('2.5.4.10'), true);
-    expect(data.issuer!['2.5.4.10'], 'AS Sertifitseerimiskeskus');
-    expect(data.issuer!.containsKey('2.5.4.3'), true);
-    expect(data.issuer!['2.5.4.3'], 'EE Certification Centre Root CA');
+    expect(data.issuer.containsKey('2.5.4.6'), true);
+    expect(data.issuer['2.5.4.6'], 'EE');
+    expect(data.issuer.containsKey('2.5.4.10'), true);
+    expect(data.issuer['2.5.4.10'], 'AS Sertifitseerimiskeskus');
+    expect(data.issuer.containsKey('2.5.4.3'), true);
+    expect(data.issuer['2.5.4.3'], 'EE Certification Centre Root CA');
 
     expect(
-        data.validity!.notBefore!.toIso8601String(), '2010-10-30T10:10:30.000Z');
+        data.validity.notBefore.toIso8601String(), '2010-10-30T10:10:30.000Z');
     expect(
-        data.validity!.notAfter!.toIso8601String(), '2030-12-17T23:59:59.000Z');
+        data.validity.notAfter.toIso8601String(), '2030-12-17T23:59:59.000Z');
 
-    expect(data.subject!.containsKey('2.5.4.3'), true);
-    expect(data.subject!['2.5.4.3'], 'EE Certification Centre Root CA');
+    expect(data.subject.containsKey('2.5.4.3'), true);
+    expect(data.subject['2.5.4.3'], 'EE Certification Centre Root CA');
 
     expect(data.sha1Thumbprint, 'C9A8B9E755805E58E35377A725EBAFC37B27CCD7');
     expect(data.md5Thumbprint, '435E88D47D1A4A7EFD842E52EB01D46F');
 
-    var publicKeyData = data.publicKeyData!;
+    var publicKeyData = data.publicKeyData;
 
     expect(publicKeyData.length, 2048);
     expect(publicKeyData.sha1Thumbprint,
@@ -537,28 +537,28 @@ Q7FVCLc4EFPwz9tkdLE2N13o
 
     expect(data.signatureAlgorithm, '1.2.840.113549.1.1.5');
 
-    expect(data.issuer!.containsKey('2.5.4.11'), true);
-    expect(data.issuer!['2.5.4.11'],
+    expect(data.issuer.containsKey('2.5.4.11'), true);
+    expect(data.issuer['2.5.4.11'],
         'www.entrust.net/CPS_2048 incorp. by ref. (limits liab.)');
-    expect(data.issuer!.containsKey('2.5.4.10'), true);
-    expect(data.issuer!['2.5.4.10'], 'Entrust.net');
-    expect(data.issuer!.containsKey('2.5.4.3'), true);
+    expect(data.issuer.containsKey('2.5.4.10'), true);
+    expect(data.issuer['2.5.4.10'], 'Entrust.net');
+    expect(data.issuer.containsKey('2.5.4.3'), true);
     expect(
-        data.issuer!['2.5.4.3'], 'Entrust.net Certification Authority (2048)');
+        data.issuer['2.5.4.3'], 'Entrust.net Certification Authority (2048)');
 
     expect(
-        data.validity!.notBefore!.toIso8601String(), '1999-12-24T17:50:51.000Z');
+        data.validity.notBefore.toIso8601String(), '1999-12-24T17:50:51.000Z');
     expect(
-        data.validity!.notAfter!.toIso8601String(), '2029-07-24T14:15:12.000Z');
+        data.validity.notAfter.toIso8601String(), '2029-07-24T14:15:12.000Z');
 
-    expect(data.subject!.containsKey('2.5.4.3'), true);
+    expect(data.subject.containsKey('2.5.4.3'), true);
     expect(
-        data.subject!['2.5.4.3'], 'Entrust.net Certification Authority (2048)');
+        data.subject['2.5.4.3'], 'Entrust.net Certification Authority (2048)');
 
     expect(data.sha1Thumbprint, '503006091D97D4F5AE39F7CBE7927D7D652D3431');
     expect(data.md5Thumbprint, 'EE2931BC327E9AE6E8B5F751B4347190');
 
-    var publicKeyData = data.publicKeyData!;
+    var publicKeyData = data.publicKeyData;
 
     expect(publicKeyData.length, 2048);
     expect(publicKeyData.sha1Thumbprint,
@@ -576,21 +576,21 @@ Q7FVCLc4EFPwz9tkdLE2N13o
 
     expect(data.signatureAlgorithm, '1.2.840.113549.1.1.11');
 
-    expect(data.issuer!['2.5.4.6'], 'NO');
-    expect(data.issuer!['2.5.4.10'], 'Buypass AS-983163327');
-    expect(data.issuer!['2.5.4.3'], 'Buypass Class 2 CA 5');
+    expect(data.issuer['2.5.4.6'], 'NO');
+    expect(data.issuer['2.5.4.10'], 'Buypass AS-983163327');
+    expect(data.issuer['2.5.4.3'], 'Buypass Class 2 CA 5');
 
     expect(
-        data.validity!.notBefore!.toIso8601String(), '2020-09-30T03:18:57.000Z');
+        data.validity.notBefore.toIso8601String(), '2020-09-30T03:18:57.000Z');
     expect(
-        data.validity!.notAfter!.toIso8601String(), '2021-03-29T21:59:00.000Z');
+        data.validity.notAfter.toIso8601String(), '2021-03-29T21:59:00.000Z');
 
-    expect(data.subject!.isEmpty, true);
+    expect(data.subject.isEmpty, true);
 
     expect(data.sha1Thumbprint, '60A66A69269C74F1DDD33EF3CD60E844716974A0');
     expect(data.md5Thumbprint, '29B4F34A5CA1B38A8329A20BFD714CEA');
 
-    var publicKeyData = data.publicKeyData!;
+    var publicKeyData = data.publicKeyData;
 
     expect(publicKeyData.length, 2048);
     expect(publicKeyData.sha1Thumbprint,
@@ -608,25 +608,25 @@ Q7FVCLc4EFPwz9tkdLE2N13o
 
     expect(data.signatureAlgorithm, '1.2.840.113549.1.1.11');
 
-    expect(data.issuer!.containsKey('2.5.4.6'), true);
-    expect(data.issuer!['2.5.4.6'], 'RU');
-    expect(data.issuer!.containsKey('2.5.4.10'), true);
-    expect(data.issuer!['2.5.4.10'], 'Hikvision Digital Technology');
-    expect(data.issuer!.containsKey('2.5.4.3'), true);
-    expect(data.issuer!['2.5.4.3'], '94.198.131.55');
+    expect(data.issuer.containsKey('2.5.4.6'), true);
+    expect(data.issuer['2.5.4.6'], 'RU');
+    expect(data.issuer.containsKey('2.5.4.10'), true);
+    expect(data.issuer['2.5.4.10'], 'Hikvision Digital Technology');
+    expect(data.issuer.containsKey('2.5.4.3'), true);
+    expect(data.issuer['2.5.4.3'], '94.198.131.55');
 
     expect(
-        data.validity!.notBefore!.toIso8601String(), '2020-11-15T09:00:18.000Z');
+        data.validity.notBefore.toIso8601String(), '2020-11-15T09:00:18.000Z');
     expect(
-        data.validity!.notAfter!.toIso8601String(), '2030-11-15T09:00:18.000Z');
+        data.validity.notAfter.toIso8601String(), '2030-11-15T09:00:18.000Z');
 
-    expect(data.subject!.containsKey('2.5.4.3'), true);
-    expect(data.subject!['2.5.4.3'], '94.198.131.55');
+    expect(data.subject.containsKey('2.5.4.3'), true);
+    expect(data.subject['2.5.4.3'], '94.198.131.55');
 
     expect(data.sha1Thumbprint, 'DD7B2CE1C8DA3568E2396EA86DCC6A2B4FB9B45B');
     expect(data.md5Thumbprint, 'C588B049D87D433BE5FC6E98481A88D2');
 
-    var publicKeyData = data.publicKeyData!;
+    var publicKeyData = data.publicKeyData;
 
     expect(publicKeyData.length, 2048);
     expect(publicKeyData.sha1Thumbprint,
@@ -644,12 +644,12 @@ Q7FVCLc4EFPwz9tkdLE2N13o
 
     expect(data.signatureAlgorithm, '1.2.840.113549.1.1.11');
 
-    expect(data.issuer!.containsKey('2.5.4.6'), true);
-    expect(data.issuer!['2.5.4.6'], 'GB');
-    expect(data.issuer!.containsKey('2.5.4.10'), true);
-    expect(data.issuer!['2.5.4.10'], 'COMODO CA Limited');
-    expect(data.issuer!.containsKey('2.5.4.3'), true);
-    expect(data.issuer!['2.5.4.3'], 'COMODO RSA Organization Validation Secure Server CA');
+    expect(data.issuer.containsKey('2.5.4.6'), true);
+    expect(data.issuer['2.5.4.6'], 'GB');
+    expect(data.issuer.containsKey('2.5.4.10'), true);
+    expect(data.issuer['2.5.4.10'], 'COMODO CA Limited');
+    expect(data.issuer.containsKey('2.5.4.3'), true);
+    expect(data.issuer['2.5.4.3'], 'COMODO RSA Organization Validation Secure Server CA');
 
   });
 }

@@ -217,7 +217,7 @@ class X509Utils {
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
 
     var dataSequence = topLevelSeq.elements!.elementAt(0) as ASN1Sequence;
-    var version;
+    int version;
     var element = 0;
     var serialInteger;
     if (dataSequence.elements!.elementAt(0) is ASN1Integer) {
@@ -234,13 +234,13 @@ class X509Utils {
       serialInteger =
           dataSequence.elements!.elementAt(element + 1) as ASN1Integer;
     }
-    var serialNumber = serialInteger.integer;
+    BigInt serialNumber = serialInteger.integer;
 
     // Signature
     var signatureSequence =
         dataSequence.elements!.elementAt(element + 2) as ASN1Sequence;
     var o = signatureSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
-    var signatureAlgorithm = o.objectIdentifierAsString;
+    var signatureAlgorithm = o.objectIdentifierAsString!;
 
     // Issuer
     var issuerSequence =
