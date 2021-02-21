@@ -188,7 +188,7 @@ String invertColor(String color);
 Helper class for date operations like converting textual datetime description.
 
 ```dart
-DateTime? stringToDateTime(String s, {DateTime time});
+DateTime stringToDateTime(String s, {DateTime time});
 int getCalendarWeek(DateTime date);
 ```
 

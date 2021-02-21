@@ -82,7 +82,7 @@ class DateUtils {
   /// * 1 day(s)|week(s)|month(s) ago
   /// * 2 pm next monday|week
   ///
-  static DateTime? stringToDateTime(String s, {DateTime? time}) {
+  static DateTime stringToDateTime(String s, {DateTime? time}) {
     var now = DateTime.now();
     if (s == 'now') {
       return now;
@@ -264,7 +264,7 @@ class DateUtils {
     return now;
   }
 
-  static DateTime? _parseNextLast(String s, DateTime now, {bool last = false}) {
+  static DateTime _parseNextLast(String s, DateTime now, {bool last = false}) {
     if (s.startsWith('next') || s.startsWith('last')) {
       s = s.substring(4);
     }
@@ -324,7 +324,7 @@ class DateUtils {
       }
       return now;
     }
-    return null;
+    return DateTime.now();
   }
 
   static DateTime _parseSetTime(String setTime, DateTime time) {
