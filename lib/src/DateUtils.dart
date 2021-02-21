@@ -236,7 +236,7 @@ class DateUtils {
     }
     if (setTime != null) {
       if (setTime.contains(':')) {
-        var hhmmss = DateTime.parse('1970-01-01 ' + setTime);
+        var hhmmss = DateTime.parse('1965-01-01 ' + setTime);
         now = DateTime(now.year, now.month, now.day, hhmmss.hour, hhmmss.minute,
             hhmmss.second);
       } else {
@@ -329,7 +329,7 @@ class DateUtils {
 
   static DateTime _parseSetTime(String setTime, DateTime time) {
     if (setTime.contains(':')) {
-      var hhmmss = DateTime.parse('1970-01-01 ' + setTime);
+      var hhmmss = DateTime.parse('1965-01-01 $setTime');
       return DateTime(time.year, time.month, time.day, hhmmss.hour,
           hhmmss.minute, hhmmss.second);
     } else if (REGEX_AM_PM.hasMatch(setTime)) {
@@ -348,7 +348,7 @@ class DateUtils {
       } else if (setTime.length == 5) {
         setTime = '0$setTime';
       }
-      var hhmmss = DateTime.parse('1970-01-01 ' + setTime);
+      var hhmmss = DateTime.parse('1965-01-01 ' + setTime);
       return DateTime(time.year, time.month, time.day, hhmmss.hour + baseTime,
           hhmmss.minute, hhmmss.second);
     } else {
