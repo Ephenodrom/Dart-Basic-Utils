@@ -544,11 +544,11 @@ class CryptoUtils {
   /// Throws an ArgumentError if the given string [pem] is null or empty.
   ///
   ///
-  static ECPublicKey ecPublicKeyFromPem(String? pem) {
-    if (StringUtils.isNullOrEmpty(pem)) {
+  static ECPublicKey ecPublicKeyFromPem(String pem) {
+    if (pem.isEmpty) {
       throw ArgumentError('Argument must not be null.');
     }
-    var bytes = CryptoUtils.getBytesFromPEMString(pem!);
+    var bytes = CryptoUtils.getBytesFromPEMString(pem);
     return ecPublicKeyFromDerBytes(bytes);
   }
 
@@ -557,11 +557,11 @@ class CryptoUtils {
   ///
   /// Throws an ArgumentError if the given string [pem] is null or empty.
   ///
-  static ECPrivateKey ecPrivateKeyFromPem(String? pem) {
-    if (StringUtils.isNullOrEmpty(pem)) {
+  static ECPrivateKey ecPrivateKeyFromPem(String pem) {
+    if (pem.isEmpty) {
       throw ArgumentError('Argument must not be null.');
     }
-    var bytes = CryptoUtils.getBytesFromPEMString(pem!);
+    var bytes = CryptoUtils.getBytesFromPEMString(pem);
     return ecPrivateKeyFromDerBytes(bytes);
   }
 
