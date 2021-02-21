@@ -82,7 +82,7 @@ class DateUtils {
   /// * 1 day(s)|week(s)|month(s) ago
   /// * 2 pm next monday|week
   ///
-  static DateTime stringToDateTime(String s, {DateTime time}) {
+  static DateTime? stringToDateTime(String s, {DateTime? time}) {
     var now = DateTime.now();
     if (s == 'now') {
       return now;
@@ -120,7 +120,7 @@ class DateUtils {
 
   static DateTime _parseDate(String s) {
     String date;
-    String setTime;
+    String? setTime;
     if (s.contains('at')) {
       var list = s.split('at');
       date = list.elementAt(0).trim();
@@ -192,7 +192,7 @@ class DateUtils {
     }
 
     String addRem;
-    String setTime;
+    String? setTime;
     if (s.contains('at')) {
       var list = s.split('at');
       addRem = list.elementAt(0).trim();
@@ -264,12 +264,12 @@ class DateUtils {
     return now;
   }
 
-  static DateTime _parseNextLast(String s, DateTime now, {bool last = false}) {
+  static DateTime? _parseNextLast(String s, DateTime now, {bool last = false}) {
     if (s.startsWith('next') || s.startsWith('last')) {
       s = s.substring(4);
     }
     String lastNext;
-    String setTime;
+    String? setTime;
     if (s.contains('at')) {
       var list = s.split('at');
       lastNext = list.elementAt(0).trim();
@@ -280,7 +280,7 @@ class DateUtils {
     if (REGEX_WEEKDAY.hasMatch(lastNext)) {
       var currentDay = now.weekday;
       int daysToAdd;
-      int targetDay;
+      late int targetDay;
       if (REGEX_SUNDAY.hasMatch(lastNext)) {
         targetDay = DateTime.sunday;
       } else if (REGEX_SATURDAY.hasMatch(lastNext)) {

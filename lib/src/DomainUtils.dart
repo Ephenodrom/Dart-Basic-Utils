@@ -25,7 +25,7 @@ class DomainUtils {
   ///
   /// Checks if the given string [subTld] is a subTld
   ///
-  static bool isSubTld(String tld, String subTld) {
+  static bool isSubTld(String tld, String? subTld) {
     var subTLDs = suffixList[tld];
     if (subTLDs == null) {
       return false;
@@ -41,9 +41,9 @@ class DomainUtils {
   /// Example: api.domain.com => true
   /// domain.de.com => false
   ///
-  static bool isSubDomain(String s) {
+  static bool isSubDomain(String? s) {
     if (StringUtils.isNotNullOrEmpty(s)) {
-      var labels = splitDomainName(s);
+      var labels = splitDomainName(s!);
       if (labels.length == 2) {
         // Only 2 labels, so it has to be a normal domain name
         return false;
@@ -136,7 +136,7 @@ class DomainUtils {
   /// Fetches the domain from the given [url]
   /// Returns null if the given [url] is not parsable.
   ///
-  static Domain getDomainFromUrl(String url) {
+  static Domain? getDomainFromUrl(String url) {
     url = url.replaceFirst('https://', '');
     url = url.replaceFirst('http://', '');
     if (url.contains('/')) {
@@ -149,7 +149,7 @@ class DomainUtils {
   /// Parse the given [domainName] to a [Domain] object.
   /// Returns null if the given [domainName] is not parsable.
   ///
-  static Domain parseDomain(String domainName) {
+  static Domain? parseDomain(String domainName) {
     domainName = domainName.trim();
     if (domainName.endsWith('.')) {
       domainName = domainName.substring(0, domainName.length - 1);

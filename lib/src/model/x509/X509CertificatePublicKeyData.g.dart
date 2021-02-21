@@ -9,11 +9,11 @@ part of 'X509CertificatePublicKeyData.dart';
 X509CertificatePublicKeyData _$X509CertificatePublicKeyDataFromJson(
     Map<String, dynamic> json) {
   return X509CertificatePublicKeyData(
-    algorithm: json['algorithm'] as String,
-    length: json['length'] as int,
-    sha1Thumbprint: json['sha1Thumbprint'] as String,
-    sha256Thumbprint: json['sha256Thumbprint'] as String,
-    bytes: json['bytes'] as String,
+    algorithm: json['algorithm'] as String?,
+    length: json['length'] as int?,
+    sha1Thumbprint: json['sha1Thumbprint'] as String?,
+    sha256Thumbprint: json['sha256Thumbprint'] as String?,
+    bytes: json['bytes'] as String?,
   );
 }
 

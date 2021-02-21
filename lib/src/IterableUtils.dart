@@ -8,9 +8,6 @@ class IterableUtils {
   /// Returns a random element in [iterable]. Throws [RangeError] if [iterable] is null or empty.
   ///
   static T randomItem<T>(Iterable<T> iterable) {
-    if (iterable == null) {
-      throw RangeError('iterable must not be null');
-    }
     if (iterable.isEmpty) {
       throw RangeError('iterable must not be empty');
     }
@@ -20,13 +17,13 @@ class IterableUtils {
   ///
   /// Checks if the given Iterable [iterable] is null or empty
   ///
-  static bool isNullOrEmpty(Iterable iterable) =>
+  static bool isNullOrEmpty(Iterable? iterable) =>
       (iterable == null || iterable.isEmpty) ? true : false;
 
   ///
   /// Checks if the given Iterable [iterable] is not null or empty
   ///
-  static bool isNotNullOrEmpty(Iterable iterable) => !isNullOrEmpty(iterable);
+  static bool isNotNullOrEmpty(Iterable? iterable) => !isNullOrEmpty(iterable);
 
   ///
   /// Splits the given [list] into sublist of the given [size].

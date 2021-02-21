@@ -20,13 +20,13 @@ void main() {
     expect(
         HttpUtils.getQueryParameterFromUrl('super-api.com/dosomething'), null);
     var queryParameters = HttpUtils.getQueryParameterFromUrl(
-        'super-api.com/dosomething?hello=world');
+        'super-api.com/dosomething?hello=world')!;
     expect(queryParameters.length, 1);
     expect(queryParameters.containsKey('hello'), true);
     expect(queryParameters['hello'], 'world');
 
     queryParameters = HttpUtils.getQueryParameterFromUrl(
-        'super-api.com/dosomething?hello=world&list[]=value1&list[]=value2');
+        'super-api.com/dosomething?hello=world&list[]=value1&list[]=value2')!;
     expect(queryParameters.length, 2);
     expect(queryParameters.containsKey('hello'), true);
     expect(queryParameters.containsKey('list[]'), true);

@@ -7,23 +7,23 @@ part 'ResolveResponse.g.dart';
 @JsonSerializable(includeIfNull: false)
 class ResolveResponse {
   @JsonKey(name: 'Status')
-  int status;
+  int? status;
   @JsonKey(name: 'TC')
-  bool tc;
+  bool? tc;
   @JsonKey(name: 'RD')
-  bool rd;
+  bool? rd;
   @JsonKey(name: 'RA')
-  bool ra;
+  bool? ra;
   @JsonKey(name: 'AD')
-  bool ad;
+  bool? ad;
   @JsonKey(name: 'CD')
-  bool cd;
+  bool? cd;
   @JsonKey(name: 'Question')
-  List<Question> question;
+  List<Question>? question;
   @JsonKey(name: 'Answer')
-  List<RRecord> answer;
+  List<RRecord>? answer;
   @JsonKey(name: 'Comment')
-  String comment;
+  String? comment;
 
   ResolveResponse(
       {this.status,

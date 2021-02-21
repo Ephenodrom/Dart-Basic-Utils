@@ -131,7 +131,7 @@ class X509Utils {
     var signer = Signer('SHA-256/RSA');
     signer.init(true, PrivateKeyParameter<RSAPrivateKey>(privateKey));
 
-    RSASignature signature = signer.generateSignature(inBytes);
+    var signature = signer.generateSignature(inBytes) as RSASignature;
 
     return signature.bytes;
   }
@@ -182,7 +182,7 @@ class X509Utils {
     );
     signer.init(true, signParams);
 
-    return signer.generateSignature(inBytes);
+    return signer.generateSignature(inBytes) as ECSignature;
   }
 
   static SecureRandom _getSecureRandom() {
@@ -212,48 +212,45 @@ class X509Utils {
   /// Throws an [ASN1Exception] if the pem could not be read by the [ASN1Parser].
   ///
   static X509CertificateData x509CertificateFromPem(String pem) {
-    if (pem == null) {
-      throw ArgumentError('Argument must not be null.');
-    }
     var bytes = CryptoUtils.getBytesFromPEMString(pem);
     var asn1Parser = ASN1Parser(bytes);
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
 
-    var dataSequence = topLevelSeq.elements.elementAt(0) as ASN1Sequence;
+    var dataSequence = topLevelSeq.elements!.elementAt(0) as ASN1Sequence;
     var version;
     var element = 0;
     var serialInteger;
-    if (dataSequence.elements.elementAt(0) is ASN1Integer) {
+    if (dataSequence.elements!.elementAt(0) is ASN1Integer) {
       // The version ASN1Object ist missing use version
       version = 1;
       // Serialnumber
-      serialInteger = dataSequence.elements.elementAt(element) as ASN1Integer;
+      serialInteger = dataSequence.elements!.elementAt(element) as ASN1Integer;
       element = -1;
     } else {
       // Version
-      var versionObject = dataSequence.elements.elementAt(element + 0);
-      version = versionObject.valueBytes.elementAt(2);
+      var versionObject = dataSequence.elements!.elementAt(element + 0);
+      version = versionObject.valueBytes!.elementAt(2);
       // Serialnumber
       serialInteger =
-          dataSequence.elements.elementAt(element + 1) as ASN1Integer;
+          dataSequence.elements!.elementAt(element + 1) as ASN1Integer;
     }
     var serialNumber = serialInteger.integer;
 
     // Signature
     var signatureSequence =
-        dataSequence.elements.elementAt(element + 2) as ASN1Sequence;
-    var o = signatureSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
+        dataSequence.elements!.elementAt(element + 2) as ASN1Sequence;
+    var o = signatureSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
     var signatureAlgorithm = o.objectIdentifierAsString;
 
     // Issuer
     var issuerSequence =
-        dataSequence.elements.elementAt(element + 3) as ASN1Sequence;
-    var issuer = <String, String>{};
-    for (ASN1Set s in issuerSequence.elements) {
-      var setSequence = s.elements.elementAt(0) as ASN1Sequence;
-      var o = setSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
-      var object = setSequence.elements.elementAt(1);
-      var value = '';
+        dataSequence.elements!.elementAt(element + 3) as ASN1Sequence;
+    var issuer = <String, String?>{};
+    for (var s in issuerSequence.elements as dynamic) {
+      var setSequence = s.elements!.elementAt(0) as ASN1Sequence;
+      var o = setSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
+      var object = setSequence.elements!.elementAt(1);
+      String? value = '';
       if (object is ASN1UTF8String) {
         var objectAsUtf8 = object;
         value = objectAsUtf8.utf8StringValue;
@@ -264,28 +261,28 @@ class X509Utils {
         var objectTeletext = object;
         value = objectTeletext.stringValue;
       }
-      issuer.putIfAbsent(o.objectIdentifierAsString, () => value);
+      issuer.putIfAbsent(o.objectIdentifierAsString!, () => value);
     }
 
     // Validity
     var validitySequence =
-        dataSequence.elements.elementAt(element + 4) as ASN1Sequence;
+        dataSequence.elements!.elementAt(element + 4) as ASN1Sequence;
     var asn1FromDateTime;
     var asn1ToDateTime;
-    if (validitySequence.elements.elementAt(0) is ASN1UtcTime) {
-      var asn1From = validitySequence.elements.elementAt(0) as ASN1UtcTime;
+    if (validitySequence.elements!.elementAt(0) is ASN1UtcTime) {
+      var asn1From = validitySequence.elements!.elementAt(0) as ASN1UtcTime;
       asn1FromDateTime = asn1From.time;
     } else {
       var asn1From =
-          validitySequence.elements.elementAt(0) as ASN1GeneralizedTime;
+          validitySequence.elements!.elementAt(0) as ASN1GeneralizedTime;
       asn1FromDateTime = asn1From.dateTimeValue;
     }
-    if (validitySequence.elements.elementAt(1) is ASN1UtcTime) {
-      var asn1To = validitySequence.elements.elementAt(1) as ASN1UtcTime;
+    if (validitySequence.elements!.elementAt(1) is ASN1UtcTime) {
+      var asn1To = validitySequence.elements!.elementAt(1) as ASN1UtcTime;
       asn1ToDateTime = asn1To.time;
     } else {
       var asn1To =
-          validitySequence.elements.elementAt(1) as ASN1GeneralizedTime;
+          validitySequence.elements!.elementAt(1) as ASN1GeneralizedTime;
       asn1ToDateTime = asn1To.dateTimeValue;
     }
 
@@ -294,13 +291,13 @@ class X509Utils {
 
     // Subject
     var subjectSequence =
-        dataSequence.elements.elementAt(element + 5) as ASN1Sequence;
-    var subject = <String, String>{};
-    for (ASN1Set s in subjectSequence.elements) {
-      var setSequence = s.elements.elementAt(0) as ASN1Sequence;
-      var o = setSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
-      var object = setSequence.elements.elementAt(1);
-      var value = '';
+        dataSequence.elements!.elementAt(element + 5) as ASN1Sequence;
+    var subject = <String, String?>{};
+    for (var s in subjectSequence.elements as dynamic) {
+      var setSequence = s.elements!.elementAt(0) as ASN1Sequence;
+      var o = setSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
+      var object = setSequence.elements!.elementAt(1);
+      String? value = '';
       if (object is ASN1UTF8String) {
         var objectAsUtf8 = object;
         value = objectAsUtf8.utf8StringValue;
@@ -314,13 +311,13 @@ class X509Utils {
 
     // Public Key
     var pubKeySequence =
-        dataSequence.elements.elementAt(element + 6) as ASN1Sequence;
+        dataSequence.elements!.elementAt(element + 6) as ASN1Sequence;
 
-    var algoSequence = pubKeySequence.elements.elementAt(0) as ASN1Sequence;
-    var pubKeyOid = algoSequence.elements.elementAt(0) as ASN1ObjectIdentifier;
+    var algoSequence = pubKeySequence.elements!.elementAt(0) as ASN1Sequence;
+    var pubKeyOid = algoSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
 
-    var pubKey = pubKeySequence.elements.elementAt(1) as ASN1BitString;
-    var asn1PubKeyParser = ASN1Parser(pubKey.stringValues);
+    var pubKey = pubKeySequence.elements!.elementAt(1) as ASN1BitString;
+    var asn1PubKeyParser = ASN1Parser(pubKey.stringValues as Uint8List?);
     var next;
     try {
       next = asn1PubKeyParser.nextObject();
@@ -329,24 +326,24 @@ class X509Utils {
     }
     var pubKeyLength = 0;
 
-    Uint8List pubKeyAsBytes;
+    Uint8List? pubKeyAsBytes;
 
     if (next != null && next is ASN1Sequence) {
       var s = next;
-      var key = s.elements.elementAt(0) as ASN1Integer;
-      pubKeyLength = key.integer.bitLength;
+      var key = s.elements!.elementAt(0) as ASN1Integer;
+      pubKeyLength = key.integer!.bitLength;
       pubKeyAsBytes = s.encodedBytes;
     } else {
       pubKeyAsBytes = pubKey.valueBytes;
-      pubKeyLength = pubKey.valueBytes.length * 8;
+      pubKeyLength = pubKey.valueBytes!.length * 8;
     }
     var pubKeyThumbprint =
-        CryptoUtils.getSha1ThumbprintFromBytes(pubKeySequence.encodedBytes);
+        CryptoUtils.getSha1ThumbprintFromBytes(pubKeySequence.encodedBytes!);
     var pubKeySha256Thumbprint =
-        CryptoUtils.getSha256ThumbprintFromBytes(pubKeySequence.encodedBytes);
+        CryptoUtils.getSha256ThumbprintFromBytes(pubKeySequence.encodedBytes!);
     var publicKeyData = X509CertificatePublicKeyData(
         algorithm: pubKeyOid.objectIdentifierAsString,
-        bytes: _bytesAsString(pubKeyAsBytes),
+        bytes: _bytesAsString(pubKeyAsBytes!),
         length: pubKeyLength,
         sha1Thumbprint: pubKeyThumbprint,
         sha256Thumbprint: pubKeySha256Thumbprint);
@@ -354,22 +351,22 @@ class X509Utils {
     var sha1String = CryptoUtils.getSha1ThumbprintFromBytes(bytes);
     var md5String = CryptoUtils.getMd5ThumbprintFromBytes(bytes);
     var sha256String = CryptoUtils.getSha256ThumbprintFromBytes(bytes);
-    List<String> sans;
+    List<String>? sans;
     if (version > 1) {
       // Extensions
-      if (dataSequence.elements.length == 8) {
-        var extensionObject = dataSequence.elements.elementAt(element + 7);
+      if (dataSequence.elements!.length == 8) {
+        var extensionObject = dataSequence.elements!.elementAt(element + 7);
         var extParser = ASN1Parser(extensionObject.valueBytes);
         var extSequence = extParser.nextObject() as ASN1Sequence;
 
-        extSequence.elements.forEach((ASN1Object subseq) {
+        extSequence.elements!.forEach((ASN1Object subseq) {
           var seq = subseq as ASN1Sequence;
-          var oi = seq.elements.elementAt(0) as ASN1ObjectIdentifier;
+          var oi = seq.elements!.elementAt(0) as ASN1ObjectIdentifier;
           if (oi.objectIdentifierAsString == '2.5.29.17') {
-            if (seq.elements.length == 3) {
-              sans = _fetchSansFromExtension(seq.elements.elementAt(2));
+            if (seq.elements!.length == 3) {
+              sans = _fetchSansFromExtension(seq.elements!.elementAt(2));
             } else {
-              sans = _fetchSansFromExtension(seq.elements.elementAt(1));
+              sans = _fetchSansFromExtension(seq.elements!.elementAt(1));
             }
           }
         });
@@ -395,7 +392,7 @@ class X509Utils {
   /// Decode the given [asnSequence] into an [RSAPrivateKey].
   ///
   static RSAPrivateKey privateKeyFromASN1Sequence(ASN1Sequence asnSequence) {
-    var objects = asnSequence.elements;
+    var objects = asnSequence.elements!;
 
     var asnIntegers = objects.take(9).map((o) => o as ASN1Integer).toList();
 
@@ -404,10 +401,10 @@ class X509Utils {
       throw ArgumentError('Expected version 0, got: ${version.integer}.');
     }
 
-    var key = RSAPrivateKey(asnIntegers[1].integer, asnIntegers[2].integer,
+    var key = RSAPrivateKey(asnIntegers[1].integer!, asnIntegers[2].integer!,
         asnIntegers[4].integer, asnIntegers[5].integer);
 
-    var bitLength = key.n.bitLength;
+    var bitLength = key.n!.bitLength;
     if (bitLength != 1024 && bitLength != 2048 && bitLength != 4096) {
       throw ArgumentError('The RSA modulus has a bit length of $bitLength. '
           'Only 1024, 2048 and 4096 are supported.');
@@ -424,9 +421,6 @@ class X509Utils {
     var distinguishedName = ASN1Sequence();
     dn.forEach((name, value) {
       var oid = ASN1ObjectIdentifier.fromName(name);
-      if (oid == null) {
-        throw ArgumentError('Unknown distinguished name field $name');
-      }
 
       ASN1Object ovalue;
       switch (name.toUpperCase()) {
@@ -440,10 +434,6 @@ class X509Utils {
         default:
           ovalue = ASN1UTF8String(utf8StringValue: value);
           break;
-      }
-
-      if (ovalue == null) {
-        throw ArgumentError('Could not process distinguished name field $name');
       }
 
       var pair = ASN1Sequence();
@@ -488,10 +478,10 @@ class X509Utils {
     var algorithm = ASN1Sequence();
     algorithm.add(ASN1ObjectIdentifier.fromName('ecPublicKey'));
     algorithm
-        .add(ASN1ObjectIdentifier.fromName(publicKey.parameters.domainName));
+        .add(ASN1ObjectIdentifier.fromName(publicKey.parameters!.domainName));
 
     var subjectPublicKey =
-        ASN1BitString(stringValues: publicKey.Q.getEncoded(false));
+        ASN1BitString(stringValues: publicKey.Q!.getEncoded(false));
 
     var outer = ASN1Sequence();
     outer.add(algorithm);
@@ -507,11 +497,11 @@ class X509Utils {
     var sans = <String>[];
     var octet = extData as ASN1OctetString;
     var sanParser = ASN1Parser(octet.valueBytes);
-    ASN1Sequence sanSeq = sanParser.nextObject();
-    sanSeq.elements.forEach((ASN1Object san) {
+    var sanSeq = sanParser.nextObject() as ASN1Sequence;
+    sanSeq.elements!.forEach((ASN1Object san) {
       if (san.tag == 135) {
         var sb = StringBuffer();
-        san.valueBytes.forEach((int b) {
+        san.valueBytes!.forEach((int b) {
           if (sb.isNotEmpty) {
             sb.write('.');
           }
@@ -519,7 +509,7 @@ class X509Utils {
         });
         sans.add(sb.toString());
       } else {
-        var s = String.fromCharCodes(san.valueBytes);
+        var s = String.fromCharCodes(san.valueBytes!);
         sans.add(s);
       }
     });

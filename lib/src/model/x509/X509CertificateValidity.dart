@@ -8,10 +8,10 @@ part 'X509CertificateValidity.g.dart';
 @JsonSerializable(includeIfNull: false, explicitToJson: true)
 class X509CertificateValidity {
   /// The start date
-  DateTime notBefore;
+  DateTime? notBefore;
 
   /// The end date
-  DateTime notAfter;
+  DateTime? notAfter;
 
   X509CertificateValidity({this.notBefore, this.notAfter});
 

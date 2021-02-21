@@ -15,18 +15,9 @@ RRecord _$RRecordFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$RRecordToJson(RRecord instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('name', instance.name);
-  writeNotNull('type', instance.rType);
-  writeNotNull('TTL', instance.ttl);
-  writeNotNull('data', instance.data);
-  return val;
-}
+Map<String, dynamic> _$RRecordToJson(RRecord instance) => <String, dynamic>{
+      'name': instance.name,
+      'type': instance.rType,
+      'TTL': instance.ttl,
+      'data': instance.data,
+    };

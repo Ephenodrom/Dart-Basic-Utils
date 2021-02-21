@@ -16,10 +16,10 @@ class HttpUtils {
   /// Sends a HTTP GET request to the given [url] with the given [queryParameters] and [headers].
   ///
   static Future<dynamic> _get(String url,
-      {Map<String, dynamic> queryParameters,
-      Map<String, String> headers,
+      {Map<String, dynamic>? queryParameters,
+      Map<String, String>? headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    var finalUrl = addQueryParameterToUrl(url, queryParameters);
+    var finalUrl = _getUriUrl(url, queryParameters);
     Logger(TAG).info('GET $finalUrl');
     var response = await client.get(finalUrl, headers: headers);
     Logger(TAG).finest('Got response: ' + response.body);
@@ -31,8 +31,8 @@ class HttpUtils {
   /// Returns the full [Response] object.
   ///
   static Future<Response> getForFullResponse(String url,
-      {Map<String, dynamic> queryParameters,
-      Map<String, String> headers}) async {
+      {Map<String, dynamic>? queryParameters,
+      Map<String, String>? headers}) async {
     return await _get(url,
         queryParameters: queryParameters,
         headers: headers,
@@ -44,8 +44,8 @@ class HttpUtils {
   /// Returns the response as a map using json.decode.
   ///
   static Future<Map<String, dynamic>> getForJson(String url,
-      {Map<String, dynamic> queryParameters,
-      Map<String, String> headers}) async {
+      {Map<String, dynamic>? queryParameters,
+      Map<String, String>? headers}) async {
     return await _get(url,
         queryParameters: queryParameters,
         headers: headers,
@@ -57,8 +57,8 @@ class HttpUtils {
   /// Returns the response as a string.
   ///
   static Future<String> getForString(String url,
-      {Map<String, dynamic> queryParameters,
-      Map<String, String> headers}) async {
+      {Map<String, dynamic>? queryParameters,
+      Map<String, String>? headers}) async {
     return await _get(url,
         queryParameters: queryParameters,
         headers: headers,
@@ -69,13 +69,13 @@ class HttpUtils {
   /// Sends a HTTP POST request to the given [url] with the given [body], [queryParameters] and [headers].
   ///
   static Future<dynamic> _post(String url,
-      {String body,
-      Map<String, String> queryParameters,
-      Map<String, String> headers,
+      {String? body,
+      Map<String, String>? queryParameters,
+      Map<String, String>? headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    var finalUrl = addQueryParameterToUrl(url, queryParameters);
+    var finalUrl = _getUriUrl(url, queryParameters);
     Logger(TAG).info('POST $finalUrl');
-    if (post != null) {
+    if (body != null) {
       Logger(TAG).finest('Request body: ' + body);
     }
     var response = await client.post(finalUrl, body: body, headers: headers);
@@ -88,9 +88,9 @@ class HttpUtils {
   /// Returns the full [Response] object.
   ///
   static Future<Response> postForFullResponse(String url,
-      {String body,
-      Map<String, String> queryParameters,
-      Map<String, String> headers}) async {
+      {String? body,
+      Map<String, String>? queryParameters,
+      Map<String, String>? headers}) async {
     return await _post(url,
         body: body,
         queryParameters: queryParameters,
@@ -103,9 +103,9 @@ class HttpUtils {
   /// Returns the response as a map using json.decode.
   ///
   static Future<Map<String, dynamic>> postForJson(String url,
-      {String body,
-      Map<String, String> queryParameters,
-      Map<String, String> headers}) async {
+      {String? body,
+      Map<String, String>? queryParameters,
+      Map<String, String>? headers}) async {
     return await _post(url,
         body: body,
         queryParameters: queryParameters,
@@ -118,9 +118,9 @@ class HttpUtils {
   /// Returns the response as a string.
   ///
   static Future<String> postForString(String url,
-      {String body,
-      Map<String, String> queryParameters,
-      Map<String, String> headers}) async {
+      {String? body,
+      Map<String, String>? queryParameters,
+      Map<String, String>? headers}) async {
     return await _post(url,
         body: body,
         queryParameters: queryParameters,
@@ -132,11 +132,11 @@ class HttpUtils {
   /// Sends a HTTP PUT request to the given [url] with the given [body], [queryParameters] and [headers].
   ///
   static Future<dynamic> _put(String url,
-      {String body,
-      Map<String, String> queryParameters,
-      Map<String, String> headers,
+      {String? body,
+      Map<String, String>? queryParameters,
+      Map<String, String>? headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    var finalUrl = addQueryParameterToUrl(url, queryParameters);
+    var finalUrl = _getUriUrl(url, queryParameters);
     Logger(TAG).info('PUT $finalUrl');
     if (body != null) {
       Logger(TAG).finest('Request body: ' + body);
@@ -151,9 +151,9 @@ class HttpUtils {
   /// Returns the full [Response] object.
   ///
   static Future<Response> putForFullResponse(String url,
-      {String body,
-      Map<String, String> queryParameters,
-      Map<String, String> headers}) async {
+      {String? body,
+      Map<String, String>? queryParameters,
+      Map<String, String>? headers}) async {
     return await _put(url,
         body: body,
         queryParameters: queryParameters,
@@ -166,9 +166,9 @@ class HttpUtils {
   /// Returns the response as a map using json.decode.
   ///
   static Future<Map<String, dynamic>> putForJson(String url,
-      {String body,
-      Map<String, String> queryParameters,
-      Map<String, String> headers}) async {
+      {String? body,
+      Map<String, String>? queryParameters,
+      Map<String, String>? headers}) async {
     return await _put(url,
         body: body,
         queryParameters: queryParameters,
@@ -181,9 +181,9 @@ class HttpUtils {
   /// Returns the response as a string.
   ///
   static Future<String> putForString(String url,
-      {String body,
-      Map<String, String> queryParameters,
-      Map<String, String> headers}) async {
+      {String? body,
+      Map<String, String>? queryParameters,
+      Map<String, String>? headers}) async {
     return await _put(url,
         body: body,
         queryParameters: queryParameters,
@@ -195,10 +195,10 @@ class HttpUtils {
   /// Sends a HTTP DELETE request to the given [url] with the given [queryParameters] and [headers].
   ///
   static Future<dynamic> _delete(String url,
-      {Map<String, String> queryParameters,
-      Map<String, String> headers,
+      {Map<String, String>? queryParameters,
+      Map<String, String>? headers,
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
-    var finalUrl = addQueryParameterToUrl(url, queryParameters);
+    var finalUrl = _getUriUrl(url, queryParameters);
     Logger(TAG).info('DELETE $finalUrl');
     var response = await client.delete(finalUrl, headers: headers);
     Logger(TAG).finest('Response body: ' + response.body);
@@ -210,8 +210,8 @@ class HttpUtils {
   /// Returns the full [Response] object.
   ///
   static Future<Response> deleteForFullResponse(String url,
-      {Map<String, String> queryParameters,
-      Map<String, String> headers}) async {
+      {Map<String, String>? queryParameters,
+      Map<String, String>? headers}) async {
     return await _delete(url,
         queryParameters: queryParameters,
         headers: headers,
@@ -223,8 +223,8 @@ class HttpUtils {
   /// Returns the response as a map using json.decode.
   ///
   static Future<Map<String, dynamic>> deleteForJson(String url,
-      {Map<String, String> queryParameters,
-      Map<String, String> headers}) async {
+      {Map<String, String>? queryParameters,
+      Map<String, String>? headers}) async {
     return await _delete(url,
         queryParameters: queryParameters,
         headers: headers,
@@ -236,8 +236,8 @@ class HttpUtils {
   /// Returns the response as a string.
   ///
   static Future<String> deleteForString(String url,
-      {Map<String, String> queryParameters,
-      Map<String, String> headers}) async {
+      {Map<String, String>? queryParameters,
+      Map<String, String>? headers}) async {
     return await _delete(url,
         queryParameters: queryParameters,
         headers: headers,
@@ -271,15 +271,21 @@ class HttpUtils {
   /// Add the given [queryParameters] to the given [url].
   ///
   static String addQueryParameterToUrl(
-      String url, Map<String, dynamic> queryParameters) {
+      String url, Map<String, dynamic>? queryParameters) {
     if (queryParameters == null || queryParameters.isEmpty) return url;
     return Uri.parse(url).replace(queryParameters: queryParameters).toString();
+  }
+
+  static Uri _getUriUrl(
+      String url, Map<String, dynamic>? queryParameters) {
+    if (queryParameters == null || queryParameters.isEmpty) return Uri.parse(url);
+    return Uri.parse(url).replace(queryParameters: queryParameters);
   }
 
   ///
   /// Fetches the query parameter from the given [url]. Returns null if none exist.
   ///
-  static Map<String, dynamic> getQueryParameterFromUrl(String url) {
+  static Map<String, dynamic>? getQueryParameterFromUrl(String url) {
     var queryParameters = <String, dynamic>{};
     var splitted = url.split('?');
     if (splitted.length != 2) {

@@ -5,19 +5,19 @@ homepage: https://github.com/Ephenodrom/Dart-Basic-Utils
 publish_to: https://pub.dartlang.org
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=2.12.0-133.7.beta <3.0.0'
 
 dependencies:
-  http: ^0.12.2
-  logging: ^0.11.4
-  json_annotation: ^3.1.1
-  pointycastle: ^2.0.1
-  convert: ^2.1.1
-  crypto: ^2.1.5
+  http: ^0.13.0
+  logging: ^1.0.0
+  json_annotation: ^4.0.0
+  pointycastle: ^3.0.0-nullsafety.2
+  convert: ^3.0.0
+  crypto: ^3.0.0
 
 
 dev_dependencies:
-  build_runner: ^1.10.7
-  json_serializable: ^3.5.0
-  pedantic: ^1.9.0
-  test: ^1.6.0
+  build_runner: ^1.11.5
+  json_serializable: ^4.0.1
+  pedantic: ^1.10.0
+  test: ^1.16.3

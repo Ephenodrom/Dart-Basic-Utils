@@ -8,7 +8,7 @@ part 'X509CertificateObject.g.dart';
 ///
 @JsonSerializable(includeIfNull: false, explicitToJson: true)
 class X509CertificateObject {
-  X509CertificateData data;
+  X509CertificateData? data;
 
   X509CertificateObject(this.data);
 

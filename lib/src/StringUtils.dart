@@ -9,20 +9,20 @@ class StringUtils {
   ///
   /// Returns the given string or the default string if the given string is null
   ///
-  static String defaultString(String str, {String defaultStr = ''}) {
+  static String defaultString(String? str, {String defaultStr = ''}) {
     return str ?? defaultStr;
   }
 
   ///
   /// Checks if the given String [s] is null or empty
   ///
-  static bool isNullOrEmpty(String s) =>
+  static bool isNullOrEmpty(String? s) =>
       (s == null || s.isEmpty) ? true : false;
 
   ///
   /// Checks if the given String [s] is not null or empty
   ///
-  static bool isNotNullOrEmpty(String s) => !isNullOrEmpty(s);
+  static bool isNotNullOrEmpty(String? s) => !isNullOrEmpty(s);
 
   ///
   /// Transfers the given String [s] from camcelCase to upperCaseUnderscore
@@ -171,8 +171,7 @@ class StringUtils {
   /// Compares the given strings [a] and [b].
   ///
   static bool equalsIgnoreCase(String a, String b) =>
-      (a == null && b == null) ||
-      (a != null && b != null && a.toLowerCase() == b.toLowerCase());
+     a.toLowerCase() == b.toLowerCase();
 
   ///
   /// Checks if the given [list] contains the string [s]
@@ -218,8 +217,8 @@ class StringUtils {
   /// 1234567890 with begin 2 and end 6 => 12****7890
   /// 1234567890 with begin 1 => 1****67890
   ///
-  static String hidePartial(String s,
-      {int begin = 0, int end, String replace = '*'}) {
+  static String? hidePartial(String s,
+      {int begin = 0, int? end, String replace = '*'}) {
     var buffer = StringBuffer();
     if (s.length <= 1) {
       return null;

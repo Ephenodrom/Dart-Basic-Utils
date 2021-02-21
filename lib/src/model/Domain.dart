@@ -5,25 +5,25 @@ import 'package:basic_utils/basic_utils.dart';
 ///
 class Domain {
   /// The second level domain name
-  String sld;
+  String? sld;
 
   /// The sub top level domain name
-  String subTld;
+  String? subTld;
 
   /// The top level domain name
-  String tld;
+  String? tld;
 
   /// The ascii encoded top level domain. NOT YET IMPLEMENTED
-  String asciiTld;
+  String? asciiTld;
 
   /// The ascii encoded sub top level domain. NOT YET IMPLEMENTED
-  String asciiSubTld;
+  String? asciiSubTld;
 
   /// The ascii encoded second level domain. NOT YET IMPLEMENTED
-  String asciiSld;
+  String? asciiSld;
 
   /// The ascii version of the domain. NOT YET IMPLEMENTED
-  String asciiName;
+  String? asciiName;
 
   Domain({this.sld, this.tld, this.subTld}) {
     _setTld(tld);
@@ -31,21 +31,21 @@ class Domain {
     _setSubTld(subTld);
   }
 
-  void _setTld(String tld) {
+  void _setTld(String? tld) {
     if (tld != null) {
       tld = tld;
       //asciiTld = DomainUtils.toASCII(tld, isNamePrep2008());
     }
   }
 
-  void _setSubTld(String subTld) {
+  void _setSubTld(String? subTld) {
     if (subTld != null) {
       subTld = subTld;
       // asciiSubTld = DomainUtils.toASCII(subTld, isNamePrep2008());
     }
   }
 
-  void _setSld(String sld) {
+  void _setSld(String? sld) {
     if (sld != null) {
       sld = sld;
       //asciiSld = DomainUtils.toASCII(sld, isNamePrep2008());

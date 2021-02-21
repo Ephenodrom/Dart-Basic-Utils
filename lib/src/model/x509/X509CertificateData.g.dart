@@ -8,32 +8,32 @@ part of 'X509CertificateData.dart';
 
 X509CertificateData _$X509CertificateDataFromJson(Map<String, dynamic> json) {
   return X509CertificateData(
-    version: json['version'] as int,
+    version: json['version'] as int?,
     serialNumber: json['serialNumber'] == null
         ? null
         : BigInt.parse(json['serialNumber'] as String),
-    signatureAlgorithm: json['signatureAlgorithm'] as String,
-    issuer: (json['issuer'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as String),
+    signatureAlgorithm: json['signatureAlgorithm'] as String?,
+    issuer: (json['issuer'] as Map<String, dynamic>?)?.map(
+      (k, e) => MapEntry(k, e as String?),
     ),
     validity: json['validity'] == null
         ? null
         : X509CertificateValidity.fromJson(
             json['validity'] as Map<String, dynamic>),
-    subject: (json['subject'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as String),
+    subject: (json['subject'] as Map<String, dynamic>?)?.map(
+      (k, e) => MapEntry(k, e as String?),
     ),
-    sha1Thumbprint: json['sha1Thumbprint'] as String,
-    sha256Thumbprint: json['sha256Thumbprint'] as String,
-    md5Thumbprint: json['md5Thumbprint'] as String,
+    sha1Thumbprint: json['sha1Thumbprint'] as String?,
+    sha256Thumbprint: json['sha256Thumbprint'] as String?,
+    md5Thumbprint: json['md5Thumbprint'] as String?,
     publicKeyData: json['publicKeyData'] == null
         ? null
         : X509CertificatePublicKeyData.fromJson(
             json['publicKeyData'] as Map<String, dynamic>),
-    subjectAlternativNames: (json['subjectAlternativNames'] as List)
+    subjectAlternativNames: (json['subjectAlternativNames'] as List<dynamic>?)
         ?.map((e) => e as String)
-        ?.toList(),
-    plain: json['plain'] as String,
+        .toList(),
+    plain: json['plain'] as String?,
   );
 }
 

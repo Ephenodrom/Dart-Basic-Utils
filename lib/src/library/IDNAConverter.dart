@@ -291,8 +291,6 @@ class IDNAConverter {
 
     return _result.length > 1
         ? _result.join('/')
-        : _result.length == 1
-            ? _result.elementAt(0)
-            : null;
+        : _result.elementAt(0);
   }
 }

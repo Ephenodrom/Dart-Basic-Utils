@@ -19,7 +19,7 @@ class EmailUtils {
   /// Parse the given email address string [s] to a [EmailAddress] object.
   /// Returns null if [s] is not parsable.
   ///
-  static EmailAddress parseEmailAddress(String s) {
+  static EmailAddress? parseEmailAddress(String s) {
     if (isEmail(s)) {
       var parts = s.split('@');
       var domain = DomainUtils.parseDomain(parts.elementAt(1));

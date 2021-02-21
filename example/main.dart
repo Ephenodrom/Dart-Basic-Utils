@@ -13,8 +13,8 @@ void main() async {
   // DomainUtils
   print('Is dartlang.org a domain name? ' +
       DomainUtils.isDomainName('dartlang.org').toString());
-  var domain = DomainUtils.parseDomain('dartlang.org');
-  print('Sld = ' + domain.sld + ' & tld = ' + domain.tld);
+  var domain = DomainUtils.parseDomain('dartlang.org')!;
+  print('Sld = ' + domain.sld! + ' & tld = ' + domain.tld!);
 
   // EmailUtils
   print('Is hello@world.com an email ? ' +

@@ -18,7 +18,7 @@ class RRecord {
   /// The data of the record
   String data;
 
-  RRecord({this.name, this.rType, this.ttl, this.data});
+  RRecord({required this.name,required this.rType,required this.ttl,required this.data});
 
   /*
    * Json to RRecord object

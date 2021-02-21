@@ -8,19 +8,19 @@ part 'X509CertificatePublicKeyData.g.dart';
 @JsonSerializable(includeIfNull: false, explicitToJson: true)
 class X509CertificatePublicKeyData {
   /// The algorithm of the public key
-  String algorithm;
+  String? algorithm;
 
   /// The key length of the public key
-  int length;
+  int? length;
 
   /// The sha1 thumbprint of the public key
-  String sha1Thumbprint;
+  String? sha1Thumbprint;
 
   /// The sha256 thumbprint of the public key
-  String sha256Thumbprint;
+  String? sha256Thumbprint;
 
   /// The bytes representing the public key as String
-  String bytes;
+  String? bytes;
 
   X509CertificatePublicKeyData(
       {this.algorithm,

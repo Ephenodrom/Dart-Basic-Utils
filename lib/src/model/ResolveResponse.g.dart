@@ -8,21 +8,19 @@ part of 'ResolveResponse.dart';
 
 ResolveResponse _$ResolveResponseFromJson(Map<String, dynamic> json) {
   return ResolveResponse(
-    status: json['Status'] as int,
-    tc: json['TC'] as bool,
-    rd: json['RD'] as bool,
-    ra: json['RA'] as bool,
-    ad: json['AD'] as bool,
-    cd: json['CD'] as bool,
-    question: (json['Question'] as List)
-        ?.map((e) =>
-            e == null ? null : Question.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    answer: (json['Answer'] as List)
-        ?.map((e) =>
-            e == null ? null : RRecord.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    comment: json['Comment'] as String,
+    status: json['Status'] as int?,
+    tc: json['TC'] as bool?,
+    rd: json['RD'] as bool?,
+    ra: json['RA'] as bool?,
+    ad: json['AD'] as bool?,
+    cd: json['CD'] as bool?,
+    question: (json['Question'] as List<dynamic>?)
+        ?.map((e) => Question.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    answer: (json['Answer'] as List<dynamic>?)
+        ?.map((e) => RRecord.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    comment: json['Comment'] as String?,
   );
 }
 

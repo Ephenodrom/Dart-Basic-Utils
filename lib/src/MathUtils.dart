@@ -30,7 +30,7 @@ class MathUtils {
   ///
   /// Calculate the area of a square or rectangle with length [a] and/or length[b].
   ///
-  static double calculateSquareArea(double a, {double b}) {
+  static double calculateSquareArea(double a, {double? b}) {
     return b == null ? a * a : a * b;
   }
 
@@ -64,7 +64,6 @@ class MathUtils {
           case LengthUnits.kilometer:
             return value / pow(10.0, 21.0);
         }
-        break;
       case LengthUnits.femtometer:
         switch (targetUnit) {
           case LengthUnits.attometer:
@@ -88,7 +87,6 @@ class MathUtils {
           case LengthUnits.kilometer:
             return value / pow(10.0, 18);
         }
-        break;
       case LengthUnits.picometer:
         switch (targetUnit) {
           case LengthUnits.attometer:
@@ -112,7 +110,6 @@ class MathUtils {
           case LengthUnits.kilometer:
             return value / pow(10.0, 15);
         }
-        break;
       case LengthUnits.nanometer:
         switch (targetUnit) {
           case LengthUnits.attometer:
@@ -136,7 +133,6 @@ class MathUtils {
           case LengthUnits.kilometer:
             return value / pow(10.0, 12);
         }
-        break;
       case LengthUnits.micrometers:
         switch (targetUnit) {
           case LengthUnits.attometer:
@@ -160,7 +156,6 @@ class MathUtils {
           case LengthUnits.kilometer:
             return value / pow(10.0, 9);
         }
-        break;
       case LengthUnits.millimeter:
         switch (targetUnit) {
           case LengthUnits.attometer:
@@ -184,7 +179,6 @@ class MathUtils {
           case LengthUnits.kilometer:
             return value / pow(10.0, 6);
         }
-        break;
       case LengthUnits.centimeter:
         switch (targetUnit) {
           case LengthUnits.attometer:
@@ -208,7 +202,6 @@ class MathUtils {
           case LengthUnits.kilometer:
             return value / pow(10.0, 5);
         }
-        break;
       case LengthUnits.decimeter:
         switch (targetUnit) {
           case LengthUnits.attometer:
@@ -232,7 +225,6 @@ class MathUtils {
           case LengthUnits.kilometer:
             return value / pow(10.0, 4);
         }
-        break;
       case LengthUnits.meter:
         switch (targetUnit) {
           case LengthUnits.attometer:
@@ -256,7 +248,6 @@ class MathUtils {
           case LengthUnits.kilometer:
             return value / pow(10.0, 3);
         }
-        break;
       case LengthUnits.kilometer:
         switch (targetUnit) {
           case LengthUnits.attometer:
@@ -280,9 +271,7 @@ class MathUtils {
           case LengthUnits.kilometer:
             return value;
         }
-        break;
     }
-    return null;
   }
 
   ///
@@ -297,7 +286,7 @@ class MathUtils {
   ///
   static double calculateMixingTemperature(
       double mA, double tA, double mB, double tB,
-      {double cA, double cB}) {
+      {double? cA, double? cB}) {
     if (cA == null || cB == null) {
       return ((mA * tA) + (mB * tB)) / (mA + mB);
     }
