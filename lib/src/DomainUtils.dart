@@ -183,7 +183,7 @@ class DomainUtils {
       for (var subTldEntry in subTLDs) {
         // Remove uncommon chars
         subTldEntry = _removeUncommonChars(subTldEntry);
-        if (domainName.endsWith(subTldEntry + '.' + tld)) {
+        if (domainName.endsWith('.' + subTldEntry + '.' + tld)) {
           var labelCount = 0;
           // Calculate the allowedLabels
           if (subTldEntry == '*') {

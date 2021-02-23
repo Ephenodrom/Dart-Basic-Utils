@@ -2,8 +2,11 @@
 
 ## [3.0.0-null-safety.0]
 
-### Breaking Change :
 * Migrated to **null-safety**
+
+## [2.7.1] - 2020-02-16
+
+* Improved DomainUtils fixed bug in parseDomain
 
 ## [2.7.0] - 2020-01-29
 

@@ -38,7 +38,14 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.7.0
+  basic_utils: ^2.7.1
+```
+
+Or use the nullsafety preview version.
+
+```yaml
+dependencies:
+  basic_utils: ^3.0.0-null-safety.0
 ```
 
 ## Import

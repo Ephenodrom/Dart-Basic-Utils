@@ -15,6 +15,12 @@ void main() {
     expect(domain?.tld, 'com');
     expect(domain?.subTld, null);
 
+    domain = DomainUtils.parseDomain('treehouse.com');
+    expect(domain.toString(), 'treehouse.com');
+    expect(domain.sld, 'treehouse');
+    expect(domain.tld, 'com');
+    expect(domain.subTld, null);
+
     domain = DomainUtils.parseDomain('example.co.uk')!;
     expect(domain.sld, 'example');
     expect(domain.tld, 'uk');
