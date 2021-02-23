@@ -8,7 +8,7 @@ class Question {
 
   int type;
 
-  Question({this.name, this.type});
+  Question({required this.name,required this.type});
 
   /*
    * Json to Question object

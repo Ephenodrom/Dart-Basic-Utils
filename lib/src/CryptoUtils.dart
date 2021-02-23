@@ -248,11 +248,11 @@ class CryptoUtils {
 
     var p = ASN1Integer(rsaPrivateKey.p);
     var q = ASN1Integer(rsaPrivateKey.q);
-    var dP = rsaPrivateKey.privateExponent % (rsaPrivateKey.p - BigInt.from(1));
+    var dP = rsaPrivateKey.privateExponent! % (rsaPrivateKey.p! - BigInt.from(1));
     var exp1 = ASN1Integer(dP);
-    var dQ = rsaPrivateKey.privateExponent % (rsaPrivateKey.q - BigInt.from(1));
+    var dQ = rsaPrivateKey.privateExponent! % (rsaPrivateKey.q! - BigInt.from(1));
     var exp2 = ASN1Integer(dQ);
-    var iQ = rsaPrivateKey.q.modInverse(rsaPrivateKey.p);
+    var iQ = rsaPrivateKey.q!.modInverse(rsaPrivateKey.p!);
     var co = ASN1Integer(iQ);
 
     var topLevelSeq = ASN1Sequence();
@@ -298,11 +298,11 @@ class CryptoUtils {
     var privateExponent = ASN1Integer(rsaPrivateKey.privateExponent);
     var p = ASN1Integer(rsaPrivateKey.p);
     var q = ASN1Integer(rsaPrivateKey.q);
-    var dP = rsaPrivateKey.privateExponent % (rsaPrivateKey.p - BigInt.from(1));
+    var dP = rsaPrivateKey.privateExponent! % (rsaPrivateKey.p! - BigInt.from(1));
     var exp1 = ASN1Integer(dP);
-    var dQ = rsaPrivateKey.privateExponent % (rsaPrivateKey.q - BigInt.from(1));
+    var dQ = rsaPrivateKey.privateExponent! % (rsaPrivateKey.q! - BigInt.from(1));
     var exp2 = ASN1Integer(dQ);
-    var iQ = rsaPrivateKey.q.modInverse(rsaPrivateKey.p);
+    var iQ = rsaPrivateKey.q!.modInverse(rsaPrivateKey.p!);
     var co = ASN1Integer(iQ);
 
     privateKeySeq.add(version);
@@ -330,9 +330,6 @@ class CryptoUtils {
   /// Decode a [RSAPrivateKey] from the given [pem] String.
   ///
   static RSAPrivateKey rsaPrivateKeyFromPem(String pem) {
-    if (pem == null) {
-      throw ArgumentError('Argument must not be null.');
-    }
     var bytes = getBytesFromPEMString(pem);
     return rsaPrivateKeyFromDERBytes(bytes);
   }
@@ -345,22 +342,22 @@ class CryptoUtils {
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
     //ASN1Object version = topLevelSeq.elements[0];
     //ASN1Object algorithm = topLevelSeq.elements[1];
-    var privateKey = topLevelSeq.elements[2];
+    var privateKey = topLevelSeq.elements![2];
 
     asn1Parser = ASN1Parser(privateKey.valueBytes);
     var pkSeq = asn1Parser.nextObject() as ASN1Sequence;
 
-    var modulus = pkSeq.elements[1] as ASN1Integer;
+    var modulus = pkSeq.elements![1] as ASN1Integer;
     //ASN1Integer publicExponent = pkSeq.elements[2] as ASN1Integer;
-    var privateExponent = pkSeq.elements[3] as ASN1Integer;
-    var p = pkSeq.elements[4] as ASN1Integer;
-    var q = pkSeq.elements[5] as ASN1Integer;
+    var privateExponent = pkSeq.elements![3] as ASN1Integer;
+    var p = pkSeq.elements![4] as ASN1Integer;
+    var q = pkSeq.elements![5] as ASN1Integer;
     //ASN1Integer exp1 = pkSeq.elements[6] as ASN1Integer;
     //ASN1Integer exp2 = pkSeq.elements[7] as ASN1Integer;
     //ASN1Integer co = pkSeq.elements[8] as ASN1Integer;
 
     var rsaPrivateKey = RSAPrivateKey(
-        modulus.integer, privateExponent.integer, p.integer, q.integer);
+        modulus.integer!, privateExponent.integer!, p.integer, q.integer);
 
     return rsaPrivateKey;
   }
@@ -369,9 +366,6 @@ class CryptoUtils {
   /// Decode a [RSAPrivateKey] from the given [pem] string formated in the pkcs1 standard.
   ///
   static RSAPrivateKey rsaPrivateKeyFromPemPkcs1(String pem) {
-    if (pem == null) {
-      throw ArgumentError('Argument must not be null.');
-    }
     var bytes = getBytesFromPEMString(pem);
     return rsaPrivateKeyFromDERBytesPkcs1(bytes);
   }
@@ -385,17 +379,17 @@ class CryptoUtils {
     var asn1Parser = ASN1Parser(bytes);
     var pkSeq = asn1Parser.nextObject() as ASN1Sequence;
 
-    var modulus = pkSeq.elements[1] as ASN1Integer;
+    var modulus = pkSeq.elements![1] as ASN1Integer;
     //ASN1Integer publicExponent = pkSeq.elements[2] as ASN1Integer;
-    var privateExponent = pkSeq.elements[3] as ASN1Integer;
-    var p = pkSeq.elements[4] as ASN1Integer;
-    var q = pkSeq.elements[5] as ASN1Integer;
+    var privateExponent = pkSeq.elements![3] as ASN1Integer;
+    var p = pkSeq.elements![4] as ASN1Integer;
+    var q = pkSeq.elements![5] as ASN1Integer;
     //ASN1Integer exp1 = pkSeq.elements[6] as ASN1Integer;
     //ASN1Integer exp2 = pkSeq.elements[7] as ASN1Integer;
     //ASN1Integer co = pkSeq.elements[8] as ASN1Integer;
 
     var rsaPrivateKey = RSAPrivateKey(
-        modulus.integer, privateExponent.integer, p.integer, q.integer);
+        modulus.integer!, privateExponent.integer!, p.integer, q.integer);
 
     return rsaPrivateKey;
   }
@@ -426,9 +420,6 @@ class CryptoUtils {
   /// Decode a [RSAPublicKey] from the given [pem] String.
   ///
   static RSAPublicKey rsaPublicKeyFromPem(String pem) {
-    if (pem == null) {
-      throw ArgumentError('Argument must not be null.');
-    }
     var bytes = CryptoUtils.getBytesFromPEMString(pem);
     return rsaPublicKeyFromDERBytes(bytes);
   }
@@ -439,14 +430,14 @@ class CryptoUtils {
   static RSAPublicKey rsaPublicKeyFromDERBytes(Uint8List bytes) {
     var asn1Parser = ASN1Parser(bytes);
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
-    var publicKeyBitString = topLevelSeq.elements[1] as ASN1BitString;
+    var publicKeyBitString = topLevelSeq.elements![1] as ASN1BitString;
 
-    var publicKeyAsn = ASN1Parser(publicKeyBitString.stringValues);
-    ASN1Sequence publicKeySeq = publicKeyAsn.nextObject();
-    var modulus = publicKeySeq.elements[0] as ASN1Integer;
-    var exponent = publicKeySeq.elements[1] as ASN1Integer;
+    var publicKeyAsn = ASN1Parser(publicKeyBitString.stringValues as Uint8List?);
+    var publicKeySeq = publicKeyAsn.nextObject() as ASN1Sequence;
+    var modulus = publicKeySeq.elements![0] as ASN1Integer;
+    var exponent = publicKeySeq.elements![1] as ASN1Integer;
 
-    var rsaPublicKey = RSAPublicKey(modulus.integer, exponent.integer);
+    var rsaPublicKey = RSAPublicKey(modulus.integer!, exponent.integer!);
 
     return rsaPublicKey;
   }
@@ -455,9 +446,6 @@ class CryptoUtils {
   /// Decode a [RSAPublicKey] from the given [pem] string formated in the pkcs1 standard.
   ///
   static RSAPublicKey rsaPublicKeyFromPemPkcs1(String pem) {
-    if (pem == null) {
-      throw ArgumentError('Argument must not be null.');
-    }
     var bytes = CryptoUtils.getBytesFromPEMString(pem);
     return rsaPublicKeyFromDERBytesPkcs1(bytes);
   }
@@ -469,11 +457,11 @@ class CryptoUtils {
   ///
   static RSAPublicKey rsaPublicKeyFromDERBytesPkcs1(Uint8List bytes) {
     var publicKeyAsn = ASN1Parser(bytes);
-    ASN1Sequence publicKeySeq = publicKeyAsn.nextObject();
-    var modulus = publicKeySeq.elements[0] as ASN1Integer;
-    var exponent = publicKeySeq.elements[1] as ASN1Integer;
+    var publicKeySeq = publicKeyAsn.nextObject() as ASN1Sequence;
+    var modulus = publicKeySeq.elements![0] as ASN1Integer;
+    var exponent = publicKeySeq.elements![1] as ASN1Integer;
 
-    var rsaPublicKey = RSAPublicKey(modulus.integer, exponent.integer);
+    var rsaPublicKey = RSAPublicKey(modulus.integer!, exponent.integer!);
     return rsaPublicKey;
   }
 
@@ -503,12 +491,12 @@ class CryptoUtils {
     var choice = ASN1Sequence(tag: 0xA0);
 
     choice
-        .add(ASN1ObjectIdentifier.fromName(ecPrivateKey.parameters.domainName));
+        .add(ASN1ObjectIdentifier.fromName(ecPrivateKey.parameters!.domainName));
 
     var publicKey = ASN1Sequence(tag: 0xA1);
 
     var subjectPublicKey = ASN1BitString(
-        stringValues: ecPrivateKey.parameters.G.getEncoded(false));
+        stringValues: ecPrivateKey.parameters!.G.getEncoded(false));
     publicKey.add(subjectPublicKey);
 
     outer.add(version);
@@ -538,7 +526,7 @@ class CryptoUtils {
     var algorithm = ASN1Sequence();
     algorithm.add(ASN1ObjectIdentifier.fromName('ecPublicKey'));
     algorithm.add(ASN1ObjectIdentifier.fromName('prime256v1'));
-    var encodedBytes = publicKey.Q.getEncoded(false);
+    var encodedBytes = publicKey.Q!.getEncoded(false);
     
     var subjectPublicKey = ASN1BitString(stringValues: encodedBytes);
 
@@ -557,7 +545,7 @@ class CryptoUtils {
   ///
   ///
   static ECPublicKey ecPublicKeyFromPem(String pem) {
-    if (StringUtils.isNullOrEmpty(pem)) {
+    if (pem.isEmpty) {
       throw ArgumentError('Argument must not be null.');
     }
     var bytes = CryptoUtils.getBytesFromPEMString(pem);
@@ -570,7 +558,7 @@ class CryptoUtils {
   /// Throws an ArgumentError if the given string [pem] is null or empty.
   ///
   static ECPrivateKey ecPrivateKeyFromPem(String pem) {
-    if (StringUtils.isNullOrEmpty(pem)) {
+    if (pem.isEmpty) {
       throw ArgumentError('Argument must not be null.');
     }
     var bytes = CryptoUtils.getBytesFromPEMString(pem);
@@ -584,14 +572,14 @@ class CryptoUtils {
     var asn1Parser = ASN1Parser(bytes);
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
     var privateKeyAsOctetString =
-        topLevelSeq.elements.elementAt(1) as ASN1OctetString;
-    var choice = topLevelSeq.elements.elementAt(2);
+        topLevelSeq.elements!.elementAt(1) as ASN1OctetString;
+    var choice = topLevelSeq.elements!.elementAt(2);
     var s = ASN1Sequence();
     var parser = ASN1Parser(choice.valueBytes);
     while (parser.hasNext()) {
       s.add(parser.nextObject());
     }
-    var curveNameOi = s.elements.elementAt(0) as ASN1ObjectIdentifier;
+    var curveNameOi = s.elements!.elementAt(0) as ASN1ObjectIdentifier;
     var curveName;
     var data = ObjectIdentifiers.getIdentifierByIdentifier(
         curveNameOi.objectIdentifierAsString);
@@ -599,7 +587,7 @@ class CryptoUtils {
       curveName = data['readableName'];
     }
 
-    var x = privateKeyAsOctetString.valueBytes;
+    var x = privateKeyAsOctetString.valueBytes!;
 
     return ECPrivateKey(decodeBigInt(x), ECDomainParameters(curveName));
   }
@@ -611,8 +599,8 @@ class CryptoUtils {
     var asn1Parser = ASN1Parser(bytes);
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
 
-    var algorithmIdentifierSequence = topLevelSeq.elements[0] as ASN1Sequence;
-    var curveNameOi = algorithmIdentifierSequence.elements.elementAt(1)
+    var algorithmIdentifierSequence = topLevelSeq.elements![0] as ASN1Sequence;
+    var curveNameOi = algorithmIdentifierSequence.elements!.elementAt(1)
         as ASN1ObjectIdentifier;
     var curveName;
     var data = ObjectIdentifiers.getIdentifierByIdentifier(
@@ -621,9 +609,9 @@ class CryptoUtils {
       curveName = data['readableName'];
     }
 
-    var subjectPublicKey = topLevelSeq.elements[1] as ASN1BitString;
+    var subjectPublicKey = topLevelSeq.elements![1] as ASN1BitString;
     var compressed = false;
-    var pubBytes = subjectPublicKey.valueBytes;
+    var pubBytes = subjectPublicKey.valueBytes!;
     if (pubBytes.elementAt(0) == 0) {
       pubBytes = pubBytes.sublist(1);
     }
@@ -639,8 +627,8 @@ class CryptoUtils {
     var bigX = decodeBigIntWithSign(1,x);
     var bigY = decodeBigIntWithSign(1,y);
     var pubKey = ECPublicKey(
-        ecc_fp.ECPoint(params.curve, params.curve.fromBigInteger(bigX),
-            params.curve.fromBigInteger(bigY), compressed),
+        ecc_fp.ECPoint(params.curve as ecc_fp.ECCurve, params.curve.fromBigInteger(bigX) as ecc_fp.ECFieldElement?,
+            params.curve.fromBigInteger(bigY) as ecc_fp.ECFieldElement?, compressed),
         params);
         return pubKey;
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:basic_utils/src/model/DnsApiProvider.dart';
 
@@ -16,7 +18,7 @@ class DnsUtils {
   ///
   /// Lookup for records of the given [type] and [name]. It also supports [dnssec]
   ///
-  static Future<List<RRecord>> lookupRecord(String name, RRecordType type,
+  static Future<List<RRecord>?> lookupRecord(String name, RRecordType type,
       {bool dnssec = false,
       DnsApiProvider provider = DnsApiProvider.GOOGLE}) async {
     var queryParameters = <String, dynamic>{};
@@ -29,7 +31,7 @@ class DnsUtils {
 
     var headers = {'Accept': 'application/dns-json'};
 
-    var body = await HttpUtils.getForJson(_baseUrl,
+    var body = await HttpUtils.getForJson(_baseUrl!,
         queryParameters: queryParameters, headers: headers);
     var response = ResolveResponse.fromJson(body);
     return response.answer;
@@ -100,7 +102,7 @@ class DnsUtils {
   ///
   /// Will return null, if no IP address is given or no PTR is found.
   ///
-  static Future<List<RRecord>> reverseDns(String ip,
+  static Future<List<RRecord>?> reverseDns(String ip,
       {DnsApiProvider provider = DnsApiProvider.GOOGLE}) async {
     var queryParameters = <String, dynamic>{};
 
@@ -118,7 +120,7 @@ class DnsUtils {
 
     var headers = {'Accept': 'application/dns-json'};
 
-    var body = await HttpUtils.getForJson(_baseUrl,
+    var body = await HttpUtils.getForJson(_baseUrl!,
         queryParameters: queryParameters, headers: headers);
     var response = ResolveResponse.fromJson(body);
     return response.answer;
@@ -132,7 +134,7 @@ class DnsUtils {
   /// 172.217.22.14 => 14.22.217.172.in-addr.arpa
   /// 2a00:1450:4001:81a::200e => e.0.0.2.a.1.8.1.0.0.4.0.5.4.1.0.0.a.2.ip6.arpa
   ///
-  static String getReverseAddr(String ip) {
+  static String? getReverseAddr(String ip) {
     if (ip.contains('.')) {
       return ip.split('.').reversed.join('.') + '.in-addr.arpa';
     } else if (ip.contains(':')) {

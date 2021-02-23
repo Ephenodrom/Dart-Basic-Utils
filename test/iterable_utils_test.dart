@@ -7,10 +7,6 @@ void main() {
     expect(IterableUtils.randomItem(list), isIn(list));
   });
 
-  test('Null throws exception', () {
-    expect(() => IterableUtils.randomItem(null), throwsRangeError);
-  });
-
   test('Empty iterable throws exception', () {
     expect(() => IterableUtils.randomItem([]), throwsRangeError);
   });

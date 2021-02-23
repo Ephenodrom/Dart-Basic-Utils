@@ -123,64 +123,64 @@ bjBqILerN9h2zFj3Fi+DdT0=
 
   test('Test encodeRSAPrivateKeyToPem', () {
     var pair = CryptoUtils.generateRSAKeyPair();
-    var pem = CryptoUtils.encodeRSAPrivateKeyToPem(pair.privateKey);
+    var pem = CryptoUtils.encodeRSAPrivateKeyToPem(pair.privateKey as RSAPrivateKey);
     expect(pem.startsWith('-----BEGIN PRIVATE KEY-----'), true);
     expect(pem.endsWith('-----END PRIVATE KEY-----'), true);
   });
 
   test('Test encodeRSAPublicKeyToPem', () {
     var pair = CryptoUtils.generateRSAKeyPair();
-    var pem = CryptoUtils.encodeRSAPublicKeyToPem(pair.publicKey);
+    var pem = CryptoUtils.encodeRSAPublicKeyToPem(pair.publicKey as RSAPublicKey);
     expect(pem.startsWith('-----BEGIN PUBLIC KEY-----'), true);
     expect(pem.endsWith('-----END PUBLIC KEY-----'), true);
   });
 
   test('Test encodeRSAPrivateKeyToPemPkcs1', () {
     var pair = CryptoUtils.generateRSAKeyPair();
-    var pem = CryptoUtils.encodeRSAPrivateKeyToPemPkcs1(pair.privateKey);
+    var pem = CryptoUtils.encodeRSAPrivateKeyToPemPkcs1(pair.privateKey as RSAPrivateKey);
     expect(pem.startsWith('-----BEGIN RSA PRIVATE KEY-----'), true);
     expect(pem.endsWith('-----END RSA PRIVATE KEY-----'), true);
   });
 
   test('Test encodeRSAPublicKeyToPemPkcs1', () {
     var pair = CryptoUtils.generateRSAKeyPair();
-    var pem = CryptoUtils.encodeRSAPublicKeyToPemPkcs1(pair.publicKey);
+    var pem = CryptoUtils.encodeRSAPublicKeyToPemPkcs1(pair.publicKey as RSAPublicKey);
     expect(pem.startsWith('-----BEGIN RSA PUBLIC KEY-----'), true);
     expect(pem.endsWith('-----END RSA PUBLIC KEY-----'), true);
   });
 
   test('Test privateKeyFromPem', () {
     var object = CryptoUtils.rsaPrivateKeyFromPem(privateKey);
-    expect(object.n.bitLength, 2048);
+    expect(object.n!.bitLength, 2048);
   });
 
   test('Test publicKeyFromPem', () {
     var object = CryptoUtils.rsaPublicKeyFromPem(publicKey);
-    expect(object.n.bitLength, 2048);
+    expect(object.n!.bitLength, 2048);
   });
 
   test('Test privateKeyFromDERBytes', () {
     var bytes = CryptoUtils.getBytesFromPEMString(privateKey);
     var object = CryptoUtils.rsaPrivateKeyFromDERBytes(bytes);
-    expect(object.n.bitLength, 2048);
+    expect(object.n!.bitLength, 2048);
   });
 
   test('Test publicKeyFromDERBytes', () {
     var bytes = CryptoUtils.getBytesFromPEMString(publicKey);
     var object = CryptoUtils.rsaPublicKeyFromDERBytes(bytes);
-    expect(object.n.bitLength, 2048);
+    expect(object.n!.bitLength, 2048);
   });
 
   test('Test encodeECPrivateKeyToPem', () {
     var pair = CryptoUtils.generateEcKeyPair();
-    var pem = CryptoUtils.encodeEcPrivateKeyToPem(pair.privateKey);
+    var pem = CryptoUtils.encodeEcPrivateKeyToPem(pair.privateKey as ECPrivateKey);
     expect(pem.startsWith('-----BEGIN EC PRIVATE KEY-----'), true);
     expect(pem.endsWith('-----END EC PRIVATE KEY-----'), true);
   });
 
   test('Test encodeECPublicKeyToPem', () {
     var pair = CryptoUtils.generateEcKeyPair();
-    var pem = CryptoUtils.encodeEcPublicKeyToPem(pair.publicKey);
+    var pem = CryptoUtils.encodeEcPublicKeyToPem(pair.publicKey as ECPublicKey);
     expect(pem.startsWith('-----BEGIN EC PUBLIC KEY-----'), true);
     expect(pem.endsWith('-----END EC PUBLIC KEY-----'), true);
   });
@@ -191,9 +191,9 @@ bjBqILerN9h2zFj3Fi+DdT0=
     var pubPem = CryptoUtils.encodeEcPublicKeyToPem(pubKey);
     var newPubKey = CryptoUtils.ecPublicKeyFromPem(pubPem);
     expect(newPubKey.Q, pubKey.Q);
-    expect(newPubKey.Q.x.toBigInteger(), pubKey.Q.x.toBigInteger());
-    expect(newPubKey.Q.y.toBigInteger(), pubKey.Q.y.toBigInteger());
-    expect(newPubKey.Q.getEncoded(false), pubKey.Q.getEncoded(false));
+    expect(newPubKey.Q!.x!.toBigInteger(), pubKey.Q!.x!.toBigInteger());
+    expect(newPubKey.Q!.y!.toBigInteger(), pubKey.Q!.y!.toBigInteger());
+    expect(newPubKey.Q!.getEncoded(false), pubKey.Q!.getEncoded(false));
   });
 
   test('Test ecPrivateKeyFromPem', () {
@@ -204,7 +204,7 @@ bjBqILerN9h2zFj3Fi+DdT0=
     var newPrivKey = CryptoUtils.ecPrivateKeyFromPem(privPem);
 
     expect(newPrivKey.d, privKey.d);
-    expect(newPrivKey.parameters.G, privKey.parameters.G);
+    expect(newPrivKey.parameters!.G, privKey.parameters!.G);
   });
 
   test('Test encrypt / decrypt', () {
@@ -241,7 +241,7 @@ bjBqILerN9h2zFj3Fi+DdT0=
 
   test('Test rsaPrivateKeyFromPemPkcs1', () {
     var pair = CryptoUtils.generateRSAKeyPair();
-    var pem = CryptoUtils.encodeRSAPrivateKeyToPemPkcs1(pair.privateKey);
+    var pem = CryptoUtils.encodeRSAPrivateKeyToPemPkcs1(pair.privateKey as RSAPrivateKey);
     var generatedKey = pair.privateKey as RSAPrivateKey;
     var privateKey = CryptoUtils.rsaPrivateKeyFromPemPkcs1(pem);
     expect(privateKey.p, generatedKey.p);
@@ -254,7 +254,7 @@ bjBqILerN9h2zFj3Fi+DdT0=
 
   test('Test rsaPublicKeyFromPemPkcs1', () {
     var pair = CryptoUtils.generateRSAKeyPair();
-    var pem = CryptoUtils.encodeRSAPublicKeyToPemPkcs1(pair.publicKey);
+    var pem = CryptoUtils.encodeRSAPublicKeyToPemPkcs1(pair.publicKey as RSAPublicKey);
 
     var generatedKey = pair.publicKey as RSAPublicKey;
     var publicKey = CryptoUtils.rsaPublicKeyFromPemPkcs1(pem);

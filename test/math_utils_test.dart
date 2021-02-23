@@ -343,7 +343,7 @@ void main() {
   test('Test convertUnit with attometer', () {
     expect(
         MathUtils.convertUnit(
-            pow(10.0, 21), LengthUnits.attometer, LengthUnits.kilometer),
+            pow(10.0, 21) as double, LengthUnits.attometer, LengthUnits.kilometer),
         1);
     expect(
         MathUtils.convertUnit(

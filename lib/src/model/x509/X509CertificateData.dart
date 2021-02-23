@@ -20,13 +20,13 @@ class X509CertificateData {
   String signatureAlgorithm;
 
   /// The issuer data of the certificate
-  Map<String, String> issuer;
+  Map<String, String?> issuer;
 
   /// The validity of the certificate
   X509CertificateValidity validity;
 
   /// The subject data of the certificate
-  Map<String, String> subject;
+  Map<String, String?> subject;
 
   /// The sha1 thumbprint for the certificate
   String sha1Thumbprint;
@@ -41,24 +41,24 @@ class X509CertificateData {
   X509CertificatePublicKeyData publicKeyData;
 
   /// The subject alternative names
-  List<String> subjectAlternativNames;
+  List<String>? subjectAlternativNames;
 
   /// The plain certificate pem string, that was used to decode.
   String plain;
 
   X509CertificateData(
-      {this.version,
-      this.serialNumber,
-      this.signatureAlgorithm,
-      this.issuer,
-      this.validity,
-      this.subject,
-      this.sha1Thumbprint,
-      this.sha256Thumbprint,
-      this.md5Thumbprint,
-      this.publicKeyData,
-      this.subjectAlternativNames,
-      this.plain});
+      {required this.version,
+      required this.serialNumber,
+      required this.signatureAlgorithm,
+      required this.issuer,
+      required this.validity,
+      required this.subject,
+      required this.sha1Thumbprint,
+      required this.sha256Thumbprint,
+      required this.md5Thumbprint,
+      required this.publicKeyData,
+      required this.subjectAlternativNames,
+      required this.plain});
 
   /*
    * Json to X509CertificateData object

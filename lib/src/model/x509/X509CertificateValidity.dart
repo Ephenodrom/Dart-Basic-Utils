@@ -13,7 +13,7 @@ class X509CertificateValidity {
   /// The end date
   DateTime notAfter;
 
-  X509CertificateValidity({this.notBefore, this.notAfter});
+  X509CertificateValidity({required this.notBefore,required this.notAfter});
 
   /*
    * Json to X509CertificateValidity object

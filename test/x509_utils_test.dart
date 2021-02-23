@@ -320,21 +320,21 @@ Q7FVCLc4EFPwz9tkdLE2N13o
       'S': 'FakeState',
       'C': 'DE',
     };
-    ASN1Sequence object = X509Utils.encodeDN(dn);
-    expect(object.elements.length, 5);
+    var object = X509Utils.encodeDN(dn) as ASN1Sequence;
+    expect(object.elements!.length, 5);
   });
 
   test('Test privateKeyFromASN1Sequence', () {
     var pair = CryptoUtils.generateRSAKeyPair();
   
-    var privateKey = CryptoUtils.encodeRSAPrivateKeyToPem(pair.privateKey);
+    var privateKey = CryptoUtils.encodeRSAPrivateKeyToPem(pair.privateKey as RSAPrivateKey);
     var bytes = CryptoUtils.getBytesFromPEMString(privateKey);
-    ASN1Sequence asn = ASN1Parser(bytes).nextObject();
-    var objects = asn.elements;
-    ASN1OctetString string = objects[2];
+    var asn = ASN1Parser(bytes).nextObject() as ASN1Sequence;
+    var objects = asn.elements!;
+    var string = objects[2] as ASN1OctetString;
     var object = X509Utils.privateKeyFromASN1Sequence(
-        ASN1Parser(string.valueBytes).nextObject());
-    expect(object.n.bitLength, 2048);
+        ASN1Parser(string.valueBytes).nextObject() as ASN1Sequence);
+    expect(object.n!.bitLength, 2048);
   });
 
   test('Test encodeASN1ObjectToPem', () {
@@ -355,14 +355,14 @@ Q7FVCLc4EFPwz9tkdLE2N13o
       'S': 'FakeState',
       'C': 'DE',
     };
-    var csr = X509Utils.generateRsaCsrPem(dn, pair.privateKey, pair.publicKey);
+    var csr = X509Utils.generateRsaCsrPem(dn, pair.privateKey as RSAPrivateKey, pair.publicKey as RSAPublicKey);
     var bytes = CryptoUtils.getBytesFromPEMString(csr);
     var sequence = ASN1Sequence.fromBytes(bytes);
-    ASN1Sequence e1 = sequence.elements.elementAt(0);
-    ASN1Sequence e2 = e1.elements.elementAt(1);
-    ASN1Set e3 = e2.elements.elementAt(0);
-    ASN1Sequence e4 = e3.elements.elementAt(0);
-    ASN1UTF8String e5 = e4.elements.elementAt(1);
+    var e1 = sequence.elements!.elementAt(0) as ASN1Sequence;
+    var e2 = e1.elements!.elementAt(1) as ASN1Sequence;
+    var e3 = e2.elements!.elementAt(0) as ASN1Set;
+    var e4 = e3.elements!.elementAt(0) as ASN1Sequence;
+    var e5 = e4.elements!.elementAt(1) as ASN1UTF8String;
     var cn = e5.utf8StringValue;
     expect(cn, 'basic-utils.dev');
   });
@@ -376,24 +376,24 @@ Q7FVCLc4EFPwz9tkdLE2N13o
       'S': 'FakeState',
       'C': 'DE',
     };
-    var csr = X509Utils.generateEccCsrPem(dn, pair.privateKey, pair.publicKey);
+    var csr = X509Utils.generateEccCsrPem(dn, pair.privateKey as ECPrivateKey, pair.publicKey as ECPublicKey);
     var bytes = CryptoUtils.getBytesFromPEMString(csr);
     var sequence = ASN1Sequence.fromBytes(bytes);
-    ASN1Sequence e1 = sequence.elements.elementAt(0);
-    ASN1Sequence e2 = e1.elements.elementAt(1);
-    ASN1Set e3 = e2.elements.elementAt(0);
-    ASN1Sequence e4 = e3.elements.elementAt(0);
-    ASN1UTF8String e5 = e4.elements.elementAt(1);
+    var e1 = sequence.elements!.elementAt(0) as ASN1Sequence;
+    var e2 = e1.elements!.elementAt(1) as ASN1Sequence;
+    var e3 = e2.elements!.elementAt(0) as ASN1Set;
+    var e4 = e3.elements!.elementAt(0) as ASN1Sequence;
+    var e5 = e4.elements!.elementAt(1) as ASN1UTF8String;
     var cn = e5.utf8StringValue;
     expect(cn, 'basic-utils.dev');
   });
 
   test('Test generateKeyPair', () {
     var pair = CryptoUtils.generateRSAKeyPair();
-    RSAPrivateKey private = pair.privateKey;
-    RSAPublicKey public = pair.publicKey;
-    expect(private.n.bitLength, 2048);
-    expect(public.n.bitLength, 2048);
+    var private = pair.privateKey as RSAPrivateKey;
+    var public = pair.publicKey as RSAPublicKey;
+    expect(private.n!.bitLength, 2048);
+    expect(public.n!.bitLength, 2048);
   });
 
   test('Test x509CertificateFromPem', () {
@@ -432,7 +432,7 @@ Q7FVCLc4EFPwz9tkdLE2N13o
     expect(publicKeyData.bytes,
         '3082010A0282010100C31AFEFEDA8432456BC502DED4C6D010241EB36A37A0CEB96F2CB678F8F86126DEB06920D6E883D5EC7E2E22F80BDDC1CFEBC02401397ED9F5B40843F2DA2DEF3B6ED50EDC4CA76A1393F21D3ED55B36D641B2378588D573AFB65A0FACF4BB8D562C441B477E029A559B820CDADD24B4B6F3D70F4D982690F3FD09B8DE1CF49BE489D0869EB0033B6F5B536E6942C60DEB9BE095894F704EC23D794BCE099223292DC4DCC55C449653082699329F0930A72D01EE01F7446E9C66E9BEC62F5A8E16E1440C142558719A78EC515E59C527AB1D379EB49D3F72C410F71E3D5B11C4F781A6DB19CDBCBD59FED273650DCD36521A3CF196922D81776C8CBE07891FD50203010001');
 
-    var sans = data.subjectAlternativNames;
+    var sans = data.subjectAlternativNames!;
     expect(sans.length, 3);
     expect(sans.elementAt(0), 'junkdragons.de');
     expect(sans.elementAt(1), 'www.junkdragons.de');
@@ -441,13 +441,13 @@ Q7FVCLc4EFPwz9tkdLE2N13o
 
   test('Test x509CertificateFromPem with IP Sans', () {
     var data = X509Utils.x509CertificateFromPem(X509WithSans);
-    var sans = data.subjectAlternativNames;
+    var sans = data.subjectAlternativNames!;
     expect(sans.length, 2);
     expect(sans.elementAt(0), 'api.ephenodrom.de');
     expect(sans.elementAt(1), '192.168.0.1');
 
     data = X509Utils.x509CertificateFromPem(X509WithIpSans);
-    sans = data.subjectAlternativNames;
+    sans = data.subjectAlternativNames!;
     expect(sans.length, 2);
     expect(sans.elementAt(0), '127.0.0.1');
     expect(sans.elementAt(1), '0.0.0.0');

@@ -82,7 +82,7 @@ class DateUtils {
   /// * 1 day(s)|week(s)|month(s) ago
   /// * 2 pm next monday|week
   ///
-  static DateTime stringToDateTime(String s, {DateTime time}) {
+  static DateTime stringToDateTime(String s, {DateTime? time}) {
     var now = DateTime.now();
     if (s == 'now') {
       return now;
@@ -120,7 +120,7 @@ class DateUtils {
 
   static DateTime _parseDate(String s) {
     String date;
-    String setTime;
+    String? setTime;
     if (s.contains('at')) {
       var list = s.split('at');
       date = list.elementAt(0).trim();
@@ -192,7 +192,7 @@ class DateUtils {
     }
 
     String addRem;
-    String setTime;
+    String? setTime;
     if (s.contains('at')) {
       var list = s.split('at');
       addRem = list.elementAt(0).trim();
@@ -236,7 +236,7 @@ class DateUtils {
     }
     if (setTime != null) {
       if (setTime.contains(':')) {
-        var hhmmss = DateTime.parse('1970-01-01 ' + setTime);
+        var hhmmss = DateTime.parse('1965-01-01 ' + setTime);
         now = DateTime(now.year, now.month, now.day, hhmmss.hour, hhmmss.minute,
             hhmmss.second);
       } else {
@@ -269,7 +269,7 @@ class DateUtils {
       s = s.substring(4);
     }
     String lastNext;
-    String setTime;
+    String? setTime;
     if (s.contains('at')) {
       var list = s.split('at');
       lastNext = list.elementAt(0).trim();
@@ -280,7 +280,7 @@ class DateUtils {
     if (REGEX_WEEKDAY.hasMatch(lastNext)) {
       var currentDay = now.weekday;
       int daysToAdd;
-      int targetDay;
+      late int targetDay;
       if (REGEX_SUNDAY.hasMatch(lastNext)) {
         targetDay = DateTime.sunday;
       } else if (REGEX_SATURDAY.hasMatch(lastNext)) {
@@ -324,12 +324,12 @@ class DateUtils {
       }
       return now;
     }
-    return null;
+    return DateTime.now();
   }
 
   static DateTime _parseSetTime(String setTime, DateTime time) {
     if (setTime.contains(':')) {
-      var hhmmss = DateTime.parse('1970-01-01 ' + setTime);
+      var hhmmss = DateTime.parse('1965-01-01 $setTime');
       return DateTime(time.year, time.month, time.day, hhmmss.hour,
           hhmmss.minute, hhmmss.second);
     } else if (REGEX_AM_PM.hasMatch(setTime)) {
@@ -348,7 +348,7 @@ class DateUtils {
       } else if (setTime.length == 5) {
         setTime = '0$setTime';
       }
-      var hhmmss = DateTime.parse('1970-01-01 ' + setTime);
+      var hhmmss = DateTime.parse('1965-01-01 ' + setTime);
       return DateTime(time.year, time.month, time.day, hhmmss.hour + baseTime,
           hhmmss.minute, hhmmss.second);
     } else {

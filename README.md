@@ -58,9 +58,9 @@ The package contains different classes. Each class contains methods that provide
 Helper class for String operations.
 
 ```dart
-String defaultString(String str, {String defaultStr = ''});
-bool isNullOrEmpty(String s);
-bool isNotNullOrEmpty(String s);
+String defaultString(String? str, {String defaultStr = ''});
+bool isNullOrEmpty(String? s);
+bool isNotNullOrEmpty(String? s);
 String camelCaseToUpperUnderscore(String s);
 String camelCaseToLowerUnderscore(String s);
 bool isLowerCase(String s);
@@ -84,16 +84,16 @@ Helper class for operations on domain names.
 
 ```dart
 bool isDomainName(String s);
-bool isSubTld(String tld, String subTld);
-bool isSubDomain(String s);
+bool isSubTld(String tld, String? subTld);
+bool isSubDomain(String? s);
 bool isSubDomainOf(String sub, String domain);
 bool isCCTLD(String s);
 bool isNGTLD(String s);
 bool isTld(String s);
 bool isGTLD(String s);
 List<String> splitDomainName(String domainName);
-Domain getDomainFromUrl(String url);
-Domain parseDomain(String domainName);
+Domain? getDomainFromUrl(String url);
+Domain? parseDomain(String domainName);
 List<String> splitSubdomainInDomains(String name);
 String toIDN(String domain);
 String fromIDN(String domain)
@@ -105,7 +105,7 @@ Helper class for operations on email addresses.
 
 ```dart
 bool isEmail(String s);
-EmailAddress parseEmailAddress(String s);
+EmailAddress? parseEmailAddress(String s);
 ```
 
 ### MathUtils
@@ -116,9 +116,9 @@ Helper class for simple math operations like calculating circular area or conver
 double calculateCircumference(double radius);
 double calculateCircularArea(double radius);
 double calculateCircleDiameter(double radius);
-double calculateSquareArea(double a, {double b});
+double calculateSquareArea(double a, {double? b});
 double convertUnit(double value, LengthUnits sourceUnit, LengthUnits targetUnit);
-double calculateMixingTemperature(double mA, double tA, double mB, double tB,{double cA, double cB});
+double calculateMixingTemperature(double mA, double tA, double mB, double tB,{double? cA, double? cB});
 num mean(List<num> l);
 double round(double value, int decimals);
 ```
@@ -128,20 +128,20 @@ double round(double value, int decimals);
 Helper class for simple http operations like sending requests.
 
 ```dart
-Future<Map<Response> getForFullResponse(String url, {Map<String, dynamic> queryParameters, Map<String, String> headers});
-Future<Map<String, dynamic>> getForJson(String url, {Map<String, dynamic> queryParameters, Map<String, String> headers});
-Future<String> getForString(String url, {Map<String, dynamic> queryParameters, Map<String, String> headers});
-Future<Map<Response> postForFullResponse(String url, {String body, Map<String, String> queryParameters, Map<String, String> headers});
-Future<Map<String, dynamic>> postForJson(String url, {String body, Map<String, String> queryParameters, Map<String, String> headers});
-Future<String> postForString(String url, {String body, Map<String, String> queryParameters, Map<String, String> headers});
-Future<Response> putForFullResponse(String url, {String body, Map<String, String> queryParameters, Map<String, String> headers});
-Future<Map<String, dynamic>> putForJson(String url, {String body, Map<String, String> queryParameters, Map<String, String> headers});
-Future<String> putForString(String url, {String body, Map<String, String> queryParameters, Map<String, String> headers});
-Future<Response deleteForFullResponse(String url, {Map<String, String> queryParameters, Map<String, String> headers});
-Future<Map<String, dynamic>> deleteForJson(String url, {Map<String, String> queryParameters, Map<String, String> headers});
-Future<String> deleteForString(String url, {Map<String, String> queryParameters, Map<String, String> headers});
-Map<String, dynamic> getQueryParameterFromUrl(String url);
-String addQueryParameterToUrl(String url, Map<String, dynamic> queryParameters);
+Future<Map<Response> getForFullResponse(String url, {Map<String, dynamic>? queryParameters, Map<String, String>? headers});
+Future<Map<String, dynamic>> getForJson(String url, {Map<String, dynamic>? queryParameters, Map<String, String>? headers});
+Future<String> getForString(String url, {Map<String, dynamic>? queryParameters, Map<String, String>? headers});
+Future<Map<Response> postForFullResponse(String url, {String? body, Map<String, String>? queryParameters, Map<String, String>? headers});
+Future<Map<String, dynamic>> postForJson(String url, {String? body, Map<String, String>? queryParameters, Map<String, String>? headers});
+Future<String> postForString(String url, {String? body, Map<String, String>? queryParameters, Map<String, String>? headers});
+Future<Response> putForFullResponse(String url, {String? body, Map<String, String>? queryParameters, Map<String, String>? headers});
+Future<Map<String, dynamic>> putForJson(String url, {String? body, Map<String, String>? queryParameters, Map<String, String>? headers});
+Future<String> putForString(String url, {String? body, Map<String, String>? queryParameters, Map<String, String>? headers});
+Future<Response deleteForFullResponse(String url, {Map<String, String>? queryParameters, Map<String, String>? headers});
+Future<Map<String, dynamic>> deleteForJson(String url, {Map<String, String>? queryParameters, Map<String, String>? headers});
+Future<String> deleteForString(String url, {Map<String, String>? queryParameters, Map<String, String>? headers});
+Map<String, dynamic>? getQueryParameterFromUrl(String url);
+String addQueryParameterToUrl(String url, Map<String, dynamic>? queryParameters);
 ```
 
 ### DnsUtils
@@ -149,11 +149,11 @@ String addQueryParameterToUrl(String url, Map<String, dynamic> queryParameters);
 Helper class for lookup resource records. Uses google dns resolver api.
 
 ```dart
-Future<List<RRecord>> lookupRecord(String name, RRecordType type,{bool dnssec = false, DnsApiProvider provider = DnsApiProvider.GOOGLE});
+Future<List<RRecord>?> lookupRecord(String name, RRecordType type,{bool dnssec = false, DnsApiProvider provider = DnsApiProvider.GOOGLE});
 RRecordType intToRRecordType(int type);
 int rRecordTypeToInt(RRecordType type);
-Future<List<RRecord>> reverseDns(String ip,{DnsApiProvider provider = DnsApiProvider.GOOGLE});
-String getReverseAddr(String ip);
+Future<List<RRecord>?> reverseDns(String ip,{DnsApiProvider provider = DnsApiProvider.GOOGLE});
+String? getReverseAddr(String ip);
 ```
 
 ### SortUtils
@@ -213,8 +213,8 @@ Helper class for operations on iterables
 
 ```dart
 T randomItem<T>(Iterable<T> iterable);
-bool isNullOrEmpty(Iterable iterable);
-bool isNotNullOrEmpty(Iterable iterable);
+bool isNullOrEmpty(Iterable? iterable);
+bool isNotNullOrEmpty(Iterable? iterable);
 List<List<T>> chunk<T>(List<T> list, int size);
 ```
 
