@@ -21,7 +21,7 @@ class HttpUtils {
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
     var finalUrl = _getUriUrl(url, queryParameters);
     Logger(TAG).info('GET $finalUrl');
-    var response = await client.get(finalUrl, headers: headers);
+    var response = await client.get(Uri.parse(finalUrl), headers: headers);
     Logger(TAG).finest('Got response: ' + response.body);
     return _handleResponse(response, returnType);
   }
@@ -78,7 +78,7 @@ class HttpUtils {
     if (body != null) {
       Logger(TAG).finest('Request body: ' + body);
     }
-    var response = await client.post(finalUrl, body: body, headers: headers);
+    var response = await client.post(Uri.parse(finalUrl), body: body, headers: headers);
     Logger(TAG).finest('Response body: ' + response.body);
     return _handleResponse(response, returnType);
   }
@@ -141,7 +141,7 @@ class HttpUtils {
     if (body != null) {
       Logger(TAG).finest('Request body: ' + body);
     }
-    var response = await client.put(finalUrl, body: body, headers: headers);
+    var response = await client.put(Uri.parse(finalUrl), body: body, headers: headers);
     Logger(TAG).finest('Response body: ' + response.body);
     return _handleResponse(response, returnType);
   }
@@ -200,7 +200,7 @@ class HttpUtils {
       HttpRequestReturnType returnType = HttpRequestReturnType.JSON}) async {
     var finalUrl = _getUriUrl(url, queryParameters);
     Logger(TAG).info('DELETE $finalUrl');
-    var response = await client.delete(finalUrl, headers: headers);
+    var response = await client.delete(Uri.parse(finalUrl), headers: headers);
     Logger(TAG).finest('Response body: ' + response.body);
     return _handleResponse(response, returnType);
   }
