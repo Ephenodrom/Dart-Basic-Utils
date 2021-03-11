@@ -45,7 +45,7 @@ Or use the nullsafety preview version.
 
 ```yaml
 dependencies:
-  basic_utils: ^3.0.0-null-safety.0
+  basic_utils: ^3.0.0-null-safety.1
 ```
 
 ## Import

@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.0.0-null-safety.1]
+
+* Updated dependencies
+
 ## [3.0.0-null-safety.0]
 
 * Migrated to **null-safety**
