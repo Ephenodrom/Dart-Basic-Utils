@@ -143,4 +143,32 @@ class DnsUtils {
       return null;
     }
   }
+
+  ///
+  /// Converts the record to the BIND representation.
+  ///
+  static String toBind(RRecord record) {
+    var sb = StringBuffer();
+    sb.write(record.name);
+    sb.write('.');
+    if (sb.length < 8) {
+      sb.write('\t');
+    }
+    if (sb.length < 16) {
+      sb.write('\t');
+    }
+    sb.write('\t');
+    sb.write(record.ttl);
+    sb.write('\tIN\t');
+    sb.write(intToRRecordType(record.rType)
+        .toString()
+        .substring('RRecordType.'.length));
+
+    sb.write('\t');
+    sb.write('\"');
+    sb.write(record.data);
+    sb.write('\"');
+
+    return sb.toString();
+  }
 }

@@ -17,7 +17,7 @@ void main() {
 
     domain = DomainUtils.parseDomain('treehouse.com');
     expect(domain.toString(), 'treehouse.com');
-    expect(domain.sld, 'treehouse');
+    expect(domain!.sld, 'treehouse');
     expect(domain.tld, 'com');
     expect(domain.subTld, null);
 

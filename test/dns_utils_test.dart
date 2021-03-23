@@ -33,4 +33,11 @@ void main() {
     reversed = DnsUtils.getReverseAddr('12345');
     expect(reversed, null);
   });
+
+  test('Test toBind', () async {
+    var r =
+        RRecord(name: 'foo.bar.de', rType: 16, ttl: 300, data: 'helloWorld');
+    var bind = DnsUtils.toBind(r);
+    expect(bind, 'foo.bar.de.\t\t300\tIN\tTXT\t\"helloWorld\"');
+  });
 }
