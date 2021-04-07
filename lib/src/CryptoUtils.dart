@@ -248,9 +248,11 @@ class CryptoUtils {
 
     var p = ASN1Integer(rsaPrivateKey.p);
     var q = ASN1Integer(rsaPrivateKey.q);
-    var dP = rsaPrivateKey.privateExponent! % (rsaPrivateKey.p! - BigInt.from(1));
+    var dP =
+        rsaPrivateKey.privateExponent! % (rsaPrivateKey.p! - BigInt.from(1));
     var exp1 = ASN1Integer(dP);
-    var dQ = rsaPrivateKey.privateExponent! % (rsaPrivateKey.q! - BigInt.from(1));
+    var dQ =
+        rsaPrivateKey.privateExponent! % (rsaPrivateKey.q! - BigInt.from(1));
     var exp2 = ASN1Integer(dQ);
     var iQ = rsaPrivateKey.q!.modInverse(rsaPrivateKey.p!);
     var co = ASN1Integer(iQ);
@@ -298,9 +300,11 @@ class CryptoUtils {
     var privateExponent = ASN1Integer(rsaPrivateKey.privateExponent);
     var p = ASN1Integer(rsaPrivateKey.p);
     var q = ASN1Integer(rsaPrivateKey.q);
-    var dP = rsaPrivateKey.privateExponent! % (rsaPrivateKey.p! - BigInt.from(1));
+    var dP =
+        rsaPrivateKey.privateExponent! % (rsaPrivateKey.p! - BigInt.from(1));
     var exp1 = ASN1Integer(dP);
-    var dQ = rsaPrivateKey.privateExponent! % (rsaPrivateKey.q! - BigInt.from(1));
+    var dQ =
+        rsaPrivateKey.privateExponent! % (rsaPrivateKey.q! - BigInt.from(1));
     var exp2 = ASN1Integer(dQ);
     var iQ = rsaPrivateKey.q!.modInverse(rsaPrivateKey.p!);
     var co = ASN1Integer(iQ);
@@ -432,7 +436,8 @@ class CryptoUtils {
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
     var publicKeyBitString = topLevelSeq.elements![1] as ASN1BitString;
 
-    var publicKeyAsn = ASN1Parser(publicKeyBitString.stringValues as Uint8List?);
+    var publicKeyAsn =
+        ASN1Parser(publicKeyBitString.stringValues as Uint8List?);
     var publicKeySeq = publicKeyAsn.nextObject() as ASN1Sequence;
     var modulus = publicKeySeq.elements![0] as ASN1Integer;
     var exponent = publicKeySeq.elements![1] as ASN1Integer;
@@ -490,8 +495,8 @@ class CryptoUtils {
     var privateKey = ASN1OctetString(octets: privateKeyAsBytes);
     var choice = ASN1Sequence(tag: 0xA0);
 
-    choice
-        .add(ASN1ObjectIdentifier.fromName(ecPrivateKey.parameters!.domainName));
+    choice.add(
+        ASN1ObjectIdentifier.fromName(ecPrivateKey.parameters!.domainName));
 
     var publicKey = ASN1Sequence(tag: 0xA1);
 
@@ -527,7 +532,7 @@ class CryptoUtils {
     algorithm.add(ASN1ObjectIdentifier.fromName('ecPublicKey'));
     algorithm.add(ASN1ObjectIdentifier.fromName('prime256v1'));
     var encodedBytes = publicKey.Q!.getEncoded(false);
-    
+
     var subjectPublicKey = ASN1BitString(stringValues: encodedBytes);
 
     outer.add(algorithm);
@@ -624,13 +629,16 @@ class CryptoUtils {
     var x = pubBytes.sublist(1, (pubBytes.length / 2).round());
     var y = pubBytes.sublist(1 + x.length, pubBytes.length);
     var params = ECDomainParameters(curveName);
-    var bigX = decodeBigIntWithSign(1,x);
-    var bigY = decodeBigIntWithSign(1,y);
+    var bigX = decodeBigIntWithSign(1, x);
+    var bigY = decodeBigIntWithSign(1, y);
     var pubKey = ECPublicKey(
-        ecc_fp.ECPoint(params.curve as ecc_fp.ECCurve, params.curve.fromBigInteger(bigX) as ecc_fp.ECFieldElement?,
-            params.curve.fromBigInteger(bigY) as ecc_fp.ECFieldElement?, compressed),
+        ecc_fp.ECPoint(
+            params.curve as ecc_fp.ECCurve,
+            params.curve.fromBigInteger(bigX) as ecc_fp.ECFieldElement?,
+            params.curve.fromBigInteger(bigY) as ecc_fp.ECFieldElement?,
+            compressed),
         params);
-        return pubKey;
+    return pubKey;
   }
 
   ///
@@ -674,11 +682,11 @@ class CryptoUtils {
   ///
   static Uint8List rsaSign(RSAPrivateKey privateKey, Uint8List dataToSign,
       {String algorithmName = 'SHA-256/RSA'}) {
-    var signer = Signer(algorithmName);
+    var signer = Signer(algorithmName) as RSASigner;
 
     signer.init(true, PrivateKeyParameter<RSAPrivateKey>(privateKey));
 
-    var sig = signer.generateSignature(dataToSign) as RSASignature;
+    var sig = signer.generateSignature(dataToSign);
 
     return sig.bytes;
   }
@@ -712,6 +720,50 @@ class CryptoUtils {
 
     try {
       return verifier.verifySignature(signedData, sig);
+    } on ArgumentError {
+      return false;
+    }
+  }
+
+  ///
+  /// Signing the given [dataToSign] with the given [privateKey].
+  ///
+  /// The default [algorithm] used is **SHA-1/ECDSA**. All supported algorihms are :
+  ///
+  /// * SHA-1/ECDSA
+  /// * SHA-1/DET-ECDSA
+  ///
+  static ECSignature ecSign(ECPrivateKey privateKey, Uint8List dataToSign,
+      {String algorithmName = 'SHA-1/ECDSA'}) {
+    var signer = Signer(algorithmName) as ECDSASigner;
+
+    var params = ParametersWithRandom(
+        PrivateKeyParameter<ECPrivateKey>(privateKey), _getSecureRandom());
+    signer.init(true, params);
+
+    var sig = signer.generateSignature(dataToSign) as ECSignature;
+
+    return sig;
+  }
+
+  ///
+  /// Verifying the given [signedData] with the given [publicKey] and the given [signature].
+  /// Will return **true** if the given [signature] matches the [signedData].
+  ///
+  /// The default [algorithm] used is **SHA-1/ECDSA**. All supported algorihms are :
+  ///
+  /// * SHA-1/ECDSA
+  /// * SHA-1/DET-ECDSA
+  ///
+  static bool ecVerify(
+      ECPublicKey publicKey, Uint8List signedData, ECSignature signature,
+      {String algorithm = 'SHA-1/ECDSA'}) {
+    final verifier = Signer(algorithm) as ECDSASigner;
+
+    verifier.init(false, PublicKeyParameter<ECPublicKey>(publicKey));
+
+    try {
+      return verifier.verifySignature(signedData, signature);
     } on ArgumentError {
       return false;
     }
