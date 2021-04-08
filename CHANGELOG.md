@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.0.0]
+
+* Improve CryptoUtils, added ECC sign and verify
+* Added new unit tests
+
 ## [3.0.0-nullsafety.2]
 
 * Improve DNSUtils

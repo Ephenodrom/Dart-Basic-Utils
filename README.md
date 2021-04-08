@@ -38,14 +38,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^2.7.1
-```
-
-Or use the nullsafety preview version.
-
-```yaml
-dependencies:
-  basic_utils: ^3.0.0-null-safety.2
+  basic_utils: ^3.0.0
 ```
 
 ## Import
@@ -262,6 +255,8 @@ RSAPublicKey rsaPublicKeyFromPemPkcs1(String pem);
 RSAPrivateKey rsaPrivateKeyFromPemPkcs1(String pem);
 RSAPublicKey rsaPublicKeyFromDERBytesPkcs1(Uint8List bytes);
 RSAPrivateKey rsaPrivateKeyFromDERBytesPkcs1(Uint8List bytes);
+ECSignature ecSign(ECPrivateKey privateKey, Uint8List dataToSign, {String algorithmName = 'SHA-1/ECDSA'});
+bool ecVerify(ECPublicKey publicKey, Uint8List signedData, ECSignature signature, {String algorithm = 'SHA-1/ECDSA'}); 
 ```
 
 ## Changelog
