@@ -731,7 +731,15 @@ class CryptoUtils {
   /// The default [algorithm] used is **SHA-1/ECDSA**. All supported algorihms are :
   ///
   /// * SHA-1/ECDSA
+  /// * SHA-224/ECDSA
+  /// * SHA-256/ECDSA
+  /// * SHA-384/ECDSA
+  /// * SHA-512/ECDSA
   /// * SHA-1/DET-ECDSA
+  /// * SHA-224/DET-ECDSA
+  /// * SHA-256/DET-ECDSA
+  /// * SHA-384/DET-ECDSA
+  /// * SHA-512/DET-ECDSA
   ///
   static ECSignature ecSign(ECPrivateKey privateKey, Uint8List dataToSign,
       {String algorithmName = 'SHA-1/ECDSA'}) {
@@ -753,7 +761,15 @@ class CryptoUtils {
   /// The default [algorithm] used is **SHA-1/ECDSA**. All supported algorihms are :
   ///
   /// * SHA-1/ECDSA
+  /// * SHA-224/ECDSA
+  /// * SHA-256/ECDSA
+  /// * SHA-384/ECDSA
+  /// * SHA-512/ECDSA
   /// * SHA-1/DET-ECDSA
+  /// * SHA-224/DET-ECDSA
+  /// * SHA-256/DET-ECDSA
+  /// * SHA-384/DET-ECDSA
+  /// * SHA-512/DET-ECDSA
   ///
   static bool ecVerify(
       ECPublicKey publicKey, Uint8List signedData, ECSignature signature,
