@@ -150,7 +150,6 @@ class DnsUtils {
   static String toBind(RRecord record) {
     var sb = StringBuffer();
     sb.write(record.name);
-    sb.write('.');
     if (sb.length < 8) {
       sb.write('\t');
     }

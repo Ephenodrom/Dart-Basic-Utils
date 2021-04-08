@@ -36,7 +36,7 @@ void main() {
 
   test('Test toBind', () async {
     var r =
-        RRecord(name: 'foo.bar.de', rType: 16, ttl: 300, data: 'helloWorld');
+        RRecord(name: 'foo.bar.de.', rType: 16, ttl: 300, data: 'helloWorld');
     var bind = DnsUtils.toBind(r);
     expect(bind, 'foo.bar.de.\t\t300\tIN\tTXT\t\"helloWorld\"');
   });
