@@ -128,7 +128,7 @@ packages:
     source: hosted
     version: "1.15.0"
   convert:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: convert
       url: "https://pub.dartlang.org"
@@ -142,7 +142,7 @@ packages:
     source: hosted
     version: "0.15.2"
   crypto:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: crypto
       url: "https://pub.dartlang.org"

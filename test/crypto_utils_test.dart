@@ -290,4 +290,51 @@ bjBqILerN9h2zFj3Fi+DdT0=
     valid = CryptoUtils.ecVerify(pubKey, bytes, signature);
     expect(valid, false);
   });
+
+  test('Test ecSign / ecVerify', () {
+    var pair = CryptoUtils.generateEcKeyPair();
+    var privKey = pair.privateKey as ECPrivateKey;
+    var pubKey = pair.publicKey as ECPublicKey;
+    var toSign = 'Hello World! This is Jon Doe.';
+
+    var bytes = Uint8List.fromList(toSign.codeUnits);
+
+    var signature = CryptoUtils.ecSign(privKey, bytes);
+    var valid = CryptoUtils.ecVerify(pubKey, bytes, signature);
+
+    expect(valid, true);
+
+    toSign = 'Hello World! This is Jane Doe.';
+
+    bytes = Uint8List.fromList(toSign.codeUnits);
+    valid = CryptoUtils.ecVerify(pubKey, bytes, signature);
+    expect(valid, false);
+  });
+
+  test('Test getHash', () {
+    var bytes = Uint8List.fromList('Hello World'.codeUnits);
+    expect(CryptoUtils.getHash(bytes, algorithmName: 'SHA-1'),
+        '0A4D55A8D778E5022FAB701977C5D840BBC486D0');
+
+    expect(CryptoUtils.getHash(bytes, algorithmName: 'SHA-224'),
+        'C4890FAFFDB0105D991A461E668E276685401B02EAB1EF4372795047');
+
+    expect(CryptoUtils.getHash(bytes, algorithmName: 'SHA-256'),
+        'A591A6D40BF420404A011733CFB7B190D62C65BF0BCDA32B57B277D9AD9F146E');
+
+    expect(CryptoUtils.getHash(bytes, algorithmName: 'SHA-384'),
+        '99514329186B2F6AE4A1329E7EE6C610A729636335174AC6B740F9028396FCC803D0E93863A7C3D90F86BEEE782F4F3F');
+
+    expect(CryptoUtils.getHash(bytes, algorithmName: 'SHA-512'),
+        '2C74FD17EDAFD80E8447B0D46741EE243B7EB74DD2149A0AB1B9246FB30382F27E853D8585719E0E67CBDA0DAA8F51671064615D645AE27ACB15BFB1447F459B');
+
+    expect(CryptoUtils.getHash(bytes, algorithmName: 'MD5'),
+        'B10A8DB164E0754105B7A99BE72E3FE5');
+
+    expect(CryptoUtils.getHash(bytes, algorithmName: 'SHA-512/224'),
+        'FECA41095C80A571AE782F96BCEF9AB81BDF0182509A6844F32C4C17');
+
+    expect(CryptoUtils.getHash(bytes, algorithmName: 'SHA-512/256'),
+        'FF20018851481C25BFC2E5D0C1E1FA57DAC2A237A1A96192F99A10DA47AA5442');
+  });
 }

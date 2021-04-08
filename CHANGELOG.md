@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.0.1]
+
+* Improve CryptoUtils, added getHash method.
+* Added new unit tests
+
 ## [3.0.0]
 
 * Improve CryptoUtils, added ECC sign and verify

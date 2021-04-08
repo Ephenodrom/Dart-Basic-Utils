@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:crypto/crypto.dart';
+import 'package:crypto/crypto.dart' as crypto;
 import 'package:pointycastle/asn1/object_identifiers.dart';
 import 'package:pointycastle/export.dart';
 import 'package:pointycastle/pointycastle.dart';
@@ -54,25 +54,81 @@ class CryptoUtils {
   ///
   /// Get a SHA1 Thumbprint for the given [bytes].
   ///
+  @Deprecated('Use [getHash]')
   static String getSha1ThumbprintFromBytes(Uint8List bytes) {
-    var digest = sha1.convert(bytes);
-    return digest.toString().toUpperCase();
+    return getHash(bytes, algorithmName: 'SHA-1');
   }
 
   ///
   /// Get a SHA256 Thumbprint for the given [bytes].
   ///
+  @Deprecated('Use [getHash]')
   static String getSha256ThumbprintFromBytes(Uint8List bytes) {
-    var digest = sha256.convert(bytes);
-    return digest.toString().toUpperCase();
+    return getHash(bytes, algorithmName: 'SHA-256');
   }
 
   ///
   /// Get a MD5 Thumbprint for the given [bytes].
   ///
+  @Deprecated('Use [getHash]')
   static String getMd5ThumbprintFromBytes(Uint8List bytes) {
-    var digest = md5.convert(bytes);
-    return digest.toString().toUpperCase();
+    return getHash(bytes, algorithmName: 'MD5');
+  }
+
+  ///
+  /// Get a hash for the given [bytes] using the given [algorithm]
+  ///
+  /// The default [algorithm] used is **SHA-256**. All supported algorihms are :
+  ///
+  /// * SHA-1
+  /// * SHA-224
+  /// * SHA-256
+  /// * SHA-384
+  /// * SHA-512
+  /// * SHA-512/224
+  /// * SHA-512/256
+  /// * MD5
+  ///
+  static String getHash(Uint8List bytes, {String algorithmName = 'SHA-256'}) {
+    Uint8List hash;
+    switch (algorithmName) {
+      case 'SHA-1':
+        hash = Digest('SHA-1').process(bytes);
+        break;
+      case 'SHA-224':
+        hash = Digest('SHA-224').process(bytes);
+        break;
+      case 'SHA-256':
+        hash = Digest('SHA-256').process(bytes);
+        break;
+      case 'SHA-384':
+        hash = Digest('SHA-384').process(bytes);
+        break;
+      case 'SHA-512':
+        hash = Digest('SHA-512').process(bytes);
+        break;
+      case 'SHA-512/224':
+        hash = Digest('SHA-512/224').process(bytes);
+        break;
+      case 'SHA-512/256':
+        hash = Digest('SHA-512/256').process(bytes);
+        break;
+      case 'MD5':
+        hash = Digest('MD5').process(bytes);
+        break;
+      default:
+        throw ArgumentError('Hash not supported');
+    }
+
+    const hexDigits = '0123456789abcdef';
+    var charCodes = Uint8List(hash.length * 2);
+    for (var i = 0, j = 0; i < hash.length; i++) {
+      var byte = hash[i];
+      charCodes[j++] = hexDigits.codeUnitAt((byte >> 4) & 0xF);
+      charCodes[j++] = hexDigits.codeUnitAt(byte & 0xF);
+    }
+
+    return String.fromCharCodes(charCodes).toUpperCase();
   }
 
   ///
