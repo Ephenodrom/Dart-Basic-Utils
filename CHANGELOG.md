@@ -2,12 +2,12 @@
 
 ## [3.0.1]
 
-* Improve CryptoUtils, added getHash method.
+* Improve CryptoUtils, added *getHash()* method.
 * Added new unit tests
 
 ## [3.0.0]
 
-* Improve CryptoUtils, added ECC sign and verify
+* Improve CryptoUtils, added *ecSign()* and *ecVerify()*
 * Added new unit tests
 
 ## [3.0.0-nullsafety.2]

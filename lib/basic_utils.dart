@@ -1,5 +1,6 @@
 library basic_utils;
 
+/// Export model and other stuff
 export 'src/model/CountryCodeList.dart';
 export 'src/model/Domain.dart';
 export 'src/model/EmailAddress.dart';
@@ -17,6 +18,7 @@ export 'src/model/x509/X509CertificateObject.dart';
 export 'src/model/x509/X509CertificateValidity.dart';
 export 'src/model/DnsApiProvider.dart';
 
+// Export util classes
 export 'src/DomainUtils.dart';
 export 'src/EmailUtils.dart';
 export 'src/StringUtils.dart';
@@ -29,3 +31,6 @@ export 'src/DateUtils.dart';
 export 'src/X509Utils.dart';
 export 'src/IterableUtils.dart';
 export 'src/CryptoUtils.dart';
+
+// Export other libraries
+export 'package:pointycastle/export.dart';
