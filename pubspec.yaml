@@ -18,3 +18,4 @@ dev_dependencies:
   json_serializable: ^4.0.2
   pedantic: ^1.10.0
   test: ^1.16.5
+  convert: ^3.0.0
