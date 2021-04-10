@@ -33,4 +33,5 @@ export 'src/IterableUtils.dart';
 export 'src/CryptoUtils.dart';
 
 // Export other libraries
-export 'package:pointycastle/export.dart';
+export 'package:pointycastle/ecc/api.dart';
+export 'package:pointycastle/asymmetric/api.dart';
