@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.0.2]
+
+* Improved package exports
+
 ## [3.0.1]
 
 * Improve CryptoUtils, added *getHash()* method.
