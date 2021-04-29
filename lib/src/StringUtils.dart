@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 ///
 /// Helper class for String operations
@@ -171,7 +172,7 @@ class StringUtils {
   /// Compares the given strings [a] and [b].
   ///
   static bool equalsIgnoreCase(String a, String b) =>
-     a.toLowerCase() == b.toLowerCase();
+      a.toLowerCase() == b.toLowerCase();
 
   ///
   /// Checks if the given [list] contains the string [s]
@@ -289,5 +290,148 @@ class StringUtils {
       chunked.add(s.substring(i, end));
     }
     return chunked;
+  }
+
+  ///
+  /// Picks only required string[value] starting [from] and ending at [to]
+  ///
+  /// Example :
+  /// pickOnly('123456789',from:3,to:7);
+  /// returns '34567'
+  ///
+  static String pickOnly(value, {int from = 1, int to = -1}) {
+    try {
+      return value.substring(
+          from == 0 ? 0 : from - 1, to == -1 ? value.length : to);
+    } catch (e) {
+      return value;
+    }
+  }
+
+  ///
+  /// Removes character with [index] from a String [value]
+  ///
+  /// Example:
+  /// removeCharAtPosition('flutterr', 8);
+  /// returns 'flutter'
+  static String removeCharAtPosition(String value, int index) {
+    try {
+      return value.substring(0, -1 + index) +
+          value.substring(index, value.length);
+    } catch (e) {
+      return value;
+    }
+  }
+
+  ///
+  ///Remove String[value] with [pattern]
+  ///
+  ///[repeat]:boolean => if(true) removes all occurence
+  ///
+  ///[casensitive]:boolean => if(true) a != A
+  ///
+  ///Example: removeExp('Hello This World', 'This'); returns 'Hello World'
+  ///
+  static String removeExp(String value, String pattern,
+      {bool repeat = true, bool casensitive = true, bool multiline = false}) {
+    var result = value;
+    if (repeat) {
+      result = value.replaceAll(
+          RegExp(pattern, caseSensitive: true, multiLine: true), '');
+    } else {
+      result = value.replaceFirst(
+          RegExp(pattern, caseSensitive: true, multiLine: true), '');
+    }
+    return result;
+  }
+
+  ///
+  /// Takes in a String[value] and truncates it with [length]
+  /// [symbol] default is '...'
+  ///truncate('This is a Dart Utility Library', 26)
+  /// returns 'This is a Dart Utility Lib...'
+  static String truncate(String value, int length, {String symbol = '...'}) {
+    var result = value;
+
+    try {
+      result = value.substring(0, length) + symbol;
+    } catch (e) {
+      print(e.toString());
+    }
+    return result;
+  }
+
+  ///Generates a Random string
+  ///
+  ///[length]: length of string,
+  ///
+  ///[alphabet]:(boolean) add alphabet to string[uppercase]ABCD and [lowercase]abcd,
+  ///
+  ///[numeric]:(boolean) add integers to string like 3622737
+  ///
+  ///[special]:(boolean) add special characters like $#@&^
+  ///
+  ///[from]:where you want to generate string from
+  ///
+  static String generateRandomString(int length,
+      {alphabet = true,
+      numeric = true,
+      special = true,
+      uppercase = true,
+      lowercase = true,
+      String from = ''}) {
+    var res = '';
+
+    do {
+      res += randomizer(alphabet, numeric, lowercase, uppercase, special, from);
+    } while (res.length < length);
+
+    var possible = res.split('');
+    possible.shuffle(); //all possible combinations shuffled
+    var result = [];
+
+    for (var i = 0; i < length; i++) {
+      var randomNumber = Random().nextInt(length);
+      result.add(possible[randomNumber]);
+    }
+
+    return result.join();
+  }
+
+  static String randomizer(bool alphabet, bool numeric, bool lowercase,
+      bool uppercase, bool special, String from) {
+    var a = 'ABCDEFGHIJKLMNOPQRXYZ';
+    var la = 'abcdefghijklmnopqrxyz';
+    var b = '0123456789';
+    var c = '~!@#\$%^&*()_+-|\{}';
+    var result = '';
+
+    if (alphabet) {
+      if (lowercase) {
+        result += la;
+      }
+      if (uppercase) {
+        result += a;
+      }
+
+      if (!uppercase && !lowercase) {
+        result += a;
+        result += la;
+      }
+    }
+    if (numeric) {
+      result += b;
+    }
+
+    if (special) {
+      result += c;
+    }
+
+    if (from != '') {
+      //if set return it
+      result = from;
+    }
+
+    return result;
   }
 }
