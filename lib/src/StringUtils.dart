@@ -336,11 +336,17 @@ class StringUtils {
       {bool repeat = true, bool casensitive = true, bool multiline = false}) {
     var result = value;
     if (repeat) {
-      result = value.replaceAll(
-          RegExp(pattern, caseSensitive: true, multiLine: true), '');
+      result = value
+          .replaceAll(
+              RegExp(pattern, caseSensitive: casensitive, multiLine: true), '')
+          .replaceAll(RegExp(' +'), ' ')
+          .trim();
     } else {
-      result = value.replaceFirst(
-          RegExp(pattern, caseSensitive: true, multiLine: true), '');
+      result = value
+          .replaceFirst(
+              RegExp(pattern, caseSensitive: casensitive, multiLine: true), '')
+          .replaceAll(RegExp(' +'), ' ')
+          .trim();
     }
     return result;
   }
@@ -403,7 +409,7 @@ class StringUtils {
     var a = 'ABCDEFGHIJKLMNOPQRXYZ';
     var la = 'abcdefghijklmnopqrxyz';
     var b = '0123456789';
-    var c = '~!@#\$%^&*()_+-|\{}';
+    var c = '~^!@#\$%^&*()_+-|\{}';
     var result = '';
 
     if (alphabet) {
