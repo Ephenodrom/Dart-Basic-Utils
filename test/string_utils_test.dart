@@ -132,4 +132,61 @@ void main() {
     expect(chunked.elementAt(2), 'cccc');
     expect(chunked.elementAt(3), 'dddd');
   });
+
+  test('Test Pick Only', () {
+    expect(StringUtils.pickOnly('123456789'), '123456789');
+    expect(StringUtils.pickOnly('123456789', from: 3, to: 8), '345678');
+    expect(StringUtils.pickOnly('123456789', to: 5), '12345');
+    expect(StringUtils.pickOnly('123456789', from: 7), '789');
+  });
+
+  test('Test Remove Character at Position', () {
+    expect(StringUtils.removeCharAtPosition('flutterr', 8), 'flutter');
+    expect(StringUtils.removeCharAtPosition('iintel', 1), 'intel');
+    expect(StringUtils.removeCharAtPosition('strinng', 5), 'string');
+  });
+
+  test('Test Remove Pattern', () {
+    expect(StringUtils.removeExp('Hello This World', 'This'), 'Hello World');
+    expect(StringUtils.removeExp('All all all', 'all'), 'All');
+    expect(
+        StringUtils.removeExp('All all all', 'all', repeat: false), 'All all');
+    expect(StringUtils.removeExp('All all all', 'all', casensitive: false), '');
+  });
+
+  test('Test Truncate', () {
+    expect(StringUtils.truncate('This is a Dart Utility Library', 26),
+        'This is a Dart Utility Lib...');
+    expect(
+        StringUtils.truncate('This is a Dart Utility Library', 26,
+            symbol: '***'),
+        'This is a Dart Utility Lib***');
+  });
+
+  test('Test Generate Random String', () {
+    var testing1 = StringUtils.generateRandomString(10);
+    expect(testing1, testing1.length == 10 ? testing1 : false);
+
+    var testing2 =
+        StringUtils.generateRandomString(5, from: '1234565fhshsbAJSJSSU');
+    expect(testing2, testing2.length == 5 ? testing2 : false);
+
+    var isAlphabetInly =
+        StringUtils.generateRandomString(20, numeric: false, special: false);
+    expect(RegExp(r'^[a-zA-Z]+$').hasMatch(isAlphabetInly), true);
+
+    var isNumericOnly =
+        StringUtils.generateRandomString(20, alphabet: false, special: false);
+    expect(RegExp(r'^[0-9]+$').hasMatch(isNumericOnly), true);
+
+    var isAlphaNumericOInly = StringUtils.generateRandomString(
+      20,
+      special: false,
+    );
+    expect(RegExp(r'^[a-zA-Z0-9]+$').hasMatch(isAlphaNumericOInly), true);
+
+    var isSpecialOnly =
+        StringUtils.generateRandomString(20, numeric: false, alphabet: false);
+    expect(!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(isSpecialOnly), true);
+  });
 }
