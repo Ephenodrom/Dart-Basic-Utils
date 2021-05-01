@@ -405,6 +405,6 @@ void main() {
     expect(test1 <= 100, true);
 
     var test2 = MathUtils.getRandomNumber(max: 150, min: 10);
-    expect(test2 <= 100 && test2 >= 10, true);
+    expect(test2 <= 150 && test2 >= 10, true);
   });
 }
