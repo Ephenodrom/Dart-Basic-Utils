@@ -151,7 +151,8 @@ void main() {
     expect(StringUtils.removeExp('All all all', 'all'), 'All');
     expect(
         StringUtils.removeExp('All all all', 'all', repeat: false), 'All all');
-    expect(StringUtils.removeExp('All all all', 'all', casensitive: false), '');
+    expect(
+        StringUtils.removeExp('All all all', 'all', caseSensitive: false), '');
   });
 
   test('Test Truncate', () {

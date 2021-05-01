@@ -334,7 +334,7 @@ class StringUtils {
   ///
   static String removeExp(String value, String pattern,
       {bool repeat = true,
-      bool casensitive = true,
+      bool caseSensitive = true,
       bool multiLine = false,
       bool dotAll = false,
       bool unicode = false}) {
@@ -343,7 +343,7 @@ class StringUtils {
       result = value
           .replaceAll(
               RegExp(pattern,
-                  caseSensitive: casensitive,
+                  caseSensitive: caseSensitive,
                   multiLine: multiLine,
                   dotAll: dotAll,
                   unicode: unicode),
@@ -354,7 +354,7 @@ class StringUtils {
       result = value
           .replaceFirst(
               RegExp(pattern,
-                  caseSensitive: casensitive,
+                  caseSensitive: caseSensitive,
                   multiLine: multiLine,
                   dotAll: dotAll,
                   unicode: unicode),
