@@ -333,18 +333,32 @@ class StringUtils {
   ///Example: removeExp('Hello This World', 'This'); returns 'Hello World'
   ///
   static String removeExp(String value, String pattern,
-      {bool repeat = true, bool casensitive = true, bool multiline = false}) {
+      {bool repeat = true,
+      bool casensitive = true,
+      bool multiLine = false,
+      bool dotAll = false,
+      bool unicode = false}) {
     var result = value;
     if (repeat) {
       result = value
           .replaceAll(
-              RegExp(pattern, caseSensitive: casensitive, multiLine: true), '')
+              RegExp(pattern,
+                  caseSensitive: casensitive,
+                  multiLine: multiLine,
+                  dotAll: dotAll,
+                  unicode: unicode),
+              '')
           .replaceAll(RegExp(' +'), ' ')
           .trim();
     } else {
       result = value
           .replaceFirst(
-              RegExp(pattern, caseSensitive: casensitive, multiLine: true), '')
+              RegExp(pattern,
+                  caseSensitive: casensitive,
+                  multiLine: multiLine,
+                  dotAll: dotAll,
+                  unicode: unicode),
+              '')
           .replaceAll(RegExp(' +'), ' ')
           .trim();
     }
@@ -409,7 +423,7 @@ class StringUtils {
     var a = 'ABCDEFGHIJKLMNOPQRXYZ';
     var la = 'abcdefghijklmnopqrxyz';
     var b = '0123456789';
-    var c = '~^!@#\$%^&*()_+-|\{}';
+    var c = '~^!@#\$%^&*;`(=?]:[.)_+-|\{}';
     var result = '';
 
     if (alphabet) {
