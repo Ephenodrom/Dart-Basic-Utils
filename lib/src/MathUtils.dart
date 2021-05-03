@@ -303,4 +303,9 @@ class MathUtils {
   ///
   static double round(double value, int decimals) =>
       (value * pow(10, decimals)).round() / pow(10, decimals);
+
+  ///
+  ///Generates random between be [min] and [max]
+  static int getRandomNumber({int min = 0, int max = 999999999999}) =>
+      min + Random().nextInt(max - min);
 }

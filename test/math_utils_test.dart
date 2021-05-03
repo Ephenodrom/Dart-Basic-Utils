@@ -342,8 +342,8 @@ void main() {
 
   test('Test convertUnit with attometer', () {
     expect(
-        MathUtils.convertUnit(
-            pow(10.0, 21) as double, LengthUnits.attometer, LengthUnits.kilometer),
+        MathUtils.convertUnit(pow(10.0, 21) as double, LengthUnits.attometer,
+            LengthUnits.kilometer),
         1);
     expect(
         MathUtils.convertUnit(
@@ -395,5 +395,16 @@ void main() {
     expect(MathUtils.round(0.3426, 2), 0.34);
     expect(MathUtils.round(0.3426, 3), 0.343);
     expect(MathUtils.round(0.3426, 4), 0.3426);
+  });
+
+  test('Test Random Number', () {
+    expect(RegExp(r'^[0-9]+$').hasMatch(MathUtils.getRandomNumber().toString()),
+        true);
+
+    var test1 = MathUtils.getRandomNumber(max: 100);
+    expect(test1 <= 100, true);
+
+    var test2 = MathUtils.getRandomNumber(max: 150, min: 10);
+    expect(test2 <= 150 && test2 >= 10, true);
   });
 }

@@ -126,6 +126,7 @@ double convertUnit(double value, LengthUnits sourceUnit, LengthUnits targetUnit)
 double calculateMixingTemperature(double mA, double tA, double mB, double tB,{double? cA, double? cB});
 num mean(List<num> l);
 double round(double value, int decimals);
+int getRandomNumber({int min = 0, int max = 999999999999});
 ```
 
 ### HttpUtils
