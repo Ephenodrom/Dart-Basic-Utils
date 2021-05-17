@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.1.0] - 2020-05-17
+
+* Improved StringUtils
+* Improved MathUtils
+
 ## [3.0.2]
 
 * Improved package exports
