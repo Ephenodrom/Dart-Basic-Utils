@@ -38,7 +38,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^3.1.0
+  basic_utils: ^3.2.0
 ```
 
 ## Import
@@ -212,6 +212,7 @@ String encodeASN1ObjectToPem(ASN1Object asn1Object, String begin, String end);
 RSAPrivateKey privateKeyFromASN1Sequence(ASN1Sequence asnSequence);
 ASN1Object encodeDN(Map<String, String> dn);
 X509CertificateData x509CertificateFromPem(String pem);
+Pkcs7CertificateData pkcs7fromPem(String pem);
 ```
 
 ### IterableUtils

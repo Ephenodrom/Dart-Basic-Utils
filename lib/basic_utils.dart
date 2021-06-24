@@ -13,6 +13,7 @@ export 'src/model/RRecordType.dart';
 export 'src/model/RRecord.dart';
 export 'src/model/ResolveResponse.dart';
 export 'src/model/HttpRequestReturnType.dart';
+export 'src/model/pkcs7/Pkcs7CertificateData.dart';
 export 'src/model/x509/X509CertificateData.dart';
 export 'src/model/x509/X509CertificateObject.dart';
 export 'src/model/x509/X509CertificateValidity.dart';

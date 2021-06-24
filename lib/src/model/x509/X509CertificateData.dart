@@ -29,13 +29,13 @@ class X509CertificateData {
   Map<String, String?> subject;
 
   /// The sha1 thumbprint for the certificate
-  String sha1Thumbprint;
+  String? sha1Thumbprint;
 
   /// The sha256 thumbprint for the certificate
-  String sha256Thumbprint;
+  String? sha256Thumbprint;
 
   /// The md5 thumbprint for the certificate
-  String md5Thumbprint;
+  String? md5Thumbprint;
 
   /// The public key data from the certificate
   X509CertificatePublicKeyData publicKeyData;
@@ -44,7 +44,7 @@ class X509CertificateData {
   List<String>? subjectAlternativNames;
 
   /// The plain certificate pem string, that was used to decode.
-  String plain;
+  String? plain;
 
   X509CertificateData(
       {required this.version,
@@ -53,12 +53,12 @@ class X509CertificateData {
       required this.issuer,
       required this.validity,
       required this.subject,
-      required this.sha1Thumbprint,
-      required this.sha256Thumbprint,
-      required this.md5Thumbprint,
+      this.sha1Thumbprint,
+      this.sha256Thumbprint,
+      this.md5Thumbprint,
       required this.publicKeyData,
       required this.subjectAlternativNames,
-      required this.plain});
+      this.plain});
 
   /*
    * Json to X509CertificateData object

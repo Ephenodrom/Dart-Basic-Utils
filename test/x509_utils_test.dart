@@ -9,7 +9,6 @@ import 'package:test/test.dart';
 import '../lib/src/CryptoUtils.dart';
 
 void main() {
-
   var csr = '''-----BEGIN CERTIFICATE REQUEST-----
 MIICvzCCAacCAQAwejELMAkGA1UEBhMCREUxEjAQBgNVBAgMCUZha2VzdGF0ZTER
 MA8GA1UEBwwIRmFrZXRvd24xEzARBgNVBAoMCkVwaGVub2Ryb20xFTATBgNVBAsM
@@ -299,6 +298,97 @@ FcpEAZ/1tcQxzk7b4aDCqxSyQwTh6SupRDXECUcZbgogXYKLoO0wuy9jWYEBcswC
 Q7FVCLc4EFPwz9tkdLE2N13o
 -----END CERTIFICATE-----''';
 
+  var pkcs7 = '''-----BEGIN PKCS7-----
+MIIQcAYJKoZIhvcNAQcCoIIQYTCCEF0CAQExADALBgkqhkiG9w0BBwGgghBFMIIG
+NDCCBRygAwIBAgIQA5d+S+3rXyfS19Bvm94qCTANBgkqhkiG9w0BAQsFADBlMQsw
+CQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cu
+ZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBTSEEyIEFzc3VyZWQgSUQg
+Q0EwHhcNMjAxMDE2MDAwMDAwWhcNMjExMDEzMjM1OTU5WjBQMSMwIQYDVQQDDBpk
+cG0tcHRzcEBqYXlhcHVyYWthYi5nby5pZDEpMCcGCSqGSIb3DQEJARYaZHBtLXB0
+c3BAamF5YXB1cmFrYWIuZ28uaWQwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIK
+AoICAQC/wFGpi9AwmkSyywd0wt7eeEiLRwV3cVeCy04RVqucsRNEUTzqEPyiqmWY
+pJqLxwGpWwXZoNvFcBLW64Rw1ztLlm77tD+RAPNhzJLU26wLwIMDzAk/l9GJJGof
++FydLeVNv08DRcgUhrxhVfINxdLVGTAUAct6rUqNONoJuArbpHEyqrpIyOlMP9I2
+6R5Z5l9zHja54xV/IBjd2PLGfVyS7yK5xpVD5DBBY1HSrmpv2VLQqHgj2FjN09gi
+YARD3KBLiFFe+Nrfz9ZE2PaVnTSQuGpqNc2AKo+kWCpDkP5JhqXGcegze1SmktyD
+xsZlahQl9HoqT2AXqV50sTkpYoJ6lXej2QJmIohgCZ4P9sea/m2nGl98a6N2dDjH
+ip4Z0aiNd3pxBNWSDZzSLBErmMqHk593igFQAlSl++XmWEXcjPu1a9W5G8dnKx3F
+mh82INvhcRBV2GOcyrUtuwq1/pNVCHj5TZI6nOJZvCLZ5+YjlTBei+WYs0JLt9mi
+DMqlNl9S5Ne4VzSO8gFlNVmi5Pq0Qd5SbBwpNH6uX4t3XBdgbpjl3iUzmITCwOXr
+83bYW4UO3vM4cvUVvpV1Xfi9mzn98SEkO/pVlMriEIyIPPGQUo2rHyDqu8K9cVjv
+UVvn3VCOksrWu4IAQ7IgIPXIz5w1ZdvzTX2CoUt7i1lwIgFhPwIDAQABo4IB8zCC
+Ae8wHwYDVR0jBBgwFoAU5wIjgABP2Ne8lAvZP3Q5STI8inkwHQYDVR0OBBYEFOTE
+Vh4L+uhI5dqscptHTaHKfCJAMAwGA1UdEwEB/wQCMAAwJQYDVR0RBB4wHIEaZHBt
+LXB0c3BAamF5YXB1cmFrYWIuZ28uaWQwDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQW
+MBQGCCsGAQUFBwMEBggrBgEFBQcDAjBDBgNVHSAEPDA6MDgGCmCGSAGG/WwEAQEw
+KjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuZGlnaWNlcnQuY29tL0NQUzCBiAYD
+VR0fBIGAMH4wPaA7oDmGN2h0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2Vy
+dFNIQTJBc3N1cmVkSURDQS1nMy5jcmwwPaA7oDmGN2h0dHA6Ly9jcmw0LmRpZ2lj
+ZXJ0LmNvbS9EaWdpQ2VydFNIQTJBc3N1cmVkSURDQS1nMy5jcmwweQYIKwYBBQUH
+AQEEbTBrMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wQwYI
+KwYBBQUHMAKGN2h0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydFNI
+QTJBc3N1cmVkSURDQS5jcnQwDQYJKoZIhvcNAQELBQADggEBAFAWK/KzQwm3zSTO
+t++g639QFmTcdK8AFHBbzB8cl44XaXBce4CwqsMF+7sMw58ehWFkzU9ogxbYiUdm
+/u04DWdMIH+gdg3d7DFfT7D0UGRAnHJYbdfGSCVHI8pfgFz9Q52+NPbykcAyLd4Z
+xO97qqmq+7Xuqp+j1JdmrwTtuqkDNc4wr+ET4ibuqWbcYSGxM3/fpV2MGSp5OTY6
+qHu0eLB6ogCJMwr4/cpgtm70NkPqeM3KQI1usTwU5z09vrHhl/1cGfauCNCow927
+UzcQLh7HMeo9DWZ4cDVUBw+lczfEgAUU1DqWKr3PLYenmc8g1APaqfW4cStwcQ/G
+s+8JTj8wggZOMIIFNqADAgECAhAErnlgZmaQGrnFf6ZsW9zNMA0GCSqGSIb3DQEB
+CwUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNV
+BAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQg
+SUQgUm9vdCBDQTAeFw0xMzExMDUxMjAwMDBaFw0yODExMDUxMjAwMDBaMGUxCzAJ
+BgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5k
+aWdpY2VydC5jb20xJDAiBgNVBAMTG0RpZ2lDZXJ0IFNIQTIgQXNzdXJlZCBJRCBD
+QTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANz4ESM/arXvwCd5Gy0F
+h6IQQzHfDtQVG093pCLOPoxw8L4Hjt0nKrwBHbYsCsrdaVgfQe1qBR/aY3hZHiIs
+K/i6fsk1O1bxH3xCfiWwIxnGRTjXPUT5IHxgrhywWhgEvo8796nwlJqmDGNJtkEX
+U0AyvU/mUHpQHyVF6PGJr83/Xv9Q8/AXEf+9xYn1vWK52PuORQSFbZnNxUhN/Sar
+AjZF6jbXX2riGoJBCtzp2fWRF47GIa04PBPmHn9mnNVN2Uba9s9Sp307JMO0wVE1
+xpvr1O9+5HsD4US9egs34E/LgooNcRjkpuCJLBvzsnM8wbCSnhh9vat9xX0IoSzC
+n3MCAwEAAaOCAvgwggL0MBIGA1UdEwEB/wQIMAYBAf8CAQAwDgYDVR0PAQH/BAQD
+AgGGMDQGCCsGAQUFBwEBBCgwJjAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGln
+aWNlcnQuY29tMIGBBgNVHR8EejB4MDqgOKA2hjRodHRwOi8vY3JsNC5kaWdpY2Vy
+dC5jb20vRGlnaUNlcnRBc3N1cmVkSURSb290Q0EuY3JsMDqgOKA2hjRodHRwOi8v
+Y3JsMy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURSb290Q0EuY3JsMB0G
+A1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDCCAbMGA1UdIASCAaowggGmMIIB
+ogYKYIZIAYb9bAACBDCCAZIwKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2lj
+ZXJ0LmNvbS9DUFMwggFkBggrBgEFBQcCAjCCAVYeggFSAEEAbgB5ACAAdQBzAGUA
+IABvAGYAIAB0AGgAaQBzACAAQwBlAHIAdABpAGYAaQBjAGEAdABlACAAYwBvAG4A
+cwB0AGkAdAB1AHQAZQBzACAAYQBjAGMAZQBwAHQAYQBuAGMAZQAgAG8AZgAgAHQA
+aABlACAARABpAGcAaQBDAGUAcgB0ACAAQwBQAC8AQwBQAFMAIABhAG4AZAAgAHQA
+aABlACAAUgBlAGwAeQBpAG4AZwAgAFAAYQByAHQAeQAgAEEAZwByAGUAZQBtAGUA
+bgB0ACAAdwBoAGkAYwBoACAAbABpAG0AaQB0ACAAbABpAGEAYgBpAGwAaQB0AHkA
+IABhAG4AZAAgAGEAcgBlACAAaQBuAGMAbwByAHAAbwByAGEAdABlAGQAIABoAGUA
+cgBlAGkAbgAgAGIAeQAgAHIAZQBmAGUAcgBlAG4AYwBlAC4wHQYDVR0OBBYEFOcC
+I4AAT9jXvJQL2T90OUkyPIp5MB8GA1UdIwQYMBaAFEXroq/0ksuCMS1Ri6enIZ3z
+bcgPMA0GCSqGSIb3DQEBCwUAA4IBAQBO1Iknuf0dh3d+DygFkPEKL8k7Pr2TnJDG
+r/qRUYcyVGvoysFxUVyZjrX64GIZmaYHmnwTJ9vlAqKEEtkV9gpEV8Q0j21zHzrW
+oAE93uOC5EVrsusl/YBeHTmQvltC9s6RYOP5oFYMSBDOM2h7zZOr8GrLT1gPuXtd
+GwSBnqci4ldJJ+6Skwi+aQhTAjouXcgZ9FCATgLZsF2RtJOH+ZaWgVVAjmbtgti7
+KF/tTGHtBlgoGVMRRLxHICmyBGzYiVSZO3XbZ3gsHpJ4xlU9WBIRMm69QwxNNNt7
+xkLb7L6rm2FMBpLjjt8hKlBXBMBgojXVJJ5mNwlJz9X4ZbPg4m7CMIIDtzCCAp+g
+AwIBAgIQDOfg5RfYRv6P5WD8G/AwOTANBgkqhkiG9w0BAQUFADBlMQswCQYDVQQG
+EwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNl
+cnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVkIElEIFJvb3QgQ0EwHhcN
+MDYxMTEwMDAwMDAwWhcNMzExMTEwMDAwMDAwWjBlMQswCQYDVQQGEwJVUzEVMBMG
+A1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSQw
+IgYDVQQDExtEaWdpQ2VydCBBc3N1cmVkIElEIFJvb3QgQ0EwggEiMA0GCSqGSIb3
+DQEBAQUAA4IBDwAwggEKAoIBAQCtDhXO5EOAXLGH87dg+XESpa7cJpSIqvTO9SA5
+KFhgDPiA2qkVlTJhPLWxKISKityfCgyDF3qPkKyK53lTXDGEKvYPmDI2dsze3Tyo
+ou9q+yHyUmHfnyDXH+Kx2f4YZNISW1/5WBg1vEfNoTb5a3/UsDg+wRvDjDPZ2C8Y
+/igPs6eD1sNuRMBhNZYW/lmci3Zt1/GiSw0r/wty2p5g0I6QNcZ4VYcgoc/lbQrI
+SXwxmDNsIumH0DJaoroTghHtORedmTpyoeb6pNnVFzF1roV9Iq4/AUaG9ih5yLHa
+5FcXxH4cDrC0kqZWs72yl+2qp/C3xag/lRbQ/6GW6whfGHdPAgMBAAGjYzBhMA4G
+A1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRF66Kv9JLL
+gjEtUYunpyGd823IDzAfBgNVHSMEGDAWgBRF66Kv9JLLgjEtUYunpyGd823IDzAN
+BgkqhkiG9w0BAQUFAAOCAQEAog683+Lt8ONyc3pklL/3cmbYMuRCdWKuh+vy1dne
+VrOfzM4UKLkNl2BcEkxY5NM9g0lFWJc1aRqoR+pWxnmrEthngYTffwk8lOa4Jiwg
+vT2zKIn3X/8i4peEH+ll74fg38FnSbNd67IJKusm7Xi+fT8r87cmNW1fiQG2SVuf
+AQWbqz0lwcy2f8Lxb4bG+mRo64EtlOtCt/qMHt1i8b5QZ7dsvfPxH2sMNgcWfzd8
+qVttevESRmCD1ycEvkvOl77DZypoEd+A5wwzZr8TDRRu838fYxAe+o0bJW1sj6W3
+YQGx0qMmoRBxna3iw/nDmVG3KwcIzi7mULKn+gpFL6Lw8jEA
+-----END PKCS7-----''';
+
   test('Test getBytesFromPEMString', () {
     var bytes = CryptoUtils.getBytesFromPEMString(csr);
     var formatted = X509Utils.formatKeyString(
@@ -326,8 +416,9 @@ Q7FVCLc4EFPwz9tkdLE2N13o
 
   test('Test privateKeyFromASN1Sequence', () {
     var pair = CryptoUtils.generateRSAKeyPair();
-  
-    var privateKey = CryptoUtils.encodeRSAPrivateKeyToPem(pair.privateKey as RSAPrivateKey);
+
+    var privateKey =
+        CryptoUtils.encodeRSAPrivateKeyToPem(pair.privateKey as RSAPrivateKey);
     var bytes = CryptoUtils.getBytesFromPEMString(privateKey);
     var asn = ASN1Parser(bytes).nextObject() as ASN1Sequence;
     var objects = asn.elements!;
@@ -355,7 +446,8 @@ Q7FVCLc4EFPwz9tkdLE2N13o
       'S': 'FakeState',
       'C': 'DE',
     };
-    var csr = X509Utils.generateRsaCsrPem(dn, pair.privateKey as RSAPrivateKey, pair.publicKey as RSAPublicKey);
+    var csr = X509Utils.generateRsaCsrPem(
+        dn, pair.privateKey as RSAPrivateKey, pair.publicKey as RSAPublicKey);
     var bytes = CryptoUtils.getBytesFromPEMString(csr);
     var sequence = ASN1Sequence.fromBytes(bytes);
     var e1 = sequence.elements!.elementAt(0) as ASN1Sequence;
@@ -376,7 +468,8 @@ Q7FVCLc4EFPwz9tkdLE2N13o
       'S': 'FakeState',
       'C': 'DE',
     };
-    var csr = X509Utils.generateEccCsrPem(dn, pair.privateKey as ECPrivateKey, pair.publicKey as ECPublicKey);
+    var csr = X509Utils.generateEccCsrPem(
+        dn, pair.privateKey as ECPrivateKey, pair.publicKey as ECPublicKey);
     var bytes = CryptoUtils.getBytesFromPEMString(csr);
     var sequence = ASN1Sequence.fromBytes(bytes);
     var e1 = sequence.elements!.elementAt(0) as ASN1Sequence;
@@ -640,7 +733,8 @@ Q7FVCLc4EFPwz9tkdLE2N13o
     var data = X509Utils.x509CertificateFromPem(bigCert);
     expect(data.version, 2);
 
-    expect(data.serialNumber.toString(), '313802195999642166411276783379421068021');
+    expect(data.serialNumber.toString(),
+        '313802195999642166411276783379421068021');
 
     expect(data.signatureAlgorithm, '1.2.840.113549.1.1.11');
 
@@ -649,7 +743,14 @@ Q7FVCLc4EFPwz9tkdLE2N13o
     expect(data.issuer.containsKey('2.5.4.10'), true);
     expect(data.issuer['2.5.4.10'], 'COMODO CA Limited');
     expect(data.issuer.containsKey('2.5.4.3'), true);
-    expect(data.issuer['2.5.4.3'], 'COMODO RSA Organization Validation Secure Server CA');
+    expect(data.issuer['2.5.4.3'],
+        'COMODO RSA Organization Validation Secure Server CA');
+  });
 
+  test('Test pkcs7FromPem', () {
+    var data = X509Utils.pkcs7fromPem(pkcs7);
+    expect(data.version, 1);
+    expect(data.contentType, '1.2.840.113549.1.7.2');
+    expect(data.certificates!.length, 3);
   });
 }

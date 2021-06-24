@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:basic_utils/src/model/pkcs7/Pkcs7CertificateData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateValidity.dart';
@@ -207,15 +208,36 @@ class X509Utils {
   }
 
   ///
-  /// Parses the given PEM to a [X509CertificateData] object.
+  /// Parses the given PEM
   ///
-  /// Throws an [ASN1Exception] if the pem could not be read by the [ASN1Parser].
-  ///
-  static X509CertificateData x509CertificateFromPem(String pem) {
+  static Pkcs7CertificateData pkcs7fromPem(String pem) {
     var bytes = CryptoUtils.getBytesFromPEMString(pem);
     var asn1Parser = ASN1Parser(bytes);
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
+    var x509List = <X509CertificateData>[];
+    var version = 0;
+    var type = '';
+    if (topLevelSeq.elements != null) {
+      var oi = topLevelSeq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+      type = oi.objectIdentifierAsString!;
+      var obj = topLevelSeq.elements!.elementAt(1);
+      var seq = ASN1Sequence.fromBytes(obj.valueBytes!);
+      var integer = seq.elements!.elementAt(0) as ASN1Integer;
+      version = integer.integer!.toInt();
+      var obj1 = seq.elements!.elementAt(3);
+      var seq1 = ASN1Sequence.fromBytes(obj1.encodedBytes!);
 
+      for (var el in seq1.elements!) {
+        var x509 = _x509FromAsn1Sequence(el as ASN1Sequence);
+        x509List.add(x509);
+      }
+    }
+
+    return Pkcs7CertificateData(
+        certificates: x509List, version: version, contentType: type);
+  }
+
+  static X509CertificateData _x509FromAsn1Sequence(ASN1Sequence topLevelSeq) {
     var dataSequence = topLevelSeq.elements!.elementAt(0) as ASN1Sequence;
     int version;
     var element = 0;
@@ -347,10 +369,6 @@ class X509Utils {
         length: pubKeyLength,
         sha1Thumbprint: pubKeyThumbprint,
         sha256Thumbprint: pubKeySha256Thumbprint);
-
-    var sha1String = CryptoUtils.getSha1ThumbprintFromBytes(bytes);
-    var md5String = CryptoUtils.getMd5ThumbprintFromBytes(bytes);
-    var sha256String = CryptoUtils.getSha256ThumbprintFromBytes(bytes);
     List<String>? sans;
     if (version > 1) {
       // Extensions
@@ -374,18 +392,38 @@ class X509Utils {
     }
 
     return X509CertificateData(
-        version: version,
-        serialNumber: serialNumber,
-        signatureAlgorithm: signatureAlgorithm,
-        issuer: issuer,
-        validity: validity,
-        subject: subject,
-        sha1Thumbprint: sha1String,
-        sha256Thumbprint: sha256String,
-        md5Thumbprint: md5String,
-        publicKeyData: publicKeyData,
-        subjectAlternativNames: sans,
-        plain: pem);
+      version: version,
+      serialNumber: serialNumber,
+      signatureAlgorithm: signatureAlgorithm,
+      issuer: issuer,
+      validity: validity,
+      subject: subject,
+      publicKeyData: publicKeyData,
+      subjectAlternativNames: sans,
+    );
+  }
+
+  ///
+  /// Parses the given PEM to a [X509CertificateData] object.
+  ///
+  /// Throws an [ASN1Exception] if the pem could not be read by the [ASN1Parser].
+  ///
+  static X509CertificateData x509CertificateFromPem(String pem) {
+    var bytes = CryptoUtils.getBytesFromPEMString(pem);
+    var asn1Parser = ASN1Parser(bytes);
+    var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
+
+    var x509 = _x509FromAsn1Sequence(topLevelSeq);
+
+    var sha1String = CryptoUtils.getSha1ThumbprintFromBytes(bytes);
+    var md5String = CryptoUtils.getMd5ThumbprintFromBytes(bytes);
+    var sha256String = CryptoUtils.getSha256ThumbprintFromBytes(bytes);
+
+    x509.plain = pem;
+    x509.sha1Thumbprint = sha1String;
+    x509.md5Thumbprint = md5String;
+    x509.sha256Thumbprint = sha256String;
+    return x509;
   }
 
   ///

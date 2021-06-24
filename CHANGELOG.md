@@ -1,5 +1,12 @@
 # Changelog
 
+
+## [3.1.0] - 2020-06-24
+
+* Improved X509Utils added pkcs7fromPem() method
+* Added unit tests
+* Update dependencies
+
 ## [3.1.0] - 2020-05-17
 
 * Improved StringUtils
