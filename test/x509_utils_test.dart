@@ -753,4 +753,8 @@ YQGx0qMmoRBxna3iw/nDmVG3KwcIzi7mULKn+gpFL6Lw8jEA
     expect(data.contentType, '1.2.840.113549.1.7.2');
     expect(data.certificates!.length, 3);
   });
+
+  test('Test csrFromPem', () {
+    var data = X509Utils.csrFromPem(csr);
+  });
 }

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:basic_utils/src/model/csr/CertificateSigningRequestData.dart';
+import 'package:basic_utils/src/model/csr/SubjectPublicKeyInfo.dart';
 import 'package:basic_utils/src/model/pkcs7/Pkcs7CertificateData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
@@ -568,5 +570,91 @@ class X509Utils {
       }
     });
     return b.toString().toUpperCase();
+  }
+
+  static CertificateSigningRequestData csrFromPem(String pem) {
+    var bytes = CryptoUtils.getBytesFromPEMString(pem);
+    var asn1Parser = ASN1Parser(bytes);
+    var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
+
+    var infoSeq = topLevelSeq.elements!.elementAt(0) as ASN1Sequence;
+    var sigSeq = topLevelSeq.elements!.elementAt(1) as ASN1Sequence;
+    var sig = topLevelSeq.elements!.elementAt(2) as ASN1BitString;
+
+    // Get version
+    var asn1Version = infoSeq.elements!.elementAt(0) as ASN1Integer;
+
+    // Get Subject
+    var subjectSequence = infoSeq.elements!.elementAt(1) as ASN1Sequence;
+    var subject = <String, String>{};
+    for (var s in subjectSequence.elements as dynamic) {
+      var setSequence = s.elements!.elementAt(0) as ASN1Sequence;
+      var o = setSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
+      var object = setSequence.elements!.elementAt(1);
+      String? value = '';
+      if (object is ASN1UTF8String) {
+        var objectAsUtf8 = object;
+        value = objectAsUtf8.utf8StringValue;
+      } else if (object is ASN1PrintableString) {
+        var objectPrintable = object;
+        value = objectPrintable.stringValue;
+      }
+      var identifier = o.objectIdentifierAsString ?? 'unknown';
+      subject.putIfAbsent(identifier, () => value!);
+    }
+
+    // Get Public Key Data
+    var pubSeq = infoSeq.elements!.elementAt(2) as ASN1Sequence;
+    var algSeq = pubSeq.elements!.elementAt(0) as ASN1Sequence;
+    var algOi = algSeq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+
+    var pubBitString = pubSeq.elements!.elementAt(1) as ASN1BitString;
+    var asn1PubKeyParser = ASN1Parser(pubBitString.stringValues as Uint8List?);
+    var next;
+    try {
+      next = asn1PubKeyParser.nextObject();
+    } catch (e) {
+      // continue
+    }
+    int pubKeyLength;
+    Uint8List? pubKeyAsBytes;
+    if (next != null && next is ASN1Sequence) {
+      var s = next;
+      var key = s.elements!.elementAt(0) as ASN1Integer;
+      pubKeyLength = key.integer!.bitLength;
+      pubKeyAsBytes = s.encodedBytes;
+    } else {
+      pubKeyAsBytes = pubBitString.valueBytes;
+      pubKeyLength = pubBitString.valueBytes!.length * 8;
+    }
+
+    var pubKeyThumbprint =
+        CryptoUtils.getHash(pubSeq.encodedBytes!, algorithmName: 'SHA-1');
+    var pubKeySha256Thumbprint =
+        CryptoUtils.getHash(pubSeq.encodedBytes!, algorithmName: 'SHA-256');
+
+    var pubInfo = SubjectPublicKeyInfo(
+      algorithm: algOi.objectIdentifierAsString,
+      algorithmReadableName: algOi.readableName,
+      length: pubKeyLength,
+      bytes: _bytesAsString(pubKeyAsBytes!),
+      sha1Thumbprint: pubKeyThumbprint,
+      sha256Thumbprint: pubKeySha256Thumbprint,
+    );
+
+    // Get Signature Algorithm
+    var pubKeyOid = sigSeq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+
+    // Get Signature
+    var sigAsString = _bytesAsString(sig.valueBytes!);
+
+    return CertificateSigningRequestData(
+      version: asn1Version.integer!.toInt(),
+      subject: subject,
+      signatureAlgorithm: pubKeyOid.objectIdentifierAsString,
+      signatureAlgorithmReadableName: pubKeyOid.readableName,
+      signature: sigAsString,
+      publicKeyInfo: pubInfo,
+    );
   }
 }
