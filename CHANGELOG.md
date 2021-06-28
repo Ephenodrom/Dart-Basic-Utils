@@ -1,7 +1,12 @@
 # Changelog
 
 
-## [3.1.0] - 2020-06-24
+## [3.3.0] - 2020-06-28
+
+* Improved X509Utils added csrFromPem() method
+* Added unit tests
+
+## [3.2.0] - 2020-06-24
 
 * Improved X509Utils added pkcs7fromPem() method
 * Added unit tests

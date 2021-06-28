@@ -607,6 +607,13 @@ class X509Utils {
     var pubSeq = infoSeq.elements!.elementAt(2) as ASN1Sequence;
     var algSeq = pubSeq.elements!.elementAt(0) as ASN1Sequence;
     var algOi = algSeq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+    var asn1AlgParameters = algSeq.elements!.elementAt(1);
+    var algParameters = '';
+    var algParametersReadable = '';
+    if (asn1AlgParameters is ASN1ObjectIdentifier) {
+      algParameters = asn1AlgParameters.objectIdentifierAsString!;
+      algParametersReadable = asn1AlgParameters.readableName!;
+    }
 
     var pubBitString = pubSeq.elements!.elementAt(1) as ASN1BitString;
     var asn1PubKeyParser = ASN1Parser(pubBitString.stringValues as Uint8List?);
@@ -636,6 +643,9 @@ class X509Utils {
     var pubInfo = SubjectPublicKeyInfo(
       algorithm: algOi.objectIdentifierAsString,
       algorithmReadableName: algOi.readableName,
+      parameter: algParameters != '' ? algParameters : null,
+      parameterReadableName:
+          algParametersReadable != '' ? algParametersReadable : null,
       length: pubKeyLength,
       bytes: _bytesAsString(pubKeyAsBytes!),
       sha1Thumbprint: pubKeyThumbprint,

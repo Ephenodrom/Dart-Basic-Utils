@@ -10,8 +10,14 @@ class SubjectPublicKeyInfo {
   /// The algorithm of the public key
   String? algorithm;
 
-  /// The algorithm of the public key
+  /// The readable name of the algorithm
   String? algorithmReadableName;
+
+  /// The parameter of the public key
+  String? parameter;
+
+  /// The readable name of the parameter
+  String? parameterReadableName;
 
   /// The key length of the public key
   int? length;
@@ -32,6 +38,8 @@ class SubjectPublicKeyInfo {
     this.sha256Thumbprint,
     this.bytes,
     this.algorithmReadableName,
+    this.parameter,
+    this.parameterReadableName,
   });
 
   /*

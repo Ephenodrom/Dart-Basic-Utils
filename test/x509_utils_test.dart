@@ -27,6 +27,16 @@ c47tT30d2tJEJbDHGutbqLQFRr7xx7uHP/LGggTFN8Zs2u+cQxPRFsIhQdpDY1MF
 tHAaI8r/tlZQWf3fu4FVZMbxrYTMA5cwz/TxweMKWTroN5c=
 -----END CERTIFICATE REQUEST-----''';
 
+  var eccCsr = '''-----BEGIN CERTIFICATE REQUEST-----
+MIIBLTCB1QIBADBzMQswCQYDVQQGEwJERTESMBAGA1UECAwJRmFrZVN0YXRlMREw
+DwYDVQQHDAhGYWtlQ2l0eTEQMA4GA1UECgwHRmFrZU9yZzERMA8GA1UECwwIRmFr
+ZVVuaXQxGDAWBgNVBAMMD2Jhc2ljLXV0aWxzLmRldjBZMBMGByqGSM49AgEGCCqG
+SM49AwEHA0IABNPipBb/4mYzBOPg790huspXlAgsh34LkQR9EsUMyxCYOEhSlD5E
+bPldDpxW+OPqe9E5+H79Yt9WHcYurdqluw+gADAKBggqhkjOPQQDAgNHADBEAiAX
+fPGC9L6I+0SLjaz6saiNV5iEzCd7FFLUxwS/NldS3gIgbGt2BH8BvSsPQ8YMN+ad
+/LFkdPu/ZgVpCkV/950NU3k=
+-----END CERTIFICATE REQUEST-----''';
+
   var unformattedKey =
       'MIICvzCCAacCAQAwejELMAkGA1UEBhMCREUxEjAQBgNVBAgMCUZha2VzdGF0ZTERMA8GA1UEBwwIRmFrZXRvd24xEzARBgNVBAoMCkVwaGVub2Ryb20xFTATBgNVBAsMDERldmVsb3BlbWVudDEYMBYGA1UEAwwPYmFzaWMtdXRpbHMuZGV2MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0QX4e8oAKpD91eKKLL/EdrH02N/Ulg35bdCJSozHubnoDG7ZXiELTFuPDANNmG4HmxVUpHv1uxmVrbzECnqBBEzjLW5NaW2T9U74ACo23HmDFQJqiTF/aVFcfEzKwHXtZeVVCrXU5MEvnFjDrEOrgZIFd46AElSt/IU6d6zKRlFx6pYgB64mPW3L50sNrg6ONkCfXt7HT5u2ftzo/iP5qi41BtzJUk2dS9DskbweQ8mv4KRstjawioQf2Qjew/lgaVSf5V5YEFWnvHLCh15/LwbN5Z6EN0Ks7i0gkefKfg+7ydd7eU4jHKhmE15Kbu59uWgS9cswJ4jmXPPqukusZQIDAQABoAAwDQYJKoZIhvcNAQELBQADggEBAMLfJml1DbYOnUA7Nwlutk6suMmS0FDkQLXFiJQkKs5Fy6rfNtV1Z8KL/xGqAzyAcuAXL+0cQMZRsNTd9sT5ZriSzoikwaeIKOoRqhFqbKXqlhYSbgmVUiYKm9HI3w+rzyZ+JXhiRXZ1ZGZXwEjBSu+Ne+SPE12mYlK+4zBxgPTDMrvb73QiqHqiGc/l5UjwFyrOUsq5GtiMc6QU+rAQjj6Ix6KqOzJIxyVdRzOCc47tT30d2tJEJbDHGutbqLQFRr7xx7uHP/LGggTFN8Zs2u+cQxPRFsIhQdpDY1MFtHAaI8r/tlZQWf3fu4FVZMbxrYTMA5cwz/TxweMKWTroN5c=';
 
@@ -756,5 +766,39 @@ YQGx0qMmoRBxna3iw/nDmVG3KwcIzi7mULKn+gpFL6Lw8jEA
 
   test('Test csrFromPem', () {
     var data = X509Utils.csrFromPem(csr);
+    expect(data.version, 0);
+    expect(data.subject!.length, 6);
+    expect(data.signature,
+        '00C2DF2669750DB60E9D403B37096EB64EACB8C992D050E440B5C58894242ACE45CBAADF36D57567C28BFF11AA033C8072E0172FED1C40C651B0D4DDF6C4F966B892CE88A4C1A78828EA11AA116A6CA5EA9616126E099552260A9BD1C8DF0FABCF267E257862457675646657C048C14AEF8D7BE48F135DA66252BEE3307180F4C332BBDBEF7422A87AA219CFE5E548F0172ACE52CAB91AD88C73A414FAB0108E3E88C7A2AA3B3248C7255D473382738EED4F7D1DDAD24425B0C71AEB5BA8B40546BEF1C7BB873FF2C68204C537C66CDAEF9C4313D116C22141DA43635305B4701A23CAFFB6565059FDDFBB815564C6F1AD84CC039730CFF4F1C1E30A593AE83797');
+    expect(data.signatureAlgorithm, '1.2.840.113549.1.1.11');
+    expect(data.signatureAlgorithmReadableName, 'sha256WithRSAEncryption');
+    expect(data.publicKeyInfo!.algorithm, '1.2.840.113549.1.1.1');
+    expect(data.publicKeyInfo!.algorithmReadableName, 'rsaEncryption');
+    expect(data.publicKeyInfo!.length, 2048);
+    expect(data.publicKeyInfo!.sha1Thumbprint,
+        '8DC03E4113683C6D02E0254B523C09C4A175F392');
+    expect(data.publicKeyInfo!.sha256Thumbprint,
+        'F187E676386764D40A901E6157310BCDF59CF0336DBC9AF077122A23D687511F');
+    expect(data.publicKeyInfo!.parameter, null);
+    expect(data.publicKeyInfo!.parameterReadableName, null);
+  });
+
+  test('Test csrFromPem with ECC', () {
+    var data = X509Utils.csrFromPem(eccCsr);
+    expect(data.version, 0);
+    expect(data.subject!.length, 6);
+    expect(data.signature,
+        '0030440220177CF182F4BE88FB448B8DACFAB1A88D579884CC277B1452D4C704BF365752DE02206C6B76047F01BD2B0F43C60C37E69DFCB16474FBBF6605690A457FF79D0D5379');
+    expect(data.signatureAlgorithm, '1.2.840.10045.4.3.2');
+    expect(data.signatureAlgorithmReadableName, 'ecdsaWithSHA256');
+    expect(data.publicKeyInfo!.algorithm, '1.2.840.10045.2.1');
+    expect(data.publicKeyInfo!.algorithmReadableName, 'ecPublicKey');
+    expect(data.publicKeyInfo!.length, 528);
+    expect(data.publicKeyInfo!.sha1Thumbprint,
+        'EEE9267F9374C82BCA1173623468503C5AE3A24E');
+    expect(data.publicKeyInfo!.sha256Thumbprint,
+        'CBAC34F18B6EE4970B45C4028FF5F2EEBF0E62AC79C8FD131DE305C49F9728FF');
+    expect(data.publicKeyInfo!.parameter, '1.2.840.10045.3.1.7');
+    expect(data.publicKeyInfo!.parameterReadableName, 'prime256v1');
   });
 }
