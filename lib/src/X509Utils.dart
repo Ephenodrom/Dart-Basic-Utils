@@ -674,6 +674,7 @@ class X509Utils {
       signatureAlgorithmReadableName: pubKeyOid.readableName,
       signature: sigAsString,
       publicKeyInfo: pubInfo,
+      plain: pem,
     );
   }
 }

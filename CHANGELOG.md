@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.3.2] - 2020-06-28
+
+* Improved CertificateSigningRequestData model
+
 ## [3.3.1] - 2020-06-28
 
 * Exported CertificateSigningRequestData model
