@@ -55,7 +55,9 @@ class StringUtils {
     s.runes.forEach((int rune) {
       var char = String.fromCharCode(rune);
       if (isUpperCase(char) && !first) {
-        sb.write('_');
+        if (char != '_') {
+          sb.write('_');
+        }
         sb.write(char.toLowerCase());
       } else {
         first = false;

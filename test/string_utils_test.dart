@@ -13,6 +13,7 @@ void main() {
 
   test('Test camelCaseToLowerUnderscore', () {
     expect(StringUtils.camelCaseToLowerUnderscore('camelCase'), 'camel_case');
+    expect(StringUtils.camelCaseToLowerUnderscore('a_b'), 'a_b');
   });
 
   test('Test isLowerCase', () {
