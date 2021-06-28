@@ -14,6 +14,8 @@ SubjectPublicKeyInfo _$SubjectPublicKeyInfoFromJson(Map<String, dynamic> json) {
     sha256Thumbprint: json['sha256Thumbprint'] as String?,
     bytes: json['bytes'] as String?,
     algorithmReadableName: json['algorithmReadableName'] as String?,
+    parameter: json['parameter'] as String?,
+    parameterReadableName: json['parameterReadableName'] as String?,
   );
 }
 
@@ -29,6 +31,8 @@ Map<String, dynamic> _$SubjectPublicKeyInfoToJson(
 
   writeNotNull('algorithm', instance.algorithm);
   writeNotNull('algorithmReadableName', instance.algorithmReadableName);
+  writeNotNull('parameter', instance.parameter);
+  writeNotNull('parameterReadableName', instance.parameterReadableName);
   writeNotNull('length', instance.length);
   writeNotNull('sha1Thumbprint', instance.sha1Thumbprint);
   writeNotNull('sha256Thumbprint', instance.sha256Thumbprint);

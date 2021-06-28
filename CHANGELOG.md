@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.3.1] - 2020-06-28
+
+* Exported CertificateSigningRequestData model
+* Update dependencies
 
 ## [3.3.0] - 2020-06-28
 
