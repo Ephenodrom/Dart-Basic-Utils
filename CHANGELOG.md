@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.3.3] - 2020-07-04
+
+* Update dependencies
+
 ## [3.3.2] - 2020-06-28
 
 * Improved CertificateSigningRequestData model
