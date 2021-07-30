@@ -38,7 +38,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^3.3.3
+  basic_utils: ^3.4.0
 ```
 
 ## Import
@@ -266,6 +266,14 @@ RSAPrivateKey rsaPrivateKeyFromDERBytesPkcs1(Uint8List bytes);
 ECSignature ecSign(ECPrivateKey privateKey, Uint8List dataToSign, {String algorithmName = 'SHA-1/ECDSA'});
 bool ecVerify(ECPublicKey publicKey, Uint8List signedData, ECSignature signature, {String algorithm = 'SHA-1/ECDSA'});
 String getHash(Uint8List bytes, {String algorithmName = 'SHA-256'});
+```
+
+### ASN1Utils
+
+Helper class for operation on ASN1 objects.
+
+```dart
+String dump(String pem);
 ```
 
 ## Changelog

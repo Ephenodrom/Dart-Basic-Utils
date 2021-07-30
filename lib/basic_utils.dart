@@ -33,6 +33,7 @@ export 'src/DateUtils.dart';
 export 'src/X509Utils.dart';
 export 'src/IterableUtils.dart';
 export 'src/CryptoUtils.dart';
+export 'src/Asn1Utils.dart';
 
 // Export other libraries
 export 'package:pointycastle/ecc/api.dart';

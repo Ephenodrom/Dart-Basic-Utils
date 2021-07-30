@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.4.0] - 2020-07-30
+
+* Updated dependencies
+* Added ASN1Utils class
+
 ## [3.3.3] - 2020-07-04
 
 * Update dependencies
