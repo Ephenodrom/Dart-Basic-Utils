@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'X509CertificatePublicKeyData.g.dart';
@@ -22,12 +24,15 @@ class X509CertificatePublicKeyData {
   /// The bytes representing the public key as String
   String? bytes;
 
+  Uint8List? plainSha1;
+
   X509CertificatePublicKeyData(
       {this.algorithm,
       this.length,
       this.sha1Thumbprint,
       this.sha256Thumbprint,
-      this.bytes});
+      this.bytes,
+      this.plainSha1});
 
   /*
    * Json to X509CertificatePublicKeyData object

@@ -89,6 +89,35 @@ class CryptoUtils {
   /// * MD5
   ///
   static String getHash(Uint8List bytes, {String algorithmName = 'SHA-256'}) {
+    var hash = getHashPlain(bytes, algorithmName: algorithmName);
+
+    const hexDigits = '0123456789abcdef';
+    var charCodes = Uint8List(hash.length * 2);
+    for (var i = 0, j = 0; i < hash.length; i++) {
+      var byte = hash[i];
+      charCodes[j++] = hexDigits.codeUnitAt((byte >> 4) & 0xF);
+      charCodes[j++] = hexDigits.codeUnitAt(byte & 0xF);
+    }
+
+    return String.fromCharCodes(charCodes).toUpperCase();
+  }
+
+  ///
+  /// Get a hash for the given [bytes] using the given [algorithm]
+  ///
+  /// The default [algorithm] used is **SHA-256**. All supported algorihms are :
+  ///
+  /// * SHA-1
+  /// * SHA-224
+  /// * SHA-256
+  /// * SHA-384
+  /// * SHA-512
+  /// * SHA-512/224
+  /// * SHA-512/256
+  /// * MD5
+  ///
+  static Uint8List getHashPlain(Uint8List bytes,
+      {String algorithmName = 'SHA-256'}) {
     Uint8List hash;
     switch (algorithmName) {
       case 'SHA-1':
@@ -119,15 +148,7 @@ class CryptoUtils {
         throw ArgumentError('Hash not supported');
     }
 
-    const hexDigits = '0123456789abcdef';
-    var charCodes = Uint8List(hash.length * 2);
-    for (var i = 0, j = 0; i < hash.length; i++) {
-      var byte = hash[i];
-      charCodes[j++] = hexDigits.codeUnitAt((byte >> 4) & 0xF);
-      charCodes[j++] = hexDigits.codeUnitAt(byte & 0xF);
-    }
-
-    return String.fromCharCodes(charCodes).toUpperCase();
+    return hash;
   }
 
   ///

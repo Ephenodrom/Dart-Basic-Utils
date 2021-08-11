@@ -4,6 +4,13 @@ import 'dart:typed_data';
 
 import 'package:basic_utils/src/model/csr/CertificateSigningRequestData.dart';
 import 'package:basic_utils/src/model/csr/SubjectPublicKeyInfo.dart';
+import 'package:basic_utils/src/model/ocsp/BasicOCSPResponse.dart';
+import 'package:basic_utils/src/model/ocsp/OCSPCertStatus.dart';
+import 'package:basic_utils/src/model/ocsp/OCSPCertStatusValues.dart';
+import 'package:basic_utils/src/model/ocsp/OCSPResponse.dart';
+import 'package:basic_utils/src/model/ocsp/OCSPResponseData.dart';
+import 'package:basic_utils/src/model/ocsp/OCSPResponseStatus.dart';
+import 'package:basic_utils/src/model/ocsp/OCSPSingleResponse.dart';
 import 'package:basic_utils/src/model/pkcs7/Pkcs7CertificateData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
@@ -41,6 +48,10 @@ class X509Utils {
 
   static const BEGIN_CERT = '-----BEGIN CERTIFICATE-----';
   static const END_CERT = '-----END CERTIFICATE-----';
+
+  static const OCSP_REQUEST_MEDIATYPE = 'application/ocsp-request';
+
+  static const OCSP_RESPONSE_MEDIATYPE = 'application/ocsp-response';
 
   static const DN = {
     'cn': '2.5.4.3',
@@ -372,14 +383,17 @@ class X509Utils {
     }
     var pubKeyThumbprint =
         CryptoUtils.getSha1ThumbprintFromBytes(pubKeySequence.encodedBytes!);
+    var plainSha1 = CryptoUtils.getHashPlain(pubKeySequence.encodedBytes!);
     var pubKeySha256Thumbprint =
         CryptoUtils.getSha256ThumbprintFromBytes(pubKeySequence.encodedBytes!);
     var publicKeyData = X509CertificatePublicKeyData(
-        algorithm: pubKeyOid.objectIdentifierAsString,
-        bytes: _bytesAsString(pubKeyAsBytes!),
-        length: pubKeyLength,
-        sha1Thumbprint: pubKeyThumbprint,
-        sha256Thumbprint: pubKeySha256Thumbprint);
+      algorithm: pubKeyOid.objectIdentifierAsString,
+      bytes: _bytesAsString(pubKeyAsBytes!),
+      length: pubKeyLength,
+      sha1Thumbprint: pubKeyThumbprint,
+      sha256Thumbprint: pubKeySha256Thumbprint,
+      plainSha1: plainSha1,
+    );
     List<String>? sans;
     if (version > 1) {
       // Extensions
@@ -676,5 +690,239 @@ class X509Utils {
       publicKeyInfo: pubInfo,
       plain: pem,
     );
+  }
+
+  ///
+  ///
+  /// ```
+  /// OCSPRequest     ::=     SEQUENCE {
+  ///     tbsRequest                  TBSRequest
+  /// }
+  ///
+  /// TBSRequest      ::=     SEQUENCE {
+  ///     version             [0]     EXPLICIT Version DEFAULT v1,
+  ///     requestList                 SEQUENCE OF Request
+  /// }
+  ///
+  /// Request         ::=     SEQUENCE {
+  ///     reqCert                     CertID
+  /// }
+  ///
+  /// CertID          ::=     SEQUENCE {
+  ///     hashAlgorithm       AlgorithmIdentifier,
+  ///     issuerNameHash      OCTET STRING, -- Hash of issuer's DN
+  ///     issuerKeyHash       OCTET STRING, -- Hash of issuer's public key
+  ///     serialNumber        CertificateSerialNumber
+  /// }
+  /// ```
+  ///
+  static ASN1Sequence buildOCSPRequest(String pem, String intermediate) {
+    var x509Sequence = _getASN1SequenceFromPem(pem);
+    var x509 = x509CertificateFromPem(pem);
+    var x509SequenceIssuer = _getASN1SequenceFromPem(intermediate);
+
+    var tbsRequest = ASN1Sequence();
+    var requestList = ASN1Sequence();
+
+    var request = ASN1Sequence();
+    var certID = ASN1Sequence();
+
+    // AlgorithmIdentifier
+    var hashAlgorithm = ASN1Sequence();
+    hashAlgorithm
+        .add(ASN1ObjectIdentifier.fromIdentifierString('1.3.14.3.2.26'));
+    hashAlgorithm.add(ASN1Null());
+    certID.add(hashAlgorithm);
+
+    // OCTET STRING, -- Hash of issuer's DN
+    var issuer = _getIssuerSequence(x509Sequence);
+    var isserHashString = Digest('SHA-1').process(issuer.encode());
+    var issuerHash = ASN1OctetString(octets: isserHashString);
+    certID.add(issuerHash);
+
+    // OCTET STRING, -- Hash of issuer's public key
+    var pubBit = _getPublicKeyBitString(x509SequenceIssuer);
+    var bitsToUse = pubBit.valueBytes!.first == 0
+        ? pubBit.valueBytes!.sublist(1)
+        : pubBit.valueBytes!;
+    var pubHashString = Digest('SHA-1').process(bitsToUse);
+    var issuerKeyHash = ASN1OctetString(octets: pubHashString);
+    certID.add(issuerKeyHash);
+
+    // CertificateSerialNumber
+    certID.add(ASN1Integer(x509.serialNumber));
+
+    request.add(certID);
+    requestList.add(request);
+
+    //tbsRequest.add(ASN1Integer.fromtInt(0));
+    tbsRequest.add(requestList);
+
+    var ocspRequest = ASN1Sequence();
+    ocspRequest.add(tbsRequest);
+    return ocspRequest;
+  }
+
+  // TODO Doc
+  static ASN1Sequence _getASN1SequenceFromPem(String pem) {
+    var bytes = CryptoUtils.getBytesFromPEMString(pem);
+    var asn1Parser = ASN1Parser(bytes);
+    var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
+    return topLevelSeq;
+  }
+
+  // TODO Doc
+  static ASN1Sequence _getIssuerSequence(ASN1Sequence topLevelSeq) {
+    var dataSequence = topLevelSeq.elements!.elementAt(0) as ASN1Sequence;
+    var element = 0;
+    if (dataSequence.elements!.elementAt(0) is ASN1Integer) {
+      // The version ASN1Object is missing use version
+      element = -1;
+    }
+    var issuerSequence =
+        dataSequence.elements!.elementAt(element + 3) as ASN1Sequence;
+    return issuerSequence;
+  }
+
+  static ASN1BitString _getPublicKeyBitString(ASN1Sequence topLevelSeq) {
+    var dataSequence = topLevelSeq.elements!.elementAt(0) as ASN1Sequence;
+    var element = 0;
+    if (dataSequence.elements!.elementAt(0) is ASN1Integer) {
+      // The version ASN1Object is missing use version
+      element = -1;
+    }
+    // Public Key
+    var pubKeySequence =
+        dataSequence.elements!.elementAt(element + 6) as ASN1Sequence;
+
+    var algoSequence = pubKeySequence.elements!.elementAt(0) as ASN1Sequence;
+    var pubKeyOid = algoSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
+
+    var pubKey = pubKeySequence.elements!.elementAt(1) as ASN1BitString;
+    return pubKey;
+  }
+
+  ///
+  /// Fetches the OSCP url for the given certificate as [pem]
+  ///
+  /// Will return an empty string if no url is found
+  ///
+  static String getOCSPUrl(String pem) {
+    var topLevelSeq = _getASN1SequenceFromPem(pem);
+    var dataSequence = topLevelSeq.elements!.elementAt(0) as ASN1Sequence;
+    var element = 0;
+    if (dataSequence.elements!.elementAt(0) is ASN1Integer) {
+      // The version ASN1Object is missing
+      element = -1;
+    }
+    if (dataSequence.elements!.length == 8) {
+      var extensionObject = dataSequence.elements!.elementAt(element + 7);
+      var extParser = ASN1Parser(extensionObject.valueBytes);
+      var extSequence = extParser.nextObject() as ASN1Sequence;
+
+      for (var subseq in extSequence.elements!) {
+        var seq = subseq as ASN1Sequence;
+        var oi = seq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+        if (oi.objectIdentifierAsString == '1.3.6.1.5.5.7.1.1') {
+          var octet = seq.elements!.elementAt(1) as ASN1OctetString;
+          var sanParser = ASN1Parser(octet.valueBytes);
+          var authorityInfoAccessSeq = sanParser.nextObject() as ASN1Sequence;
+          for (var sub in authorityInfoAccessSeq.elements!) {
+            var seq = sub as ASN1Sequence;
+            var oi = seq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+            if (oi.objectIdentifierAsString == '1.3.6.1.5.5.7.48.1') {
+              var asn1 = seq.elements!.elementAt(1);
+              var bit = ASN1IA5String.fromBytes(asn1.encodedBytes!);
+              return bit.stringValue!;
+            }
+          }
+        }
+      }
+    }
+
+    return '';
+  }
+
+  ///
+  /// TODO
+  ///
+  static OCSPResponse parseOCSPResponse(Uint8List bytes) {
+    var parser = ASN1Parser(bytes);
+    var topLevel = parser.nextObject() as ASN1Sequence;
+    var responseStatus = topLevel.elements!.elementAt(0) as ASN1Integer;
+    var v = responseStatus.integer!.toInt();
+
+    var ocspResponseStatus = _getOCSPResponseStatus(v);
+    var basicOcspResponse;
+    if (topLevel.elements!.length == 2) {
+      basicOcspResponse =
+          _getBasicOCSPResponse(topLevel.elements!.elementAt(1));
+    }
+
+    return OCSPResponse(
+      ocspResponseStatus,
+      basicOCSPResponse: basicOcspResponse,
+    );
+  }
+
+  static OCSPResponseStatus _getOCSPResponseStatus(int i) {
+    switch (i) {
+      case 0:
+        return OCSPResponseStatus.SUCCESSFUL;
+      case 1:
+        return OCSPResponseStatus.MALFORMED_REQUEST;
+      case 2:
+        return OCSPResponseStatus.INTERNAL_ERROR;
+      case 3:
+        return OCSPResponseStatus.TRY_LATER;
+      case 5:
+        return OCSPResponseStatus.SIG_REQUIRED;
+      case 6:
+        return OCSPResponseStatus.UNAUTHORIZED;
+    }
+    return OCSPResponseStatus.TRY_LATER;
+  }
+
+  static BasicOCSPResponse _getBasicOCSPResponse(ASN1Object elementAt) {
+    var parser = ASN1Parser(elementAt.valueBytes);
+    var topLevel = parser.nextObject() as ASN1Sequence;
+    var octet = topLevel.elements!.elementAt(1) as ASN1OctetString;
+
+    parser = ASN1Parser(octet.valueBytes);
+    topLevel = parser.nextObject() as ASN1Sequence;
+    var tbsResponseDataSeq = topLevel.elements!.elementAt(0) as ASN1Sequence;
+
+    ASN1Sequence singleResponseDataSeq;
+
+    if (tbsResponseDataSeq.elements!.length == 3) {
+      singleResponseDataSeq =
+          tbsResponseDataSeq.elements!.elementAt(2) as ASN1Sequence;
+    } else {
+      singleResponseDataSeq =
+          tbsResponseDataSeq.elements!.elementAt(3) as ASN1Sequence;
+    }
+    var singleResponses = <OCSPSingleResponse>[];
+    // Loop over each singleResponseData
+    for (var el in singleResponseDataSeq.elements!) {
+      var element = el as ASN1Sequence;
+      var certStatus = element.elements!.elementAt(1);
+      var ocspCertStatus = OCSPCertStatus();
+      if (certStatus.valueByteLength == 0) {
+        ocspCertStatus.status = OCSPCertStatusValues.GOOD;
+      } else if (certStatus.tag == 161) {
+        ocspCertStatus.status = OCSPCertStatusValues.REVOKED;
+        var time = ASN1GeneralizedTime.fromBytes(certStatus.valueBytes!);
+        ocspCertStatus.revocationTime = time.dateTimeValue;
+      } else {
+        ocspCertStatus.status = OCSPCertStatusValues.UNKNOWN;
+      }
+
+      var single = OCSPSingleResponse(ocspCertStatus);
+      singleResponses.add(single);
+    }
+
+    var responseData = OCSPResponseData(singleResponses);
+
+    return BasicOCSPResponse(responseData: responseData);
   }
 }
