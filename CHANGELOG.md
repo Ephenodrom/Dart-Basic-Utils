@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.5.0] - 2020-08-13
+
+* Improved X509Utils added buildOCSPRequest() method
+* Improved X509Utils added getOCSPUrl() method
+* Improved X509Utils added parseOCSPResponse() method
+* Added new unit tests
+* Added new OCSP models
+
 ## [3.4.0] - 2020-07-30
 
 * Updated dependencies

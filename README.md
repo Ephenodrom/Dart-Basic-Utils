@@ -38,7 +38,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^3.4.0
+  basic_utils: ^3.5.0
 ```
 
 ## Import
@@ -214,6 +214,9 @@ ASN1Object encodeDN(Map<String, String> dn);
 X509CertificateData x509CertificateFromPem(String pem);
 Pkcs7CertificateData pkcs7fromPem(String pem);
 CertificateSigningRequestData csrFromPem(String pem);
+ASN1Sequence buildOCSPRequest(String pem, {String? intermediate});
+String getOCSPUrl(String pem);
+OCSPResponse parseOCSPResponse(Uint8List bytes);
 ```
 
 ### IterableUtils

@@ -921,24 +921,44 @@ SEQUENCE (1 elem)
           INTEGER (95 bit) 34541435456031998754652058411
 */
 
-    var data = X509Utils.buildOCSPRequest(oscpEnd, ocspInter);
+    var data = X509Utils.buildOCSPRequest(oscpEnd, intermediate: ocspInter);
     var base = base64.encode(data.encode());
     expect(base,
         'ME0wSzBJMEcwRTAJBgUrDgMCGgUABBScTHEVwwIZyjbcuYshMwBMpKeO0wQU3bPnbagu6MVObs905nU8lBXO6B0CDG+cAXgcIYAyJUpzKw==');
+
+    data = X509Utils.buildOCSPRequest(pkcs7);
+    base = base64.encode(data.encode());
+    expect(base,
+        'MFEwTzBNMEswSTAJBgUrDgMCGgUABBQWO4uRaz/kv87G7gglaT+Q+Z+LpwQU5wIjgABP2Ne8lAvZP3Q5STI8inkCEAOXfkvt618n0tfQb5veKgk=');
   });
 
   test('Test getOCSPUrl', () {
     var data = X509Utils.getOCSPUrl(oscpEnd);
     expect(data, 'http://ocsp2.globalsign.com/gsextendvalsha2g3r3');
+
+    data = X509Utils.getOCSPUrl(pkcs7);
+    expect(data, 'http://ocsp.digicert.com');
   });
+
   test('Test parseOCSPResponse', () {
-    var bytes = base64.decode(ocspResponse2);
+    var bytes = base64.decode(ocspResponse);
     var data = X509Utils.parseOCSPResponse(bytes);
     expect(data.responseStatus, OCSPResponseStatus.SUCCESSFUL);
     var responseData = data.basicOCSPResponse!.responseData;
     expect(responseData!.singleResponse.length, 1);
     var certStatus = responseData.singleResponse.elementAt(0).certStatus;
+    expect(certStatus.status, OCSPCertStatusValues.GOOD);
+
+    bytes = base64.decode(ocspResponse2);
+    data = X509Utils.parseOCSPResponse(bytes);
+    expect(data.responseStatus, OCSPResponseStatus.SUCCESSFUL);
+    responseData = data.basicOCSPResponse!.responseData;
+    expect(responseData!.singleResponse.length, 1);
+    certStatus = responseData.singleResponse.elementAt(0).certStatus;
     expect(certStatus.status, OCSPCertStatusValues.REVOKED);
+    expect(certStatus.status, OCSPCertStatusValues.REVOKED);
+    expect(certStatus.revocationTime!.toIso8601String(),
+        '2021-05-02T19:21:46.000Z');
 
     bytes = base64.decode(ocspResponse3);
     data = X509Utils.parseOCSPResponse(bytes);

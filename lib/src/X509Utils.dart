@@ -693,6 +693,11 @@ class X509Utils {
   }
 
   ///
+  /// Builds a OCSPRquest out of the given [pem] and [intermediate].
+  ///
+  /// If the given [pem] represents a PKCS7 certificate, the [intermediate] is not needed.
+  ///
+  /// Will return an ASN1Sequence that represents the OCSPRquest.
   ///
   /// ```
   /// OCSPRequest     ::=     SEQUENCE {
@@ -716,10 +721,32 @@ class X509Utils {
   /// }
   /// ```
   ///
-  static ASN1Sequence buildOCSPRequest(String pem, String intermediate) {
-    var x509Sequence = _getASN1SequenceFromPem(pem);
-    var x509 = x509CertificateFromPem(pem);
-    var x509SequenceIssuer = _getASN1SequenceFromPem(intermediate);
+  static ASN1Sequence buildOCSPRequest(String pem, {String? intermediate}) {
+    var x509Sequence;
+    var x509;
+    var x509SequenceIssuer;
+    if (pem.startsWith(BEGIN_PKCS7)) {
+      // We have a PKCS7 PEM, parse END and INTERMEDIATE certificate
+      var bytes = CryptoUtils.getBytesFromPEMString(pem);
+      var asn1Parser = ASN1Parser(bytes);
+      var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
+      if (topLevelSeq.elements != null) {
+        var obj = topLevelSeq.elements!.elementAt(1);
+        var seq = ASN1Sequence.fromBytes(obj.valueBytes!);
+        var obj1 = seq.elements!.elementAt(3);
+        var seq1 = ASN1Sequence.fromBytes(obj1.encodedBytes!);
+        x509Sequence = seq1.elements!.elementAt(0) as ASN1Sequence;
+        x509 = _x509FromAsn1Sequence(x509Sequence);
+        x509SequenceIssuer = seq1.elements!.elementAt(1) as ASN1Sequence;
+      }
+    } else {
+      if (intermediate == null) {
+        throw ArgumentError('Argument intermediate is missing');
+      }
+      x509Sequence = _getASN1SequenceFromPem(pem);
+      x509 = x509CertificateFromPem(pem);
+      x509SequenceIssuer = _getASN1SequenceFromPem(intermediate);
+    }
 
     var tbsRequest = ASN1Sequence();
     var requestList = ASN1Sequence();
@@ -763,7 +790,9 @@ class X509Utils {
     return ocspRequest;
   }
 
-  // TODO Doc
+  ///
+  /// Converts the given [pem] to ASN1Sequence;
+  ///
   static ASN1Sequence _getASN1SequenceFromPem(String pem) {
     var bytes = CryptoUtils.getBytesFromPEMString(pem);
     var asn1Parser = ASN1Parser(bytes);
@@ -771,7 +800,9 @@ class X509Utils {
     return topLevelSeq;
   }
 
-  // TODO Doc
+  ///
+  /// Fetches the issuer ASN1Sequence
+  ///
   static ASN1Sequence _getIssuerSequence(ASN1Sequence topLevelSeq) {
     var dataSequence = topLevelSeq.elements!.elementAt(0) as ASN1Sequence;
     var element = 0;
@@ -784,6 +815,9 @@ class X509Utils {
     return issuerSequence;
   }
 
+  ///
+  /// Fetches the public key ASN1BitString
+  ///
   static ASN1BitString _getPublicKeyBitString(ASN1Sequence topLevelSeq) {
     var dataSequence = topLevelSeq.elements!.elementAt(0) as ASN1Sequence;
     var element = 0;
@@ -795,21 +829,35 @@ class X509Utils {
     var pubKeySequence =
         dataSequence.elements!.elementAt(element + 6) as ASN1Sequence;
 
-    var algoSequence = pubKeySequence.elements!.elementAt(0) as ASN1Sequence;
-    var pubKeyOid = algoSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
-
     var pubKey = pubKeySequence.elements!.elementAt(1) as ASN1BitString;
     return pubKey;
   }
 
   ///
-  /// Fetches the OSCP url for the given certificate as [pem]
+  /// Fetches the OSCP url for the given certificate as [pem]. Supporting X509 and PKCS7 PEMs.
   ///
   /// Will return an empty string if no url is found
   ///
   static String getOCSPUrl(String pem) {
-    var topLevelSeq = _getASN1SequenceFromPem(pem);
+    var topLevelSeq;
+
+    if (pem.startsWith(BEGIN_PKCS7)) {
+      // We have a PKCS7 PEM, parse END certificate
+      var bytes = CryptoUtils.getBytesFromPEMString(pem);
+      var asn1Parser = ASN1Parser(bytes);
+      var top = asn1Parser.nextObject() as ASN1Sequence;
+      if (top.elements != null) {
+        var obj = top.elements!.elementAt(1);
+        var seq = ASN1Sequence.fromBytes(obj.valueBytes!);
+        var obj1 = seq.elements!.elementAt(3);
+        var seq1 = ASN1Sequence.fromBytes(obj1.encodedBytes!);
+        topLevelSeq = seq1.elements!.elementAt(0) as ASN1Sequence;
+      }
+    } else {
+      topLevelSeq = _getASN1SequenceFromPem(pem);
+    }
     var dataSequence = topLevelSeq.elements!.elementAt(0) as ASN1Sequence;
+
     var element = 0;
     if (dataSequence.elements!.elementAt(0) is ASN1Integer) {
       // The version ASN1Object is missing
@@ -844,7 +892,9 @@ class X509Utils {
   }
 
   ///
-  /// TODO
+  /// Parses an OCSPResponse from the given [bytes] received by an OCSP responder.
+  ///
+  /// Will return [OCSPResponse]
   ///
   static OCSPResponse parseOCSPResponse(Uint8List bytes) {
     var parser = ASN1Parser(bytes);
@@ -916,8 +966,9 @@ class X509Utils {
       } else {
         ocspCertStatus.status = OCSPCertStatusValues.UNKNOWN;
       }
-
-      var single = OCSPSingleResponse(ocspCertStatus);
+      var updateTime = element.elements!.elementAt(2) as ASN1GeneralizedTime;
+      var single =
+          OCSPSingleResponse(ocspCertStatus, updateTime.dateTimeValue!);
       singleResponses.add(single);
     }
 

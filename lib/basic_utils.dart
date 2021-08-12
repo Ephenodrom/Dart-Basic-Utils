@@ -20,7 +20,16 @@ export 'src/model/x509/X509CertificateValidity.dart';
 export 'src/model/csr/CertificateSigningRequestData.dart';
 export 'src/model/DnsApiProvider.dart';
 
-// Export util classes
+/// OCSP
+export 'src/model/ocsp/BasicOCSPResponse.dart';
+export 'src/model/ocsp/OCSPCertStatus.dart';
+export 'src/model/ocsp/OCSPCertStatusValues.dart';
+export 'src/model/ocsp/OCSPResponse.dart';
+export 'src/model/ocsp/OCSPResponseData.dart';
+export 'src/model/ocsp/OCSPResponseStatus.dart';
+export 'src/model/ocsp/OCSPSingleResponse.dart';
+
+/// Export util classes
 export 'src/DomainUtils.dart';
 export 'src/EmailUtils.dart';
 export 'src/StringUtils.dart';
@@ -38,3 +47,4 @@ export 'src/Asn1Utils.dart';
 // Export other libraries
 export 'package:pointycastle/ecc/api.dart';
 export 'package:pointycastle/asymmetric/api.dart';
+export 'package:pointycastle/asn1.dart';

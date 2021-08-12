@@ -12,6 +12,7 @@ import 'package:basic_utils/src/model/ocsp/OCSPCertStatus.dart';
 ///
 class OCSPSingleResponse {
   OCSPCertStatus certStatus;
+  DateTime thisUpdate;
 
-  OCSPSingleResponse(this.certStatus);
+  OCSPSingleResponse(this.certStatus, this.thisUpdate);
 }
