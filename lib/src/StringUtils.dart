@@ -106,6 +106,10 @@ class StringUtils {
   /// * [s] = "the quick lazy fox" and [allWords] = true => The Quick Lazy Fox
   ///
   static String capitalize(String s, {bool allWords = false}) {
+    if (s.isEmpty) {
+      return '';
+    }
+    s = s.trim();
     if (allWords) {
       var words = s.split(' ');
       var capitalized = [];
