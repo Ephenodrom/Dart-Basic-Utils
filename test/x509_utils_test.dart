@@ -561,7 +561,8 @@ abvp10ZlOtfu8hL5gCXcxnwGxzSb
       'C': 'DE',
     };
     var csr = X509Utils.generateRsaCsrPem(
-        dn, pair.privateKey as RSAPrivateKey, pair.publicKey as RSAPublicKey);
+        dn, pair.privateKey as RSAPrivateKey, pair.publicKey as RSAPublicKey,
+        san: ['san1.basic-utils.dev', 'san2.basic-utils.dev']);
     var bytes = CryptoUtils.getBytesFromPEMString(csr);
     var sequence = ASN1Sequence.fromBytes(bytes);
     var e1 = sequence.elements!.elementAt(0) as ASN1Sequence;
@@ -571,6 +572,10 @@ abvp10ZlOtfu8hL5gCXcxnwGxzSb
     var e5 = e4.elements!.elementAt(1) as ASN1UTF8String;
     var cn = e5.utf8StringValue;
     expect(cn, 'basic-utils.dev');
+
+    csr = X509Utils.generateRsaCsrPem(
+        dn, pair.privateKey as RSAPrivateKey, pair.publicKey as RSAPublicKey,
+        signingAlgorithm: 'SHA-1');
   });
 
   test('Test generateEccCsrPem', () {

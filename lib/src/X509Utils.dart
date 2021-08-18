@@ -105,6 +105,14 @@ class X509Utils {
     'streetAddress': '2.5.4.9'
   };
 
+  static final _validRsaSigner = [
+    'SHA-1',
+    'SHA-224',
+    'SHA-256',
+    'SHA-384',
+    'SHA-512'
+  ];
+
   ///
   /// Formats the given [key] by chunking the [key] and adding the [begin] and [end] to the [key].
   ///
@@ -127,31 +135,78 @@ class X509Utils {
   ///
   /// Generates a Certificate Signing Request with the given [attributes] using the given [privateKey] and [publicKey].
   ///
+  /// The parameter [san] defines the list of subject alternative names to be placed within the CSR.
+  ///
+  /// [signingAlgorithm] defines the algorithm to use to sign the distinguished names. Supported values are
+  /// * SHA-1
+  /// * SHA-224
+  /// * SHA-256 (default)
+  /// * SHA-384
+  /// * SHA-512
+  ///
   static String generateRsaCsrPem(Map<String, String> attributes,
-      RSAPrivateKey privateKey, RSAPublicKey publicKey) {
+      RSAPrivateKey privateKey, RSAPublicKey publicKey,
+      {List<String>? san, String signingAlgorithm = 'SHA-256'}) {
+    if (!_validRsaSigner.contains(signingAlgorithm)) {
+      ArgumentError('Signingalgorithm $signingAlgorithm not supported!');
+    }
     var encodedDN = encodeDN(attributes);
 
     var blockDN = ASN1Sequence();
     blockDN.add(ASN1Integer(BigInt.from(0)));
     blockDN.add(encodedDN);
     blockDN.add(_makePublicKeyBlock(publicKey));
-    blockDN.add(ASN1Null(tag: 0xA0)); // let's call this WTF
+
+    // Check if extensions are needed
+    if (san != null && san.isNotEmpty) {
+      var outerBlockExt = ASN1Sequence();
+      outerBlockExt.add(ASN1ObjectIdentifier.fromName('extensionRequest'));
+
+      var setExt = ASN1Set();
+
+      var innerBlockExt = ASN1Sequence();
+
+      var sanExtSeq = ASN1Sequence();
+      sanExtSeq.add(ASN1ObjectIdentifier.fromName('subjectAltName'));
+      var sanSeq = ASN1Sequence();
+      for (var s in san) {
+        var sanIa5 = ASN1IA5String(stringValue: s, tag: 0x82);
+        sanSeq.add(sanIa5);
+      }
+      var octet = ASN1OctetString(octets: sanSeq.encode());
+      sanExtSeq.add(octet);
+
+      innerBlockExt.add(sanExtSeq);
+
+      setExt.add(innerBlockExt);
+
+      outerBlockExt.add(setExt);
+
+      var asn1Null = ASN1OctetString(tag: 0xA0, octets: outerBlockExt.encode());
+      //asn1Null.valueBytes = outerBlockExt.encode();
+      blockDN.add(asn1Null);
+    } else {
+      blockDN.add(ASN1Null(tag: 0xA0)); // let's call this WTF
+    }
 
     var blockProtocol = ASN1Sequence();
-    blockProtocol.add(ASN1ObjectIdentifier.fromName('sha256WithRSAEncryption'));
+    blockProtocol.add(ASN1ObjectIdentifier.fromName(
+        _getOiForSigningAlgorithm(signingAlgorithm)));
     blockProtocol.add(ASN1Null());
 
     var outer = ASN1Sequence();
     outer.add(blockDN);
     outer.add(blockProtocol);
-    outer.add(
-        ASN1BitString(stringValues: _rsaSign(blockDN.encode(), privateKey)));
+    outer.add(ASN1BitString(
+        stringValues:
+            _rsaSign(blockDN.encode(), privateKey, signingAlgorithm)));
     var chunks = StringUtils.chunk(base64.encode(outer.encode()), 64);
     return '$BEGIN_CSR\n${chunks.join('\r\n')}\n$END_CSR';
   }
 
-  static Uint8List _rsaSign(Uint8List inBytes, RSAPrivateKey privateKey) {
-    var signer = Signer('SHA-256/RSA');
+  static Uint8List _rsaSign(
+      Uint8List inBytes, RSAPrivateKey privateKey, String signingAlgorithm) {
+    var signer = Signer('$signingAlgorithm/RSA');
     signer.init(true, PrivateKeyParameter<RSAPrivateKey>(privateKey));
 
     var signature = signer.generateSignature(inBytes) as RSASignature;
@@ -159,13 +214,42 @@ class X509Utils {
     return signature.bytes;
   }
 
+  static String _getOiForSigningAlgorithm(String algorithm,
+      {bool ecc = false}) {
+    switch (algorithm) {
+      case 'SHA-1':
+        return ecc ? 'ecdsaWithSHA1' : 'sha1WithRSAEncryption';
+      case 'SHA-224':
+        return ecc ? 'ecdsaWithSHA224' : 'sha224WithRSAEncryption';
+      case 'SHA-256':
+        return ecc ? 'ecdsaWithSHA256' : 'sha256WithRSAEncryption';
+      case 'SHA-384':
+        return ecc ? 'ecdsaWithSHA384' : 'sha384WithRSAEncryption';
+      case 'SHA-512':
+        return ecc ? 'ecdsaWithSHA512' : 'sha512WithRSAEncryption';
+      default:
+        return ecc ? 'ecdsaWithSHA256' : 'sha256WithRSAEncryption';
+    }
+  }
+
   ///
   /// Generates a eliptic curve Certificate Signing Request with the given [attributes] using the given [privateKey] and [publicKey].
   ///
-  /// The CSR will be signed with algorithm **SHA-256/ECDSA**.
+  /// The parameter [san] defines the list of subject alternative names to be placed within the CSR.
+  ///
+  /// [signingAlgorithm] defines the algorithm to use to sign the distinguished names. Supported values are
+  /// * SHA-1
+  /// * SHA-224
+  /// * SHA-256 (default)
+  /// * SHA-384
+  /// * SHA-512
   ///
   static String generateEccCsrPem(Map<String, String> attributes,
-      ECPrivateKey privateKey, ECPublicKey publicKey) {
+      ECPrivateKey privateKey, ECPublicKey publicKey,
+      {List<String>? san, String signingAlgorithm = 'SHA-256'}) {
+    if (!_validRsaSigner.contains(signingAlgorithm)) {
+      ArgumentError('Signingalgorithm $signingAlgorithm not supported!');
+    }
     var encodedDN = encodeDN(attributes);
     var publicKeySequence = _makeEccPublicKeyBlock(publicKey);
 
@@ -173,13 +257,43 @@ class X509Utils {
     blockDN.add(ASN1Integer(BigInt.from(0)));
     blockDN.add(encodedDN);
     blockDN.add(publicKeySequence);
-    blockDN.add(ASN1Null(tag: 0xA0)); // let's call this WTF
+    // Check if extensions are needed
+    if (san != null && san.isNotEmpty) {
+      var outerBlockExt = ASN1Sequence();
+      outerBlockExt.add(ASN1ObjectIdentifier.fromName('extensionRequest'));
+
+      var setExt = ASN1Set();
+
+      var innerBlockExt = ASN1Sequence();
+
+      var sanExtSeq = ASN1Sequence();
+      sanExtSeq.add(ASN1ObjectIdentifier.fromName('subjectAltName'));
+      var sanSeq = ASN1Sequence();
+      for (var s in san) {
+        var sanIa5 = ASN1IA5String(stringValue: s, tag: 0x82);
+        sanSeq.add(sanIa5);
+      }
+      var octet = ASN1OctetString(octets: sanSeq.encode());
+      sanExtSeq.add(octet);
+
+      innerBlockExt.add(sanExtSeq);
+
+      setExt.add(innerBlockExt);
+
+      outerBlockExt.add(setExt);
+
+      var asn1Null = ASN1OctetString(tag: 0xA0, octets: outerBlockExt.encode());
+      //asn1Null.valueBytes = outerBlockExt.encode();
+      blockDN.add(asn1Null);
+    } else {
+      blockDN.add(ASN1Null(tag: 0xA0)); // let's call this WTF
+    }
 
     var blockSignatureAlgorithm = ASN1Sequence();
-    blockSignatureAlgorithm
-        .add(ASN1ObjectIdentifier.fromName('ecdsaWithSHA256'));
+    blockSignatureAlgorithm.add(ASN1ObjectIdentifier.fromName(
+        _getOiForSigningAlgorithm(signingAlgorithm, ecc: true)));
 
-    var ecSignature = eccSign(blockDN.encode(), privateKey);
+    var ecSignature = eccSign(blockDN.encode(), privateKey, signingAlgorithm);
 
     var bitStringSequence = ASN1Sequence();
     bitStringSequence.add(ASN1Integer(ecSignature.r));
@@ -195,9 +309,9 @@ class X509Utils {
     return '$BEGIN_CSR\n${chunks.join('\r\n')}\n$END_CSR';
   }
 
-  static ECSignature eccSign(Uint8List inBytes, ECPrivateKey privateKey) {
-    var signer = Signer('SHA-256/ECDSA');
-    //var signer = ECDSASigner();
+  static ECSignature eccSign(
+      Uint8List inBytes, ECPrivateKey privateKey, String signingAlgorithm) {
+    var signer = Signer('$signingAlgorithm/ECDSA');
     var privParams = PrivateKeyParameter<ECPrivateKey>(privateKey);
     var signParams = ParametersWithRandom(
       privParams,

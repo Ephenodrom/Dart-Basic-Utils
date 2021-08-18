@@ -7,6 +7,8 @@
 * Improved X509Utils added parseOCSPResponse() method
 * Added new unit tests
 * Added new OCSP models
+* Improved X509Utils added new optional parameter (san, signingAlgorithm) to generateRsaCsrPem() method
+* Improved X509Utils added new optional parameter to generateEccCsrPem() method
 
 ## [3.4.0] - 2020-07-30
 

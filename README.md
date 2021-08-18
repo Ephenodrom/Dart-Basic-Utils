@@ -207,7 +207,8 @@ Helper class for operations on x509 certificates, like generating csr and many m
 
 ```dart
 String formatKeyString(String key, String begin, String end,{int chunkSize = 64, String lineDelimiter = "\n"});
-String generateRsaCsrPem(Map<String, String> attributes,RSAPrivateKey privateKey, RSAPublicKey publicKey);
+String generateRsaCsrPem(Map<String, String> attributes, RSAPrivateKey privateKey, RSAPublicKey publicKey, {List<String>? san, String signingAlgorithm = 'SHA-256'});
+String generateEccCsrPem(Map<String, String> attributes, ECPrivateKey privateKey, ECPublicKey publicKey, {List<String>? san, String signingAlgorithm = 'SHA-256'});
 String encodeASN1ObjectToPem(ASN1Object asn1Object, String begin, String end);
 RSAPrivateKey privateKeyFromASN1Sequence(ASN1Sequence asnSequence);
 ASN1Object encodeDN(Map<String, String> dn);
