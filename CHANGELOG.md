@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.5.0] - 2020-08-13
+## [3.5.0] - 2020-08-27
 
 * Improved X509Utils added buildOCSPRequest() method
 * Improved X509Utils added getOCSPUrl() method
@@ -9,6 +9,8 @@
 * Added new OCSP models
 * Improved X509Utils added new optional parameter (san, signingAlgorithm) to generateRsaCsrPem() method
 * Improved X509Utils added new optional parameter to generateEccCsrPem() method
+* Improved X509Utils added new optional parameter to ecPrivateKeyFromDerBytes() method
+* Updated dependencies
 
 ## [3.4.0] - 2020-07-30
 

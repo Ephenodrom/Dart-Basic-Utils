@@ -624,7 +624,6 @@ class CryptoUtils {
   ///
   /// Throws an ArgumentError if the given string [pem] is null or empty.
   ///
-  ///
   static ECPublicKey ecPublicKeyFromPem(String pem) {
     if (pem.isEmpty) {
       throw ArgumentError('Argument must not be null.');
@@ -643,32 +642,61 @@ class CryptoUtils {
       throw ArgumentError('Argument must not be null.');
     }
     var bytes = CryptoUtils.getBytesFromPEMString(pem);
-    return ecPrivateKeyFromDerBytes(bytes);
+    return ecPrivateKeyFromDerBytes(
+      bytes,
+      pkcs8: pem.startsWith(BEGIN_PRIVATE_KEY),
+    );
   }
 
   ///
   /// Decode the given [bytes] into an [ECPrivateKey].
   ///
-  static ECPrivateKey ecPrivateKeyFromDerBytes(Uint8List bytes) {
+  /// [pkcs8] defines the ASN1 format of the given [bytes]. The default is false, so SEC1 is assumed.
+  ///
+  /// Supports SEC1 (<https://tools.ietf.org/html/rfc5915>) and PKCS8 (<https://datatracker.ietf.org/doc/html/rfc5208>)
+  ///
+  static ECPrivateKey ecPrivateKeyFromDerBytes(Uint8List bytes,
+      {bool pkcs8 = false}) {
     var asn1Parser = ASN1Parser(bytes);
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
-    var privateKeyAsOctetString =
-        topLevelSeq.elements!.elementAt(1) as ASN1OctetString;
-    var choice = topLevelSeq.elements!.elementAt(2);
-    var s = ASN1Sequence();
-    var parser = ASN1Parser(choice.valueBytes);
-    while (parser.hasNext()) {
-      s.add(parser.nextObject());
-    }
-    var curveNameOi = s.elements!.elementAt(0) as ASN1ObjectIdentifier;
     var curveName;
-    var data = ObjectIdentifiers.getIdentifierByIdentifier(
-        curveNameOi.objectIdentifierAsString);
-    if (data != null) {
-      curveName = data['readableName'];
-    }
+    var x;
+    if (pkcs8) {
+      // Parse the PKCS8 format
+      var innerSeq = topLevelSeq.elements!.elementAt(1) as ASN1Sequence;
+      var b2 = innerSeq.elements!.elementAt(1) as ASN1ObjectIdentifier;
+      var b2Data = b2.objectIdentifierAsString;
+      var b2Curvedata = ObjectIdentifiers.getIdentifierByIdentifier(b2Data);
+      if (b2Curvedata != null) {
+        curveName = b2Curvedata['readableName'];
+      }
 
-    var x = privateKeyAsOctetString.valueBytes!;
+      var octetString = topLevelSeq.elements!.elementAt(2) as ASN1OctetString;
+      asn1Parser = ASN1Parser(octetString.valueBytes);
+      var octetStringSeq = asn1Parser.nextObject() as ASN1Sequence;
+      var octetStringKeyData =
+          octetStringSeq.elements!.elementAt(1) as ASN1OctetString;
+
+      x = octetStringKeyData.valueBytes!;
+    } else {
+      // Parse the SEC1 format
+      var privateKeyAsOctetString =
+          topLevelSeq.elements!.elementAt(1) as ASN1OctetString;
+      var choice = topLevelSeq.elements!.elementAt(2);
+      var s = ASN1Sequence();
+      var parser = ASN1Parser(choice.valueBytes);
+      while (parser.hasNext()) {
+        s.add(parser.nextObject());
+      }
+      var curveNameOi = s.elements!.elementAt(0) as ASN1ObjectIdentifier;
+      var data = ObjectIdentifiers.getIdentifierByIdentifier(
+          curveNameOi.objectIdentifierAsString);
+      if (data != null) {
+        curveName = data['readableName'];
+      }
+
+      x = privateKeyAsOctetString.valueBytes!;
+    }
 
     return ECPrivateKey(decodeBigInt(x), ECDomainParameters(curveName));
   }

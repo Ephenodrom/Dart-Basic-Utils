@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:basic_utils/src/X509Utils.dart';
-import 'package:basic_utils/src/model/ocsp/OCSPCertStatus.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPCertStatusValues.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPResponseStatus.dart';
 import 'package:pointycastle/impl.dart';
@@ -598,6 +597,10 @@ abvp10ZlOtfu8hL5gCXcxnwGxzSb
     var e5 = e4.elements!.elementAt(1) as ASN1UTF8String;
     var cn = e5.utf8StringValue;
     expect(cn, 'basic-utils.dev');
+
+    csr = X509Utils.generateEccCsrPem(
+        dn, pair.privateKey as ECPrivateKey, pair.publicKey as ECPublicKey,
+        signingAlgorithm: 'SHA-384');
   });
 
   test('Test generateKeyPair', () {

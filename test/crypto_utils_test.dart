@@ -79,6 +79,12 @@ bjBqILerN9h2zFj3Fi+DdT0=
       xwIDAQAB
       -----END PUBLIC KEY-----''';
 
+  var ecPrivateKeyPkcs8 = '''-----BEGIN PRIVATE KEY-----
+MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgciPt/gulzw7/Xe12
+YOu/vLUgIUZ+7gGo5VkmU0B+gUWhRANCAAQxkee3UPW110s0aUQdcS0TDkr8blAe
+SBouL4hXziiJX5Me/8OobFgNfYXkk6R/K/fqJhJ/mV8gLur16XhgueXA
+-----END PRIVATE KEY-----''';
+
   test('Test rsaPublicKeyModulusToBytes', () {
     var key = CryptoUtils.rsaPublicKeyFromPem(publicKey);
     var bytes = CryptoUtils.rsaPublicKeyModulusToBytes(key);
@@ -210,6 +216,24 @@ bjBqILerN9h2zFj3Fi+DdT0=
 
     expect(newPrivKey.d, privKey.d);
     expect(newPrivKey.parameters!.G, privKey.parameters!.G);
+  });
+
+  test('Test ecPrivateKeyFromPemPkcs8', () {
+    var newPrivKey = CryptoUtils.ecPrivateKeyFromPem(ecPrivateKeyPkcs8);
+
+    expect(
+        newPrivKey.d,
+        BigInt.parse(
+            '51627146948696899547634292548387049893597565707493284703475057275635907854661'));
+    expect(newPrivKey.parameters!.domainName, 'prime256v1');
+    expect(
+        newPrivKey.parameters!.G.x!.toBigInteger(),
+        BigInt.parse(
+            '48439561293906451759052585252797914202762949526041747995844080717082404635286'));
+    expect(
+        newPrivKey.parameters!.G.y!.toBigInteger(),
+        BigInt.parse(
+            '36134250956749795798585127919587881956611106672985015071877198253568414405109'));
   });
 
   test('Test encrypt / decrypt', () {

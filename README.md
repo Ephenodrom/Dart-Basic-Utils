@@ -255,7 +255,7 @@ String encodeEcPrivateKeyToPem(ECPrivateKey ecPrivateKey);
 String encodeEcPublicKeyToPem(ECPublicKey publicKey);
 ECPublicKey ecPublicKeyFromPem(String pem);
 ECPrivateKey ecPrivateKeyFromPem(String pem);
-ECPrivateKey ecPrivateKeyFromDerBytes(Uint8List bytes);
+ECPrivateKey ecPrivateKeyFromDerBytes(Uint8List bytes,{bool pkcs8 = false})
 ECPublicKey ecPublicKeyFromDerBytes(Uint8List bytes);
 String rsaEncrypt(String message, RSAPublicKey publicKey);
 String rsaDecrypt(String cipherMessage, RSAPrivateKey privateKey);
