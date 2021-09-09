@@ -51,6 +51,12 @@ class CryptoUtils {
       encodeBigInt(privateKey.modulus);
 
   ///
+  /// Converts the [RSAPrivateKey.exponent] from the given [privateKey] to a [Uint8List].
+  ///
+  static Uint8List rsaPrivateKeyExponentToBytes(RSAPrivateKey privateKey) =>
+      encodeBigInt(privateKey.exponent);
+
+  ///
   /// Get a SHA1 Thumbprint for the given [bytes].
   ///
   @Deprecated('Use [getHash]')
@@ -887,5 +893,44 @@ class CryptoUtils {
     } on ArgumentError {
       return false;
     }
+  }
+
+  ///
+  /// Returns the modulus of the given [pem] that represents an RSA private key.
+  ///
+  /// This equals the following openssl command:
+  /// ```
+  /// openssl rsa -noout -modulus -in FILE.key
+  /// ```
+  ///
+  static BigInt getModulusFromRSAPrivateKeyPem(String pem) {
+    RSAPrivateKey privateKey;
+    switch (_getPrivateKeyType(pem)) {
+      case 'RSA':
+        privateKey = rsaPrivateKeyFromPem(pem);
+        return privateKey.modulus!;
+      case 'RSA_PKCS1':
+        privateKey = rsaPrivateKeyFromPemPkcs1(pem);
+        return privateKey.modulus!;
+      case 'ECC':
+        throw ArgumentError('ECC private key not supported.');
+      default:
+        privateKey = rsaPrivateKeyFromPem(pem);
+        return privateKey.modulus!;
+    }
+  }
+
+  ///
+  /// Returns the private key type of the given [pem]
+  ///
+  static String _getPrivateKeyType(String pem) {
+    if (pem.startsWith(BEGIN_RSA_PRIVATE_KEY)) {
+      return 'RSA_PKCS1';
+    } else if (pem.startsWith(BEGIN_PRIVATE_KEY)) {
+      return 'RSA';
+    } else if (pem.startsWith(BEGIN_EC_PRIVATE_KEY)) {
+      return 'ECC';
+    }
+    return 'RSA';
   }
 }

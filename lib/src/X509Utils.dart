@@ -709,6 +709,18 @@ class X509Utils {
     return b.toString().toUpperCase();
   }
 
+  ///
+  /// Converts the hex string to bytes
+  ///
+  static Uint8List _stringAsBytes(String s) {
+    var list = StringUtils.chunk(s, 2);
+    var bytes = <int>[];
+    for (var e in list) {
+      bytes.add(int.parse(e!, radix: 16));
+    }
+    return Uint8List.fromList(bytes);
+  }
+
   static CertificateSigningRequestData csrFromPem(String pem) {
     var bytes = CryptoUtils.getBytesFromPEMString(pem);
     var asn1Parser = ASN1Parser(bytes);
@@ -1089,5 +1101,43 @@ class X509Utils {
     var responseData = OCSPResponseData(singleResponses);
 
     return BasicOCSPResponse(responseData: responseData);
+  }
+
+  ///
+  /// Returns the modulus of the given [pem] that represents an RSA CSR.
+  ///
+  /// This equals the following openssl command:
+  /// ```
+  /// openssl req -noout -modulus -in FILE.csr
+  /// ```
+  ///
+  static BigInt getModulusFromRSACsrPem(String pem) {
+    var data = csrFromPem(pem);
+    var bytesString = data.publicKeyInfo!.bytes;
+
+    var bytes = _stringAsBytes(bytesString!);
+    var parser = ASN1Parser(bytes);
+    var next = parser.nextObject() as ASN1Sequence;
+    var integer = next.elements!.elementAt(0) as ASN1Integer;
+    return integer.integer!;
+  }
+
+  ///
+  /// Returns the modulus of the given [pem] that represents an RSA X509 certificate.
+  ///
+  /// This equals the following openssl command:
+  /// ```
+  /// openssl x509 -noout -modulus -in FILE.cer
+  /// ```
+  ///
+  static BigInt getModulusFromRSAX509Pem(String pem) {
+    var data = x509CertificateFromPem(pem);
+    var bytesString = data.publicKeyData.bytes;
+
+    var bytes = _stringAsBytes(bytesString!);
+    var parser = ASN1Parser(bytes);
+    var next = parser.nextObject() as ASN1Sequence;
+    var integer = next.elements!.elementAt(0) as ASN1Integer;
+    return integer.integer!;
   }
 }

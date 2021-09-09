@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.6.0] - 2020-09-10
+
+* Improved X509Utils added getModulusFromRSAX509Pem() method
+* Improved X509Utils added getModulusFromRSACsrPem() method
+* Improved CryptoUtils added getModulusFromRSAPrivateKeyPem() method
+* Improved CryptoUtils added rsaPrivateKeyExponentToBytes() method
+* Added new unit tests
+
 ## [3.5.0] - 2020-08-27
 
 * Improved X509Utils added buildOCSPRequest() method

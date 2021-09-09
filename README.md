@@ -218,6 +218,8 @@ CertificateSigningRequestData csrFromPem(String pem);
 ASN1Sequence buildOCSPRequest(String pem, {String? intermediate});
 String getOCSPUrl(String pem);
 OCSPResponse parseOCSPResponse(Uint8List bytes);
+BigInt getModulusFromRSACsrPem(String pem);
+BigInt getModulusFromRSAX509Pem(String pem);
 ```
 
 ### IterableUtils
@@ -242,6 +244,7 @@ String getMd5ThumbprintFromBytes(Uint8List bytes);
 Uint8List rsaPublicKeyModulusToBytes(RSAPublicKey publicKey);
 Uint8List rsaPublicKeyExponentToBytes(RSAPublicKey publicKey);
 Uint8List rsaPrivateKeyToBytes(RSAPrivateKey privateKey);
+Uint8List rsaPrivateKeyExponentToBytes(RSAPrivateKey privateKey);
 AsymmetricKeyPair generateRSAKeyPair({int keySize = 2048});
 AsymmetricKeyPair generateEcKeyPair({String curve = 'prime256v1'});
 String encodeRSAPublicKeyToPem(RSAPublicKey publicKey);
@@ -270,6 +273,7 @@ RSAPrivateKey rsaPrivateKeyFromDERBytesPkcs1(Uint8List bytes);
 ECSignature ecSign(ECPrivateKey privateKey, Uint8List dataToSign, {String algorithmName = 'SHA-1/ECDSA'});
 bool ecVerify(ECPublicKey publicKey, Uint8List signedData, ECSignature signature, {String algorithm = 'SHA-1/ECDSA'});
 String getHash(Uint8List bytes, {String algorithmName = 'SHA-256'});
+BigInt getModulusFromRSAPrivateKeyPem(String pem);
 ```
 
 ### ASN1Utils
