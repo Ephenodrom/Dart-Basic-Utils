@@ -716,7 +716,7 @@ class X509Utils {
     var list = StringUtils.chunk(s, 2);
     var bytes = <int>[];
     for (var e in list) {
-      bytes.add(int.parse(e!, radix: 16));
+      bytes.add(int.parse(e, radix: 16));
     }
     return Uint8List.fromList(bytes);
   }
