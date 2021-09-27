@@ -678,12 +678,23 @@ class X509Utils {
     sanSeq.elements!.forEach((ASN1Object san) {
       if (san.tag == 135) {
         var sb = StringBuffer();
-        san.valueBytes!.forEach((int b) {
-          if (sb.isNotEmpty) {
-            sb.write('.');
+        if (san.valueByteLength == 16) {
+          //IPv6
+          for (var i = 0; i < (san.valueByteLength ?? 0); i++) {
+            if (sb.isNotEmpty && i % 2 == 0) {
+              sb.write(':');
+            }
+            sb.write(san.valueBytes![i].toRadixString(16).padLeft(2, '0'));
           }
-          sb.write(b);
-        });
+        } else {
+          //IPv4 and others
+          san.valueBytes!.forEach((int b) {
+            if (sb.isNotEmpty) {
+              sb.write('.');
+            }
+            sb.write(b);
+          });
+        }
         sans.add(sb.toString());
       } else {
         var s = String.fromCharCodes(san.valueBytes!);
