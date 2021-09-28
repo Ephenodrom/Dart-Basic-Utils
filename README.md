@@ -22,7 +22,8 @@ A dart package for many helper methods fitting different situations.
    * [IterableUtils](#iterableutils)
    * [CryptoUtils](#cryptoutils)
 5. [Changelog](#changelog)
-6. [Copyright and license](#copyright-and-license)
+6. [Real Live Examples](#real-live-examples)
+7. [Copyright and license](#copyright-and-license)
 
 ## Preamble
 
@@ -38,7 +39,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^3.6.0
+  basic_utils: ^3.6.1
 ```
 
 ## Import
@@ -287,6 +288,12 @@ String dump(String pem);
 ## Changelog
 
 For a detailed changelog, see the [CHANGELOG.md](CHANGELOG.md) file
+
+## Real Live Examples
+
+### SSL Toolkit
+
+All-in-one crossplatform ([Android](https://play.google.com/store/apps/details?id=de.feuerbergsoftware.ssl_checker)/[iOS/macOS](https://apps.apple.com/us/app/ssl-toolkit/id1547278785)) toolkit for SSL, including SSL install check, TLS check, PEM parser, CSR generator and certificate transparency log check.
 
 ## Copyright and license
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.6.1] - 2020-09-28
+
+* Improved X509Utils and handling of IPv6 SANs (PR #51)
+* Added new unit tests (PR #51)
+
 ## [3.6.0] - 2020-09-10
 
 * Improved X509Utils added getModulusFromRSAX509Pem() method
