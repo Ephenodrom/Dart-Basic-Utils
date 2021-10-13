@@ -337,10 +337,11 @@ class X509Utils {
   /// Encode the given [asn1Object] to PEM format and adding the [begin] and [end].
   ///
   static String encodeASN1ObjectToPem(
-      ASN1Object asn1Object, String begin, String end) {
+      ASN1Object asn1Object, String begin, String end,
+      {String newLine = '\n'}) {
     var bytes = asn1Object.encode();
     var chunks = StringUtils.chunk(base64.encode(bytes), 64);
-    return '$begin\n${chunks.join('\r\n')}\n$end';
+    return '$begin$newLine${chunks.join(newLine)}$newLine$end';
   }
 
   ///
@@ -365,6 +366,8 @@ class X509Utils {
 
       for (var el in seq1.elements!) {
         var x509 = _x509FromAsn1Sequence(el as ASN1Sequence);
+        var plain = encodeASN1ObjectToPem(el, BEGIN_CERT, END_CERT);
+        x509.plain = plain;
         x509List.add(x509);
       }
     }
@@ -1150,5 +1153,40 @@ class X509Utils {
     var next = parser.nextObject() as ASN1Sequence;
     var integer = next.elements!.elementAt(0) as ASN1Integer;
     return integer.integer!;
+  }
+
+  ///
+  /// Converts the given single [pems] to a PKCS7 pem string according to
+  /// <https://datatracker.ietf.org/doc/html/rfc2315>
+  ///
+  static String pemToPkcs7(List<String> certPems) {
+    var outer = ASN1Sequence();
+    outer.add(ASN1ObjectIdentifier([1, 2, 840, 113549, 1, 7, 2]));
+
+    var inner = ASN1Sequence();
+    inner.add(ASN1Integer.fromtInt(1));
+    inner.add(ASN1Set());
+    inner.add(
+      ASN1Sequence(
+        elements: [
+          ASN1ObjectIdentifier([1, 2, 840, 113549, 1, 7, 1])
+        ],
+      ),
+    );
+    var certs = ASN1Sequence(tag: 0xA0);
+    for (var pem in certPems) {
+      var bytes = CryptoUtils.getBytesFromPEMString(pem);
+      var asn1Parser = ASN1Parser(bytes);
+      var top = asn1Parser.nextObject() as ASN1Sequence;
+      certs.add(top);
+    }
+    inner.add(certs);
+    var a1 = ASN1Null(tag: 0xA1);
+    inner.add(a1);
+    inner.add(ASN1Set());
+    outer.add(ASN1Sequence(elements: [inner], tag: 0xA0));
+    var plain =
+        encodeASN1ObjectToPem(outer, BEGIN_PKCS7, END_PKCS7, newLine: '\n');
+    return plain;
   }
 }

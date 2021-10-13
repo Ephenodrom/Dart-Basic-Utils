@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.7.0] - 2020-09-28
+
+* Improved X509Utils add new method pemToPkcs7()
+* Added new unit tests
+* Improved X509Utils, added optional parameter to the encodeASN1ObjectToPem() method, changed line seperator to "\n" instead of "\r\n"
+
 ## [3.6.1] - 2020-09-28
 
 * Improved X509Utils and handling of IPv6 SANs (PR #51)

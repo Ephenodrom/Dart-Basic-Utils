@@ -210,7 +210,7 @@ Helper class for operations on x509 certificates, like generating csr and many m
 String formatKeyString(String key, String begin, String end,{int chunkSize = 64, String lineDelimiter = "\n"});
 String generateRsaCsrPem(Map<String, String> attributes, RSAPrivateKey privateKey, RSAPublicKey publicKey, {List<String>? san, String signingAlgorithm = 'SHA-256'});
 String generateEccCsrPem(Map<String, String> attributes, ECPrivateKey privateKey, ECPublicKey publicKey, {List<String>? san, String signingAlgorithm = 'SHA-256'});
-String encodeASN1ObjectToPem(ASN1Object asn1Object, String begin, String end);
+String encodeASN1ObjectToPem(ASN1Object asn1Object, String begin, String end, {String newLine = '\n'});
 RSAPrivateKey privateKeyFromASN1Sequence(ASN1Sequence asnSequence);
 ASN1Object encodeDN(Map<String, String> dn);
 X509CertificateData x509CertificateFromPem(String pem);
@@ -221,6 +221,7 @@ String getOCSPUrl(String pem);
 OCSPResponse parseOCSPResponse(Uint8List bytes);
 BigInt getModulusFromRSACsrPem(String pem);
 BigInt getModulusFromRSAX509Pem(String pem);
+String pemToPkcs7(List<String> pems);
 ```
 
 ### IterableUtils
