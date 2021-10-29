@@ -1143,4 +1143,30 @@ SEQUENCE (1 elem)
     var pkcs7 = X509Utils.pemToPkcs7(certPems);
     expect(pkcs7, openSslPkcs7);
   });
+
+  test('Test generateSelfSignedCertificate', () {
+    var pair = CryptoUtils.generateRSAKeyPair();
+    var dn = {
+      'CN': 'basic-utils.dev',
+      'O': 'Magic Company',
+      'L': 'Fakecity',
+      'S': 'FakeState',
+      'C': 'DE',
+    };
+    var csr = X509Utils.generateRsaCsrPem(
+        dn, pair.privateKey as RSAPrivateKey, pair.publicKey as RSAPublicKey,
+        san: ['san1.basic-utils.dev', 'san2.basic-utils.dev']);
+    var pem =
+        X509Utils.generateSelfSignedCertificate(pair.privateKey, csr, 365);
+    var x509 = X509Utils.x509CertificateFromPem(pem);
+    var expectedDn = {
+      '2.5.4.3': 'basic-utils.dev',
+      '2.5.4.10': 'Magic Company',
+      '2.5.4.7': 'Fakecity',
+      '2.5.4.8': 'FakeState',
+      '2.5.4.6': 'DE'
+    };
+    expect(x509.subject, expectedDn);
+    expect(x509.issuer, expectedDn);
+  });
 }

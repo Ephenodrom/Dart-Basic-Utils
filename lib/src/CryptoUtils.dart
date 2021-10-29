@@ -516,11 +516,16 @@ class CryptoUtils {
   static RSAPublicKey rsaPublicKeyFromDERBytes(Uint8List bytes) {
     var asn1Parser = ASN1Parser(bytes);
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
-    var publicKeyBitString = topLevelSeq.elements![1] as ASN1BitString;
+    var publicKeySeq;
+    if (topLevelSeq.elements![0].runtimeType == ASN1BitString) {
+      var publicKeyBitString = topLevelSeq.elements![1] as ASN1BitString;
 
-    var publicKeyAsn =
-        ASN1Parser(publicKeyBitString.stringValues as Uint8List?);
-    var publicKeySeq = publicKeyAsn.nextObject() as ASN1Sequence;
+      var publicKeyAsn =
+          ASN1Parser(publicKeyBitString.stringValues as Uint8List?);
+      publicKeySeq = publicKeyAsn.nextObject() as ASN1Sequence;
+    } else {
+      publicKeySeq = topLevelSeq;
+    }
     var modulus = publicKeySeq.elements![0] as ASN1Integer;
     var exponent = publicKeySeq.elements![1] as ASN1Integer;
 

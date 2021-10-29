@@ -4,26 +4,30 @@ A dart package for many helper methods fitting different situations.
 
 ## Table of Contents
 
-1. [Preamble](#preamble)
-2. [Install](#install)
-   * [pubspec.yaml](#pubspec.yaml)
-3. [Import](#import)
-4. [Util Classes](#util-classes)
-   * [StringUtils](#stringutils)
-   * [DomainUtils](#domainutils)
-   * [EmailUtils](#emailutils)
-   * [MathUtils](#mathutils)
-   * [HttpUtils](#httputils)
-   * [DnsUtils](#dnsutils)
-   * [SortUtils](#sortutils)
-   * [ColorUtils](#colorutils)
-   * [DateUtils](#dateutils)
-   * [X509Utils](#x509utils)
-   * [IterableUtils](#iterableutils)
-   * [CryptoUtils](#cryptoutils)
-5. [Changelog](#changelog)
-6. [Real Live Examples](#real-live-examples)
-7. [Copyright and license](#copyright-and-license)
+- [Basic Utils](#basic-utils)
+  - [Table of Contents](#table-of-contents)
+  - [Preamble](#preamble)
+  - [Install](#install)
+    - [pubspec.yaml](#pubspecyaml)
+  - [Import](#import)
+  - [Util Classes](#util-classes)
+    - [StringUtils](#stringutils)
+    - [DomainUtils](#domainutils)
+    - [EmailUtils](#emailutils)
+    - [MathUtils](#mathutils)
+    - [HttpUtils](#httputils)
+    - [DnsUtils](#dnsutils)
+    - [SortUtils](#sortutils)
+    - [ColorUtils](#colorutils)
+    - [DateUtils](#dateutils)
+    - [X509Utils](#x509utils)
+    - [IterableUtils](#iterableutils)
+    - [CryptoUtils](#cryptoutils)
+    - [ASN1Utils](#asn1utils)
+  - [Changelog](#changelog)
+  - [Real Live Examples](#real-live-examples)
+    - [SSL Toolkit](#ssl-toolkit)
+  - [Copyright and license](#copyright-and-license)
 
 ## Preamble
 
@@ -222,6 +226,7 @@ OCSPResponse parseOCSPResponse(Uint8List bytes);
 BigInt getModulusFromRSACsrPem(String pem);
 BigInt getModulusFromRSAX509Pem(String pem);
 String pemToPkcs7(List<String> pems);
+String generateSelfSignedCertificate(PrivateKey privateKey, String csr, int days, {String? san, List<String>? extKeyUsage, String? serialNumber});
 ```
 
 ### IterableUtils

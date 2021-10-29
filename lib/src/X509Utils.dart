@@ -232,6 +232,103 @@ class X509Utils {
     }
   }
 
+  static String _getSigningAlgorithmFromOi(String oi) {
+    switch (oi) {
+      case 'ecdsaWithSHA1':
+      case 'sha1WithRSAEncryption':
+        return 'SHA-1';
+      case 'ecdsaWithSHA224':
+      case 'sha224WithRSAEncryption':
+        return 'SHA-224';
+      case 'ecdsaWithSHA256':
+      case 'sha256WithRSAEncryption':
+        return 'SHA-256';
+      case 'ecdsaWithSHA384':
+      case 'sha384WithRSAEncryption':
+        return 'SHA-384';
+      case 'ecdsaWithSHA512':
+      case 'sha512WithRSAEncryption':
+        return 'SHA-512';
+      default:
+        return 'SHA-256';
+    }
+  }
+
+  static String generateSelfSignedCertificate(
+      PrivateKey privateKey, String csr, int days,
+      {String? san, List<String>? extKeyUsage, String? serialNumber}) {
+    var csrData = csrFromPem(csr);
+
+    var data = ASN1Sequence();
+
+    // Add serial number
+    serialNumber ??= BigInt.one.toRadixString(16);
+    data.add(ASN1Integer(BigInt.parse(serialNumber)));
+
+    // Add protocoll
+    var blockProtocol = ASN1Sequence();
+    blockProtocol.add(
+        ASN1ObjectIdentifier.fromIdentifierString(csrData.signatureAlgorithm));
+    blockProtocol.add(ASN1Null());
+    data.add(blockProtocol);
+
+    // Add Issuer
+    var issuerSeq = ASN1Sequence();
+    for (var k in csrData.subject!.keys) {
+      var pString = ASN1PrintableString(stringValue: csrData.subject![k]);
+      var oIdentifier = ASN1ObjectIdentifier.fromIdentifierString(k);
+      var innerSequence = ASN1Sequence(elements: [oIdentifier, pString]);
+      var s = ASN1Set(elements: [innerSequence]);
+      issuerSeq.add(s);
+    }
+    data.add(issuerSeq);
+
+    // Add Validity
+    var validitySeq = ASN1Sequence();
+    validitySeq.add(ASN1UtcTime(DateTime.now()));
+    validitySeq.add(ASN1UtcTime(DateTime.now().add(Duration(days: days))));
+    data.add(validitySeq);
+
+    // Add Subject
+    var subjectSeq = ASN1Sequence();
+    for (var k in csrData.subject!.keys) {
+      var pString = ASN1PrintableString(stringValue: csrData.subject![k]);
+      var oIdentifier = ASN1ObjectIdentifier.fromIdentifierString(k);
+      var innerSequence = ASN1Sequence(elements: [oIdentifier, pString]);
+      var s = ASN1Set(elements: [innerSequence]);
+      subjectSeq.add(s);
+    }
+    data.add(subjectSeq);
+
+    // Add Public Key
+    data.add(_makePublicKeyBlock(CryptoUtils.rsaPublicKeyFromDERBytes(
+        _stringAsBytes(csrData.publicKeyInfo!.bytes!))));
+
+    // Add Extensions
+    // TODO
+
+    var outer = ASN1Sequence();
+    outer.add(data);
+    outer.add(blockProtocol);
+    if (privateKey.runtimeType == RSAPrivateKey) {
+      outer.add(ASN1BitString(
+          stringValues: _rsaSign(data.encode(), privateKey as RSAPrivateKey,
+              _getSigningAlgorithmFromOi(csrData.signatureAlgorithm!))));
+    } else {
+      var ecSignature = eccSign(data.encode(), privateKey as ECPrivateKey,
+          _getSigningAlgorithmFromOi(csrData.signatureAlgorithm!));
+      var bitStringSequence = ASN1Sequence();
+      bitStringSequence.add(ASN1Integer(ecSignature.r));
+      bitStringSequence.add(ASN1Integer(ecSignature.s));
+      var blockSignatureValue =
+          ASN1BitString(stringValues: bitStringSequence.encode());
+      outer.add(blockSignatureValue);
+    }
+
+    var chunks = StringUtils.chunk(base64.encode(outer.encode()), 64);
+    return '$BEGIN_CSR\n${chunks.join('\r\n')}\n$END_CSR';
+  }
+
   ///
   /// Generates a eliptic curve Certificate Signing Request with the given [attributes] using the given [privateKey] and [publicKey].
   ///
