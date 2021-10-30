@@ -12,6 +12,7 @@ import 'package:basic_utils/src/model/ocsp/OCSPResponseData.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPResponseStatus.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPSingleResponse.dart';
 import 'package:basic_utils/src/model/pkcs7/Pkcs7CertificateData.dart';
+import 'package:basic_utils/src/model/x509/ExtendedKeyUsage.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateValidity.dart';
@@ -256,10 +257,17 @@ class X509Utils {
 
   static String generateSelfSignedCertificate(
       PrivateKey privateKey, String csr, int days,
-      {String? san, List<String>? extKeyUsage, String? serialNumber}) {
+      {List<String>? sans,
+      List<ExtendedKeyUsage>? extKeyUsage,
+      String? serialNumber}) {
     var csrData = csrFromPem(csr);
 
     var data = ASN1Sequence();
+
+    // Add version
+    var version = ASN1Object(tag: 0xA0);
+    version.valueBytes = ASN1Integer.fromtInt(1).encode();
+    data.add(version);
 
     // Add serial number
     serialNumber ??= BigInt.one.toRadixString(16);
@@ -305,6 +313,25 @@ class X509Utils {
         _stringAsBytes(csrData.publicKeyInfo!.bytes!))));
 
     // Add Extensions
+    if (sans != null || extKeyUsage != null) {
+      var extensionTopSequence = ASN1Sequence();
+      if (sans != null) {
+        var sanList = ASN1Sequence();
+        for (var s in sans) {
+          sanList.add(ASN1PrintableString(stringValue: s, tag: 0x82));
+        }
+        var octetString = ASN1OctetString(octets: sanList.encode());
+
+        var sanSequence = ASN1Sequence();
+        sanSequence.add(ASN1ObjectIdentifier.fromIdentifierString('2.5.29.17'));
+        sanSequence.add(octetString);
+        extensionTopSequence.add(sanSequence);
+      }
+      var extObj = ASN1Object(tag: 0xA3);
+      extObj.valueBytes = extensionTopSequence.encode();
+
+      data.add(extObj);
+    }
     // TODO
 
     var outer = ASN1Sequence();
