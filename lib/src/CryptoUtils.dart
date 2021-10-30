@@ -517,7 +517,7 @@ class CryptoUtils {
     var asn1Parser = ASN1Parser(bytes);
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
     var publicKeySeq;
-    if (topLevelSeq.elements![0].runtimeType == ASN1BitString) {
+    if (topLevelSeq.elements![1].runtimeType == ASN1BitString) {
       var publicKeyBitString = topLevelSeq.elements![1] as ASN1BitString;
 
       var publicKeyAsn =
