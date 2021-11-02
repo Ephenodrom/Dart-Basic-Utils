@@ -1,8 +1,11 @@
 # Changelog
 
-## [3.8.0] - 2020-11-05
+## [3.8.0] - 2020-11-02
 
 * Improved X509Utils add new method generateSelfSignedCertificate()
+* Improved X509Utils, x509CertificateFromPem() now parses the extKeyUsage extension
+* Improved X509CertificateData model, added new field extKeyUsage
+* Added new model ExtendedKeyUsage
 
 ## [3.7.0] - 2020-09-28
 

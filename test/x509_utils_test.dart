@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:basic_utils/src/X509Utils.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPCertStatusValues.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPResponseStatus.dart';
+import 'package:basic_utils/src/model/x509/ExtendedKeyUsage.dart';
 import 'package:pointycastle/impl.dart';
 import 'package:pointycastle/pointycastle.dart';
 import 'package:test/test.dart';
@@ -1156,9 +1157,14 @@ SEQUENCE (1 elem)
     var csr = X509Utils.generateRsaCsrPem(
         dn, pair.privateKey as RSAPrivateKey, pair.publicKey as RSAPublicKey,
         san: ['san1.basic-utils.dev', 'san2.basic-utils.dev']);
-    var pem = X509Utils.generateSelfSignedCertificate(pair.privateKey, csr, 365,
-        sans: ['san1.basic-utils.dev', 'san2.basic-utils.dev']);
-    print(pem);
+    var pem = X509Utils.generateSelfSignedCertificate(
+      pair.privateKey,
+      csr,
+      365,
+      sans: ['san1.basic-utils.dev', 'san2.basic-utils.dev'],
+      extKeyUsage: [ExtendedKeyUsage.SERVER_AUTH, ExtendedKeyUsage.CLIENT_AUTH],
+    );
+
     var x509 = X509Utils.x509CertificateFromPem(pem);
     var expectedDn = {
       '2.5.4.3': 'basic-utils.dev',
@@ -1171,5 +1177,7 @@ SEQUENCE (1 elem)
     expect(x509.issuer, expectedDn);
     expect(x509.subjectAlternativNames!.elementAt(0), 'san1.basic-utils.dev');
     expect(x509.subjectAlternativNames!.elementAt(1), 'san2.basic-utils.dev');
+    expect(x509.extKeyUsage!.elementAt(0), ExtendedKeyUsage.SERVER_AUTH);
+    expect(x509.extKeyUsage!.elementAt(1), ExtendedKeyUsage.CLIENT_AUTH);
   });
 }

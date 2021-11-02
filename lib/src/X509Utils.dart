@@ -255,22 +255,34 @@ class X509Utils {
     }
   }
 
+  ///
+  /// Generates a self signed certificate
+  ///
+  /// * [privateKey] = The private key used for signing
+  /// * [csr] = The CSR containing the DN an public key
+  /// * [days] = The validity in days
+  /// * [sans] = Subject alternative names to place within the certificate
+  /// * [extKeyUsage] = The key usage definition
+  /// * [serialNumber] = The serialnumber. If not set the default will be 1.
+  ///
   static String generateSelfSignedCertificate(
-      PrivateKey privateKey, String csr, int days,
-      {List<String>? sans,
-      List<ExtendedKeyUsage>? extKeyUsage,
-      String? serialNumber}) {
+    PrivateKey privateKey,
+    String csr,
+    int days, {
+    List<String>? sans,
+    List<ExtendedKeyUsage>? extKeyUsage,
+    String serialNumber = '1',
+  }) {
     var csrData = csrFromPem(csr);
 
     var data = ASN1Sequence();
 
     // Add version
     var version = ASN1Object(tag: 0xA0);
-    version.valueBytes = ASN1Integer.fromtInt(1).encode();
+    version.valueBytes = ASN1Integer.fromtInt(2).encode();
     data.add(version);
 
     // Add serial number
-    serialNumber ??= BigInt.one.toRadixString(16);
     data.add(ASN1Integer(BigInt.parse(serialNumber)));
 
     // Add protocoll
@@ -315,6 +327,42 @@ class X509Utils {
     // Add Extensions
     if (sans != null || extKeyUsage != null) {
       var extensionTopSequence = ASN1Sequence();
+
+      if (extKeyUsage != null) {
+        var extKeyUsageList = ASN1Sequence();
+        for (var s in extKeyUsage) {
+          var oi = '';
+          switch (s) {
+            case ExtendedKeyUsage.SERVER_AUTH:
+              oi = '1.3.6.1.5.5.7.3.1';
+              break;
+            case ExtendedKeyUsage.CLIENT_AUTH:
+              oi = '1.3.6.1.5.5.7.3.2';
+              break;
+            case ExtendedKeyUsage.CODE_SIGNING:
+              oi = '1.3.6.1.5.5.7.3.3';
+              break;
+            case ExtendedKeyUsage.EMAIL_PROTECTION:
+              oi = '1.3.6.1.5.5.7.3.4';
+              break;
+            case ExtendedKeyUsage.TIME_STAMPING:
+              oi = '1.3.6.1.5.5.7.3.8';
+              break;
+            case ExtendedKeyUsage.OCSP_SIGNING:
+              oi = '1.3.6.1.5.5.7.3.9';
+              break;
+          }
+          extKeyUsageList.add(ASN1ObjectIdentifier.fromIdentifierString(oi));
+        }
+        var octetString = ASN1OctetString(octets: extKeyUsageList.encode());
+
+        var extKeyUsageSequence = ASN1Sequence();
+        extKeyUsageSequence
+            .add(ASN1ObjectIdentifier.fromIdentifierString('2.5.29.37'));
+        extKeyUsageSequence.add(octetString);
+        extensionTopSequence.add(extKeyUsageSequence);
+      }
+
       if (sans != null) {
         var sanList = ASN1Sequence();
         for (var s in sans) {
@@ -353,7 +401,7 @@ class X509Utils {
     }
 
     var chunks = StringUtils.chunk(base64.encode(outer.encode()), 64);
-    return '$BEGIN_CSR\n${chunks.join('\r\n')}\n$END_CSR';
+    return '$BEGIN_CERT\n${chunks.join('\r\n')}\n$END_CERT';
   }
 
   ///
@@ -636,6 +684,7 @@ class X509Utils {
       plainSha1: plainSha1,
     );
     List<String>? sans;
+    List<ExtendedKeyUsage>? extKeyUsage;
     if (version > 1) {
       // Extensions
       if (dataSequence.elements!.length == 8) {
@@ -653,6 +702,15 @@ class X509Utils {
               sans = _fetchSansFromExtension(seq.elements!.elementAt(1));
             }
           }
+          if (oi.objectIdentifierAsString == '2.5.29.37') {
+            if (seq.elements!.length == 3) {
+              extKeyUsage = _fetchExtendedKeyUsageFromExtension(
+                  seq.elements!.elementAt(2));
+            } else {
+              extKeyUsage = _fetchExtendedKeyUsageFromExtension(
+                  seq.elements!.elementAt(1));
+            }
+          }
         });
       }
     }
@@ -666,6 +724,7 @@ class X509Utils {
       subject: subject,
       publicKeyData: publicKeyData,
       subjectAlternativNames: sans,
+      extKeyUsage: extKeyUsage,
     );
   }
 
@@ -1312,5 +1371,43 @@ class X509Utils {
     var plain =
         encodeASN1ObjectToPem(outer, BEGIN_PKCS7, END_PKCS7, newLine: '\n');
     return plain;
+  }
+
+  ///
+  /// Parses the given object identifier values to the internal enum
+  ///
+  static List<ExtendedKeyUsage> _fetchExtendedKeyUsageFromExtension(
+      ASN1Object extData) {
+    var extKeyUsage = <ExtendedKeyUsage>[];
+    var octet = extData as ASN1OctetString;
+    var keyUsageParser = ASN1Parser(octet.valueBytes);
+    var keyUsageSeq = keyUsageParser.nextObject() as ASN1Sequence;
+    keyUsageSeq.elements!.forEach((ASN1Object oi) {
+      if (oi is ASN1ObjectIdentifier) {
+        var s = oi.objectIdentifierAsString;
+        switch (s) {
+          case '1.3.6.1.5.5.7.3.1':
+            extKeyUsage.add(ExtendedKeyUsage.SERVER_AUTH);
+            break;
+          case '1.3.6.1.5.5.7.3.2':
+            extKeyUsage.add(ExtendedKeyUsage.CLIENT_AUTH);
+            break;
+          case '1.3.6.1.5.5.7.3.3':
+            extKeyUsage.add(ExtendedKeyUsage.CODE_SIGNING);
+            break;
+          case '1.3.6.1.5.5.7.3.4':
+            extKeyUsage.add(ExtendedKeyUsage.EMAIL_PROTECTION);
+            break;
+          case '1.3.6.1.5.5.7.3.8':
+            extKeyUsage.add(ExtendedKeyUsage.TIME_STAMPING);
+            break;
+          case '1.3.6.1.5.5.7.3.9':
+            extKeyUsage.add(ExtendedKeyUsage.OCSP_SIGNING);
+            break;
+          default:
+        }
+      }
+    });
+    return extKeyUsage;
   }
 }

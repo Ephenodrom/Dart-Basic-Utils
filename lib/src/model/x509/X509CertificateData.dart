@@ -1,3 +1,4 @@
+import 'package:basic_utils/src/model/x509/ExtendedKeyUsage.dart';
 import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -46,19 +47,24 @@ class X509CertificateData {
   /// The plain certificate pem string, that was used to decode.
   String? plain;
 
-  X509CertificateData(
-      {required this.version,
-      required this.serialNumber,
-      required this.signatureAlgorithm,
-      required this.issuer,
-      required this.validity,
-      required this.subject,
-      this.sha1Thumbprint,
-      this.sha256Thumbprint,
-      this.md5Thumbprint,
-      required this.publicKeyData,
-      required this.subjectAlternativNames,
-      this.plain});
+  /// The extended key usage extension
+  List<ExtendedKeyUsage>? extKeyUsage;
+
+  X509CertificateData({
+    required this.version,
+    required this.serialNumber,
+    required this.signatureAlgorithm,
+    required this.issuer,
+    required this.validity,
+    required this.subject,
+    this.sha1Thumbprint,
+    this.sha256Thumbprint,
+    this.md5Thumbprint,
+    required this.publicKeyData,
+    required this.subjectAlternativNames,
+    this.plain,
+    this.extKeyUsage,
+  });
 
   /*
    * Json to X509CertificateData object

@@ -43,7 +43,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^3.6.1
+  basic_utils: ^3.8.0
 ```
 
 ## Import
@@ -226,7 +226,7 @@ OCSPResponse parseOCSPResponse(Uint8List bytes);
 BigInt getModulusFromRSACsrPem(String pem);
 BigInt getModulusFromRSAX509Pem(String pem);
 String pemToPkcs7(List<String> pems);
-String generateSelfSignedCertificate(PrivateKey privateKey, String csr, int days, {String? san, List<String>? extKeyUsage, String? serialNumber});
+String generateSelfSignedCertificate(PrivateKey privateKey, String csr,,int days, { List<String>? sans, List<ExtendedKeyUsage>? extKeyUsage, String serialNumber = '1',});
 ```
 
 ### IterableUtils
