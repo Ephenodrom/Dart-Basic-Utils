@@ -44,6 +44,7 @@ export 'src/X509Utils.dart';
 export 'src/IterableUtils.dart';
 export 'src/CryptoUtils.dart';
 export 'src/Asn1Utils.dart';
+export 'src/FunctionDefs.dart';
 
 // Export other libraries
 export 'package:pointycastle/ecc/api.dart';

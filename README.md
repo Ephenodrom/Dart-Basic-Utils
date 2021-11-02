@@ -24,6 +24,7 @@ A dart package for many helper methods fitting different situations.
     - [IterableUtils](#iterableutils)
     - [CryptoUtils](#cryptoutils)
     - [ASN1Utils](#asn1utils)
+    - [FunctionDefs](#functionDefs)
   - [Changelog](#changelog)
   - [Real Live Examples](#real-live-examples)
     - [SSL Toolkit](#ssl-toolkit)
@@ -289,6 +290,23 @@ Helper class for operation on ASN1 objects.
 
 ```dart
 String dump(String pem);
+```
+
+### FunctionDefs
+
+Helper with various function prototype definitions.
+
+```
+BiConsumer<T,U>
+BiFunction<T,U,R>
+BinaryOperator<T>
+BiPredicate<T,U>
+Consumer<T>
+Supplier<T>
+BooleanSupplier
+SingleFunction<T,R>
+Predicate<T>
+UnaryOperator<T>
 ```
 
 ## Changelog
