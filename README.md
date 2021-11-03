@@ -44,7 +44,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^3.8.0
+  basic_utils: ^3.8.1
 ```
 
 ## Import
@@ -296,7 +296,7 @@ String dump(String pem);
 
 Helper with various function prototype definitions.
 
-```
+```dart
 BiConsumer<T,U>
 BiFunction<T,U,R>
 BinaryOperator<T>

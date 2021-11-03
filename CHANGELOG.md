@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.8.1] - 2020-11-05
+
+* Added function definitions
+* Export model X509CertificatePublicKeyData
+
 ## [3.8.0] - 2020-11-02
 
 * Improved X509Utils add new method generateSelfSignedCertificate()
