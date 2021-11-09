@@ -1,5 +1,9 @@
 # Basic Utils
 
+[![pub package](https://img.shields.io/pub/v/basic_utils.svg?logo=dart&logoColor=00b9fc)](https://pub.dev/packages/basic_utils)
+[![Null Safety](https://img.shields.io/badge/null-safety-brightgreen)](https://dart.dev/null-safety)
+[![License](https://img.shields.io/github/license/ephenodrom/Dart-Basic-Utils?logo=open-source-initiative&logoColor=green)](https://github.com/Ephenodrom/Dart-Basic-Utils/blob/master/LICENSE)
+
 A dart package for many helper methods fitting different situations.
 
 ## Table of Contents
@@ -24,7 +28,7 @@ A dart package for many helper methods fitting different situations.
     - [IterableUtils](#iterableutils)
     - [CryptoUtils](#cryptoutils)
     - [ASN1Utils](#asn1utils)
-    - [FunctionDefs](#functionDefs)
+    - [FunctionDefs](#functiondefs)
   - [Changelog](#changelog)
   - [Real Live Examples](#real-live-examples)
     - [SSL Toolkit](#ssl-toolkit)
@@ -44,7 +48,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^3.8.1
+  basic_utils: ^3.8.2
 ```
 
 ## Import

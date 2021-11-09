@@ -1,11 +1,11 @@
 name: basic_utils
 description: Common util classes providing a solution for different situations.
-version: 3.8.1
+version: 3.8.2
 homepage: https://github.com/Ephenodrom/Dart-Basic-Utils
 publish_to: https://pub.dartlang.org
 
 environment:
-  sdk: '>=2.13.0 <3.0.0'
+  sdk: '>=2.14.0 <3.0.0'
 
 dependencies:
   http: ^0.13.3

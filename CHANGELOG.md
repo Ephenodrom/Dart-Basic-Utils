@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.8.2] - 2020-11-10
+
+* Improved X509Utils, fixed public key length calculation while parsing a CSR
+* Updated minimum Dart SDK constraint to 2.14.0
+
 ## [3.8.1] - 2020-11-05
 
 * Added function definitions

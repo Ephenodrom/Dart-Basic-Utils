@@ -1040,7 +1040,7 @@ YQGx0qMmoRBxna3iw/nDmVG3KwcIzi7mULKn+gpFL6Lw8qEAMQA=
     expect(data.signatureAlgorithmReadableName, 'ecdsaWithSHA256');
     expect(data.publicKeyInfo!.algorithm, '1.2.840.10045.2.1');
     expect(data.publicKeyInfo!.algorithmReadableName, 'ecPublicKey');
-    expect(data.publicKeyInfo!.length, 528);
+    expect(data.publicKeyInfo!.length, 520);
     expect(data.publicKeyInfo!.sha1Thumbprint,
         'EEE9267F9374C82BCA1173623468503C5AE3A24E');
     expect(data.publicKeyInfo!.sha256Thumbprint,

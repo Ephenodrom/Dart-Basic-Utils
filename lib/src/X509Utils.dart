@@ -978,7 +978,10 @@ class X509Utils {
       pubKeyAsBytes = s.encodedBytes;
     } else {
       pubKeyAsBytes = pubBitString.valueBytes;
-      pubKeyLength = pubBitString.valueBytes!.length * 8;
+      var length = pubBitString.valueBytes!.elementAt(0) == 0
+          ? (pubBitString.valueByteLength! - 1)
+          : pubBitString.valueByteLength;
+      pubKeyLength = length! * 8;
     }
 
     var pubKeyThumbprint =
