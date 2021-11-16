@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.9.0] - 2020-11-17
+
+* Added support for VMC certificates
+* Added model X509CertificateDataExtensions
+* Added model VmcData
+* Marked X509CertificateData.subjectAlternativNames as deprecated
+* Marked X509CertificateData.extKeyUsage as deprecated
+* Added BIMI as value to ExtendedKeyUsage enum
+
 ## [3.8.2] - 2020-11-10
 
 * Improved X509Utils, fixed public key length calculation while parsing a CSR

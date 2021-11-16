@@ -14,6 +14,8 @@ X509CertificatePublicKeyData _$X509CertificatePublicKeyDataFromJson(
     sha1Thumbprint: json['sha1Thumbprint'] as String?,
     sha256Thumbprint: json['sha256Thumbprint'] as String?,
     bytes: json['bytes'] as String?,
+    plainSha1: X509CertificatePublicKeyData.plainSha1FromJson(
+        json['plainSha1'] as List<int>),
   );
 }
 
@@ -32,5 +34,7 @@ Map<String, dynamic> _$X509CertificatePublicKeyDataToJson(
   writeNotNull('sha1Thumbprint', instance.sha1Thumbprint);
   writeNotNull('sha256Thumbprint', instance.sha256Thumbprint);
   writeNotNull('bytes', instance.bytes);
+  writeNotNull('plainSha1',
+      X509CertificatePublicKeyData.plainSha1ToJson(instance.plainSha1));
   return val;
 }

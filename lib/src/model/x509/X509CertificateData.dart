@@ -1,4 +1,5 @@
 import 'package:basic_utils/src/model/x509/ExtendedKeyUsage.dart';
+import 'package:basic_utils/src/model/x509/X509CertificateDataExtensions.dart';
 import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -42,13 +43,18 @@ class X509CertificateData {
   X509CertificatePublicKeyData publicKeyData;
 
   /// The subject alternative names
+  @Deprecated('Use extensions.subjectAlternativNames instead')
   List<String>? subjectAlternativNames;
 
   /// The plain certificate pem string, that was used to decode.
   String? plain;
 
   /// The extended key usage extension
+  @Deprecated('Use extensions.extKeyUsage instead')
   List<ExtendedKeyUsage>? extKeyUsage;
+
+  /// The certificate extensions
+  X509CertificateDataExtensions? extensions;
 
   X509CertificateData({
     required this.version,
@@ -64,6 +70,7 @@ class X509CertificateData {
     required this.subjectAlternativNames,
     this.plain,
     this.extKeyUsage,
+    this.extensions,
   });
 
   /*

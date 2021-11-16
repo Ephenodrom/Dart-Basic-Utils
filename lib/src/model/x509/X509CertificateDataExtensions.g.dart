@@ -1,48 +1,29 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'X509CertificateData.dart';
+part of 'X509CertificateDataExtensions.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-X509CertificateData _$X509CertificateDataFromJson(Map<String, dynamic> json) {
-  return X509CertificateData(
-    version: json['version'] as int,
-    serialNumber: BigInt.parse(json['serialNumber'] as String),
-    signatureAlgorithm: json['signatureAlgorithm'] as String,
-    issuer: Map<String, String>.from(json['issuer'] as Map),
-    validity: X509CertificateValidity.fromJson(
-        json['validity'] as Map<String, dynamic>),
-    subject: Map<String, String>.from(json['subject'] as Map),
-    sha1Thumbprint: json['sha1Thumbprint'] as String?,
-    sha256Thumbprint: json['sha256Thumbprint'] as String?,
-    md5Thumbprint: json['md5Thumbprint'] as String?,
-    publicKeyData: X509CertificatePublicKeyData.fromJson(
-        json['publicKeyData'] as Map<String, dynamic>),
+X509CertificateDataExtensions _$X509CertificateDataExtensionsFromJson(
+    Map<String, dynamic> json) {
+  return X509CertificateDataExtensions(
     subjectAlternativNames: (json['subjectAlternativNames'] as List<dynamic>?)
         ?.map((e) => e as String)
         .toList(),
-    plain: json['plain'] as String?,
     extKeyUsage: (json['extKeyUsage'] as List<dynamic>?)
         ?.map((e) => _$enumDecode(_$ExtendedKeyUsageEnumMap, e))
         .toList(),
-    extensions: json['extensions'] == null
+    vmc: json['vmc'] == null
         ? null
-        : X509CertificateDataExtensions.fromJson(
-            json['extensions'] as Map<String, dynamic>),
+        : VmcData.fromJson(json['vmc'] as Map<String, dynamic>),
   );
 }
 
-Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {
-  final val = <String, dynamic>{
-    'version': instance.version,
-    'serialNumber': instance.serialNumber.toString(),
-    'signatureAlgorithm': instance.signatureAlgorithm,
-    'issuer': instance.issuer,
-    'validity': instance.validity.toJson(),
-    'subject': instance.subject,
-  };
+Map<String, dynamic> _$X509CertificateDataExtensionsToJson(
+    X509CertificateDataExtensions instance) {
+  final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
     if (value != null) {
@@ -50,15 +31,10 @@ Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {
     }
   }
 
-  writeNotNull('sha1Thumbprint', instance.sha1Thumbprint);
-  writeNotNull('sha256Thumbprint', instance.sha256Thumbprint);
-  writeNotNull('md5Thumbprint', instance.md5Thumbprint);
-  val['publicKeyData'] = instance.publicKeyData.toJson();
   writeNotNull('subjectAlternativNames', instance.subjectAlternativNames);
-  writeNotNull('plain', instance.plain);
   writeNotNull('extKeyUsage',
       instance.extKeyUsage?.map((e) => _$ExtendedKeyUsageEnumMap[e]).toList());
-  writeNotNull('extensions', instance.extensions?.toJson());
+  writeNotNull('vmc', instance.vmc?.toJson());
   return val;
 }
 

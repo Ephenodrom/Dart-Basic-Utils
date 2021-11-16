@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -13,7 +14,9 @@ import 'package:basic_utils/src/model/ocsp/OCSPResponseStatus.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPSingleResponse.dart';
 import 'package:basic_utils/src/model/pkcs7/Pkcs7CertificateData.dart';
 import 'package:basic_utils/src/model/x509/ExtendedKeyUsage.dart';
+import 'package:basic_utils/src/model/x509/VmcData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
+import 'package:basic_utils/src/model/x509/X509CertificateDataExtensions.dart';
 import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateValidity.dart';
 
@@ -351,6 +354,9 @@ class X509Utils {
             case ExtendedKeyUsage.OCSP_SIGNING:
               oi = '1.3.6.1.5.5.7.3.9';
               break;
+            case ExtendedKeyUsage.BIMI:
+              oi = '1.3.6.1.5.5.7.3.31';
+              break;
           }
           extKeyUsageList.add(ASN1ObjectIdentifier.fromIdentifierString(oi));
         }
@@ -685,6 +691,7 @@ class X509Utils {
     );
     List<String>? sans;
     List<ExtendedKeyUsage>? extKeyUsage;
+    var extensions = X509CertificateDataExtensions();
     if (version > 1) {
       // Extensions
       if (dataSequence.elements!.length == 8) {
@@ -701,6 +708,7 @@ class X509Utils {
             } else {
               sans = _fetchSansFromExtension(seq.elements!.elementAt(1));
             }
+            extensions.subjectAlternativNames = sans;
           }
           if (oi.objectIdentifierAsString == '2.5.29.37') {
             if (seq.elements!.length == 3) {
@@ -710,6 +718,11 @@ class X509Utils {
               extKeyUsage = _fetchExtendedKeyUsageFromExtension(
                   seq.elements!.elementAt(1));
             }
+            extensions.extKeyUsage = extKeyUsage;
+          }
+          if (oi.objectIdentifierAsString == '1.3.6.1.5.5.7.1.12') {
+            var vmcData = _fetchVmcLogo(seq.elements!.elementAt(1));
+            extensions.vmc = vmcData;
           }
         });
       }
@@ -725,6 +738,7 @@ class X509Utils {
       publicKeyData: publicKeyData,
       subjectAlternativNames: sans,
       extKeyUsage: extKeyUsage,
+      extensions: extensions,
     );
   }
 
@@ -888,6 +902,51 @@ class X509Utils {
       }
     });
     return sans;
+  }
+
+  ///
+  /// Fetches the base64 encoded VMC logo from the given [extData]
+  ///
+  static VmcData _fetchVmcLogo(ASN1Object extData) {
+    var octet = extData as ASN1OctetString;
+    var vmcParser = ASN1Parser(octet.valueBytes);
+    var topSeq = vmcParser.nextObject() as ASN1Sequence;
+    var obj1 = topSeq.elements!.elementAt(0);
+    var obj1Parser = ASN1Parser(obj1.valueBytes);
+    var obj2 = obj1Parser.nextObject();
+    var obj2Parser = ASN1Parser(obj2.valueBytes);
+    var obj2Seq = obj2Parser.nextObject() as ASN1Sequence;
+    var nextSeq = obj2Seq.elements!.elementAt(0) as ASN1Sequence;
+    var finalSeq = nextSeq.elements!.elementAt(0) as ASN1Sequence;
+
+    var data = VmcData();
+    // Parse fileType
+    var ia5 = finalSeq.elements!.elementAt(0) as ASN1IA5String;
+    var fileType = ia5.stringValue!;
+
+    // Parse hash
+    var hashSeq = finalSeq.elements!.elementAt(1) as ASN1Sequence;
+    var hasFinalSeq = hashSeq.elements!.elementAt(0) as ASN1Sequence;
+    var algSeq = hasFinalSeq.elements!.elementAt(0) as ASN1Sequence;
+    var oi = algSeq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+    data.hashAlgorithm = oi.objectIdentifierAsString;
+    data.hashAlgorithmReadable = oi.readableName;
+    var octetString = hasFinalSeq.elements!.elementAt(1) as ASN1OctetString;
+    var hash = _bytesAsString(octetString.octets!);
+    data.hash = hash;
+
+    // Parse base64 logo
+    var logoSeq = finalSeq.elements!.elementAt(2) as ASN1Sequence;
+    var ia5Logo = logoSeq.elements!.elementAt(0) as ASN1IA5String;
+    var base64LogoGzip = ia5Logo.stringValue;
+    var gzip = base64LogoGzip!.substring(base64LogoGzip.indexOf(',') + 1);
+    final decoded_data = GZipCodec().decode(base64.decode(gzip));
+    var base64Logo = base64.encode(decoded_data);
+
+    data.base64Logo = base64Logo;
+    data.type = fileType;
+
+    return data;
   }
 
   ///
@@ -1406,6 +1465,9 @@ class X509Utils {
             break;
           case '1.3.6.1.5.5.7.3.9':
             extKeyUsage.add(ExtendedKeyUsage.OCSP_SIGNING);
+            break;
+          case '1.3.6.1.5.5.7.3.31':
+            extKeyUsage.add(ExtendedKeyUsage.BIMI);
             break;
           default:
         }

@@ -24,6 +24,7 @@ class X509CertificatePublicKeyData {
   /// The bytes representing the public key as String
   String? bytes;
 
+  @JsonKey(fromJson: plainSha1FromJson, toJson: plainSha1ToJson)
   Uint8List? plainSha1;
 
   X509CertificatePublicKeyData(
@@ -44,4 +45,18 @@ class X509CertificatePublicKeyData {
    * X509CertificatePublicKeyData object to json
    */
   Map<String, dynamic> toJson() => _$X509CertificatePublicKeyDataToJson(this);
+
+  static Uint8List? plainSha1FromJson(List<int>? json) {
+    if (json == null) {
+      return null;
+    }
+    return Uint8List.fromList(json);
+  }
+
+  static List<int>? plainSha1ToJson(Uint8List? object) {
+    if (object == null) {
+      return null;
+    }
+    return object.toList();
+  }
 }

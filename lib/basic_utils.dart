@@ -16,6 +16,8 @@ export 'src/model/HttpRequestReturnType.dart';
 export 'src/model/pkcs7/Pkcs7CertificateData.dart';
 export 'src/model/x509/X509CertificateData.dart';
 export 'src/model/x509/X509CertificateObject.dart';
+export 'src/model/x509/VmcData.dart';
+export 'src/model/x509/X509CertificateDataExtensions.dart';
 export 'src/model/x509/X509CertificateValidity.dart';
 export 'src/model/x509/ExtendedKeyUsage.dart';
 export 'src/model/csr/CertificateSigningRequestData.dart';
