@@ -7,19 +7,18 @@ part of 'X509CertificateDataExtensions.dart';
 // **************************************************************************
 
 X509CertificateDataExtensions _$X509CertificateDataExtensionsFromJson(
-    Map<String, dynamic> json) {
-  return X509CertificateDataExtensions(
-    subjectAlternativNames: (json['subjectAlternativNames'] as List<dynamic>?)
-        ?.map((e) => e as String)
-        .toList(),
-    extKeyUsage: (json['extKeyUsage'] as List<dynamic>?)
-        ?.map((e) => _$enumDecode(_$ExtendedKeyUsageEnumMap, e))
-        .toList(),
-    vmc: json['vmc'] == null
-        ? null
-        : VmcData.fromJson(json['vmc'] as Map<String, dynamic>),
-  );
-}
+        Map<String, dynamic> json) =>
+    X509CertificateDataExtensions(
+      subjectAlternativNames: (json['subjectAlternativNames'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      extKeyUsage: (json['extKeyUsage'] as List<dynamic>?)
+          ?.map((e) => $enumDecode(_$ExtendedKeyUsageEnumMap, e))
+          .toList(),
+      vmc: json['vmc'] == null
+          ? null
+          : VmcData.fromJson(json['vmc'] as Map<String, dynamic>),
+    );
 
 Map<String, dynamic> _$X509CertificateDataExtensionsToJson(
     X509CertificateDataExtensions instance) {
@@ -36,32 +35,6 @@ Map<String, dynamic> _$X509CertificateDataExtensionsToJson(
       instance.extKeyUsage?.map((e) => _$ExtendedKeyUsageEnumMap[e]).toList());
   writeNotNull('vmc', instance.vmc?.toJson());
   return val;
-}
-
-K _$enumDecode<K, V>(
-  Map<K, V> enumValues,
-  Object? source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError(
-      'A value must be provided. Supported values: '
-      '${enumValues.values.join(', ')}',
-    );
-  }
-
-  return enumValues.entries.singleWhere(
-    (e) => e.value == source,
-    orElse: () {
-      if (unknownValue == null) {
-        throw ArgumentError(
-          '`$source` is not one of the supported values: '
-          '${enumValues.values.join(', ')}',
-        );
-      }
-      return MapEntry(unknownValue, enumValues.values.first);
-    },
-  ).key;
 }
 
 const _$ExtendedKeyUsageEnumMap = {

@@ -7,13 +7,12 @@ part of 'X509CertificateObject.dart';
 // **************************************************************************
 
 X509CertificateObject _$X509CertificateObjectFromJson(
-    Map<String, dynamic> json) {
-  return X509CertificateObject(
-    json['data'] == null
-        ? null
-        : X509CertificateData.fromJson(json['data'] as Map<String, dynamic>),
-  );
-}
+        Map<String, dynamic> json) =>
+    X509CertificateObject(
+      json['data'] == null
+          ? null
+          : X509CertificateData.fromJson(json['data'] as Map<String, dynamic>),
+    );
 
 Map<String, dynamic> _$X509CertificateObjectToJson(
     X509CertificateObject instance) {

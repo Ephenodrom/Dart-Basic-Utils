@@ -6,14 +6,13 @@ part of 'VmcData.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-VmcData _$VmcDataFromJson(Map<String, dynamic> json) {
-  return VmcData(
-    base64Logo: json['base64Logo'] as String?,
-    hash: json['hash'] as String?,
-    hashAlgorithm: json['hashAlgorithm'] as String?,
-    type: json['type'] as String?,
-  );
-}
+VmcData _$VmcDataFromJson(Map<String, dynamic> json) => VmcData(
+      base64Logo: json['base64Logo'] as String?,
+      hash: json['hash'] as String?,
+      hashAlgorithm: json['hashAlgorithm'] as String?,
+      hashAlgorithmReadable: json['hashAlgorithmReadable'] as String?,
+      type: json['type'] as String?,
+    );
 
 Map<String, dynamic> _$VmcDataToJson(VmcData instance) {
   final val = <String, dynamic>{};
@@ -27,6 +26,7 @@ Map<String, dynamic> _$VmcDataToJson(VmcData instance) {
   writeNotNull('base64Logo', instance.base64Logo);
   writeNotNull('type', instance.type);
   writeNotNull('hash', instance.hash);
+  writeNotNull('hashAlgorithmReadable', instance.hashAlgorithmReadable);
   writeNotNull('hashAlgorithm', instance.hashAlgorithm);
   return val;
 }

@@ -6,12 +6,10 @@ part of 'Question.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Question _$QuestionFromJson(Map<String, dynamic> json) {
-  return Question(
-    name: json['name'] as String,
-    type: json['type'] as int,
-  );
-}
+Question _$QuestionFromJson(Map<String, dynamic> json) => Question(
+      name: json['name'] as String,
+      type: json['type'] as int,
+    );
 
 Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
       'name': instance.name,

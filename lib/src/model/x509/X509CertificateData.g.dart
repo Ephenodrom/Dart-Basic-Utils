@@ -6,33 +6,32 @@ part of 'X509CertificateData.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-X509CertificateData _$X509CertificateDataFromJson(Map<String, dynamic> json) {
-  return X509CertificateData(
-    version: json['version'] as int,
-    serialNumber: BigInt.parse(json['serialNumber'] as String),
-    signatureAlgorithm: json['signatureAlgorithm'] as String,
-    issuer: Map<String, String>.from(json['issuer'] as Map),
-    validity: X509CertificateValidity.fromJson(
-        json['validity'] as Map<String, dynamic>),
-    subject: Map<String, String>.from(json['subject'] as Map),
-    sha1Thumbprint: json['sha1Thumbprint'] as String?,
-    sha256Thumbprint: json['sha256Thumbprint'] as String?,
-    md5Thumbprint: json['md5Thumbprint'] as String?,
-    publicKeyData: X509CertificatePublicKeyData.fromJson(
-        json['publicKeyData'] as Map<String, dynamic>),
-    subjectAlternativNames: (json['subjectAlternativNames'] as List<dynamic>?)
-        ?.map((e) => e as String)
-        .toList(),
-    plain: json['plain'] as String?,
-    extKeyUsage: (json['extKeyUsage'] as List<dynamic>?)
-        ?.map((e) => _$enumDecode(_$ExtendedKeyUsageEnumMap, e))
-        .toList(),
-    extensions: json['extensions'] == null
-        ? null
-        : X509CertificateDataExtensions.fromJson(
-            json['extensions'] as Map<String, dynamic>),
-  );
-}
+X509CertificateData _$X509CertificateDataFromJson(Map<String, dynamic> json) =>
+    X509CertificateData(
+      version: json['version'] as int,
+      serialNumber: BigInt.parse(json['serialNumber'] as String),
+      signatureAlgorithm: json['signatureAlgorithm'] as String,
+      issuer: Map<String, String?>.from(json['issuer'] as Map),
+      validity: X509CertificateValidity.fromJson(
+          json['validity'] as Map<String, dynamic>),
+      subject: Map<String, String?>.from(json['subject'] as Map),
+      sha1Thumbprint: json['sha1Thumbprint'] as String?,
+      sha256Thumbprint: json['sha256Thumbprint'] as String?,
+      md5Thumbprint: json['md5Thumbprint'] as String?,
+      publicKeyData: X509CertificatePublicKeyData.fromJson(
+          json['publicKeyData'] as Map<String, dynamic>),
+      subjectAlternativNames: (json['subjectAlternativNames'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      plain: json['plain'] as String?,
+      extKeyUsage: (json['extKeyUsage'] as List<dynamic>?)
+          ?.map((e) => $enumDecode(_$ExtendedKeyUsageEnumMap, e))
+          .toList(),
+      extensions: json['extensions'] == null
+          ? null
+          : X509CertificateDataExtensions.fromJson(
+              json['extensions'] as Map<String, dynamic>),
+    );
 
 Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {
   final val = <String, dynamic>{
@@ -60,32 +59,6 @@ Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {
       instance.extKeyUsage?.map((e) => _$ExtendedKeyUsageEnumMap[e]).toList());
   writeNotNull('extensions', instance.extensions?.toJson());
   return val;
-}
-
-K _$enumDecode<K, V>(
-  Map<K, V> enumValues,
-  Object? source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError(
-      'A value must be provided. Supported values: '
-      '${enumValues.values.join(', ')}',
-    );
-  }
-
-  return enumValues.entries.singleWhere(
-    (e) => e.value == source,
-    orElse: () {
-      if (unknownValue == null) {
-        throw ArgumentError(
-          '`$source` is not one of the supported values: '
-          '${enumValues.values.join(', ')}',
-        );
-      }
-      return MapEntry(unknownValue, enumValues.values.first);
-    },
-  ).key;
 }
 
 const _$ExtendedKeyUsageEnumMap = {

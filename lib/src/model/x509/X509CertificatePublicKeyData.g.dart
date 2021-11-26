@@ -7,17 +7,16 @@ part of 'X509CertificatePublicKeyData.dart';
 // **************************************************************************
 
 X509CertificatePublicKeyData _$X509CertificatePublicKeyDataFromJson(
-    Map<String, dynamic> json) {
-  return X509CertificatePublicKeyData(
-    algorithm: json['algorithm'] as String?,
-    length: json['length'] as int?,
-    sha1Thumbprint: json['sha1Thumbprint'] as String?,
-    sha256Thumbprint: json['sha256Thumbprint'] as String?,
-    bytes: json['bytes'] as String?,
-    plainSha1: X509CertificatePublicKeyData.plainSha1FromJson(
-        json['plainSha1'] as List<int>),
-  );
-}
+        Map<String, dynamic> json) =>
+    X509CertificatePublicKeyData(
+      algorithm: json['algorithm'] as String?,
+      length: json['length'] as int?,
+      sha1Thumbprint: json['sha1Thumbprint'] as String?,
+      sha256Thumbprint: json['sha256Thumbprint'] as String?,
+      bytes: json['bytes'] as String?,
+      plainSha1: X509CertificatePublicKeyData.plainSha1FromJson(
+          json['plainSha1'] as List<int>?),
+    );
 
 Map<String, dynamic> _$X509CertificatePublicKeyDataToJson(
     X509CertificatePublicKeyData instance) {

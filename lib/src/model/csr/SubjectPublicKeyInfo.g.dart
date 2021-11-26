@@ -6,18 +6,18 @@ part of 'SubjectPublicKeyInfo.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SubjectPublicKeyInfo _$SubjectPublicKeyInfoFromJson(Map<String, dynamic> json) {
-  return SubjectPublicKeyInfo(
-    algorithm: json['algorithm'] as String?,
-    length: json['length'] as int?,
-    sha1Thumbprint: json['sha1Thumbprint'] as String?,
-    sha256Thumbprint: json['sha256Thumbprint'] as String?,
-    bytes: json['bytes'] as String?,
-    algorithmReadableName: json['algorithmReadableName'] as String?,
-    parameter: json['parameter'] as String?,
-    parameterReadableName: json['parameterReadableName'] as String?,
-  );
-}
+SubjectPublicKeyInfo _$SubjectPublicKeyInfoFromJson(
+        Map<String, dynamic> json) =>
+    SubjectPublicKeyInfo(
+      algorithm: json['algorithm'] as String?,
+      length: json['length'] as int?,
+      sha1Thumbprint: json['sha1Thumbprint'] as String?,
+      sha256Thumbprint: json['sha256Thumbprint'] as String?,
+      bytes: json['bytes'] as String?,
+      algorithmReadableName: json['algorithmReadableName'] as String?,
+      parameter: json['parameter'] as String?,
+      parameterReadableName: json['parameterReadableName'] as String?,
+    );
 
 Map<String, dynamic> _$SubjectPublicKeyInfoToJson(
     SubjectPublicKeyInfo instance) {

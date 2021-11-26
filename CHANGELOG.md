@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.9.1] - 2020-11-26
+
+* Updated dependencies
+
 ## [3.9.0] - 2020-11-17
 
 * Added support for VMC certificates

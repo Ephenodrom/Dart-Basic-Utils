@@ -7,23 +7,22 @@ part of 'CertificateSigningRequestData.dart';
 // **************************************************************************
 
 CertificateSigningRequestData _$CertificateSigningRequestDataFromJson(
-    Map<String, dynamic> json) {
-  return CertificateSigningRequestData(
-    subject: (json['subject'] as Map<String, dynamic>?)?.map(
-      (k, e) => MapEntry(k, e as String),
-    ),
-    version: json['version'] as int?,
-    signature: json['signature'] as String?,
-    signatureAlgorithm: json['signatureAlgorithm'] as String?,
-    signatureAlgorithmReadableName:
-        json['signatureAlgorithmReadableName'] as String?,
-    publicKeyInfo: json['publicKeyInfo'] == null
-        ? null
-        : SubjectPublicKeyInfo.fromJson(
-            json['publicKeyInfo'] as Map<String, dynamic>),
-    plain: json['plain'] as String?,
-  );
-}
+        Map<String, dynamic> json) =>
+    CertificateSigningRequestData(
+      subject: (json['subject'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ),
+      version: json['version'] as int?,
+      signature: json['signature'] as String?,
+      signatureAlgorithm: json['signatureAlgorithm'] as String?,
+      signatureAlgorithmReadableName:
+          json['signatureAlgorithmReadableName'] as String?,
+      publicKeyInfo: json['publicKeyInfo'] == null
+          ? null
+          : SubjectPublicKeyInfo.fromJson(
+              json['publicKeyInfo'] as Map<String, dynamic>),
+      plain: json['plain'] as String?,
+    );
 
 Map<String, dynamic> _$CertificateSigningRequestDataToJson(
     CertificateSigningRequestData instance) {
