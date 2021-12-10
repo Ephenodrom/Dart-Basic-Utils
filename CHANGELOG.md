@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.9.2] - 2020-12-13
+
+* Improved X509Utils, generateSelfSignedCertificate() supports ECC keys
+* Added new unit tests
+
 ## [3.9.1] - 2020-11-26
 
 * Updated dependencies

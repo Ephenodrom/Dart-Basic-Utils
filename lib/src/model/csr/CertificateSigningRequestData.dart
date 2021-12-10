@@ -39,4 +39,15 @@ class CertificateSigningRequestData {
     this.plain,
     this.extensions,
   });
+
+  /*
+   * Json to CertificateSigningRequestData object
+   */
+  factory CertificateSigningRequestData.fromJson(Map<String, dynamic> json) =>
+      _$CertificateSigningRequestDataFromJson(json);
+
+  /*
+   * CertificateSigningRequestData object to json
+   */
+  Map<String, dynamic> toJson() => _$CertificateSigningRequestDataToJson(this);
 }

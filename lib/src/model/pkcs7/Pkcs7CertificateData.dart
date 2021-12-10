@@ -15,4 +15,15 @@ class Pkcs7CertificateData {
   List<X509CertificateData>? certificates;
 
   Pkcs7CertificateData({this.version, this.certificates, this.contentType});
+
+  /*
+   * Json to Pkcs7CertificateData object
+   */
+  factory Pkcs7CertificateData.fromJson(Map<String, dynamic> json) =>
+      _$Pkcs7CertificateDataFromJson(json);
+
+  /*
+   * Pkcs7CertificateData object to json
+   */
+  Map<String, dynamic> toJson() => _$Pkcs7CertificateDataToJson(this);
 }
