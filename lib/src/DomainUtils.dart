@@ -1,4 +1,4 @@
-import 'package:basic_utils/basic_utils.dart';
+import 'package:basic_utils/src/StringUtils.dart';
 import 'package:basic_utils/src/library/IDNAConverter.dart';
 import 'package:basic_utils/src/model/CountryCodeList.dart';
 import 'package:basic_utils/src/model/Domain.dart';

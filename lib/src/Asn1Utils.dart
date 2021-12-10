@@ -1,5 +1,4 @@
 import 'package:basic_utils/basic_utils.dart';
-import 'package:pointycastle/asn1.dart';
 
 class Asn1Utils {
   ///

@@ -1282,6 +1282,43 @@ SEQUENCE (1 elem)
     expect(x509.extKeyUsage!.elementAt(1), ExtendedKeyUsage.CLIENT_AUTH);
   });
 
+  test('Test generateSelfSignedCertificate with ECC', () {
+    var pair = CryptoUtils.generateEcKeyPair();
+    var dn = {
+      'CN': 'basic-utils.dev',
+      'O': 'Magic Company',
+      'L': 'Fakecity',
+      'S': 'FakeState',
+      'C': 'DE',
+    };
+    var csr = X509Utils.generateEccCsrPem(
+        dn, pair.privateKey as ECPrivateKey, pair.publicKey as ECPublicKey,
+        san: ['san1.basic-utils.dev', 'san2.basic-utils.dev']);
+
+    var pem = X509Utils.generateSelfSignedCertificate(
+      pair.privateKey,
+      csr,
+      365,
+      sans: ['san1.basic-utils.dev', 'san2.basic-utils.dev'],
+      extKeyUsage: [ExtendedKeyUsage.SERVER_AUTH, ExtendedKeyUsage.CLIENT_AUTH],
+    );
+    print(pem);
+    var x509 = X509Utils.x509CertificateFromPem(pem);
+    var expectedDn = {
+      '2.5.4.3': 'basic-utils.dev',
+      '2.5.4.10': 'Magic Company',
+      '2.5.4.7': 'Fakecity',
+      '2.5.4.8': 'FakeState',
+      '2.5.4.6': 'DE'
+    };
+    expect(x509.subject, expectedDn);
+    expect(x509.issuer, expectedDn);
+    expect(x509.subjectAlternativNames!.elementAt(0), 'san1.basic-utils.dev');
+    expect(x509.subjectAlternativNames!.elementAt(1), 'san2.basic-utils.dev');
+    expect(x509.extKeyUsage!.elementAt(0), ExtendedKeyUsage.SERVER_AUTH);
+    expect(x509.extKeyUsage!.elementAt(1), ExtendedKeyUsage.CLIENT_AUTH);
+  });
+
   test('Test x509CertificateFromPem with vmc', () {
     var data = X509Utils.x509CertificateFromPem(vmc);
 

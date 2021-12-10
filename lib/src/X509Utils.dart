@@ -3,6 +3,9 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:basic_utils/src/CryptoUtils.dart';
+import 'package:basic_utils/src/IterableUtils.dart';
+import 'package:basic_utils/src/StringUtils.dart';
 import 'package:basic_utils/src/model/csr/CertificateSigningRequestData.dart';
 import 'package:basic_utils/src/model/csr/SubjectPublicKeyInfo.dart';
 import 'package:basic_utils/src/model/ocsp/BasicOCSPResponse.dart';
@@ -22,8 +25,6 @@ import 'package:basic_utils/src/model/x509/X509CertificateValidity.dart';
 
 import 'package:pointycastle/export.dart';
 import 'package:pointycastle/pointycastle.dart';
-
-import '../basic_utils.dart';
 
 ///
 /// Helper class for certificate operations.
@@ -324,16 +325,22 @@ class X509Utils {
     data.add(subjectSeq);
 
     // Add Public Key
-    data.add(_makePublicKeyBlock(CryptoUtils.rsaPublicKeyFromDERBytes(
-        _stringAsBytes(csrData.publicKeyInfo!.bytes!))));
+    if (privateKey.runtimeType == RSAPrivateKey) {
+      data.add(_makePublicKeyBlock(CryptoUtils.rsaPublicKeyFromDERBytes(
+          _stringAsBytes(csrData.publicKeyInfo!.bytes!))));
+    } else {
+      data.add(_makeEccPublicKeyBlock(CryptoUtils.ecPublicKeyFromDerBytes(
+          _stringAsBytes(csrData.publicKeyInfo!.bytes!))));
+    }
 
     // Add Extensions
-    if (sans != null || extKeyUsage != null) {
+    if (IterableUtils.isNotNullOrEmpty(sans) ||
+        IterableUtils.isNotNullOrEmpty(extKeyUsage)) {
       var extensionTopSequence = ASN1Sequence();
 
-      if (extKeyUsage != null) {
+      if (IterableUtils.isNotNullOrEmpty(extKeyUsage)) {
         var extKeyUsageList = ASN1Sequence();
-        for (var s in extKeyUsage) {
+        for (var s in extKeyUsage!) {
           var oi = '';
           switch (s) {
             case ExtendedKeyUsage.SERVER_AUTH:
@@ -369,9 +376,9 @@ class X509Utils {
         extensionTopSequence.add(extKeyUsageSequence);
       }
 
-      if (sans != null) {
+      if (IterableUtils.isNotNullOrEmpty(sans)) {
         var sanList = ASN1Sequence();
-        for (var s in sans) {
+        for (var s in sans!) {
           sanList.add(ASN1PrintableString(stringValue: s, tag: 0x82));
         }
         var octetString = ASN1OctetString(octets: sanList.encode());
@@ -1029,14 +1036,14 @@ class X509Utils {
       // continue
     }
     int pubKeyLength;
-    Uint8List? pubKeyAsBytes;
+    var pubKeyAsBytes = pubSeq.encodedBytes;
     if (next != null && next is ASN1Sequence) {
       var s = next;
       var key = s.elements!.elementAt(0) as ASN1Integer;
       pubKeyLength = key.integer!.bitLength;
-      pubKeyAsBytes = s.encodedBytes;
+      //pubKeyAsBytes = s.encodedBytes;
     } else {
-      pubKeyAsBytes = pubBitString.valueBytes;
+      //pubKeyAsBytes = pubBitString.valueBytes;
       var length = pubBitString.valueBytes!.elementAt(0) == 0
           ? (pubBitString.valueByteLength! - 1)
           : pubBitString.valueByteLength;
@@ -1375,10 +1382,9 @@ class X509Utils {
     var bytesString = data.publicKeyInfo!.bytes;
 
     var bytes = _stringAsBytes(bytesString!);
-    var parser = ASN1Parser(bytes);
-    var next = parser.nextObject() as ASN1Sequence;
-    var integer = next.elements!.elementAt(0) as ASN1Integer;
-    return integer.integer!;
+    var rsaPublicKey = CryptoUtils.rsaPublicKeyFromDERBytes(bytes);
+
+    return rsaPublicKey.modulus!;
   }
 
   ///

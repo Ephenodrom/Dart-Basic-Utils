@@ -716,6 +716,9 @@ class CryptoUtils {
   /// Decode the given [bytes] into an [ECPublicKey].
   ///
   static ECPublicKey ecPublicKeyFromDerBytes(Uint8List bytes) {
+    if (bytes.elementAt(0) == 0) {
+      bytes = bytes.sublist(1);
+    }
     var asn1Parser = ASN1Parser(bytes);
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
 

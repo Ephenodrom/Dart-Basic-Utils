@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:basic_utils/basic_utils.dart';
-import 'package:basic_utils/src/model/DnsApiProvider.dart';
 
 ///
 /// Helper class for dns record lookups
