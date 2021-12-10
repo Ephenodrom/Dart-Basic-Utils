@@ -1,3 +1,4 @@
+import 'package:basic_utils/src/model/csr/CertificateSigningRequestExtensions.dart';
 import 'package:basic_utils/src/model/csr/SubjectPublicKeyInfo.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -26,6 +27,8 @@ class CertificateSigningRequestData {
   /// The plain PEM string
   String? plain;
 
+  CertificateSigningRequestExtensions? extensions;
+
   CertificateSigningRequestData({
     this.subject,
     this.version,
@@ -34,5 +37,6 @@ class CertificateSigningRequestData {
     this.signatureAlgorithmReadableName,
     this.publicKeyInfo,
     this.plain,
+    this.extensions,
   });
 }

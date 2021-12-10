@@ -21,6 +21,7 @@ export 'src/model/x509/X509CertificateDataExtensions.dart';
 export 'src/model/x509/X509CertificateValidity.dart';
 export 'src/model/x509/ExtendedKeyUsage.dart';
 export 'src/model/csr/CertificateSigningRequestData.dart';
+export 'src/model/csr/CertificateSigningRequestExtensions.dart';
 export 'src/model/x509/X509CertificatePublicKeyData.dart';
 export 'src/model/DnsApiProvider.dart';
 
@@ -53,3 +54,4 @@ export 'src/FunctionDefs.dart';
 export 'package:pointycastle/ecc/api.dart';
 export 'package:pointycastle/asymmetric/api.dart';
 export 'package:pointycastle/asn1.dart';
+export 'package:pointycastle/api.dart';
