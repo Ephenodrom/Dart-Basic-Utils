@@ -1,9 +1,11 @@
 # Changelog
 
-## [3.9.2] - 2020-12-13
+## [3.9.2] - 2020-12-12
 
 * Improved X509Utils, generateSelfSignedCertificate() supports ECC keys
+* Improved X509Utils, csrFromPem now fetches the SANs within the given CSR
 * Added new unit tests
+* Added model CertificateSigningRequestExtensions
 
 ## [3.9.1] - 2020-11-26
 

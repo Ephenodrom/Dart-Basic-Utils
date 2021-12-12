@@ -7,6 +7,7 @@ import 'package:basic_utils/src/CryptoUtils.dart';
 import 'package:basic_utils/src/IterableUtils.dart';
 import 'package:basic_utils/src/StringUtils.dart';
 import 'package:basic_utils/src/model/csr/CertificateSigningRequestData.dart';
+import 'package:basic_utils/src/model/csr/CertificateSigningRequestExtensions.dart';
 import 'package:basic_utils/src/model/csr/SubjectPublicKeyInfo.dart';
 import 'package:basic_utils/src/model/ocsp/BasicOCSPResponse.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPCertStatus.dart';
@@ -1073,6 +1074,32 @@ class X509Utils {
     // Get Signature
     var sigAsString = _bytesAsString(sig.valueBytes!);
 
+    // Get Extensions
+    var extensions;
+    if (infoSeq.elements!.length == 4) {
+      var extensionObject = infoSeq.elements!.elementAt(3);
+      if (extensionObject.valueByteLength != 0) {
+        List<String>? sans;
+        extensions = CertificateSigningRequestExtensions();
+        var extParser = ASN1Parser(extensionObject.valueBytes);
+        var outerExtSequence = extParser.nextObject() as ASN1Sequence;
+        var extSet = outerExtSequence.elements!.elementAt(1) as ASN1Set;
+        var extSequence = extSet.elements!.elementAt(0) as ASN1Sequence;
+        extSequence.elements!.forEach((ASN1Object subseq) {
+          var seq = subseq as ASN1Sequence;
+          var oi = seq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+          if (oi.objectIdentifierAsString == '2.5.29.17') {
+            if (seq.elements!.length == 3) {
+              sans = _fetchSansFromExtension(seq.elements!.elementAt(2));
+            } else {
+              sans = _fetchSansFromExtension(seq.elements!.elementAt(1));
+            }
+            extensions.subjectAlternativNames = sans;
+          }
+        });
+      }
+    }
+
     return CertificateSigningRequestData(
       version: asn1Version.integer!.toInt(),
       subject: subject,
@@ -1081,6 +1108,7 @@ class X509Utils {
       signature: sigAsString,
       publicKeyInfo: pubInfo,
       plain: pem,
+      extensions: extensions,
     );
   }
 
