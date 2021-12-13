@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.9.3] - 2020-12-13
+
+* Hide Padding from the PointyCastle API export
+
 ## [3.9.2] - 2020-12-12
 
 * Improved X509Utils, generateSelfSignedCertificate() supports ECC keys
