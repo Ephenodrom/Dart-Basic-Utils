@@ -1345,7 +1345,6 @@ SEQUENCE (1 elem)
       sans: ['san1.basic-utils.dev', 'san2.basic-utils.dev'],
       extKeyUsage: [ExtendedKeyUsage.SERVER_AUTH, ExtendedKeyUsage.CLIENT_AUTH],
     );
-    print(pem);
     var x509 = X509Utils.x509CertificateFromPem(pem);
     var expectedDn = {
       '2.5.4.3': 'basic-utils.dev',

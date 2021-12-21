@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.9.4] - 2020-12-21
+
+* Improved X509Utils for generating self signed certificates
+
 ## [3.9.3] - 2020-12-13
 
 * Hide Padding from the PointyCastle API export

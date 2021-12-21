@@ -342,31 +342,31 @@ class X509Utils {
       if (IterableUtils.isNotNullOrEmpty(extKeyUsage)) {
         var extKeyUsageList = ASN1Sequence();
         for (var s in extKeyUsage!) {
-          var oi = '';
+          var oi = <int>[];
           switch (s) {
             case ExtendedKeyUsage.SERVER_AUTH:
-              oi = '1.3.6.1.5.5.7.3.1';
+              oi = [1, 3, 6, 1, 5, 5, 7, 3, 1];
               break;
             case ExtendedKeyUsage.CLIENT_AUTH:
-              oi = '1.3.6.1.5.5.7.3.2';
+              oi = [1, 3, 6, 1, 5, 5, 7, 3, 2];
               break;
             case ExtendedKeyUsage.CODE_SIGNING:
-              oi = '1.3.6.1.5.5.7.3.3';
+              oi = [1, 3, 6, 1, 5, 5, 7, 3, 3];
               break;
             case ExtendedKeyUsage.EMAIL_PROTECTION:
-              oi = '1.3.6.1.5.5.7.3.4';
+              oi = [1, 3, 6, 1, 5, 5, 7, 3, 4];
               break;
             case ExtendedKeyUsage.TIME_STAMPING:
-              oi = '1.3.6.1.5.5.7.3.8';
+              oi = [1, 3, 6, 1, 5, 5, 7, 3, 8];
               break;
             case ExtendedKeyUsage.OCSP_SIGNING:
-              oi = '1.3.6.1.5.5.7.3.9';
+              oi = [1, 3, 6, 1, 5, 5, 7, 3, 9];
               break;
             case ExtendedKeyUsage.BIMI:
-              oi = '1.3.6.1.5.5.7.3.31';
+              oi = [1, 3, 6, 1, 5, 5, 7, 3, 31];
               break;
           }
-          extKeyUsageList.add(ASN1ObjectIdentifier.fromIdentifierString(oi));
+          extKeyUsageList.add(ASN1ObjectIdentifier(oi));
         }
         var octetString = ASN1OctetString(octets: extKeyUsageList.encode());
 
