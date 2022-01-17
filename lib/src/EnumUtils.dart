@@ -15,9 +15,8 @@ class EnumUtils {
       {bool ignoreCase = false}) {
     return enumList.firstWhere(
       (element) => ignoreCase
-          ? element.toString().toUpperCase().split('.').last ==
-              enumName.toUpperCase()
-          : element.toString().split('.').last == enumName,
+          ? element.name.toUpperCase() == enumName.toUpperCase()
+          : element.name == enumName,
       orElse: () => defaultEnum,
     );
   }
@@ -35,9 +34,8 @@ class EnumUtils {
     try {
       enumList.firstWhere(
         (element) => ignoreCase
-            ? element.toString().toUpperCase().split('.').last ==
-                enumName.toUpperCase()
-            : element.toString().split('.').last == enumName,
+            ? element.name.toUpperCase() == enumName.toUpperCase()
+            : element.name == enumName,
       );
       return true;
     } catch (ex) {
@@ -53,7 +51,7 @@ class EnumUtils {
   static Map getEnumMap(final List<Enum> enumList) {
     final map = {};
     enumList.forEach((element) {
-      map[element.toString().split('.').last] = element;
+      map[element.name] = element;
     });
     return map;
   }
