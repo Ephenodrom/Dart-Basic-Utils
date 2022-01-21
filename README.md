@@ -28,6 +28,7 @@ A dart package for many helper methods fitting different situations.
     - [IterableUtils](#iterableutils)
     - [CryptoUtils](#cryptoutils)
     - [ASN1Utils](#asn1utils)
+    - [EnumUtils](#asn1utils)
     - [FunctionDefs](#functiondefs)
   - [Changelog](#changelog)
   - [Real Live Examples](#real-live-examples)
@@ -48,7 +49,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^3.9.4
+  basic_utils: ^4.0.0
 ```
 
 ## Import
@@ -294,6 +295,16 @@ Helper class for operation on ASN1 objects.
 
 ```dart
 String dump(String pem);
+```
+
+### EnumUtils
+
+Helper class for operation on enums.
+
+```dart
+T getEnum<T extends Enum>(final String enumName, final List<T> enumList, final T defaultEnum, {bool ignoreCase = false});
+bool isValidEnum(final String enumName, final List<Enum> enumList, {bool ignoreCase = false});
+Map getEnumMap(final List<Enum> enumList);
 ```
 
 ### FunctionDefs
