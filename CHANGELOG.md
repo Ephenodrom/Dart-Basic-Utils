@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.0.1] - 2022-01-24
+
+* Added missing export of EnumUtils
+
 ## [4.0.0] - 2022-01-21
 
 * Added EnumUtils (PR #59)
