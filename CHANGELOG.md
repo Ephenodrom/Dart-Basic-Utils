@@ -1,25 +1,29 @@
 # Changelog
 
-## [3.9.4] - 2020-12-21
+## [4.0.0] - 2022-01-21
+
+* Added EnumUtils (PR #59)
+
+## [3.9.4] - 2021-12-21
 
 * Improved X509Utils for generating self signed certificates
 
-## [3.9.3] - 2020-12-13
+## [3.9.3] - 2021-12-13
 
 * Hide Padding from the PointyCastle API export
 
-## [3.9.2] - 2020-12-12
+## [3.9.2] - 2021-12-12
 
 * Improved X509Utils, generateSelfSignedCertificate() supports ECC keys
 * Improved X509Utils, csrFromPem now fetches the SANs within the given CSR
 * Added new unit tests
 * Added model CertificateSigningRequestExtensions
 
-## [3.9.1] - 2020-11-26
+## [3.9.1] - 2021-11-26
 
 * Updated dependencies
 
-## [3.9.0] - 2020-11-17
+## [3.9.0] - 2021-11-17
 
 * Added support for VMC certificates
 * Added model X509CertificateDataExtensions
@@ -28,35 +32,35 @@
 * Marked X509CertificateData.extKeyUsage as deprecated
 * Added BIMI as value to ExtendedKeyUsage enum
 
-## [3.8.2] - 2020-11-10
+## [3.8.2] - 2021-11-10
 
 * Improved X509Utils, fixed public key length calculation while parsing a CSR
 * Updated minimum Dart SDK constraint to 2.14.0
 
-## [3.8.1] - 2020-11-05
+## [3.8.1] - 2021-11-05
 
 * Added function definitions
 * Export model X509CertificatePublicKeyData
 
-## [3.8.0] - 2020-11-02
+## [3.8.0] - 2021-11-02
 
 * Improved X509Utils add new method generateSelfSignedCertificate()
 * Improved X509Utils, x509CertificateFromPem() now parses the extKeyUsage extension
 * Improved X509CertificateData model, added new field extKeyUsage
 * Added new model ExtendedKeyUsage
 
-## [3.7.0] - 2020-09-28
+## [3.7.0] - 2021-09-28
 
 * Improved X509Utils add new method pemToPkcs7()
 * Added new unit tests
 * Improved X509Utils, added optional parameter to the encodeASN1ObjectToPem() method, changed line seperator to "\n" instead of "\r\n"
 
-## [3.6.1] - 2020-09-28
+## [3.6.1] - 2021-09-28
 
 * Improved X509Utils and handling of IPv6 SANs (PR #51)
 * Added new unit tests (PR #51)
 
-## [3.6.0] - 2020-09-10
+## [3.6.0] - 2021-09-10
 
 * Improved X509Utils added getModulusFromRSAX509Pem() method
 * Improved X509Utils added getModulusFromRSACsrPem() method
@@ -64,7 +68,7 @@
 * Improved CryptoUtils added rsaPrivateKeyExponentToBytes() method
 * Added new unit tests
 
-## [3.5.0] - 2020-08-27
+## [3.5.0] - 2021-08-27
 
 * Improved X509Utils added buildOCSPRequest() method
 * Improved X509Utils added getOCSPUrl() method
@@ -76,36 +80,36 @@
 * Improved X509Utils added new optional parameter to ecPrivateKeyFromDerBytes() method
 * Updated dependencies
 
-## [3.4.0] - 2020-07-30
+## [3.4.0] - 2021-07-30
 
 * Updated dependencies
 * Added ASN1Utils class
 
-## [3.3.3] - 2020-07-04
+## [3.3.3] - 2021-07-04
 
 * Update dependencies
 
-## [3.3.2] - 2020-06-28
+## [3.3.2] - 2021-06-28
 
 * Improved CertificateSigningRequestData model
 
-## [3.3.1] - 2020-06-28
+## [3.3.1] - 2021-06-28
 
 * Exported CertificateSigningRequestData model
 * Update dependencies
 
-## [3.3.0] - 2020-06-28
+## [3.3.0] - 2021-06-28
 
 * Improved X509Utils added csrFromPem() method
 * Added unit tests
 
-## [3.2.0] - 2020-06-24
+## [3.2.0] - 2021-06-24
 
 * Improved X509Utils added pkcs7fromPem() method
 * Added unit tests
 * Update dependencies
 
-## [3.1.0] - 2020-05-17
+## [3.1.0] - 2021-05-17
 
 * Improved StringUtils
 * Improved MathUtils
