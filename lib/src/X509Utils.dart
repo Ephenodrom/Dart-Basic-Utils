@@ -300,7 +300,13 @@ class X509Utils {
     // Add Issuer
     var issuerSeq = ASN1Sequence();
     for (var k in csrData.subject!.keys) {
-      var pString = ASN1PrintableString(stringValue: csrData.subject![k]);
+      var value = csrData.subject![k];
+      var pString;
+      if (StringUtils.isAscii(value!)) {
+        pString = ASN1PrintableString(stringValue: value);
+      } else {
+        pString = ASN1UTF8String(utf8StringValue: value);
+      }
       var oIdentifier = ASN1ObjectIdentifier.fromIdentifierString(k);
       var innerSequence = ASN1Sequence(elements: [oIdentifier, pString]);
       var s = ASN1Set(elements: [innerSequence]);
@@ -317,7 +323,13 @@ class X509Utils {
     // Add Subject
     var subjectSeq = ASN1Sequence();
     for (var k in csrData.subject!.keys) {
-      var pString = ASN1PrintableString(stringValue: csrData.subject![k]);
+      var value = csrData.subject![k];
+      var pString;
+      if (StringUtils.isAscii(value!)) {
+        pString = ASN1PrintableString(stringValue: value);
+      } else {
+        pString = ASN1UTF8String(utf8StringValue: value);
+      }
       var oIdentifier = ASN1ObjectIdentifier.fromIdentifierString(k);
       var innerSequence = ASN1Sequence(elements: [oIdentifier, pString]);
       var s = ASN1Set(elements: [innerSequence]);
@@ -662,6 +674,13 @@ class X509Utils {
 
     var algoSequence = pubKeySequence.elements!.elementAt(0) as ASN1Sequence;
     var pubKeyOid = algoSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
+    var asn1AlgParameters = algoSequence.elements!.elementAt(1);
+    var algParameters = '';
+    var algParametersReadable = '';
+    if (asn1AlgParameters is ASN1ObjectIdentifier) {
+      algParameters = asn1AlgParameters.objectIdentifierAsString!;
+      algParametersReadable = asn1AlgParameters.readableName!;
+    }
 
     var pubKey = pubKeySequence.elements!.elementAt(1) as ASN1BitString;
     var asn1PubKeyParser = ASN1Parser(pubKey.stringValues as Uint8List?);
@@ -674,10 +693,14 @@ class X509Utils {
     var pubKeyLength = 0;
 
     Uint8List? pubKeyAsBytes;
-
+    int? exponent;
     if (next != null && next is ASN1Sequence) {
       var s = next;
       var key = s.elements!.elementAt(0) as ASN1Integer;
+      if (s.elements!.length == 2 && s.elements!.elementAt(1) is ASN1Integer) {
+        var asn1Exponent = s.elements!.elementAt(1) as ASN1Integer;
+        exponent = asn1Exponent.integer!.toInt();
+      }
       pubKeyLength = key.integer!.bitLength;
       pubKeyAsBytes = s.encodedBytes;
     } else {
@@ -691,11 +714,16 @@ class X509Utils {
         CryptoUtils.getSha256ThumbprintFromBytes(pubKeySequence.encodedBytes!);
     var publicKeyData = X509CertificatePublicKeyData(
       algorithm: pubKeyOid.objectIdentifierAsString,
+      algorithmReadableName: pubKeyOid.readableName,
       bytes: _bytesAsString(pubKeyAsBytes!),
       length: pubKeyLength,
       sha1Thumbprint: pubKeyThumbprint,
       sha256Thumbprint: pubKeySha256Thumbprint,
       plainSha1: plainSha1,
+      exponent: exponent,
+      parameter: algParameters != '' ? algParameters : null,
+      parameterReadableName:
+          algParametersReadable != '' ? algParametersReadable : null,
     );
     List<String>? sans;
     List<ExtendedKeyUsage>? extKeyUsage;
@@ -985,6 +1013,9 @@ class X509Utils {
     return Uint8List.fromList(bytes);
   }
 
+  ///
+  /// Parses the given CSR [pem] to [CertificateSigningRequestData] object
+  ///
   static CertificateSigningRequestData csrFromPem(String pem) {
     var bytes = CryptoUtils.getBytesFromPEMString(pem);
     var asn1Parser = ASN1Parser(bytes);
@@ -1037,10 +1068,15 @@ class X509Utils {
       // continue
     }
     int pubKeyLength;
+    int? exponent;
     var pubKeyAsBytes = pubSeq.encodedBytes;
     if (next != null && next is ASN1Sequence) {
       var s = next;
       var key = s.elements!.elementAt(0) as ASN1Integer;
+      if (s.elements!.length == 2 && s.elements!.elementAt(1) is ASN1Integer) {
+        var asn1Exponent = s.elements!.elementAt(1) as ASN1Integer;
+        exponent = asn1Exponent.integer!.toInt();
+      }
       pubKeyLength = key.integer!.bitLength;
       //pubKeyAsBytes = s.encodedBytes;
     } else {
@@ -1066,6 +1102,7 @@ class X509Utils {
       bytes: _bytesAsString(pubKeyAsBytes!),
       sha1Thumbprint: pubKeyThumbprint,
       sha256Thumbprint: pubKeySha256Thumbprint,
+      exponent: exponent,
     );
 
     // Get Signature Algorithm
@@ -1082,21 +1119,28 @@ class X509Utils {
         List<String>? sans;
         extensions = CertificateSigningRequestExtensions();
         var extParser = ASN1Parser(extensionObject.valueBytes);
-        var outerExtSequence = extParser.nextObject() as ASN1Sequence;
-        var extSet = outerExtSequence.elements!.elementAt(1) as ASN1Set;
-        var extSequence = extSet.elements!.elementAt(0) as ASN1Sequence;
-        extSequence.elements!.forEach((ASN1Object subseq) {
-          var seq = subseq as ASN1Sequence;
-          var oi = seq.elements!.elementAt(0) as ASN1ObjectIdentifier;
-          if (oi.objectIdentifierAsString == '2.5.29.17') {
-            if (seq.elements!.length == 3) {
-              sans = _fetchSansFromExtension(seq.elements!.elementAt(2));
-            } else {
-              sans = _fetchSansFromExtension(seq.elements!.elementAt(1));
-            }
-            extensions.subjectAlternativNames = sans;
+        while (extParser.hasNext()) {
+          var outerExtSequence = extParser.nextObject() as ASN1Sequence;
+          var oid =
+              outerExtSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
+          // Search for extensionRequest OID
+          if (oid.objectIdentifierAsString == '1.2.840.113549.1.9.14') {
+            var extSet = outerExtSequence.elements!.elementAt(1) as ASN1Set;
+            var extSequence = extSet.elements!.elementAt(0) as ASN1Sequence;
+            extSequence.elements!.forEach((ASN1Object subseq) {
+              var seq = subseq as ASN1Sequence;
+              var oi = seq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+              if (oi.objectIdentifierAsString == '2.5.29.17') {
+                if (seq.elements!.length == 3) {
+                  sans = _fetchSansFromExtension(seq.elements!.elementAt(2));
+                } else {
+                  sans = _fetchSansFromExtension(seq.elements!.elementAt(1));
+                }
+                extensions.subjectAlternativNames = sans;
+              }
+            });
           }
-        });
+        }
       }
     }
 

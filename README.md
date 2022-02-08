@@ -49,7 +49,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^4.0.1
+  basic_utils: ^4.1.0
 ```
 
 ## Import
@@ -214,8 +214,6 @@ int getCalendarWeek(DateTime date);
 
 Helper class for operations on x509 certificates, like generating csr and many more.
 
-**IMPORTANT**: A lot of functions, like handling asymetric key pairs moved to the CryptoUtils class with version 2.6.0.
-
 ```dart
 String formatKeyString(String key, String begin, String end,{int chunkSize = 64, String lineDelimiter = "\n"});
 String generateRsaCsrPem(Map<String, String> attributes, RSAPrivateKey privateKey, RSAPublicKey publicKey, {List<String>? san, String signingAlgorithm = 'SHA-256'});
@@ -232,7 +230,7 @@ OCSPResponse parseOCSPResponse(Uint8List bytes);
 BigInt getModulusFromRSACsrPem(String pem);
 BigInt getModulusFromRSAX509Pem(String pem);
 String pemToPkcs7(List<String> pems);
-String generateSelfSignedCertificate(PrivateKey privateKey, String csr,,int days, { List<String>? sans, List<ExtendedKeyUsage>? extKeyUsage, String serialNumber = '1',});
+String generateSelfSignedCertificate(PrivateKey privateKey, String csr,int days, { List<String>? sans, List<ExtendedKeyUsage>? extKeyUsage, String serialNumber = '1'});
 ```
 
 ### IterableUtils

@@ -30,6 +30,32 @@ c47tT30d2tJEJbDHGutbqLQFRr7xx7uHP/LGggTFN8Zs2u+cQxPRFsIhQdpDY1MF
 tHAaI8r/tlZQWf3fu4FVZMbxrYTMA5cwz/TxweMKWTroN5c=
 -----END CERTIFICATE REQUEST-----''';
 
+  var csrWithUnusedData = '''-----BEGIN CERTIFICATE REQUEST-----
+MIIEIjCCAwoCAQAwOzEXMBUGA1UEAwwOb3dhLmZlLWNvbi5jb20xEzARBgNVBAoM
+CkZlQ29uIEdtYkgxCzAJBgNVBAYTAkRFMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+MIIBCgKCAQEAtauNcOeA3pwNPuvC67Q028VE39kpT8oTJO11Kbv4c5GJqo3oLTsT
+b8x2uOdKq/ZoRaMr+dbIZ5u6rnWoQlmKekO7LhpmdjcL1dbD5LjQclQOHSzcosjd
+EPhPUo1+PMvlwl9o+dlVvMhQC0gymDS+puXsyxjPtPOgM8MbUEdR8jLiZMtscu1O
+rl083M99opLYNnTSQ2kFlT87TQk91lSsTkrbl/uKdk9wkEdgeC9D6b+LV/80VsMl
+jyzNPsIM/t982MPmyGBKtstwvdOw+xoGDokyaf6gebj3QH+4GGuf8E1m/4VQhW0H
+qmdn9GLCsxb7193CxZ5VHhccisgdxOS6EwIDAQABoIIBoDAaBgorBgEEAYI3DQID
+MQwWCjYuMC42MDAyLjIwSQYJKwYBBAGCNxUUMTwwOgIBBQwXRkVDT04tU0JTMDgu
+ZmVjb24ubG9jYWwMDEZFQ09OXGZhZG1pbgwOcG93ZXJzaGVsbC5leGUwcgYKKwYB
+BAGCNw0CAjFkMGICAQEeWgBNAGkAYwByAG8AcwBvAGYAdAAgAFIAUwBBACAAUwBD
+AGgAYQBuAG4AZQBsACAAQwByAHkAcAB0AG8AZwByAGEAcABoAGkAYwAgAFAAcgBv
+AHYAaQBkAGUAcgMBADCBwgYJKoZIhvcNAQkOMYG0MIGxMA4GA1UdDwEB/wQEAwIF
+oDByBgNVHREEazBpgg5vd2EuZmUtY29uLmNvbYILZmVjb24tc2JzMDiCF2ZlY29u
+LXNiczA4LmZlY29uLmxvY2FsghhhdXRvZGlzY292ZXIuZmVjb24ubG9jYWyCF2F1
+dG9kaXNjb3Zlci5mZS1jb24uY29tMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFIlC
+K5ap/X+4sUtGqmP5HE4lcBaYMA0GCSqGSIb3DQEBBQUAA4IBAQCDu/cxbr9mYSGp
+fSbtirIjURoW5Y6BtWVcP3CTYvn0//LWSpwz42n7kK95jX4kPI640SILleba3gye
+nZGxZhdA8TOeXkeI9aIxRUCb9S2z9xvcCJKzQN9D+izAY1KlUjzVTrbwNW76IdIq
+E9QMd+ItwS4dj5kwu7Z7tAMyG1EZWVV/uXUqQLHwYDqs2zTbw0xYg9ZZctTCa9Gx
+MZw/rWTrpNxZ/uwmag/w1z9adFnUYxzrrbFyPxF356AWQa9B/kX7mfOn9UIE5QsH
+0oos6SSv/Z2Dv8eePBMc/ai7lHmUGNF37fyRxth9yvZ3y7qkwQIMbV66CDg0ZiIt
+yQRqfEI3
+-----END CERTIFICATE REQUEST-----''';
+
   var eccCsr = '''-----BEGIN CERTIFICATE REQUEST-----
 MIIBLTCB1QIBADBzMQswCQYDVQQGEwJERTESMBAGA1UECAwJRmFrZVN0YXRlMREw
 DwYDVQQHDAhGYWtlQ2l0eTEQMA4GA1UECgwHRmFrZU9yZzERMA8GA1UECwwIRmFr
@@ -1148,6 +1174,26 @@ HLrcjUGW+DDdf76QVu/3o42Jq8w5hCaykzup4hoSzh0QEw8YzN/j
         'F187E676386764D40A901E6157310BCDF59CF0336DBC9AF077122A23D687511F');
     expect(data.publicKeyInfo!.parameter, null);
     expect(data.publicKeyInfo!.parameterReadableName, null);
+    expect(data.publicKeyInfo!.exponent, 65537);
+  });
+
+  test('Test csrFromPem with unused extension data', () {
+    var data = X509Utils.csrFromPem(csrWithUnusedData);
+    expect(data.version, 0);
+    expect(data.subject!.length, 3);
+    expect(data.signature,
+        '0083BBF7316EBF666121A97D26ED8AB223511A16E58E81B5655C3F709362F9F4FFF2D64A9C33E369FB90AF798D7E243C8EB8D1220B95E6DADE0C9E9D91B1661740F1339E5E4788F5A23145409BF52DB3F71BDC0892B340DF43FA2CC06352A5523CD54EB6F0356EFA21D22A13D40C77E22DC12E1D8F9930BBB67BB403321B511959557FB9752A40B1F0603AACDB34DBC34C5883D65972D4C26BD1B1319C3FAD64EBA4DC59FEEC266A0FF0D73F5A7459D4631CEBADB1723F1177E7A01641AF41FE45FB99F3A7F54204E50B07D28A2CE924AFFD9D83BFC79E3C131CFDA8BB94799418D177EDFC91C6D87DCAF677CBBAA4C1020C6D5EBA08383466222DC9046A7C4237');
+    expect(data.signatureAlgorithm, '1.2.840.113549.1.1.5');
+    expect(data.signatureAlgorithmReadableName, 'sha1WithRSAEncryption');
+    expect(data.publicKeyInfo!.algorithm, '1.2.840.113549.1.1.1');
+    expect(data.publicKeyInfo!.algorithmReadableName, 'rsaEncryption');
+    expect(data.publicKeyInfo!.length, 2048);
+    expect(data.publicKeyInfo!.sha1Thumbprint,
+        'C509365EAEBF0D94D21C6A909934248FA9C83211');
+    expect(data.publicKeyInfo!.sha256Thumbprint,
+        '5A8D60DF5194F22D4AF24D820C6A88ADBA7B1ED0B351C63B18B9231A46E87622');
+    expect(data.publicKeyInfo!.parameter, null);
+    expect(data.publicKeyInfo!.parameterReadableName, null);
   });
 
   test('Test csrFromPem with Sans', () {
@@ -1294,7 +1340,7 @@ SEQUENCE (1 elem)
     var dn = {
       'CN': 'basic-utils.dev',
       'O': 'Magic Company',
-      'L': 'Fakecity',
+      'L': 'Fäkecity',
       'S': 'FakeState',
       'C': 'DE',
     };
@@ -1313,7 +1359,7 @@ SEQUENCE (1 elem)
     var expectedDn = {
       '2.5.4.3': 'basic-utils.dev',
       '2.5.4.10': 'Magic Company',
-      '2.5.4.7': 'Fakecity',
+      '2.5.4.7': 'Fäkecity',
       '2.5.4.8': 'FakeState',
       '2.5.4.6': 'DE'
     };
