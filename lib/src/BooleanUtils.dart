@@ -5,20 +5,8 @@ class BooleanUtils {
   /// The false String "false"
   static final String FALSE = 'false';
 
-  /// The no String "no"
-  static final String NO = 'no';
-
-  /// The off String "off"
-  static final String OFF = 'off';
-
-  /// The on String "on"
-  static final String ON = 'on';
-
   /// The true String "true"
   static final String TRUE = 'true';
-
-  /// The yes String "yes"
-  static final String YES = 'yes';
 
   /// Performs an 'and' operation on a set of booleans.
   ///
