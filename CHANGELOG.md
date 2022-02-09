@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.1.0] - 2022-02-08
+
+* Improved model SubjectPublicKeyInfo, added new exponent field
+* Improved model X509CertificatePublicKeyData, added new fields
+* Improved X509Utils, parsing of CSR data
+* Improved X509Utils, generateSelfSignedCertificate should now handle not ascii characters
+* Improved X509Utils, x509CertificateFromPem() will fetch more information about the public key used
+* Update dependencies
+
+## [4.0.1] - 2022-01-24
+
+* Added missing export of EnumUtils
+
 ## [4.0.0] - 2022-01-21
 
 * Added EnumUtils (PR #59)
