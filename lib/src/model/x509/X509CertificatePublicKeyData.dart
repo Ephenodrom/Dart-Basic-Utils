@@ -12,6 +12,15 @@ class X509CertificatePublicKeyData {
   /// The algorithm of the public key
   String? algorithm;
 
+  /// The readable name of the algorithm
+  String? algorithmReadableName;
+
+  /// The parameter of the public key
+  String? parameter;
+
+  /// The readable name of the parameter
+  String? parameterReadableName;
+
   /// The key length of the public key
   int? length;
 
@@ -27,13 +36,21 @@ class X509CertificatePublicKeyData {
   @JsonKey(fromJson: plainSha1FromJson, toJson: plainSha1ToJson)
   Uint8List? plainSha1;
 
-  X509CertificatePublicKeyData(
-      {this.algorithm,
-      this.length,
-      this.sha1Thumbprint,
-      this.sha256Thumbprint,
-      this.bytes,
-      this.plainSha1});
+  /// The exponent used on a RSA public key
+  int? exponent;
+
+  X509CertificatePublicKeyData({
+    this.algorithm,
+    this.length,
+    this.sha1Thumbprint,
+    this.sha256Thumbprint,
+    this.bytes,
+    this.plainSha1,
+    this.algorithmReadableName,
+    this.parameter,
+    this.parameterReadableName,
+    this.exponent,
+  });
 
   /*
    * Json to X509CertificatePublicKeyData object

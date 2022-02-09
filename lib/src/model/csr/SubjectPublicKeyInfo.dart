@@ -31,6 +31,9 @@ class SubjectPublicKeyInfo {
   /// The bytes representing the public key as String
   String? bytes;
 
+  /// The exponent used on a RSA public key
+  int? exponent;
+
   SubjectPublicKeyInfo({
     this.algorithm,
     this.length,
@@ -40,6 +43,7 @@ class SubjectPublicKeyInfo {
     this.algorithmReadableName,
     this.parameter,
     this.parameterReadableName,
+    this.exponent,
   });
 
   /*
