@@ -80,41 +80,36 @@ class BooleanUtils {
     return value != 0;
   }
 
-  /// <p>Converts a String to a Boolean.</p>
+  /// Converts a String to a Boolean.
   ///
-  /// <p>{@code 'true'}, {@code 'on'}, {@code 'y'}, {@code 't'}, {@code 'yes'}
-  /// or {@code '1'} (case insensitive) will return {@code true}.
-  /// {@code 'false'}, {@code 'off'}, {@code 'n'}, {@code 'f'}, {@code 'no'}
-  /// or {@code '0'} (case insensitive) will return {@code false}.
-  /// Otherwise, {@code null} is returned.</p>
+  /// 'true', 'on', 'y', 't', 'yes'
+  /// or '1' (case insensitive) will return true.
+  /// 'false', 'off', 'n', 'f', 'no'
+  /// or '0' (case insensitive) will return false.
+  /// Otherwise, null is returned.
   ///
-  /// <p>NOTE: This method may return {@code null} and may throw a {@code NullPointerException}
-  /// if unboxed to a {@code boolean}.</p>
+  /// NOTE: This method may return null and may throw a NullPointerException
+  /// if unboxed to a boolean
   ///
-  /// <pre>
   ///   // N.B. case is not significant
   ///   BooleanUtils.toBooleanObject(null)    = null
   ///   BooleanUtils.toBooleanObject("true")  = true
-  ///   BooleanUtils.toBooleanObject("T")     = true // i.e. T[RUE]
+  ///   BooleanUtils.toBooleanObject("T")     = true
   ///   BooleanUtils.toBooleanObject("false") = false
-  ///   BooleanUtils.toBooleanObject("f")     = false // i.e. f[alse]
+  ///   BooleanUtils.toBooleanObject("f")     = false
   ///   BooleanUtils.toBooleanObject("No")    = false
-  ///   BooleanUtils.toBooleanObject("n")     = false // i.e. n[o]
+  ///   BooleanUtils.toBooleanObject("n")     = false
   ///   BooleanUtils.toBooleanObject("on")    = true
   ///   BooleanUtils.toBooleanObject("ON")    = true
   ///   BooleanUtils.toBooleanObject("off")   = false
   ///   BooleanUtils.toBooleanObject("oFf")   = false
   ///   BooleanUtils.toBooleanObject("yes")   = true
-  ///   BooleanUtils.toBooleanObject("Y")     = true // i.e. Y[ES]
+  ///   BooleanUtils.toBooleanObject("Y")     = true
   ///   BooleanUtils.toBooleanObject("1")     = true
   ///   BooleanUtils.toBooleanObject("0")     = false
   ///   BooleanUtils.toBooleanObject("blue")  = null
   ///   BooleanUtils.toBooleanObject("true ") = null // trailing space (too long)
   ///   BooleanUtils.toBooleanObject("ono")   = null // does not match on or no
-  /// </pre>
-  ///
-  /// @param str  the String to check; upper and lower case are treated as the same
-  /// @return the Boolean value of the string, {@code null} if no match or {@code null} input
   static bool toBooleanObject(final String? str) {
     if (str == TRUE) {
       return true;
