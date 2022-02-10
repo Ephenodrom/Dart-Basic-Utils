@@ -49,7 +49,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^4.1.0
+  basic_utils: ^4.2.0
 ```
 
 ## Import
@@ -305,6 +305,23 @@ bool isValidEnum(final String enumName, final List<Enum> enumList, {bool ignoreC
 Map getEnumMap(final List<Enum> enumList);
 ```
 
+### BooleanUtils
+
+Helper class for operation on booleans.
+
+```dart
+bool and(final List<bool> array);
+bool or(final List<bool> array);
+bool xor(final List<bool> array);
+List<bool> booleanValues();
+int compare(final bool x, final bool y);
+bool toBoolean(final int value);
+bool toBooleanObject(final String? str);
+bool toBooleanDefaultIfNull(final bool? value, final bool valueIfNull);
+int toInteger(final bool bool);
+String toBooleanString(final bool value);
+```
+
 ### FunctionDefs
 
 Helper with various function prototype definitions.
@@ -330,13 +347,13 @@ For a detailed changelog, see the [CHANGELOG.md](CHANGELOG.md) file
 
 ### SSL Toolkit
 
-All-in-one crossplatform ([Android](https://play.google.com/store/apps/details?id=de.feuerbergsoftware.ssl_checker)/[iOS/macOS](https://apps.apple.com/us/app/ssl-toolkit/id1547278785)) toolkit for SSL, including SSL install check, TLS check, PEM parser, CSR generator and certificate transparency log check.
+All-in-one crossplatform ([Android](https://play.google.com/store/apps/details?id=de.feuerbergsoftware.ssl_checker)/[iOS/macOS](https://apps.apple.com/us/app/ssl-toolkit/id1547278785)[Windows](https://www.microsoft.com/en-us/p/ssl-toolkit/9nc62bnkndvx)) toolkit for SSL, including SSL install check, TLS check, PEM parser, CSR generator and certificate transparency log check.
 
 ## Copyright and license
 
 MIT License
 
-Copyright (c) 2021 Ephenodrom
+Copyright (c) 2022 Ephenodrom
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

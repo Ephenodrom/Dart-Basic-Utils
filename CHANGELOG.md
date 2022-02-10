@@ -1,5 +1,10 @@
 # Changelog
 
+## [4.2.0] - 2022-01-24
+
+* Added BooleanUtils (PR #65)
+* Updated minimum SDK version to 2.15 (PR #66)
+
 ## [4.1.0] - 2022-02-08
 
 * Improved model SubjectPublicKeyInfo, added new exponent field
