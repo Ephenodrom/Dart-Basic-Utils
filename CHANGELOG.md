@@ -1,5 +1,10 @@
 # Changelog
 
+## [4.2.1] - 2022-04-22
+
+* Improved X509Utils, added parseChainString()
+* Improved X509Utils, added parseChainStringAsString()
+
 ## [4.2.0] - 2022-01-24
 
 * Added BooleanUtils (PR #65)

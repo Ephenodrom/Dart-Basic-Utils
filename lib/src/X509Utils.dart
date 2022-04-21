@@ -1553,4 +1553,41 @@ class X509Utils {
     });
     return extKeyUsage;
   }
+
+  ///
+  /// Converts the given [chain] to a list of [X509CertificateData]
+  ///
+  static List<X509CertificateData> parseChainString(String chain) {
+    var certs = parseChainStringAsString(chain);
+    var x509 = <X509CertificateData>[];
+    for (var c in certs) {
+      x509.add(X509Utils.x509CertificateFromPem(c));
+    }
+    return x509;
+  }
+
+  ///
+  /// Converts the given [chain] to a list of pem strings.
+  ///
+  static List<String> parseChainStringAsString(String s) {
+    var lines = LineSplitter().convert(s);
+    var sb = StringBuffer();
+    var certs = <String>[];
+    for (var l in lines) {
+      if (l.isEmpty) {
+        continue;
+      }
+      if (l != BEGIN_CERT && l != END_CERT) {
+        l = l.trim();
+      }
+      sb.write(l);
+      if (l.startsWith(END_CERT)) {
+        certs.add(sb.toString());
+        sb.clear();
+      } else {
+        sb.write('\n');
+      }
+    }
+    return certs;
+  }
 }
