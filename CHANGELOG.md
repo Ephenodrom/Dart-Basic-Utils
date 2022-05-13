@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.2.2] - 2022-05-13
+
+* Improved CryptoUtils and ASN1Utils, added optional parameters
+
 ## [4.2.1] - 2022-04-22
 
 * Improved X509Utils, added parseChainString()

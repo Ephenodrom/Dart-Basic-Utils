@@ -486,19 +486,27 @@ class CryptoUtils {
   /// Throws an ArgumentError if the given [pem] is not sourounded by begin marker -----BEGIN and
   /// endmarker -----END or the [pem] consists of less than two lines.
   ///
-  static Uint8List getBytesFromPEMString(String pem) {
+  /// The PEM header check can be skipped by setting the optional paramter [checkHeader] to false.
+  ///
+  static Uint8List getBytesFromPEMString(String pem,
+      {bool checkHeader = true}) {
     var lines = LineSplitter.split(pem)
         .map((line) => line.trim())
         .where((line) => line.isNotEmpty)
         .toList();
-
-    if (lines.length < 2 ||
-        !lines.first.startsWith('-----BEGIN') ||
-        !lines.last.startsWith('-----END')) {
-      throw ArgumentError('The given string does not have the correct '
-          'begin/end markers expected in a PEM file.');
+    var base64;
+    if (checkHeader) {
+      if (lines.length < 2 ||
+          !lines.first.startsWith('-----BEGIN') ||
+          !lines.last.startsWith('-----END')) {
+        throw ArgumentError('The given string does not have the correct '
+            'begin/end markers expected in a PEM file.');
+      }
+      base64 = lines.sublist(1, lines.length - 1).join('');
+    } else {
+      base64 = lines.join('');
     }
-    var base64 = lines.sublist(1, lines.length - 1).join('');
+
     return Uint8List.fromList(base64Decode(base64));
   }
 

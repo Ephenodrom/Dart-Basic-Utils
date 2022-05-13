@@ -50,7 +50,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^4.2.0
+  basic_utils: ^4.2.2
 ```
 
 ## Import
@@ -267,7 +267,7 @@ RSAPrivateKey rsaPrivateKeyFromPem(String pem);
 RSAPublicKey rsaPublicKeyFromPem(String pem);
 RSAPrivateKey rsaPrivateKeyFromDERBytes(Uint8List bytes);
 RSAPublicKey rsaPublicKeyFromDERBytes(Uint8List bytes);
-Uint8List getBytesFromPEMString(String pem);
+Uint8List getBytesFromPEMString(String pem, {bool checkHeader = true});
 String encodeEcPrivateKeyToPem(ECPrivateKey ecPrivateKey);
 String encodeEcPublicKeyToPem(ECPublicKey publicKey);
 ECPublicKey ecPublicKeyFromPem(String pem);
@@ -295,7 +295,7 @@ BigInt getModulusFromRSAPrivateKeyPem(String pem);
 Helper class for operation on ASN1 objects.
 
 ```dart
-String dump(String pem);
+String dump(String pem, {bool checkHeader = true});
 ```
 
 ### EnumUtils
