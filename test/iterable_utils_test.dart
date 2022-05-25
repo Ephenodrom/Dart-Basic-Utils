@@ -35,4 +35,20 @@ void main() {
     expect(subLists.length, 4);
     expect(subLists.elementAt(0).length, 2);
   });
+
+  test('Test zip', () {
+    final expected = [1, 2, 3, 4, 5, 6];
+    final list1 = [1, 3, 5];
+    final list2 = [2, 4, 6];
+    final subZip = IterableUtils.zip(list1, list2);
+    expect(subZip, expected);
+  });
+
+  test('Test zip with letters', () {
+    final expected = [1, 'a', 3, 'b', 5, 'c'];
+    final list1 = [1, 3, 5];
+    final list2 = ['a', 'b', 'c'];
+    final subZip = IterableUtils.zip(list1, list2);
+    expect(subZip, expected);
+  });
 }

@@ -40,4 +40,20 @@ class IterableUtils {
     }
     return parts;
   }
+
+  ///
+  /// Make an [Iterable] that aggregates elements from each of the iterables.
+  ///
+  /// IterableUtils.zip([1, 3, 5], [2, 4, 6]) = [1, 2, 3, 4, 5, 6]
+  /// IterableUtils.zip([1, 3, 5], ['a', 'b', 'c']) = [1, 'a', 3, 'b', 5, 'c']
+  ///
+  static Iterable<T> zip<T>(Iterable<T> a, Iterable<T> b) sync* {
+    final ita = a.iterator;
+    final itb = b.iterator;
+    bool hasA, hasB;
+    while ((hasA = ita.moveNext()) | (hasB = itb.moveNext())) {
+      if (hasA) yield ita.current;
+      if (hasB) yield itb.current;
+    }
+  }
 }
