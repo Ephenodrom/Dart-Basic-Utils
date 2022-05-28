@@ -51,4 +51,90 @@ void main() {
     final subZip = IterableUtils.zip(list1, list2);
     expect(subZip, expected);
   });
+
+  test('Test emptyIfNull', () {
+    final expected = [1, 3, 5];
+    final list1 = [1, 3, 5];
+    final result = IterableUtils.emptyIfNull(list1);
+    expect(result, expected);
+  });
+
+  test('Test emptyIfNull when null', () {
+    final expected = [];
+    final Iterable? list1 = null;
+    final result = IterableUtils.emptyIfNull(list1);
+    expect(result, expected);
+  });
+
+  test('Test union', () {
+    final expected = [1, 2, 3, 'a', 'b', 'c'];
+    final list1 = [1, 2, 3];
+    final list2 = ['a', 'b', 'c'];
+    final result = IterableUtils.union(list1, list2);
+    expect(result, expected);
+  });
+
+  test('Test union with same values', () {
+    final expected = [1, 2, 3, 1, 2, 3];
+    final list1 = [1, 2, 3];
+    final list2 = [1, 2, 3];
+    final result = IterableUtils.union(list1, list2);
+    expect(result, expected);
+  });
+
+  test('Test containsAll', () {
+    final expected = true;
+    final list1 = [1, 2, 3];
+    final list2 = [1, 2, 3];
+    final result = IterableUtils.containsAll(list1, list2);
+    expect(result, expected);
+  });
+
+  test('Test containsAll with empty list2', () {
+    final expected = true;
+    final list1 = [1, 2, 3];
+    final list2 = [];
+    final result = IterableUtils.containsAll(list1, list2);
+    expect(result, expected);
+  });
+
+  test('Test containsAll with a values', () {
+    final expected = true;
+    final list1 = [1, 2, 3];
+    final list2 = [1];
+    final result = IterableUtils.containsAll(list1, list2);
+    expect(result, expected);
+  });
+
+  test('Test containsAll with few values', () {
+    final expected = false;
+    final list1 = [1, 2, 3];
+    final list2 = [4, 5, 6];
+    final result = IterableUtils.containsAll(list1, list2);
+    expect(result, expected);
+  });
+
+  test('Test containsAny', () {
+    final expected = true;
+    final list1 = [1, 2, 3];
+    final list2 = [3];
+    final result = IterableUtils.containsAny(list1, list2);
+    expect(result, expected);
+  });
+
+  test('Test containsAny without', () {
+    final expected = false;
+    final list1 = [1, 2, 3];
+    final list2 = [5];
+    final result = IterableUtils.containsAny(list1, list2);
+    expect(result, expected);
+  });
+
+  test('Test containsAny empty', () {
+    final expected = false;
+    final list1 = [1, 2, 3];
+    final list2 = [];
+    final result = IterableUtils.containsAny(list1, list2);
+    expect(result, expected);
+  });
 }

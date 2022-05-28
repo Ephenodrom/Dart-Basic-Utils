@@ -5,6 +5,11 @@ import 'dart:math';
 ///
 class IterableUtils {
   ///
+  /// An empty unmodifiable collection.
+  ///
+  static final Iterable _emptyIterable = List.unmodifiable([]);
+
+  ///
   /// Returns a random element in [iterable]. Throws [RangeError] if [iterable] is null or empty.
   ///
   static T randomItem<T>(Iterable<T> iterable) {
@@ -54,6 +59,57 @@ class IterableUtils {
     while ((hasA = ita.moveNext()) | (hasB = itb.moveNext())) {
       if (hasA) yield ita.current;
       if (hasB) yield itb.current;
+    }
+  }
+
+  ///
+  /// Returns the immutable [_emptyIterable].
+  ///
+  static Iterable emptyCollection() {
+    return _emptyIterable;
+  }
+
+  ///
+  /// Returns an immutable empty collection if the argument is null,
+  /// or the argument itself otherwise.
+  ///
+  static Iterable emptyIfNull(final Iterable? collection) {
+    return collection ?? _emptyIterable;
+  }
+
+  ///
+  /// Returns an [Iterable] containing the union of the given [Iterable].
+  /// The cardinality of each element in the returned [Iterable] will
+  /// be equal to the maximum of the cardinality of that element in the two
+  /// given [Iterable].
+  ///
+  static Iterable<E> union<E>(
+      final Iterable<E> iterable1, final Iterable<E> iterable2) {
+    final list = <E>[];
+    list.addAll(iterable1);
+    list.addAll(iterable2);
+    return list;
+  }
+
+  ///
+  /// Returns true if all elements of [iterable2] are also contained in [iterable1].
+  ///
+  static bool containsAll(final Iterable iterable1, final Iterable iterable2) {
+    if (iterable2.isEmpty) {
+      return true;
+    }
+
+    return iterable2.every((element) => iterable1.contains(element));
+  }
+
+  ///
+  /// Returns true iff at least one element is in both collections.
+  ///
+  static bool containsAny(final Iterable iterable1, final Iterable iterable2) {
+    if (iterable1.length < iterable2.length) {
+      return iterable1.any((element) => iterable2.contains(element));
+    } else {
+      return iterable2.any((element) => iterable1.contains(element));
     }
   }
 }
