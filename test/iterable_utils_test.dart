@@ -75,7 +75,7 @@ void main() {
   });
 
   test('Test union with same values', () {
-    final expected = [1, 2, 3, 1, 2, 3];
+    final expected = [1, 2, 3];
     final list1 = [1, 2, 3];
     final list2 = [1, 2, 3];
     final result = IterableUtils.union(list1, list2);
@@ -224,6 +224,22 @@ void main() {
     final expected = false;
     final object = _FooLength(1);
     final result = IterableUtils.sizeIsEmpty(object);
+    expect(result, expected);
+  });
+
+  test('Test intersection', () {
+    final expected = [1, 3];
+    final list1 = [1, 2, 3];
+    final list2 = [1, 'a', 3];
+    final result = IterableUtils.intersection(list1, list2);
+    expect(result, expected);
+  });
+
+  test('Test subtract', () {
+    final expected = [2];
+    final list1 = [1, 2, 3];
+    final list2 = [1, 'a', 3];
+    final result = IterableUtils.subtract(list1, list2);
     expect(result, expected);
   });
 }

@@ -85,10 +85,30 @@ class IterableUtils {
   ///
   static Iterable<E> union<E>(
       final Iterable<E> iterable1, final Iterable<E> iterable2) {
-    final list = <E>[];
-    list.addAll(iterable1);
-    list.addAll(iterable2);
-    return list;
+    final a = Set.of(iterable1);
+    final b = Set.of(iterable2);
+    return a.union(b);
+  }
+
+  ///
+  /// Returns a [Iterable] containing the intersection of the given [Iterable].
+  ///
+  static Iterable intersection(
+      final Iterable iterable1, final Iterable iterable2) {
+    final a = Set.of(iterable1);
+    final b = Set.of(iterable2);
+    return a.intersection(b);
+  }
+
+  ///
+  /// Returns a new [Iterable] containing a minus a subset of b.
+  /// Only the elements of b that satisfy the predicate condition,
+  /// p are subtracted from a.
+  ///
+  static Iterable subtract(final Iterable iterable1, final Iterable iterable2) {
+    final a = Set.of(iterable1);
+    final b = Set.of(iterable2);
+    return a.difference(b);
   }
 
   ///
