@@ -123,7 +123,7 @@ class IterableUtils {
   }
 
   ///
-  /// Returns true iff at least one element is in both collections.
+  /// Returns true if at least one element is in both collections.
   ///
   static bool containsAny(final Iterable iterable1, final Iterable iterable2) {
     if (iterable1.length < iterable2.length) {
