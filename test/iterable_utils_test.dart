@@ -137,4 +137,101 @@ void main() {
     final result = IterableUtils.containsAny(list1, list2);
     expect(result, expected);
   });
+
+  test('Test size with null', () {
+    final expected = 0;
+    final list1 = null;
+    final result = IterableUtils.size(list1);
+    expect(result, expected);
+  });
+
+  test('Test size with iterable', () {
+    final expected = 3;
+    final list1 = [1, 2, 3];
+    final result = IterableUtils.size(list1);
+    expect(result, expected);
+  });
+
+  test('Test size with map', () {
+    final expected = 1;
+    final Map map1 = {};
+    map1['key'] = 1;
+    final result = IterableUtils.size(map1);
+    expect(result, expected);
+  });
+
+  test('Test size with dynamic', () {
+    final expected = 1;
+    final dynamic object = {};
+    object['key'] = 1;
+    final result = IterableUtils.size(object);
+    expect(result, expected);
+  });
+
+  test('Test size with dynamic without length', () {
+    final object = _Foo();
+    expect(() => IterableUtils.size(object),
+        throwsA(TypeMatcher<ArgumentError>()));
+  });
+
+  test('Test size with dynamic without length', () {
+    final expected = 1;
+    final object = _FooLength(1);
+    final result = IterableUtils.size(object);
+    expect(result, expected);
+  });
+
+  ///
+  ///
+  ///
+  test('Test sizeIsEmpty with null', () {
+    final expected = true;
+    final list1 = null;
+    final result = IterableUtils.sizeIsEmpty(list1);
+    expect(result, expected);
+  });
+
+  test('Test sizeIsEmpty with iterable', () {
+    final expected = false;
+    final list1 = [1, 2, 3];
+    final result = IterableUtils.sizeIsEmpty(list1);
+    expect(result, expected);
+  });
+
+  test('Test sizeIsEmpty with map', () {
+    final expected = false;
+    final Map map1 = {};
+    map1['key'] = 1;
+    final result = IterableUtils.sizeIsEmpty(map1);
+    expect(result, expected);
+  });
+
+  test('Test sizeIsEmpty with dynamic', () {
+    final expected = false;
+    final dynamic object = {};
+    object['key'] = 1;
+    final result = IterableUtils.sizeIsEmpty(object);
+    expect(result, expected);
+  });
+
+  test('Test sizeIsEmpty with dynamic without length', () {
+    final object = _Foo();
+    expect(() => IterableUtils.sizeIsEmpty(object),
+        throwsA(TypeMatcher<ArgumentError>()));
+  });
+
+  test('Test sizeIsEmpty with dynamic without length', () {
+    final expected = false;
+    final object = _FooLength(1);
+    final result = IterableUtils.sizeIsEmpty(object);
+    expect(result, expected);
+  });
+}
+
+class _Foo {}
+
+class _FooLength {
+  final int length;
+
+  const _FooLength(this.length);
 }

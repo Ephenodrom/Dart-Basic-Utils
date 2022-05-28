@@ -65,7 +65,7 @@ class IterableUtils {
   ///
   /// Returns the immutable [_emptyIterable].
   ///
-  static Iterable emptyCollection() {
+  static Iterable emptyIterable() {
     return _emptyIterable;
   }
 
@@ -111,5 +111,33 @@ class IterableUtils {
     } else {
       return iterable2.any((element) => iterable1.contains(element));
     }
+  }
+
+  ///
+  /// Gets the size of the [Iterator], [Map] or specified.
+  ///
+  static int size(final dynamic iterable) {
+    if (iterable == null) {
+      return 0;
+    }
+    if (iterable is Iterable) {
+      return iterable.length;
+    } else if (iterable is Map) {
+      return iterable.length;
+    } else {
+      try {
+        return iterable.length;
+      } catch (ex) {
+        throw ArgumentError('Unsupported object type $iterable');
+      }
+    }
+  }
+
+  ///
+  /// Gets the size of the [Iterator], [Map] or specified.
+  ///
+  static bool sizeIsEmpty(final dynamic iterable) {
+    final result = size(iterable);
+    return result == 0;
   }
 }
