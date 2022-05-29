@@ -5,6 +5,11 @@ import 'dart:math';
 ///
 class IterableUtils {
   ///
+  /// An empty unmodifiable collection.
+  ///
+  static final Iterable _emptyIterable = List.unmodifiable([]);
+
+  ///
   /// Returns a random element in [iterable]. Throws [RangeError] if [iterable] is null or empty.
   ///
   static T randomItem<T>(Iterable<T> iterable) {
@@ -55,5 +60,104 @@ class IterableUtils {
       if (hasA) yield ita.current;
       if (hasB) yield itb.current;
     }
+  }
+
+  ///
+  /// Returns the immutable [_emptyIterable].
+  ///
+  static Iterable emptyIterable() {
+    return _emptyIterable;
+  }
+
+  ///
+  /// Returns an immutable empty collection if the argument is null,
+  /// or the argument itself otherwise.
+  ///
+  static Iterable emptyIfNull(final Iterable? collection) {
+    return collection ?? _emptyIterable;
+  }
+
+  ///
+  /// Returns an [Iterable] containing the union of the given [Iterable].
+  /// The cardinality of each element in the returned [Iterable] will
+  /// be equal to the maximum of the cardinality of that element in the two
+  /// given [Iterable].
+  ///
+  static Iterable<E> union<E>(
+      final Iterable<E> iterable1, final Iterable<E> iterable2) {
+    final a = Set.of(iterable1);
+    final b = Set.of(iterable2);
+    return a.union(b);
+  }
+
+  ///
+  /// Returns a [Iterable] containing the intersection of the given [Iterable].
+  ///
+  static Iterable intersection(
+      final Iterable iterable1, final Iterable iterable2) {
+    final a = Set.of(iterable1);
+    final b = Set.of(iterable2);
+    return a.intersection(b);
+  }
+
+  ///
+  /// Returns a new [Iterable] containing a minus a subset of b.
+  /// Only the elements of b that satisfy the predicate condition,
+  /// p are subtracted from a.
+  ///
+  static Iterable subtract(final Iterable iterable1, final Iterable iterable2) {
+    final a = Set.of(iterable1);
+    final b = Set.of(iterable2);
+    return a.difference(b);
+  }
+
+  ///
+  /// Returns true if all elements of [iterable2] are also contained in [iterable1].
+  ///
+  static bool containsAll(final Iterable iterable1, final Iterable iterable2) {
+    if (iterable2.isEmpty) {
+      return true;
+    }
+
+    return iterable2.every((element) => iterable1.contains(element));
+  }
+
+  ///
+  /// Returns true if at least one element is in both collections.
+  ///
+  static bool containsAny(final Iterable iterable1, final Iterable iterable2) {
+    if (iterable1.length < iterable2.length) {
+      return iterable1.any((element) => iterable2.contains(element));
+    } else {
+      return iterable2.any((element) => iterable1.contains(element));
+    }
+  }
+
+  ///
+  /// Gets the size of the [Iterator], [Map] or specified.
+  ///
+  static int size(final dynamic iterable) {
+    if (iterable == null) {
+      return 0;
+    }
+    if (iterable is Iterable) {
+      return iterable.length;
+    } else if (iterable is Map) {
+      return iterable.length;
+    } else {
+      try {
+        return iterable.length;
+      } catch (ex) {
+        throw ArgumentError('Unsupported object type $iterable');
+      }
+    }
+  }
+
+  ///
+  /// Gets the size of the [Iterator], [Map] or specified.
+  ///
+  static bool sizeIsEmpty(final dynamic iterable) {
+    final result = size(iterable);
+    return result == 0;
   }
 }
