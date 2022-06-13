@@ -16,6 +16,17 @@ void main() {
         'super-api.com/dosomething?hello=world&list%5B%5D=item1&list%5B%5D=item2');
   });
 
+  test('Test addQueryParameterToUrl for url with existing query parameters',
+      () {
+    var queryParameters = <String, dynamic>{};
+    queryParameters.putIfAbsent('hello', () => 'world');
+    queryParameters.putIfAbsent('list[]', () => ['item1', 'item2']);
+    expect(
+        HttpUtils.addQueryParameterToUrl(
+            'super-api.com/dosomething?foo=bar', queryParameters),
+        'super-api.com/dosomething?hello=world&list%5B%5D=item1&list%5B%5D=item2&foo=bar');
+  });
+
   test('Test getQueryParameterFromUrl', () {
     expect(
         HttpUtils.getQueryParameterFromUrl('super-api.com/dosomething'), null);

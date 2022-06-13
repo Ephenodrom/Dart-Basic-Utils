@@ -268,11 +268,18 @@ class HttpUtils {
   }
 
   ///
-  /// Add the given [queryParameters] to the given [url].
+  /// Add the given [queryParameters] to the given [url]. If the key for a parameter already exists then it is overwritten.
   ///
   static String addQueryParameterToUrl(
       String url, Map<String, dynamic>? queryParameters) {
     if (queryParameters == null || queryParameters.isEmpty) return url;
+
+    final existingQueryParameters = getQueryParameterFromUrl(url);
+
+    if (existingQueryParameters != null) {
+      queryParameters.addAll(existingQueryParameters);
+    }
+
     return Uri.parse(url).replace(queryParameters: queryParameters).toString();
   }
 
