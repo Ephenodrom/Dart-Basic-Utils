@@ -625,7 +625,7 @@ class CryptoUtils {
     var outer = ASN1Sequence();
     var algorithm = ASN1Sequence();
     algorithm.add(ASN1ObjectIdentifier.fromName('ecPublicKey'));
-    algorithm.add(ASN1ObjectIdentifier.fromName('prime256v1'));
+    algorithm.add(ASN1ObjectIdentifier.fromName(publicKey.parameters!.domainName));
     var encodedBytes = publicKey.Q!.getEncoded(false);
 
     var subjectPublicKey = ASN1BitString(stringValues: encodedBytes);
