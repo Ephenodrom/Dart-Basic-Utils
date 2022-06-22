@@ -192,8 +192,8 @@ SBouL4hXziiJX5Me/8OobFgNfYXkk6R/K/fqJhJ/mV8gLur16XhgueXA
   test('Test encodeECPublicKeyToPem', () {
     var pair = CryptoUtils.generateEcKeyPair(curve: 'secp256k1');
     var pem = CryptoUtils.encodeEcPublicKeyToPem(pair.publicKey as ECPublicKey);
-    expect(pem.startsWith('-----BEGIN EC PUBLIC KEY-----'), true);
-    expect(pem.endsWith('-----END EC PUBLIC KEY-----'), true);
+    expect(pem.startsWith('-----BEGIN PUBLIC KEY-----'), true);
+    expect(pem.endsWith('-----END PUBLIC KEY-----'), true);
     var pub = CryptoUtils.ecPublicKeyFromPem(pem);
     expect(pub.parameters!.domainName, 'secp256k1');
   });
