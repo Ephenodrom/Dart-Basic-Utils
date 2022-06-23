@@ -85,6 +85,17 @@ YOu/vLUgIUZ+7gGo5VkmU0B+gUWhRANCAAQxkee3UPW110s0aUQdcS0TDkr8blAe
 SBouL4hXziiJX5Me/8OobFgNfYXkk6R/K/fqJhJ/mV8gLur16XhgueXA
 -----END PRIVATE KEY-----''';
 
+  var ecPrivateKey = '''-----BEGIN EC PRIVATE KEY-----
+MHUCAQEEIQCNeTXcKDOh232Nh4/wXDYbAN4a/7zZt4kcIjTd+Fy5aKAHBgUrgQQA
+CqFEA0IABHm+Zn753LusVaBilc6HCwcCm/zbLc4o2VnygVsW+BeYSDradyajxGVd
+pPv8DhEIqP0XtEimhVQZnEfQj/sQ1Lg=
+-----END EC PRIVATE KEY-----''';
+
+  var ecPublicKey = '''-----BEGIN PUBLIC KEY-----
+MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEL1xolif+76OIrvhEf8yL5m93ulxbha4M
+aovLQr38tZ5yEOkM9acw+NOf9mkrfspYDFoRs5vjON4Cbjsn3DlIfg==
+-----END PUBLIC KEY-----''';
+
   test('Test rsaPublicKeyModulusToBytes', () {
     var key = CryptoUtils.rsaPublicKeyFromPem(publicKey);
     var bytes = CryptoUtils.rsaPublicKeyModulusToBytes(key);
@@ -315,6 +326,23 @@ SBouL4hXziiJX5Me/8OobFgNfYXkk6R/K/fqJhJ/mV8gLur16XhgueXA
     bytes = Uint8List.fromList(toSign.codeUnits);
     valid = CryptoUtils.ecVerify(pubKey, bytes, signature);
     expect(valid, false);
+  });
+
+  test('Test ecSignatureToBase64', () {
+    var privKey = CryptoUtils.ecPrivateKeyFromPem(ecPrivateKey);
+    var pubKey = CryptoUtils.ecPublicKeyFromPem(ecPublicKey);
+    var toSign = 'HelloWorld';
+
+    var bytes = Uint8List.fromList(toSign.codeUnits);
+
+    var signature = CryptoUtils.ecSign(privKey, bytes);
+    var base64 = CryptoUtils.ecSignatureToBase64(signature);
+
+    signature = CryptoUtils.ecSignatureFromBase64(base64);
+
+    var valid = CryptoUtils.ecVerify(pubKey, bytes, signature);
+
+    expect(valid, true);
   });
 
   test('Test ecSign / ecVerify', () {
