@@ -625,7 +625,8 @@ class CryptoUtils {
     var outer = ASN1Sequence();
     var algorithm = ASN1Sequence();
     algorithm.add(ASN1ObjectIdentifier.fromName('ecPublicKey'));
-    algorithm.add(ASN1ObjectIdentifier.fromName(publicKey.parameters!.domainName));
+    algorithm
+        .add(ASN1ObjectIdentifier.fromName(publicKey.parameters!.domainName));
     var encodedBytes = publicKey.Q!.getEncoded(false);
 
     var subjectPublicKey = ASN1BitString(stringValues: encodedBytes);
@@ -876,6 +877,33 @@ class CryptoUtils {
     signer.init(true, params);
 
     var sig = signer.generateSignature(dataToSign) as ECSignature;
+
+    return sig;
+  }
+
+  ///
+  /// Convert ECSignature [signature] to base64 string
+  /// This is mainly used for passing signature as string via request/response use cases
+  ///
+  static String ecSignatureToBase64(ECSignature signature) {
+    var outer = ASN1Sequence();
+    outer.add(ASN1Integer(signature.r));
+    outer.add(ASN1Integer(signature.s));
+
+    return base64.encode(outer.encode());
+  }
+
+  ///
+  /// Converts a [base64] string to an ECSignature
+  ///
+  static ECSignature ecSignatureFromBase64(String b64) {
+    var data = base64.decode(b64);
+    var parser = ASN1Parser(data);
+    var outer = parser.nextObject() as ASN1Sequence;
+    var el1 = outer.elements!.elementAt(0) as ASN1Integer;
+    var el2 = outer.elements!.elementAt(1) as ASN1Integer;
+
+    var sig = ECSignature(el1.integer!, el2.integer!);
 
     return sig;
   }
