@@ -882,7 +882,13 @@ class CryptoUtils {
   }
 
   ///
-  /// Convert ECSignature [signature] to base64 string
+  /// Convert ECSignature [signature] to DER encoded base64 string.
+  /// ```
+  /// ECDSA-Sig-Value ::= SEQUENCE {
+  ///  r INTEGER,
+  ///  s INTEGER
+  /// }
+  ///```
   /// This is mainly used for passing signature as string via request/response use cases
   ///
   static String ecSignatureToBase64(ECSignature signature) {
@@ -894,7 +900,13 @@ class CryptoUtils {
   }
 
   ///
-  /// Converts a [base64] string to an ECSignature
+  /// Converts a [base64] DER encoded string to an ECSignature. The der encoded content must follow the following structure.
+  /// ```
+  /// ECDSA-Sig-Value ::= SEQUENCE {
+  ///  r INTEGER,
+  ///  s INTEGER
+  /// }
+  ///```
   ///
   static ECSignature ecSignatureFromBase64(String b64) {
     var data = base64.decode(b64);
