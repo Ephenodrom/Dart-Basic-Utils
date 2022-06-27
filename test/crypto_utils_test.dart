@@ -345,26 +345,6 @@ aovLQr38tZ5yEOkM9acw+NOf9mkrfspYDFoRs5vjON4Cbjsn3DlIfg==
     expect(valid, true);
   });
 
-  test('Test ecSign / ecVerify', () {
-    var pair = CryptoUtils.generateEcKeyPair();
-    var privKey = pair.privateKey as ECPrivateKey;
-    var pubKey = pair.publicKey as ECPublicKey;
-    var toSign = 'Hello World! This is Jon Doe.';
-
-    var bytes = Uint8List.fromList(toSign.codeUnits);
-
-    var signature = CryptoUtils.ecSign(privKey, bytes);
-    var valid = CryptoUtils.ecVerify(pubKey, bytes, signature);
-
-    expect(valid, true);
-
-    toSign = 'Hello World! This is Jane Doe.';
-
-    bytes = Uint8List.fromList(toSign.codeUnits);
-    valid = CryptoUtils.ecVerify(pubKey, bytes, signature);
-    expect(valid, false);
-  });
-
   test('Test getHash', () {
     var bytes = Uint8List.fromList('Hello World'.codeUnits);
     expect(CryptoUtils.getHash(bytes, algorithmName: 'SHA-1'),
