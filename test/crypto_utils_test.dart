@@ -345,6 +345,20 @@ aovLQr38tZ5yEOkM9acw+NOf9mkrfspYDFoRs5vjON4Cbjsn3DlIfg==
     expect(valid, true);
   });
 
+  test('Test ecSign / ecVerifyBase64', () {
+    var privKey = CryptoUtils.ecPrivateKeyFromPem(ecPrivateKey);
+    var pubKey = CryptoUtils.ecPublicKeyFromPem(ecPublicKey);
+    var toSign = 'HelloWorld';
+
+    var bytes = Uint8List.fromList(toSign.codeUnits);
+    var signature = CryptoUtils.ecSign(privKey, bytes);
+    var base64Signature = CryptoUtils.ecSignatureToBase64(signature);
+
+    var valid = CryptoUtils.ecVerifyBase64(pubKey, bytes, base64Signature);
+
+    expect(valid, true);
+  });
+
   test('Test getHash', () {
     var bytes = Uint8List.fromList('Hello World'.codeUnits);
     expect(CryptoUtils.getHash(bytes, algorithmName: 'SHA-1'),
