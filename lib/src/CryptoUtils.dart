@@ -952,6 +952,31 @@ class CryptoUtils {
   }
 
   ///
+  /// Verifying the given [signedData] with the given [publicKey] and the given [signature] in base64.
+  /// Will return **true** if the given [signature] matches the [signedData].
+  ///
+  /// The default [algorithm] used is **SHA-1/ECDSA**. All supported algorihms are :
+  ///
+  /// * SHA-1/ECDSA
+  /// * SHA-224/ECDSA
+  /// * SHA-256/ECDSA
+  /// * SHA-384/ECDSA
+  /// * SHA-512/ECDSA
+  /// * SHA-1/DET-ECDSA
+  /// * SHA-224/DET-ECDSA
+  /// * SHA-256/DET-ECDSA
+  /// * SHA-384/DET-ECDSA
+  /// * SHA-512/DET-ECDSA
+  ///
+  static bool ecVerifyBase64(
+      ECPublicKey publicKey, Uint8List origData, String signature,
+      {String algorithm = 'SHA-1/ECDSA'}) {
+    var ecSignature = ecSignatureFromBase64(signature);
+
+    return ecVerify(publicKey, origData, ecSignature, algorithm: algorithm);
+  }
+
+  ///
   /// Returns the modulus of the given [pem] that represents an RSA private key.
   ///
   /// This equals the following openssl command:
