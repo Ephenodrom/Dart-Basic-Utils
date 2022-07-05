@@ -50,7 +50,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^4.2.2
+  basic_utils: ^4.3.0
 ```
 
 ## Import
@@ -288,6 +288,9 @@ ECSignature ecSign(ECPrivateKey privateKey, Uint8List dataToSign, {String algori
 bool ecVerify(ECPublicKey publicKey, Uint8List signedData, ECSignature signature, {String algorithm = 'SHA-1/ECDSA'});
 String getHash(Uint8List bytes, {String algorithmName = 'SHA-256'});
 BigInt getModulusFromRSAPrivateKeyPem(String pem);
+String ecSignatureToBase64(ECSignature signature);
+ECSignature ecSignatureFromBase64(String b64);
+bool ecVerifyBase64(ECPublicKey publicKey, Uint8List origData, String signature, {String algorithm = 'SHA-1/ECDSA'});
 ```
 
 ### ASN1Utils
