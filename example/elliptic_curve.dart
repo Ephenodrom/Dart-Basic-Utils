@@ -6,7 +6,7 @@ import 'package:pointycastle/ecc/api.dart';
 
 void main() {
   // generate key pairs
-  var ec = CryptoUtils.generateEcKeyPair(curve: "secp256k1");
+  var ec = CryptoUtils.generateEcKeyPair(curve: 'secp256k1');
   var privKey = ec.privateKey as ECPrivateKey;
   var pubKey = ec.publicKey as ECPublicKey;
 
@@ -26,7 +26,7 @@ void main() {
   var decodedPubKey = CryptoUtils.ecPublicKeyFromPem(pubKeyPem);
 
   // sign message
-  var message = Uint8List.fromList("Hello world!".codeUnits);
+  var message = Uint8List.fromList('Hello world!'.codeUnits);
   var signature = CryptoUtils.ecSign(decodedPrivKey, message,
       algorithmName: 'SHA-256/ECDSA'); // can be SHA-256/ECDSA or other
   var encodedSignature = CryptoUtils.ecSignatureToBase64(signature);

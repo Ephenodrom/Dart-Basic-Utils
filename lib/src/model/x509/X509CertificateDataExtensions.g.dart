@@ -18,6 +18,9 @@ X509CertificateDataExtensions _$X509CertificateDataExtensionsFromJson(
       vmc: json['vmc'] == null
           ? null
           : VmcData.fromJson(json['vmc'] as Map<String, dynamic>),
+      cRLDistributionPoints: (json['cRLDistributionPoints'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$X509CertificateDataExtensionsToJson(
@@ -34,6 +37,7 @@ Map<String, dynamic> _$X509CertificateDataExtensionsToJson(
   writeNotNull('extKeyUsage',
       instance.extKeyUsage?.map((e) => _$ExtendedKeyUsageEnumMap[e]).toList());
   writeNotNull('vmc', instance.vmc?.toJson());
+  writeNotNull('cRLDistributionPoints', instance.cRLDistributionPoints);
   return val;
 }
 

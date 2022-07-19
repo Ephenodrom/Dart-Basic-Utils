@@ -1,6 +1,4 @@
 import 'package:basic_utils/basic_utils.dart';
-import 'package:basic_utils/src/model/DnsApiProvider.dart';
-import 'package:basic_utils/src/model/RRecordType.dart';
 import 'package:test/test.dart';
 
 void main() {

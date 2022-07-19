@@ -18,10 +18,14 @@ class X509CertificateDataExtensions {
   /// The base64 encoded VMC logo
   VmcData? vmc;
 
+  /// The distribution points for the crl files. Normally a url.
+  List<String>? cRLDistributionPoints;
+
   X509CertificateDataExtensions({
     this.subjectAlternativNames,
     this.extKeyUsage,
     this.vmc,
+    this.cRLDistributionPoints,
   });
 
   /*

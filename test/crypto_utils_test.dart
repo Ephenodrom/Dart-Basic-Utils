@@ -1,9 +1,9 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
 import 'package:convert/convert.dart';
-import 'package:pointycastle/ecc/api.dart';
-import 'package:pointycastle/pointycastle.dart';
 import 'package:test/test.dart';
 
 void main() {

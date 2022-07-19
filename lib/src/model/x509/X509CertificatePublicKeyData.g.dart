@@ -16,6 +16,10 @@ X509CertificatePublicKeyData _$X509CertificatePublicKeyDataFromJson(
       bytes: json['bytes'] as String?,
       plainSha1: X509CertificatePublicKeyData.plainSha1FromJson(
           json['plainSha1'] as List<int>?),
+      algorithmReadableName: json['algorithmReadableName'] as String?,
+      parameter: json['parameter'] as String?,
+      parameterReadableName: json['parameterReadableName'] as String?,
+      exponent: json['exponent'] as int?,
     );
 
 Map<String, dynamic> _$X509CertificatePublicKeyDataToJson(
@@ -29,11 +33,15 @@ Map<String, dynamic> _$X509CertificatePublicKeyDataToJson(
   }
 
   writeNotNull('algorithm', instance.algorithm);
+  writeNotNull('algorithmReadableName', instance.algorithmReadableName);
+  writeNotNull('parameter', instance.parameter);
+  writeNotNull('parameterReadableName', instance.parameterReadableName);
   writeNotNull('length', instance.length);
   writeNotNull('sha1Thumbprint', instance.sha1Thumbprint);
   writeNotNull('sha256Thumbprint', instance.sha256Thumbprint);
   writeNotNull('bytes', instance.bytes);
   writeNotNull('plainSha1',
       X509CertificatePublicKeyData.plainSha1ToJson(instance.plainSha1));
+  writeNotNull('exponent', instance.exponent);
   return val;
 }

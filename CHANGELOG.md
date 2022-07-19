@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.4.0] - 2022-07-20
+
+* Improved X509Utils, added crlDerToPem()
+* Improved X509Utils, added crlDataFromPem()
+* Improved X509Utils to support constructed subject alternative names (#73)
+* Improved X509CertificateDataExtensions model, added new field cRLDistributionPoints
+* Improved X509Utils, certificate parsing now supports cRLDistributionPoints extension
+* Update dependencies
+* Fixed linter errors
+
 ## [4.3.0] - 2022-07-05
 
 * Improved IterableUtils (PR #68 #69)

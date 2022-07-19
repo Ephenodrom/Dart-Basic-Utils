@@ -1,10 +1,13 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:basic_utils/src/X509Utils.dart';
+import 'package:basic_utils/src/model/crl/CrlReason.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPCertStatusValues.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPResponseStatus.dart';
 import 'package:basic_utils/src/model/x509/ExtendedKeyUsage.dart';
-import 'package:pointycastle/impl.dart';
 import 'package:pointycastle/pointycastle.dart';
 import 'package:test/test.dart';
 
@@ -54,6 +57,20 @@ E9QMd+ItwS4dj5kwu7Z7tAMyG1EZWVV/uXUqQLHwYDqs2zTbw0xYg9ZZctTCa9Gx
 MZw/rWTrpNxZ/uwmag/w1z9adFnUYxzrrbFyPxF356AWQa9B/kX7mfOn9UIE5QsH
 0oos6SSv/Z2Dv8eePBMc/ai7lHmUGNF37fyRxth9yvZ3y7qkwQIMbV66CDg0ZiIt
 yQRqfEI3
+-----END CERTIFICATE REQUEST-----''';
+
+  var csrWithConstructedSans = '''-----BEGIN CERTIFICATE REQUEST-----
+MIIB7TCCAZMCAQAwXzELMAkGA1UEBhMCU0ExEzARBgNVBAsMCjMxMjM0NTY3ODkx
+EzARBgNVBAoMCjMxMjM0NTY3ODkxJjAkBgNVBAMMHVRTVC04ODY0MzExNDUtMzEy
+MzQ1Njc4OTAwMDAzMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEkNOiV8GaCBVDnQw2
+bM1Wy6PqIRZ6t+/hxJNQxg7FAdWK0PcUiUdv5ry2SVyFSz/qY34IJuPstO01fLWv
+c41ny6CB1DCB0QYJKoZIhvcNAQkOMYHDMIHAMCEGCSsGAQQBgjcUAgQUDBJaQVRD
+QS1Db2RlLVNpZ25pbmcwgZoGA1UdEQSBkjCBj6SBjDCBiTE7MDkGA1UEBAwyMS1U
+U1R8Mi1UU1R8My1lZDIyZjFkOC1lNmEyLTExMTgtOWI1OC1kOWE4ZjExZTQ0NWYx
+HzAdBgoJkiaJk/IsZAEBDA8zMTIzNDU2Nzg5MDAwMDMxDTALBgNVBAwMBDExMTEx
+DDAKBgNVBBoMA1RTVDEMMAoGA1UEDwwDVFNUMAoGCCqGSM49BAMCA0gAMEUCIQCJ
+bnRkFWRGFymr/HW84klYXSoxQLe8yuhewNOD86OdKQIgEeuUUbMzr2C5VGTKAOFo
+ia4a0ZuZLVXe3JGRUtmvLZk=
 -----END CERTIFICATE REQUEST-----''';
 
   var eccCsr = '''-----BEGIN CERTIFICATE REQUEST-----
@@ -1015,6 +1032,11 @@ CAUw7C29C79Fv1C5qfPrmAESrciIxpg0X40KPMbp1ZWVbd4=
     expect(sans.elementAt(0), 'junkdragons.de');
     expect(sans.elementAt(1), 'www.junkdragons.de');
     expect(sans.elementAt(2), 'api.junkdragons.de');
+
+    var cRLDistributionPoints = data.extensions!.cRLDistributionPoints;
+    expect(cRLDistributionPoints!.length, 1);
+    expect(cRLDistributionPoints.elementAt(0),
+        'http://cdp.rapidssl.com/FullOEMTestRSASub.crl');
   });
 
   test('Test x509CertificateFromPem with IP Sans', () {
@@ -1519,5 +1541,43 @@ SEQUENCE (1 elem)
   test('Test parseChainString', () {
     var data = X509Utils.parseChainString(certificateChain1);
     expect(data.length, 3);
+  });
+
+  test('Test csrFromPem with constructed sans', () {
+    var data = X509Utils.csrFromPem(csrWithConstructedSans);
+    expect(data.extensions!.subjectAlternativNames!.length, 1);
+    expect(data.extensions!.subjectAlternativNames!.elementAt(0),
+        'DirName:/SN=1-TST|2-TST|3-ed22f1d8-e6a2-1118-9b58-d9a8f11e445f/UID=312345678900003/title=1111/registeredAddress=TST/businessCategory=TST');
+  });
+
+  test('Test crlDataFromPem()', () {
+    var f = File('test_resources/RapidSSLTLSRSACAG1.pem');
+    var pem = f.readAsStringSync();
+    var data = X509Utils.crlDataFromPem(pem);
+    var tbsCertList = data.tbsCertList;
+    expect(tbsCertList!.version, 1);
+    expect(tbsCertList.issuer!.length, 4);
+    expect(
+        tbsCertList.thisUpdate!.toIso8601String(), '2022-07-17T08:17:38.000Z');
+    expect(
+        tbsCertList.nextUpdate!.toIso8601String(), '2022-07-24T08:17:38.000Z');
+    expect(tbsCertList.revokedCertificates!.length, 408);
+    var revoked = tbsCertList.revokedCertificates!.elementAt(0);
+    expect(revoked.serialNumber!.toRadixString(16).toUpperCase(),
+        '1293146B5A10E6C3B1FCB2C14D8C441');
+    expect(
+        revoked.revocationDate!.toIso8601String(), '2020-04-29T21:11:33.000Z');
+    expect(revoked.extensions!.reason, CrlReason.cessationOfOperation);
+  });
+
+  test('Test crlDerToPem()', () {
+    var f = File('test_resources/RapidSSLTLSRSACAG1.pem');
+    var pem = f.readAsStringSync();
+
+    var f1 = File('test_resources/RapidSSLTLSRSACAG1.crl');
+    var der = f1.readAsBytesSync();
+    var data = X509Utils.crlDerToPem(der);
+
+    expect(data, pem);
   });
 }

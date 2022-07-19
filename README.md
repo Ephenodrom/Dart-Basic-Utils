@@ -234,6 +234,8 @@ String pemToPkcs7(List<String> pems);
 String generateSelfSignedCertificate(PrivateKey privateKey, String csr,int days, { List<String>? sans, List<ExtendedKeyUsage>? extKeyUsage, String serialNumber = '1'});
 List<String> parseChainStringAsString(String s);
 List<X509CertificateData> parseChainString(String chain);
+CertificateRevokeListeData crlDataFromPem(String pem);
+String crlDerToPem(Uint8List bytes);
 ```
 
 ### IterableUtils

@@ -154,7 +154,7 @@ void main() {
 
   test('Test size with map', () {
     final expected = 1;
-    final Map map1 = {};
+    final map1 = {};
     map1['key'] = 1;
     final result = IterableUtils.size(map1);
     expect(result, expected);
@@ -200,7 +200,7 @@ void main() {
 
   test('Test sizeIsEmpty with map', () {
     final expected = false;
-    final Map map1 = {};
+    final map1 = {};
     map1['key'] = 1;
     final result = IterableUtils.sizeIsEmpty(map1);
     expect(result, expected);

@@ -1,5 +1,4 @@
 import 'package:basic_utils/basic_utils.dart';
-import 'package:basic_utils/src/model/exception/HttpResponseException.dart';
 import 'package:http/http.dart';
 import 'package:test/test.dart';
 import 'package:http/testing.dart';
