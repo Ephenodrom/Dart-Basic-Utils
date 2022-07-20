@@ -1,5 +1,10 @@
 # Changelog
 
+## [4.4.1] - 2022-07-20
+
+* Fixed static value of X509Utils.BEGIN_EC_PUBLIC_KEY
+* Fixed static value of X509Utils.END_EC_PUBLIC_KEY
+
 ## [4.4.0] - 2022-07-20
 
 * Improved X509Utils, added crlDerToPem()
