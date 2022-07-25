@@ -1580,4 +1580,25 @@ SEQUENCE (1 elem)
 
     expect(data, pem);
   });
+
+  test('Test checkCsrSignature()', () {
+    var pair = CryptoUtils.generateRSAKeyPair();
+    var dn = {'CN': 'basic-utils.dev'};
+    var pem = X509Utils.generateRsaCsrPem(
+      dn,
+      pair.privateKey as RSAPrivateKey,
+      pair.publicKey as RSAPublicKey,
+    );
+    var data = X509Utils.checkCsrSignature(pem);
+    expect(data, true);
+
+    var ecPair = CryptoUtils.generateEcKeyPair();
+    var ecPem = X509Utils.generateEccCsrPem(
+      dn,
+      ecPair.privateKey as ECPrivateKey,
+      ecPair.publicKey as ECPublicKey,
+    );
+    data = X509Utils.checkCsrSignature(ecPem);
+    expect(data, true);
+  });
 }

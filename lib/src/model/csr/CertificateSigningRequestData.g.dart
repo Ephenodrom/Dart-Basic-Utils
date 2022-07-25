@@ -26,6 +26,7 @@ CertificateSigningRequestData _$CertificateSigningRequestDataFromJson(
           ? null
           : CertificateSigningRequestExtensions.fromJson(
               json['extensions'] as Map<String, dynamic>),
+      infoData: json['infoData'] as String?,
     );
 
 Map<String, dynamic> _$CertificateSigningRequestDataToJson(
@@ -47,5 +48,6 @@ Map<String, dynamic> _$CertificateSigningRequestDataToJson(
   writeNotNull('signature', instance.signature);
   writeNotNull('plain', instance.plain);
   writeNotNull('extensions', instance.extensions?.toJson());
+  writeNotNull('infoData', instance.infoData);
   return val;
 }

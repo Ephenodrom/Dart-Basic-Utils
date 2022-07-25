@@ -50,7 +50,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^4.4.1
+  basic_utils: ^4.4.2
 ```
 
 ## Import
@@ -236,6 +236,7 @@ List<String> parseChainStringAsString(String s);
 List<X509CertificateData> parseChainString(String chain);
 CertificateRevokeListeData crlDataFromPem(String pem);
 String crlDerToPem(Uint8List bytes);
+bool checkCsrSignature(String pem);
 ```
 
 ### IterableUtils
@@ -293,6 +294,7 @@ BigInt getModulusFromRSAPrivateKeyPem(String pem);
 String ecSignatureToBase64(ECSignature signature);
 ECSignature ecSignatureFromBase64(String b64);
 bool ecVerifyBase64(ECPublicKey publicKey, Uint8List origData, String signature, {String algorithm = 'SHA-1/ECDSA'});
+ECSignature ecSignatureFromDerBytes(Uint8List data);
 ```
 
 ### ASN1Utils

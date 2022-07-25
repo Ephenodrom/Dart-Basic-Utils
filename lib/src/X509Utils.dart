@@ -1189,6 +1189,7 @@ class X509Utils {
       publicKeyInfo: pubInfo,
       plain: pem,
       extensions: extensions,
+      infoData: base64.encode(infoSeq.encode()),
     );
   }
 
@@ -1777,5 +1778,41 @@ class X509Utils {
       cRLDistributionPoints.add(point);
     }
     return cRLDistributionPoints;
+  }
+
+  ///
+  /// Checks the signature of the given CSR if it matches the content of the CSR.
+  ///
+  static bool checkCsrSignature(String pem) {
+    var data = csrFromPem(pem);
+    var result = false;
+    var algorithm = _getSigningAlgorithmFromOi(data.publicKeyInfo!.algorithm!);
+
+    if (data.publicKeyInfo!.algorithmReadableName!.contains('rsa')) {
+      var publicKey = CryptoUtils.rsaPublicKeyFromDERBytes(
+          _stringAsBytes(data.publicKeyInfo!.bytes!));
+      result = CryptoUtils.rsaVerify(
+        publicKey,
+        base64.decode(data.infoData!),
+        _stringAsBytes(data.signature!),
+        algorithm: '$algorithm/RSA',
+      );
+    } else {
+      var publicKey = CryptoUtils.ecPublicKeyFromDerBytes(
+          _stringAsBytes(data.publicKeyInfo!.bytes!));
+      var sigBytes = _stringAsBytes(data.signature!);
+      if (sigBytes.first == 0) {
+        sigBytes = sigBytes.sublist(1);
+      }
+      result = CryptoUtils.ecVerify(
+        publicKey,
+        base64.decode(data.infoData!),
+        CryptoUtils.ecSignatureFromDerBytes(
+          sigBytes,
+        ),
+        algorithm: '$algorithm/ECDSA',
+      );
+    }
+    return result;
   }
 }

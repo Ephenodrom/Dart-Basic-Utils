@@ -29,6 +29,9 @@ class CertificateSigningRequestData {
 
   CertificateSigningRequestExtensions? extensions;
 
+  /// The info sequence as base64
+  String? infoData;
+
   CertificateSigningRequestData({
     this.subject,
     this.version,
@@ -38,6 +41,7 @@ class CertificateSigningRequestData {
     this.publicKeyInfo,
     this.plain,
     this.extensions,
+    this.infoData,
   });
 
   /*

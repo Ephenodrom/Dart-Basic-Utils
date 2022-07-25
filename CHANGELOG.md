@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.4.2] - 2022-07-26
+
+* Improved CryptoUtils, added ecSignatureFromDerBytes()
+* Improbed X509Utils, added checkCsrSignature()
+* Added new field infoData to CertificateSigningRequestData model
+
 ## [4.4.1] - 2022-07-20
 
 * Fixed static value of X509Utils.BEGIN_EC_PUBLIC_KEY

@@ -910,6 +910,20 @@ class CryptoUtils {
   ///
   static ECSignature ecSignatureFromBase64(String b64) {
     var data = base64.decode(b64);
+
+    return ecSignatureFromDerBytes(data);
+  }
+
+  ///
+  /// Converts the given DER bytes to an ECSignature. The der encoded content must follow the following structure.
+  /// ```
+  /// ECDSA-Sig-Value ::= SEQUENCE {
+  ///  r INTEGER,
+  ///  s INTEGER
+  /// }
+  ///```
+  ///
+  static ECSignature ecSignatureFromDerBytes(Uint8List data) {
     var parser = ASN1Parser(data);
     var outer = parser.nextObject() as ASN1Sequence;
     var el1 = outer.elements!.elementAt(0) as ASN1Integer;
