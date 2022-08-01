@@ -272,11 +272,12 @@ class X509Utils {
   /// Generates a self signed certificate
   ///
   /// * [privateKey] = The private key used for signing
-  /// * [csr] = The CSR containing the DN an public key
+  /// * [csr] = The CSR containing the DN and public key
   /// * [days] = The validity in days
   /// * [sans] = Subject alternative names to place within the certificate
   /// * [extKeyUsage] = The key usage definition
   /// * [serialNumber] = The serialnumber. If not set the default will be 1.
+  /// * [issuer] = The issuer. If null, the issuer will be the subject of the given csr
   ///
   static String generateSelfSignedCertificate(
     PrivateKey privateKey,
@@ -285,6 +286,7 @@ class X509Utils {
     List<String>? sans,
     List<ExtendedKeyUsage>? extKeyUsage,
     String serialNumber = '1',
+    Map<String, String>? issuer,
   }) {
     var csrData = csrFromPem(csr);
 
@@ -305,10 +307,12 @@ class X509Utils {
     blockProtocol.add(ASN1Null());
     data.add(blockProtocol);
 
+    issuer ??= csrData.subject!;
+
     // Add Issuer
     var issuerSeq = ASN1Sequence();
-    for (var k in csrData.subject!.keys) {
-      var value = csrData.subject![k];
+    for (var k in issuer.keys) {
+      var value = issuer[k];
       var pString;
       if (StringUtils.isAscii(value!)) {
         pString = ASN1PrintableString(stringValue: value);

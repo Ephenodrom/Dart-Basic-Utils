@@ -1,9 +1,13 @@
 # Changelog
 
+## [4.5.0] - 2022-07-26
+
+* Improved X509Utils, generateSelfSignedCertificate() accepts custom issuer
+
 ## [4.4.2] - 2022-07-26
 
 * Improved CryptoUtils, added ecSignatureFromDerBytes()
-* Improbed X509Utils, added checkCsrSignature()
+* Improved X509Utils, added checkCsrSignature()
 * Added new field infoData to CertificateSigningRequestData model
 
 ## [4.4.1] - 2022-07-20
