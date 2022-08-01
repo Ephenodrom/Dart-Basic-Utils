@@ -34,6 +34,14 @@ export 'src/model/ocsp/OCSPResponseData.dart';
 export 'src/model/ocsp/OCSPResponseStatus.dart';
 export 'src/model/ocsp/OCSPSingleResponse.dart';
 
+/// CRL
+export 'src/model/crl/CertificateListData.dart';
+export 'src/model/crl/CertificateRevokeListData.dart';
+export 'src/model/crl/CrlEntryExtensionsData.dart';
+export 'src/model/crl/CrlExtensions.dart';
+export 'src/model/crl/CrlReason.dart';
+export 'src/model/crl/RevokedCertificate.dart';
+
 /// Export util classes
 export 'src/DomainUtils.dart';
 export 'src/EmailUtils.dart';

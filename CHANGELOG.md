@@ -1,8 +1,12 @@
 # Changelog
 
-## [4.5.0] - 2022-07-26
+## [4.5.0] - 2022-08-01
 
 * Improved X509Utils, generateSelfSignedCertificate() accepts custom issuer
+
+## [4.4.3] - 2022-07-27
+
+* Export of CRL models
 
 ## [4.4.2] - 2022-07-26
 
