@@ -297,6 +297,8 @@ String ecSignatureToBase64(ECSignature signature);
 ECSignature ecSignatureFromBase64(String b64);
 bool ecVerifyBase64(ECPublicKey publicKey, Uint8List origData, String signature, {String algorithm = 'SHA-1/ECDSA'});
 ECSignature ecSignatureFromDerBytes(Uint8List data);
+Uint8List i2osp(BigInt number,{int? outLen, Endian endian = Endian.big});
+BigInt osp2i(Iterable<int> bytes, {Endian endian = Endian.big});
 ```
 
 ### ASN1Utils

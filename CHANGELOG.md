@@ -2,8 +2,9 @@
 
 ## [4.5.1] - 2022-08-03
 
-* Improved IterableUtils, added swap() and permutate() method
+* Improved IterableUtils, added swap() and permutate() methods
 * Added new unit tests
+* Improved CryptoUtils addd i2osp() and osp2i() methods
 
 ## [4.5.0] - 2022-08-01
 

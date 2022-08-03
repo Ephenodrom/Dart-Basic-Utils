@@ -32,6 +32,8 @@ class CryptoUtils {
   static const BEGIN_RSA_PUBLIC_KEY = '-----BEGIN RSA PUBLIC KEY-----';
   static const END_RSA_PUBLIC_KEY = '-----END RSA PUBLIC KEY-----';
 
+  static final _byteMask = BigInt.from(0xff);
+
   ///
   /// Converts the [RSAPublicKey.modulus] from the given [publicKey] to a [Uint8List].
   ///
@@ -586,7 +588,7 @@ class CryptoUtils {
     var outer = ASN1Sequence();
 
     var version = ASN1Integer(BigInt.from(1));
-    var privateKeyAsBytes = encodeBigInt(ecPrivateKey.d);
+    var privateKeyAsBytes = i2osp(ecPrivateKey.d!);
     var privateKey = ASN1OctetString(octets: privateKeyAsBytes);
     var choice = ASN1Sequence(tag: 0xA0);
 
@@ -718,7 +720,7 @@ class CryptoUtils {
       x = privateKeyAsOctetString.valueBytes!;
     }
 
-    return ECPrivateKey(decodeBigInt(x), ECDomainParameters(curveName));
+    return ECPrivateKey(osp2i(x), ECDomainParameters(curveName));
   }
 
   ///
@@ -1027,5 +1029,47 @@ class CryptoUtils {
       return 'ECC';
     }
     return 'RSA';
+  }
+
+  ///
+  /// Conversion of bytes to integer according to RFC 3447 at <https://datatracker.ietf.org/doc/html/rfc3447#page-8>
+  ///
+  static BigInt osp2i(Iterable<int> bytes, {Endian endian = Endian.big}) {
+    var result = BigInt.from(0);
+    if (endian == Endian.little) {
+      bytes = bytes.toList().reversed;
+    }
+
+    for (var byte in bytes) {
+      result = result << 8;
+      result |= BigInt.from(byte);
+    }
+
+    return result;
+  }
+
+  ///
+  /// Conversion of integer to bytes according to RFC 3447 at <https://datatracker.ietf.org/doc/html/rfc3447#page-8>
+  ///
+  static Uint8List i2osp(BigInt number,
+      {int? outLen, Endian endian = Endian.big}) {
+    var size = (number.bitLength + 7) >> 3;
+    if (outLen == null) {
+      outLen = size;
+    } else if (outLen < size) {
+      throw Exception('Number too large');
+    }
+    final result = Uint8List(outLen);
+    var pos = endian == Endian.big ? outLen - 1 : 0;
+    for (var i = 0; i < size; i++) {
+      result[pos] = (number & _byteMask).toInt();
+      if (endian == Endian.big) {
+        pos -= 1;
+      } else {
+        pos += 1;
+      }
+      number = number >> 8;
+    }
+    return result;
   }
 }
