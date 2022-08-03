@@ -50,7 +50,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^4.5.0
+  basic_utils: ^4.5.1
 ```
 
 ## Import
@@ -248,6 +248,8 @@ T randomItem<T>(Iterable<T> iterable);
 bool isNullOrEmpty(Iterable? iterable);
 bool isNotNullOrEmpty(Iterable? iterable);
 List<List<T>> chunk<T>(List<T> list, int size);
+swap(List<dynamic> input, int a, int b);
+List<List<dynamic>> permutate(List<dynamic> data);
 ```
 
 ### CryptoUtils

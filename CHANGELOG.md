@@ -1,5 +1,10 @@
 # Changelog
 
+## [4.5.1] - 2022-08-03
+
+* Improved IterableUtils, added swap() and permutate() method
+* Added new unit tests
+
 ## [4.5.0] - 2022-08-01
 
 * Improved X509Utils, generateSelfSignedCertificate() accepts custom issuer

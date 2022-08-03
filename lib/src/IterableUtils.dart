@@ -160,4 +160,51 @@ class IterableUtils {
     final result = size(iterable);
     return result == 0;
   }
+
+  static void _permutate(
+      int n, List<dynamic> elements, List<List<dynamic>> store) {
+    if (n == 1) {
+      var t = <dynamic>[];
+      t.addAll(elements);
+      store.add(t);
+    } else {
+      for (var i = 0; i < n - 1; i++) {
+        _permutate(n - 1, elements, store);
+        if (n % 2 == 0) {
+          swap(elements, i, n - 1);
+        } else {
+          swap(elements, 0, n - 1);
+        }
+      }
+      _permutate(n - 1, elements, store);
+    }
+  }
+
+  ///
+  /// Swaps the given index [a] and [b] in the given [input]
+  ///
+  static void swap(List<dynamic> input, int a, int b) {
+    var tmp = input[a];
+    input[a] = input[b];
+    input[b] = tmp;
+  }
+
+  ///
+  /// Creates a permutation if the given list [data] by swapping each items to get the amount of [data.length]!.
+  ///
+  /// If the data consists of 4 items, the permutation will create 24 possible combinations (4*3*2*1=24).
+  ///
+  /// Example
+  ///
+  /// data = ["A", "B", "C"]
+  ///
+  /// result = [[A, B, C], [B, A, C], [C, A, B], [A, C, B], [B, C, A], [C, B, A]]
+  ///
+  static List<List<dynamic>> permutate(List<dynamic> data) {
+    var store = <List<dynamic>>[];
+    var tmp = <dynamic>[];
+    tmp.addAll(data);
+    _permutate(data.length, tmp, store);
+    return store;
+  }
 }

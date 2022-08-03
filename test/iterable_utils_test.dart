@@ -242,6 +242,26 @@ void main() {
     final result = IterableUtils.subtract(list1, list2);
     expect(result, expected);
   });
+
+  test('Test permutate', () {
+    var list1 = [1, 2, 3, 4];
+    var result = IterableUtils.permutate(list1);
+    expect(result.length, 24);
+
+    var list2 = ['A', 'B', 'C'];
+    result = IterableUtils.permutate(list2);
+    expect(result.length, 6);
+  });
+
+  test('Test swap', () {
+    final list1 = [1, 2, 3, 4];
+    IterableUtils.swap(list1, 0, 1);
+    expect(list1.length, 4);
+    expect(list1.elementAt(0), 2);
+    expect(list1.elementAt(1), 1);
+    expect(list1.elementAt(2), 3);
+    expect(list1.elementAt(3), 4);
+  });
 }
 
 class _Foo {}
