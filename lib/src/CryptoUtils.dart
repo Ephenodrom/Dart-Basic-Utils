@@ -596,9 +596,9 @@ class CryptoUtils {
         ASN1ObjectIdentifier.fromName(ecPrivateKey.parameters!.domainName));
 
     var publicKey = ASN1Sequence(tag: 0xA1);
-
-    var subjectPublicKey = ASN1BitString(
-        stringValues: ecPrivateKey.parameters!.G.getEncoded(false));
+    var q = ecPrivateKey.parameters!.G * ecPrivateKey.d!;
+    var encodedBytes = q!.getEncoded(false);
+    var subjectPublicKey = ASN1BitString(stringValues: encodedBytes);
     publicKey.add(subjectPublicKey);
 
     outer.add(version);

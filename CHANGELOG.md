@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.5.2] - 2022-08-04
+
+* Improved CryptopUtils, fixed a bug in encodeEcPrivateKeyToPem() that encoded the EC point Q wrong
+
 ## [4.5.1] - 2022-08-03
 
 * Improved IterableUtils, added swap() and permutate() methods
