@@ -1,7 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: deprecated_member_use_from_same_package
-
 part of 'X509CertificateData.dart';
 
 // **************************************************************************
@@ -17,6 +15,10 @@ X509CertificateData _$X509CertificateDataFromJson(Map<String, dynamic> json) =>
       validity: X509CertificateValidity.fromJson(
           json['validity'] as Map<String, dynamic>),
       subject: Map<String, String?>.from(json['subject'] as Map),
+      tbsCertificate: TbsCertificate.fromJson(
+          json['tbsCertificate'] as Map<String, dynamic>),
+      signatureAlgorithmReadableName:
+          json['signatureAlgorithmReadableName'] as String?,
       sha1Thumbprint: json['sha1Thumbprint'] as String?,
       sha256Thumbprint: json['sha256Thumbprint'] as String?,
       md5Thumbprint: json['md5Thumbprint'] as String?,
@@ -33,16 +35,16 @@ X509CertificateData _$X509CertificateDataFromJson(Map<String, dynamic> json) =>
           ? null
           : X509CertificateDataExtensions.fromJson(
               json['extensions'] as Map<String, dynamic>),
+      tbsCertificateSeqAsString: json['tbsCertificateSeqAsString'] as String?,
+      signature: json['signature'] as String,
     );
 
 Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {
   final val = <String, dynamic>{
+    'tbsCertificate': instance.tbsCertificate.toJson(),
     'version': instance.version,
     'serialNumber': instance.serialNumber.toString(),
     'signatureAlgorithm': instance.signatureAlgorithm,
-    'issuer': instance.issuer,
-    'validity': instance.validity.toJson(),
-    'subject': instance.subject,
   };
 
   void writeNotNull(String key, dynamic value) {
@@ -51,6 +53,11 @@ Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {
     }
   }
 
+  writeNotNull('signatureAlgorithmReadableName',
+      instance.signatureAlgorithmReadableName);
+  val['issuer'] = instance.issuer;
+  val['validity'] = instance.validity.toJson();
+  val['subject'] = instance.subject;
   writeNotNull('sha1Thumbprint', instance.sha1Thumbprint);
   writeNotNull('sha256Thumbprint', instance.sha256Thumbprint);
   writeNotNull('md5Thumbprint', instance.md5Thumbprint);
@@ -60,6 +67,8 @@ Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {
   writeNotNull('extKeyUsage',
       instance.extKeyUsage?.map((e) => _$ExtendedKeyUsageEnumMap[e]).toList());
   writeNotNull('extensions', instance.extensions?.toJson());
+  val['signature'] = instance.signature;
+  writeNotNull('tbsCertificateSeqAsString', instance.tbsCertificateSeqAsString);
   return val;
 }
 

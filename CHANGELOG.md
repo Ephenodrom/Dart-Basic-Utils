@@ -1,5 +1,18 @@
 # Changelog
 
+## [5.0.0] - 2022-08-18
+
+**IMPORTANT**
+This version includes some important changes. Read the log carefully. All functions are currently backwards compatible and will also fill the deprecated fields. But this may change in the future!
+
+* Improved model X509CertificateData to match the structure described at RFC 2459
+* Improved model CertificateSigningRequestData to match the structure described at RFC 2986
+* Improved model X509CertificateData marked fields as deprecated
+* Improved model CertificateSigningRequestData marked fields as deprecated
+* Added new model TbsCertificate
+* Added new model CertificationRequestInfo
+* Improved X509Utils, added new method checkX509Signature()
+
 ## [4.5.2] - 2022-08-04
 
 * Improved CryptopUtils, fixed a bug in encodeEcPrivateKeyToPem() that encoded the EC point Q wrong

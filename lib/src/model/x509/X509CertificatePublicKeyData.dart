@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:basic_utils/src/model/csr/SubjectPublicKeyInfo.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'X509CertificatePublicKeyData.g.dart';
@@ -75,5 +76,18 @@ class X509CertificatePublicKeyData {
       return null;
     }
     return object.toList();
+  }
+
+  X509CertificatePublicKeyData.fromSubjectPublicKeyInfo(
+      SubjectPublicKeyInfo info) {
+    algorithm = info.algorithm;
+    length = info.length;
+    sha1Thumbprint = info.sha1Thumbprint;
+    sha256Thumbprint = info.sha256Thumbprint;
+    bytes = info.bytes;
+    algorithmReadableName = info.algorithmReadableName;
+    parameter = info.parameter;
+    parameterReadableName = info.parameterReadableName;
+    exponent = info.exponent;
   }
 }

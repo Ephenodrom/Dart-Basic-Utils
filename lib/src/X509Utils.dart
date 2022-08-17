@@ -13,6 +13,7 @@ import 'package:basic_utils/src/model/crl/CrlReason.dart';
 import 'package:basic_utils/src/model/crl/RevokedCertificate.dart';
 import 'package:basic_utils/src/model/csr/CertificateSigningRequestData.dart';
 import 'package:basic_utils/src/model/csr/CertificateSigningRequestExtensions.dart';
+import 'package:basic_utils/src/model/csr/CertificationRequestInfo.dart';
 import 'package:basic_utils/src/model/csr/SubjectPublicKeyInfo.dart';
 import 'package:basic_utils/src/model/ocsp/BasicOCSPResponse.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPCertStatus.dart';
@@ -23,6 +24,7 @@ import 'package:basic_utils/src/model/ocsp/OCSPResponseStatus.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPSingleResponse.dart';
 import 'package:basic_utils/src/model/pkcs7/Pkcs7CertificateData.dart';
 import 'package:basic_utils/src/model/x509/ExtendedKeyUsage.dart';
+import 'package:basic_utils/src/model/x509/TbsCertificate.dart';
 import 'package:basic_utils/src/model/x509/VmcData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateDataExtensions.dart';
@@ -307,7 +309,7 @@ class X509Utils {
     blockProtocol.add(ASN1Null());
     data.add(blockProtocol);
 
-    issuer ??= csrData.subject!;
+    issuer ??= csrData.certificationRequestInfo!.subject!;
 
     // Add Issuer
     var issuerSeq = ASN1Sequence();
@@ -334,8 +336,8 @@ class X509Utils {
 
     // Add Subject
     var subjectSeq = ASN1Sequence();
-    for (var k in csrData.subject!.keys) {
-      var value = csrData.subject![k];
+    for (var k in csrData.certificationRequestInfo!.subject!.keys) {
+      var value = csrData.certificationRequestInfo!.subject![k];
       var pString;
       if (StringUtils.isAscii(value!)) {
         pString = ASN1PrintableString(stringValue: value);
@@ -351,11 +353,23 @@ class X509Utils {
 
     // Add Public Key
     if (privateKey.runtimeType == RSAPrivateKey) {
-      data.add(_makePublicKeyBlock(CryptoUtils.rsaPublicKeyFromDERBytes(
-          _stringAsBytes(csrData.publicKeyInfo!.bytes!))));
+      data.add(
+        _makePublicKeyBlock(
+          CryptoUtils.rsaPublicKeyFromDERBytes(
+            _stringAsBytes(
+                csrData.certificationRequestInfo!.publicKeyInfo!.bytes!),
+          ),
+        ),
+      );
     } else {
-      data.add(_makeEccPublicKeyBlock(CryptoUtils.ecPublicKeyFromDerBytes(
-          _stringAsBytes(csrData.publicKeyInfo!.bytes!))));
+      data.add(
+        _makeEccPublicKeyBlock(
+          CryptoUtils.ecPublicKeyFromDerBytes(
+            _stringAsBytes(
+                csrData.certificationRequestInfo!.publicKeyInfo!.bytes!),
+          ),
+        ),
+      );
     }
 
     // Add Extensions
@@ -586,213 +600,44 @@ class X509Utils {
   }
 
   static X509CertificateData _x509FromAsn1Sequence(ASN1Sequence topLevelSeq) {
-    var dataSequence = topLevelSeq.elements!.elementAt(0) as ASN1Sequence;
-    int version;
-    var element = 0;
-    var serialInteger;
-    if (dataSequence.elements!.elementAt(0) is ASN1Integer) {
-      // The version ASN1Object ist missing use version
-      version = 1;
-      // Serialnumber
-      serialInteger = dataSequence.elements!.elementAt(element) as ASN1Integer;
-      element = -1;
-    } else {
-      // Version
-      var versionObject = dataSequence.elements!.elementAt(element + 0);
-      version = versionObject.valueBytes!.elementAt(2);
-      // Serialnumber
-      serialInteger =
-          dataSequence.elements!.elementAt(element + 1) as ASN1Integer;
-    }
-    BigInt serialNumber = serialInteger.integer;
+    var tbsCertificateSeq = topLevelSeq.elements!.elementAt(0) as ASN1Sequence;
+    var signatureAlgorithmSeq =
+        topLevelSeq.elements!.elementAt(1) as ASN1Sequence;
+    var signateureSeq = topLevelSeq.elements!.elementAt(2) as ASN1BitString;
 
-    // Signature
-    var signatureSequence =
-        dataSequence.elements!.elementAt(element + 2) as ASN1Sequence;
-    var o = signatureSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
-    var signatureAlgorithm = o.objectIdentifierAsString!;
+    // tbsCertificate
+    var tbsCertificate = _tbsCertificateFromSeq(tbsCertificateSeq);
 
-    // Issuer
-    var issuerSequence =
-        dataSequence.elements!.elementAt(element + 3) as ASN1Sequence;
-    var issuer = <String, String?>{};
-    for (var s in issuerSequence.elements as dynamic) {
-      var setSequence = s.elements!.elementAt(0) as ASN1Sequence;
-      var o = setSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
-      var object = setSequence.elements!.elementAt(1);
-      String? value = '';
-      if (object is ASN1UTF8String) {
-        var objectAsUtf8 = object;
-        value = objectAsUtf8.utf8StringValue;
-      } else if (object is ASN1PrintableString) {
-        var objectPrintable = object;
-        value = objectPrintable.stringValue;
-      } else if (object is ASN1TeletextString) {
-        var objectTeletext = object;
-        value = objectTeletext.stringValue;
-      }
-      issuer.putIfAbsent(o.objectIdentifierAsString!, () => value);
-    }
+    // signatureAlgorithm
+    var pubKeyOid =
+        signatureAlgorithmSeq.elements!.elementAt(0) as ASN1ObjectIdentifier;
 
-    // Validity
-    var validitySequence =
-        dataSequence.elements!.elementAt(element + 4) as ASN1Sequence;
-    var asn1FromDateTime;
-    var asn1ToDateTime;
-    if (validitySequence.elements!.elementAt(0) is ASN1UtcTime) {
-      var asn1From = validitySequence.elements!.elementAt(0) as ASN1UtcTime;
-      asn1FromDateTime = asn1From.time;
-    } else {
-      var asn1From =
-          validitySequence.elements!.elementAt(0) as ASN1GeneralizedTime;
-      asn1FromDateTime = asn1From.dateTimeValue;
-    }
-    if (validitySequence.elements!.elementAt(1) is ASN1UtcTime) {
-      var asn1To = validitySequence.elements!.elementAt(1) as ASN1UtcTime;
-      asn1ToDateTime = asn1To.time;
-    } else {
-      var asn1To =
-          validitySequence.elements!.elementAt(1) as ASN1GeneralizedTime;
-      asn1ToDateTime = asn1To.dateTimeValue;
-    }
-
-    var validity = X509CertificateValidity(
-        notBefore: asn1FromDateTime, notAfter: asn1ToDateTime);
-
-    // Subject
-    var subjectSequence =
-        dataSequence.elements!.elementAt(element + 5) as ASN1Sequence;
-    var subject = <String, String?>{};
-    for (var s in subjectSequence.elements as dynamic) {
-      var setSequence = s.elements!.elementAt(0) as ASN1Sequence;
-      var o = setSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
-      var object = setSequence.elements!.elementAt(1);
-      String? value = '';
-      if (object is ASN1UTF8String) {
-        var objectAsUtf8 = object;
-        value = objectAsUtf8.utf8StringValue;
-      } else if (object is ASN1PrintableString) {
-        var objectPrintable = object;
-        value = objectPrintable.stringValue;
-      }
-      var identifier = o.objectIdentifierAsString ?? 'unknown';
-      subject.putIfAbsent(identifier, () => value);
-    }
-
-    // Public Key
-    var pubKeySequence =
-        dataSequence.elements!.elementAt(element + 6) as ASN1Sequence;
-
-    var algoSequence = pubKeySequence.elements!.elementAt(0) as ASN1Sequence;
-    var pubKeyOid = algoSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
-    var asn1AlgParameters = algoSequence.elements!.elementAt(1);
-    var algParameters = '';
-    var algParametersReadable = '';
-    if (asn1AlgParameters is ASN1ObjectIdentifier) {
-      algParameters = asn1AlgParameters.objectIdentifierAsString!;
-      algParametersReadable = asn1AlgParameters.readableName!;
-    }
-
-    var pubKey = pubKeySequence.elements!.elementAt(1) as ASN1BitString;
-    var asn1PubKeyParser = ASN1Parser(pubKey.stringValues as Uint8List?);
-    var next;
-    try {
-      next = asn1PubKeyParser.nextObject();
-    } catch (e) {
-      // continue
-    }
-    var pubKeyLength = 0;
-
-    Uint8List? pubKeyAsBytes;
-    int? exponent;
-    if (next != null && next is ASN1Sequence) {
-      var s = next;
-      var key = s.elements!.elementAt(0) as ASN1Integer;
-      if (s.elements!.length == 2 && s.elements!.elementAt(1) is ASN1Integer) {
-        var asn1Exponent = s.elements!.elementAt(1) as ASN1Integer;
-        exponent = asn1Exponent.integer!.toInt();
-      }
-      pubKeyLength = key.integer!.bitLength;
-      pubKeyAsBytes = s.encodedBytes;
-    } else {
-      pubKeyAsBytes = pubKey.valueBytes;
-      pubKeyLength = pubKey.valueBytes!.length * 8;
-    }
-    var pubKeyThumbprint = CryptoUtils.getHash(pubKeySequence.encodedBytes!,
-        algorithmName: 'SHA-1');
-    var plainSha1 = CryptoUtils.getHashPlain(pubKeySequence.encodedBytes!,
-        algorithmName: 'SHA-1');
-    var pubKeySha256Thumbprint = CryptoUtils.getHash(
-        pubKeySequence.encodedBytes!,
-        algorithmName: 'SHA-256');
-    var publicKeyData = X509CertificatePublicKeyData(
-      algorithm: pubKeyOid.objectIdentifierAsString,
-      algorithmReadableName: pubKeyOid.readableName,
-      bytes: _bytesAsString(pubKeyAsBytes!),
-      length: pubKeyLength,
-      sha1Thumbprint: pubKeyThumbprint,
-      sha256Thumbprint: pubKeySha256Thumbprint,
-      plainSha1: plainSha1,
-      exponent: exponent,
-      parameter: algParameters != '' ? algParameters : null,
-      parameterReadableName:
-          algParametersReadable != '' ? algParametersReadable : null,
-    );
-    List<String>? sans;
-    List<ExtendedKeyUsage>? extKeyUsage;
-    var extensions = X509CertificateDataExtensions();
-    if (version > 1) {
-      // Extensions
-      if (dataSequence.elements!.length == 8) {
-        var extensionObject = dataSequence.elements!.elementAt(element + 7);
-        var extParser = ASN1Parser(extensionObject.valueBytes);
-        var extSequence = extParser.nextObject() as ASN1Sequence;
-
-        extSequence.elements!.forEach((ASN1Object subseq) {
-          var seq = subseq as ASN1Sequence;
-          var oi = seq.elements!.elementAt(0) as ASN1ObjectIdentifier;
-          if (oi.objectIdentifierAsString == '2.5.29.17') {
-            if (seq.elements!.length == 3) {
-              sans = _fetchSansFromExtension(seq.elements!.elementAt(2));
-            } else {
-              sans = _fetchSansFromExtension(seq.elements!.elementAt(1));
-            }
-            extensions.subjectAlternativNames = sans;
-          }
-          if (oi.objectIdentifierAsString == '2.5.29.37') {
-            if (seq.elements!.length == 3) {
-              extKeyUsage = _fetchExtendedKeyUsageFromExtension(
-                  seq.elements!.elementAt(2));
-            } else {
-              extKeyUsage = _fetchExtendedKeyUsageFromExtension(
-                  seq.elements!.elementAt(1));
-            }
-            extensions.extKeyUsage = extKeyUsage;
-          }
-          if (oi.objectIdentifierAsString == '1.3.6.1.5.5.7.1.12') {
-            var vmcData = _fetchVmcLogo(seq.elements!.elementAt(1));
-            extensions.vmc = vmcData;
-          }
-          if (oi.objectIdentifierAsString == '2.5.29.31') {
-            var cRLDistributionPoints =
-                _fetchCrlDistributionPoints(seq.elements!.elementAt(1));
-            extensions.cRLDistributionPoints = cRLDistributionPoints;
-          }
-        });
-      }
-    }
+    // signatureValue
+    var sigAsString = _bytesAsString(signateureSeq.valueBytes!);
 
     return X509CertificateData(
-      version: version,
-      serialNumber: serialNumber,
-      signatureAlgorithm: signatureAlgorithm,
-      issuer: issuer,
-      validity: validity,
-      subject: subject,
-      publicKeyData: publicKeyData,
-      subjectAlternativNames: sans,
-      extKeyUsage: extKeyUsage,
-      extensions: extensions,
+      version: tbsCertificate.version,
+      serialNumber: tbsCertificate.serialNumber,
+      signatureAlgorithm: pubKeyOid.objectIdentifierAsString!,
+      signatureAlgorithmReadableName: pubKeyOid.readableName,
+      signature: sigAsString,
+      issuer: tbsCertificate.issuer,
+      validity: tbsCertificate.validity,
+      subject: tbsCertificate.subject,
+      publicKeyData: X509CertificatePublicKeyData.fromSubjectPublicKeyInfo(
+        tbsCertificate.subjectPublicKeyInfo,
+      ),
+      subjectAlternativNames: tbsCertificate.extensions != null
+          ? tbsCertificate.extensions!.subjectAlternativNames
+          : null,
+      extKeyUsage: tbsCertificate.extensions != null
+          ? tbsCertificate.extensions!.extKeyUsage
+          : null,
+      extensions: tbsCertificate.extensions,
+      tbsCertificate: tbsCertificate,
+      tbsCertificateSeqAsString: base64.encode(
+        tbsCertificateSeq.encode(),
+      ),
     );
   }
 
@@ -1065,135 +910,27 @@ class X509Utils {
     var sigSeq = topLevelSeq.elements!.elementAt(1) as ASN1Sequence;
     var sig = topLevelSeq.elements!.elementAt(2) as ASN1BitString;
 
-    // Get version
-    var asn1Version = infoSeq.elements!.elementAt(0) as ASN1Integer;
+    // CertificationRequestInfo
+    var certificationRequestInfo =
+        _getCertificateSigningRequestDataFromSeq(infoSeq);
 
-    // Get Subject
-    var subjectSequence = infoSeq.elements!.elementAt(1) as ASN1Sequence;
-    var subject = <String, String>{};
-    for (var s in subjectSequence.elements as dynamic) {
-      var setSequence = s.elements!.elementAt(0) as ASN1Sequence;
-      var o = setSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
-      var object = setSequence.elements!.elementAt(1);
-      String? value = '';
-      if (object is ASN1UTF8String) {
-        var objectAsUtf8 = object;
-        value = objectAsUtf8.utf8StringValue;
-      } else if (object is ASN1PrintableString) {
-        var objectPrintable = object;
-        value = objectPrintable.stringValue;
-      }
-      var identifier = o.objectIdentifierAsString ?? 'unknown';
-      subject.putIfAbsent(identifier, () => value!);
-    }
-
-    // Get Public Key Data
-    var pubSeq = infoSeq.elements!.elementAt(2) as ASN1Sequence;
-    var algSeq = pubSeq.elements!.elementAt(0) as ASN1Sequence;
-    var algOi = algSeq.elements!.elementAt(0) as ASN1ObjectIdentifier;
-    var asn1AlgParameters = algSeq.elements!.elementAt(1);
-    var algParameters = '';
-    var algParametersReadable = '';
-    if (asn1AlgParameters is ASN1ObjectIdentifier) {
-      algParameters = asn1AlgParameters.objectIdentifierAsString!;
-      algParametersReadable = asn1AlgParameters.readableName!;
-    }
-
-    var pubBitString = pubSeq.elements!.elementAt(1) as ASN1BitString;
-    var asn1PubKeyParser = ASN1Parser(pubBitString.stringValues as Uint8List?);
-    var next;
-    try {
-      next = asn1PubKeyParser.nextObject();
-    } catch (e) {
-      // continue
-    }
-    int pubKeyLength;
-    int? exponent;
-    var pubKeyAsBytes = pubSeq.encodedBytes;
-    if (next != null && next is ASN1Sequence) {
-      var s = next;
-      var key = s.elements!.elementAt(0) as ASN1Integer;
-      if (s.elements!.length == 2 && s.elements!.elementAt(1) is ASN1Integer) {
-        var asn1Exponent = s.elements!.elementAt(1) as ASN1Integer;
-        exponent = asn1Exponent.integer!.toInt();
-      }
-      pubKeyLength = key.integer!.bitLength;
-      //pubKeyAsBytes = s.encodedBytes;
-    } else {
-      //pubKeyAsBytes = pubBitString.valueBytes;
-      var length = pubBitString.valueBytes!.elementAt(0) == 0
-          ? (pubBitString.valueByteLength! - 1)
-          : pubBitString.valueByteLength;
-      pubKeyLength = length! * 8;
-    }
-
-    var pubKeyThumbprint =
-        CryptoUtils.getHash(pubSeq.encodedBytes!, algorithmName: 'SHA-1');
-    var pubKeySha256Thumbprint =
-        CryptoUtils.getHash(pubSeq.encodedBytes!, algorithmName: 'SHA-256');
-
-    var pubInfo = SubjectPublicKeyInfo(
-      algorithm: algOi.objectIdentifierAsString,
-      algorithmReadableName: algOi.readableName,
-      parameter: algParameters != '' ? algParameters : null,
-      parameterReadableName:
-          algParametersReadable != '' ? algParametersReadable : null,
-      length: pubKeyLength,
-      bytes: _bytesAsString(pubKeyAsBytes!),
-      sha1Thumbprint: pubKeyThumbprint,
-      sha256Thumbprint: pubKeySha256Thumbprint,
-      exponent: exponent,
-    );
-
-    // Get Signature Algorithm
+    // Signature Algorithm
     var pubKeyOid = sigSeq.elements!.elementAt(0) as ASN1ObjectIdentifier;
 
-    // Get Signature
+    // Signature
     var sigAsString = _bytesAsString(sig.valueBytes!);
 
-    // Get Extensions
-    var extensions;
-    if (infoSeq.elements!.length == 4) {
-      var extensionObject = infoSeq.elements!.elementAt(3);
-      if (extensionObject.valueByteLength != 0) {
-        List<String>? sans;
-        extensions = CertificateSigningRequestExtensions();
-        var extParser = ASN1Parser(extensionObject.valueBytes);
-        while (extParser.hasNext()) {
-          var outerExtSequence = extParser.nextObject() as ASN1Sequence;
-          var oid =
-              outerExtSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
-          // Search for extensionRequest OID
-          if (oid.objectIdentifierAsString == '1.2.840.113549.1.9.14') {
-            var extSet = outerExtSequence.elements!.elementAt(1) as ASN1Set;
-            var extSequence = extSet.elements!.elementAt(0) as ASN1Sequence;
-            extSequence.elements!.forEach((ASN1Object subseq) {
-              var seq = subseq as ASN1Sequence;
-              var oi = seq.elements!.elementAt(0) as ASN1ObjectIdentifier;
-              if (oi.objectIdentifierAsString == '2.5.29.17') {
-                if (seq.elements!.length == 3) {
-                  sans = _fetchSansFromExtension(seq.elements!.elementAt(2));
-                } else {
-                  sans = _fetchSansFromExtension(seq.elements!.elementAt(1));
-                }
-                extensions.subjectAlternativNames = sans;
-              }
-            });
-          }
-        }
-      }
-    }
-
     return CertificateSigningRequestData(
-      version: asn1Version.integer!.toInt(),
-      subject: subject,
+      version: certificationRequestInfo.version,
+      subject: certificationRequestInfo.subject,
       signatureAlgorithm: pubKeyOid.objectIdentifierAsString,
       signatureAlgorithmReadableName: pubKeyOid.readableName,
       signature: sigAsString,
-      publicKeyInfo: pubInfo,
+      publicKeyInfo: certificationRequestInfo.publicKeyInfo,
       plain: pem,
-      extensions: extensions,
-      infoData: base64.encode(infoSeq.encode()),
+      extensions: certificationRequestInfo.extensions,
+      certificationRequestInfo: certificationRequestInfo,
+      certificationRequestInfoSeq: base64.encode(infoSeq.encode()),
     );
   }
 
@@ -1492,7 +1229,7 @@ class X509Utils {
   ///
   static BigInt getModulusFromRSACsrPem(String pem) {
     var data = csrFromPem(pem);
-    var bytesString = data.publicKeyInfo!.bytes;
+    var bytesString = data.certificationRequestInfo!.publicKeyInfo!.bytes;
 
     var bytes = _stringAsBytes(bytesString!);
     var rsaPublicKey = CryptoUtils.rsaPublicKeyFromDERBytes(bytes);
@@ -1510,11 +1247,17 @@ class X509Utils {
   ///
   static BigInt getModulusFromRSAX509Pem(String pem) {
     var data = x509CertificateFromPem(pem);
-    var bytesString = data.publicKeyData.bytes;
+    var bytesString = data.tbsCertificate.subjectPublicKeyInfo.bytes;
 
     var bytes = _stringAsBytes(bytesString!);
     var parser = ASN1Parser(bytes);
     var next = parser.nextObject() as ASN1Sequence;
+    var valueBytes = next.elements!.elementAt(1).valueBytes;
+    if (valueBytes!.elementAt(0) == 0) {
+      valueBytes = valueBytes.sublist(1);
+    }
+    var bitStringParser = ASN1Parser(valueBytes);
+    next = bitStringParser.nextObject() as ASN1Sequence;
     var integer = next.elements!.elementAt(0) as ASN1Integer;
     return integer.integer!;
   }
@@ -1658,22 +1401,7 @@ class X509Utils {
 
     // GET ISSUER
     var issuerSequence = tbsCertList.elements!.elementAt(2) as ASN1Sequence;
-    var issuer = <String, String>{};
-    for (var s in issuerSequence.elements as dynamic) {
-      var setSequence = s.elements!.elementAt(0) as ASN1Sequence;
-      var o = setSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
-      var object = setSequence.elements!.elementAt(1);
-      String? value = '';
-      if (object is ASN1UTF8String) {
-        var objectAsUtf8 = object;
-        value = objectAsUtf8.utf8StringValue;
-      } else if (object is ASN1PrintableString) {
-        var objectPrintable = object;
-        value = objectPrintable.stringValue;
-      }
-      var identifier = o.objectIdentifierAsString ?? 'unknown';
-      issuer.putIfAbsent(identifier, () => value!);
-    }
+    var issuer = _getDnFromSeq(issuerSequence);
     certificateList.issuer = issuer;
 
     // GET THIS UPDATE
@@ -1790,27 +1518,29 @@ class X509Utils {
   static bool checkCsrSignature(String pem) {
     var data = csrFromPem(pem);
     var result = false;
-    var algorithm = _getSigningAlgorithmFromOi(data.publicKeyInfo!.algorithm!);
+    var algorithm = _getSigningAlgorithmFromOi(
+        data.certificationRequestInfo!.publicKeyInfo!.algorithm!);
 
-    if (data.publicKeyInfo!.algorithmReadableName!.contains('rsa')) {
+    if (data.certificationRequestInfo!.publicKeyInfo!.algorithmReadableName!
+        .contains('rsa')) {
       var publicKey = CryptoUtils.rsaPublicKeyFromDERBytes(
-          _stringAsBytes(data.publicKeyInfo!.bytes!));
+          _stringAsBytes(data.certificationRequestInfo!.publicKeyInfo!.bytes!));
       result = CryptoUtils.rsaVerify(
         publicKey,
-        base64.decode(data.infoData!),
+        base64.decode(data.certificationRequestInfoSeq!),
         _stringAsBytes(data.signature!),
         algorithm: '$algorithm/RSA',
       );
     } else {
       var publicKey = CryptoUtils.ecPublicKeyFromDerBytes(
-          _stringAsBytes(data.publicKeyInfo!.bytes!));
+          _stringAsBytes(data.certificationRequestInfo!.publicKeyInfo!.bytes!));
       var sigBytes = _stringAsBytes(data.signature!);
       if (sigBytes.first == 0) {
         sigBytes = sigBytes.sublist(1);
       }
       result = CryptoUtils.ecVerify(
         publicKey,
-        base64.decode(data.infoData!),
+        base64.decode(data.certificationRequestInfoSeq!),
         CryptoUtils.ecSignatureFromDerBytes(
           sigBytes,
         ),
@@ -1818,5 +1548,331 @@ class X509Utils {
       );
     }
     return result;
+  }
+
+  ///
+  /// Checks the signature of the given [pem] by using the public key from the given [parent].
+  /// If the [parent] parameter is null, the public key of the given [pem] will be used.
+  ///
+  /// Both parameters [pem] and [parent] should represent a X509Certificate in PEM format.
+  ///
+  static bool checkX509Signature(String pem, {String? parent}) {
+    var result = false;
+    parent ??= pem;
+    var data = x509CertificateFromPem(pem);
+    var parentData = x509CertificateFromPem(parent);
+    var algorithm = _getSigningAlgorithmFromOi(data.signatureAlgorithm);
+
+    // Check if key and algorithm matches
+    if (data.signatureAlgorithmReadableName!.toLowerCase().contains('rsa') &&
+        parentData.tbsCertificate.subjectPublicKeyInfo.algorithmReadableName!
+            .contains('ecPublicKey')) {
+      // Algorithm does not match
+      return false;
+    }
+    if (data.signatureAlgorithmReadableName!.toLowerCase().contains('ec') &&
+        parentData.tbsCertificate.subjectPublicKeyInfo.algorithmReadableName!
+            .contains('rsaEncryption')) {
+      // Algorithm does not match
+      return false;
+    }
+
+    if (data.signatureAlgorithmReadableName!.toLowerCase().contains('rsa')) {
+      var publicKey = CryptoUtils.rsaPublicKeyFromDERBytes(_stringAsBytes(
+          parentData.tbsCertificate.subjectPublicKeyInfo.bytes!));
+      result = CryptoUtils.rsaVerify(
+        publicKey,
+        base64.decode(data.tbsCertificateSeqAsString!),
+        _stringAsBytes(data.signature),
+        algorithm: '$algorithm/RSA',
+      );
+    } else {
+      var publicKey = CryptoUtils.ecPublicKeyFromDerBytes(_stringAsBytes(
+          parentData.tbsCertificate.subjectPublicKeyInfo.bytes!));
+      var sigBytes = _stringAsBytes(data.signature);
+      if (sigBytes.first == 0) {
+        sigBytes = sigBytes.sublist(1);
+      }
+      result = CryptoUtils.ecVerify(
+        publicKey,
+        base64.decode(data.tbsCertificateSeqAsString!),
+        CryptoUtils.ecSignatureFromDerBytes(
+          sigBytes,
+        ),
+        algorithm: '$algorithm/ECDSA',
+      );
+    }
+    return result;
+  }
+
+  static TbsCertificate _tbsCertificateFromSeq(ASN1Sequence tbsCertificateSeq) {
+    var element = 0;
+    // Version
+    var version = 1;
+    if (tbsCertificateSeq.elements!.elementAt(0) is ASN1Integer) {
+      // The version ASN1Object ist missing use version 1
+      version = 1;
+      element = -1;
+    } else {
+      // Version 1 (int = 0), version 2 (int = 1) or version 3 (int = 2)
+      var versionObject = tbsCertificateSeq.elements!.elementAt(element + 0);
+      version = versionObject.valueBytes!.elementAt(2);
+      version++;
+    }
+
+    // Serial Number
+    var serialInteger =
+        tbsCertificateSeq.elements!.elementAt(element + 1) as ASN1Integer;
+    var serialNumber = serialInteger.integer;
+
+    // Signature
+    var signatureSequence =
+        tbsCertificateSeq.elements!.elementAt(element + 2) as ASN1Sequence;
+    var o = signatureSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
+    var signatureAlgorithm = o.objectIdentifierAsString!;
+    var signatureAlgorithmReadable = o.readableName!;
+
+    // Issuer
+    var issuerSequence =
+        tbsCertificateSeq.elements!.elementAt(element + 3) as ASN1Sequence;
+    var issuer = _getDnFromSeq(issuerSequence);
+
+    // Validity
+    var validitySequence =
+        tbsCertificateSeq.elements!.elementAt(element + 4) as ASN1Sequence;
+    var validity = _getValidityFromSeq(validitySequence);
+
+    // Subject
+    var subjectSequence =
+        tbsCertificateSeq.elements!.elementAt(element + 5) as ASN1Sequence;
+    var subject = _getDnFromSeq(subjectSequence);
+
+    // Subject Public Key Info
+    var pubKeySequence =
+        tbsCertificateSeq.elements!.elementAt(element + 6) as ASN1Sequence;
+    var subjectPublicKeyInfo = _getSubjectPublicKeyInfoFromSeq(pubKeySequence);
+
+    var extensions;
+    if (version > 1 && tbsCertificateSeq.elements!.length > element + 7) {
+      var extensionObject = tbsCertificateSeq.elements!.elementAt(element + 7);
+      var extParser = ASN1Parser(extensionObject.valueBytes);
+      var extSequence = extParser.nextObject() as ASN1Sequence;
+      extensions = _getExtensionsFromSeq(extSequence);
+    }
+
+    return TbsCertificate(
+      version: version,
+      serialNumber: serialNumber!,
+      signatureAlgorithm: signatureAlgorithm,
+      signatureAlgorithmReadableName: signatureAlgorithmReadable,
+      issuer: issuer,
+      validity: validity,
+      subject: subject,
+      subjectPublicKeyInfo: subjectPublicKeyInfo,
+      extensions: extensions,
+    );
+  }
+
+  static Map<String, String> _getDnFromSeq(ASN1Sequence issuerSequence) {
+    var dnData = <String, String>{};
+    for (var s in issuerSequence.elements as dynamic) {
+      var setSequence = s.elements!.elementAt(0) as ASN1Sequence;
+      var o = setSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
+      var object = setSequence.elements!.elementAt(1);
+      String? value = '';
+      if (object is ASN1UTF8String) {
+        var objectAsUtf8 = object;
+        value = objectAsUtf8.utf8StringValue;
+      } else if (object is ASN1PrintableString) {
+        var objectPrintable = object;
+        value = objectPrintable.stringValue;
+      } else if (object is ASN1TeletextString) {
+        var objectTeletext = object;
+        value = objectTeletext.stringValue;
+      }
+      dnData.putIfAbsent(o.objectIdentifierAsString!, () => value ?? '');
+    }
+    return dnData;
+  }
+
+  static X509CertificateValidity _getValidityFromSeq(
+      ASN1Sequence validitySequence) {
+    var asn1FromDateTime;
+    var asn1ToDateTime;
+    if (validitySequence.elements!.elementAt(0) is ASN1UtcTime) {
+      var asn1From = validitySequence.elements!.elementAt(0) as ASN1UtcTime;
+      asn1FromDateTime = asn1From.time;
+    } else {
+      var asn1From =
+          validitySequence.elements!.elementAt(0) as ASN1GeneralizedTime;
+      asn1FromDateTime = asn1From.dateTimeValue;
+    }
+    if (validitySequence.elements!.elementAt(1) is ASN1UtcTime) {
+      var asn1To = validitySequence.elements!.elementAt(1) as ASN1UtcTime;
+      asn1ToDateTime = asn1To.time;
+    } else {
+      var asn1To =
+          validitySequence.elements!.elementAt(1) as ASN1GeneralizedTime;
+      asn1ToDateTime = asn1To.dateTimeValue;
+    }
+
+    return X509CertificateValidity(
+      notBefore: asn1FromDateTime,
+      notAfter: asn1ToDateTime,
+    );
+  }
+
+  static SubjectPublicKeyInfo _getSubjectPublicKeyInfoFromSeq(
+      ASN1Sequence pubKeySequence) {
+    var algSeq = pubKeySequence.elements!.elementAt(0) as ASN1Sequence;
+    var algOi = algSeq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+    var asn1AlgParameters = algSeq.elements!.elementAt(1);
+    var algParameters = '';
+    var algParametersReadable = '';
+    if (asn1AlgParameters is ASN1ObjectIdentifier) {
+      algParameters = asn1AlgParameters.objectIdentifierAsString!;
+      algParametersReadable = asn1AlgParameters.readableName!;
+    }
+
+    var pubBitString = pubKeySequence.elements!.elementAt(1) as ASN1BitString;
+    var asn1PubKeyParser = ASN1Parser(pubBitString.stringValues as Uint8List?);
+    var next;
+    try {
+      next = asn1PubKeyParser.nextObject();
+    } catch (e) {
+      // continue
+    }
+    int pubKeyLength;
+    int? exponent;
+    var pubKeyAsBytes = pubKeySequence.encodedBytes;
+    if (next != null && next is ASN1Sequence) {
+      var s = next;
+      var key = s.elements!.elementAt(0) as ASN1Integer;
+      if (s.elements!.length == 2 && s.elements!.elementAt(1) is ASN1Integer) {
+        var asn1Exponent = s.elements!.elementAt(1) as ASN1Integer;
+        exponent = asn1Exponent.integer!.toInt();
+      }
+      pubKeyLength = key.integer!.bitLength;
+      //pubKeyAsBytes = s.encodedBytes;
+    } else {
+      //pubKeyAsBytes = pubBitString.valueBytes;
+      var length = pubBitString.valueBytes!.elementAt(0) == 0
+          ? (pubBitString.valueByteLength! - 1)
+          : pubBitString.valueByteLength;
+      pubKeyLength = length! * 8;
+    }
+
+    var pubKeyThumbprint = CryptoUtils.getHash(pubKeySequence.encodedBytes!,
+        algorithmName: 'SHA-1');
+    var pubKeySha256Thumbprint = CryptoUtils.getHash(
+        pubKeySequence.encodedBytes!,
+        algorithmName: 'SHA-256');
+
+    return SubjectPublicKeyInfo(
+      algorithm: algOi.objectIdentifierAsString,
+      algorithmReadableName: algOi.readableName,
+      parameter: algParameters != '' ? algParameters : null,
+      parameterReadableName:
+          algParametersReadable != '' ? algParametersReadable : null,
+      length: pubKeyLength,
+      bytes: _bytesAsString(pubKeyAsBytes!),
+      sha1Thumbprint: pubKeyThumbprint,
+      sha256Thumbprint: pubKeySha256Thumbprint,
+      exponent: exponent,
+    );
+  }
+
+  static X509CertificateDataExtensions _getExtensionsFromSeq(
+      ASN1Sequence extSequence) {
+    List<String>? sans;
+    List<ExtendedKeyUsage>? extKeyUsage;
+    var extensions = X509CertificateDataExtensions();
+    extSequence.elements!.forEach(
+      (ASN1Object subseq) {
+        var seq = subseq as ASN1Sequence;
+        var oi = seq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+        if (oi.objectIdentifierAsString == '2.5.29.17') {
+          if (seq.elements!.length == 3) {
+            sans = _fetchSansFromExtension(seq.elements!.elementAt(2));
+          } else {
+            sans = _fetchSansFromExtension(seq.elements!.elementAt(1));
+          }
+          extensions.subjectAlternativNames = sans;
+        }
+        if (oi.objectIdentifierAsString == '2.5.29.37') {
+          if (seq.elements!.length == 3) {
+            extKeyUsage =
+                _fetchExtendedKeyUsageFromExtension(seq.elements!.elementAt(2));
+          } else {
+            extKeyUsage =
+                _fetchExtendedKeyUsageFromExtension(seq.elements!.elementAt(1));
+          }
+          extensions.extKeyUsage = extKeyUsage;
+        }
+        if (oi.objectIdentifierAsString == '1.3.6.1.5.5.7.1.12') {
+          var vmcData = _fetchVmcLogo(seq.elements!.elementAt(1));
+          extensions.vmc = vmcData;
+        }
+        if (oi.objectIdentifierAsString == '2.5.29.31') {
+          var cRLDistributionPoints =
+              _fetchCrlDistributionPoints(seq.elements!.elementAt(1));
+          extensions.cRLDistributionPoints = cRLDistributionPoints;
+        }
+      },
+    );
+    return extensions;
+  }
+
+  static CertificationRequestInfo _getCertificateSigningRequestDataFromSeq(
+      ASN1Sequence infoSeq) {
+    // Version
+    var asn1Version = infoSeq.elements!.elementAt(0) as ASN1Integer;
+
+    // Subject
+    var subjectSequence = infoSeq.elements!.elementAt(1) as ASN1Sequence;
+    var subject = _getDnFromSeq(subjectSequence);
+
+    // Subject Public Key Info
+    var pubSeq = infoSeq.elements!.elementAt(2) as ASN1Sequence;
+    var pubInfo = _getSubjectPublicKeyInfoFromSeq(pubSeq);
+
+    // Extensions
+    var extensions;
+    if (infoSeq.elements!.length == 4) {
+      var extensionObject = infoSeq.elements!.elementAt(3);
+      if (extensionObject.valueByteLength != 0) {
+        List<String>? sans;
+        extensions = CertificateSigningRequestExtensions();
+        var extParser = ASN1Parser(extensionObject.valueBytes);
+        while (extParser.hasNext()) {
+          var outerExtSequence = extParser.nextObject() as ASN1Sequence;
+          var oid =
+              outerExtSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
+          // Search for extensionRequest OID
+          if (oid.objectIdentifierAsString == '1.2.840.113549.1.9.14') {
+            var extSet = outerExtSequence.elements!.elementAt(1) as ASN1Set;
+            var extSequence = extSet.elements!.elementAt(0) as ASN1Sequence;
+            extSequence.elements!.forEach((ASN1Object subseq) {
+              var seq = subseq as ASN1Sequence;
+              var oi = seq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+              if (oi.objectIdentifierAsString == '2.5.29.17') {
+                if (seq.elements!.length == 3) {
+                  sans = _fetchSansFromExtension(seq.elements!.elementAt(2));
+                } else {
+                  sans = _fetchSansFromExtension(seq.elements!.elementAt(1));
+                }
+                extensions.subjectAlternativNames = sans;
+              }
+            });
+          }
+        }
+      }
+    }
+    return CertificationRequestInfo(
+      version: asn1Version.integer!.toInt(),
+      subject: subject,
+      publicKeyInfo: pubInfo,
+      extensions: extensions,
+    );
   }
 }

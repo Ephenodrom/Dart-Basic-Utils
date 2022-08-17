@@ -50,7 +50,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^4.5.2
+  basic_utils: ^5.0.0
 ```
 
 ## Import
@@ -237,6 +237,7 @@ List<X509CertificateData> parseChainString(String chain);
 CertificateRevokeListeData crlDataFromPem(String pem);
 String crlDerToPem(Uint8List bytes);
 bool checkCsrSignature(String pem);
+bool checkX509Signature(String pem, {String? parent});
 ```
 
 ### IterableUtils
