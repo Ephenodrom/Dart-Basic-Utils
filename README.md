@@ -238,6 +238,7 @@ CertificateRevokeListeData crlDataFromPem(String pem);
 String crlDerToPem(Uint8List bytes);
 bool checkCsrSignature(String pem);
 bool checkX509Signature(String pem, {String? parent});
+String fixPem(String pem);
 ```
 
 ### IterableUtils

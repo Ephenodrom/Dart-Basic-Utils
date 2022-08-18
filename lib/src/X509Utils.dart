@@ -140,12 +140,19 @@ class X509Utils {
       {int chunkSize = 64, String lineDelimiter = '\n'}) {
     var sb = StringBuffer();
     var chunks = StringUtils.chunk(key, chunkSize);
-    sb.write(begin + lineDelimiter);
+    if (StringUtils.isNotNullOrEmpty(begin)) {
+      sb.write(begin + lineDelimiter);
+    }
     for (var s in chunks) {
       sb.write(s + lineDelimiter);
     }
-    sb.write(end);
-    return sb.toString();
+    if (StringUtils.isNotNullOrEmpty(end)) {
+      sb.write(end);
+      return sb.toString();
+    } else {
+      var tmp = sb.toString();
+      return tmp.substring(0, tmp.lastIndexOf(lineDelimiter));
+    }
   }
 
   ///
@@ -1874,5 +1881,95 @@ class X509Utils {
       publicKeyInfo: pubInfo,
       extensions: extensions,
     );
+  }
+
+  ///
+  /// Trys to fix the given [pem] string.
+  /// * Removes whitespaces
+  /// * Removes linebreaks
+  /// * Removes none base64 characters
+  /// * Chunks the base64 string in multiple strings with length 64
+  ///
+  static String fixPem(String pem) {
+    var tmp = '';
+    var begin = '';
+    var end = '';
+
+    tmp = pem;
+
+    if (tmp.startsWith(BEGIN_CERT)) {
+      tmp = tmp.replaceAll(BEGIN_CERT, '');
+      begin = BEGIN_CERT;
+    } else if (tmp.startsWith(BEGIN_CRL)) {
+      tmp = tmp.replaceAll(BEGIN_CRL, '');
+      begin = BEGIN_CRL;
+    } else if (tmp.startsWith(BEGIN_CSR)) {
+      tmp = tmp.replaceAll(BEGIN_CSR, '');
+      begin = BEGIN_CSR;
+    } else if (tmp.startsWith(BEGIN_EC_PRIVATE_KEY)) {
+      tmp = tmp.replaceAll(BEGIN_EC_PRIVATE_KEY, '');
+      begin = BEGIN_EC_PRIVATE_KEY;
+    } else if (tmp.startsWith(BEGIN_EC_PUBLIC_KEY)) {
+      tmp = tmp.replaceAll(BEGIN_EC_PUBLIC_KEY, '');
+      begin = BEGIN_EC_PUBLIC_KEY;
+    } else if (tmp.startsWith(BEGIN_NEW_CSR)) {
+      tmp = tmp.replaceAll(BEGIN_NEW_CSR, '');
+      begin = BEGIN_NEW_CSR;
+    } else if (tmp.startsWith(BEGIN_PKCS7)) {
+      tmp = tmp.replaceAll(BEGIN_PKCS7, '');
+      begin = BEGIN_PKCS7;
+    } else if (tmp.startsWith(BEGIN_PRIVATE_KEY)) {
+      tmp = tmp.replaceAll(BEGIN_PRIVATE_KEY, '');
+      begin = BEGIN_PRIVATE_KEY;
+    } else if (tmp.startsWith(BEGIN_PUBLIC_KEY)) {
+      tmp = tmp.replaceAll(BEGIN_PUBLIC_KEY, '');
+      begin = BEGIN_PUBLIC_KEY;
+    }
+
+    if (tmp.endsWith(END_CERT)) {
+      tmp = tmp.replaceAll(END_CERT, '');
+      end = END_CERT;
+    } else if (tmp.endsWith(END_CRL)) {
+      tmp = tmp.replaceAll(END_CRL, '');
+      end = END_CRL;
+    } else if (tmp.endsWith(END_CSR)) {
+      tmp = tmp.replaceAll(END_CSR, '');
+      end = END_CSR;
+    } else if (tmp.endsWith(END_EC_PRIVATE_KEY)) {
+      tmp = tmp.replaceAll(END_EC_PRIVATE_KEY, '');
+      end = END_EC_PRIVATE_KEY;
+    } else if (tmp.endsWith(END_EC_PUBLIC_KEY)) {
+      tmp = tmp.replaceAll(END_EC_PUBLIC_KEY, '');
+      end = END_EC_PUBLIC_KEY;
+    } else if (tmp.endsWith(END_NEW_CSR)) {
+      tmp = tmp.replaceAll(END_NEW_CSR, '');
+      end = END_NEW_CSR;
+    } else if (tmp.endsWith(END_PKCS7)) {
+      tmp = tmp.replaceAll(END_PKCS7, '');
+      end = END_PKCS7;
+    } else if (tmp.endsWith(END_PRIVATE_KEY)) {
+      tmp = tmp.replaceAll(END_PRIVATE_KEY, '');
+      end = END_PRIVATE_KEY;
+    } else if (tmp.endsWith(END_PUBLIC_KEY)) {
+      tmp = tmp.replaceAll(END_PUBLIC_KEY, '');
+      end = END_PUBLIC_KEY;
+    }
+
+    tmp = tmp.replaceAll(' ', '');
+    tmp = tmp.replaceAll('\n', '');
+    tmp = tmp.replaceAll('\r\n', '');
+    tmp = tmp.replaceAll('\r', '');
+    tmp = tmp.replaceAll('\t', '');
+    var sb = StringBuffer();
+    var regex = RegExp('^[A-Za-z0-9+\/=]\$');
+    tmp.codeUnits.forEach((element) {
+      var s = String.fromCharCode(element);
+      if (regex.hasMatch(s)) {
+        sb.write(s);
+      }
+    });
+
+    tmp = formatKeyString(sb.toString(), begin, end);
+    return tmp;
   }
 }

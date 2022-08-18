@@ -15,6 +15,54 @@ import 'package:test/test.dart';
 import '../lib/src/CryptoUtils.dart';
 
 void main() {
+  var brokenPEM = '''-----BEGIN CERTIFICATE REQUEST-----
+ MIIFBDCCAuwCAQAwgb4xCzAJBgNVBAYTAkRFMRkwFwYDVQQDDBBzZnRwMi5rbGl
+u Z2VsLmRlMRIwEAYDVQQHDAlQZm9yemhlaW0xHDAaBgNVBAsME1ZlcnNhbmRoYX
+Vz IEtsaW5nZWwxJzAlBgNVBAoMHksg4oCTIE1haWwgT3JkZXIgR21iSCAmIENvL
+iBL RzEQMA4GA1UECAwHR2VybWFueTEnMCUGCSqGSIb3DQEJARYYbmlscy5zY2hl
+bGVu ekBrbGluZ2VsLmRlMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgE
+-----END CERTIFICATE REQUEST-----''';
+
+  var brokenPEM2 = '''-----BEGIN CERTIFICATE REQUEST-----
+                                                                
+                                                                
+                                                                
+                                            MIIE2DCCAsACAQAwgZIx
+CzAJBgNVBAYTAkRFMRswG%%%!QYDVQQIDBJCYWRlbi1XdWVy
+QliZqZ+PCWraydu5WpFhdCDdL+6qzc=                                 
+                                                                
+                                                                
+                                                  
+-----END CERTIFICATE REQUEST-----''';
+
+  var brokenPEM3 =
+      '''MIIFBDCCAuwCAQAwgb4xCzAJBgNVBAYTAkRFMRkwFwYDVQQDDBBzZnRwMi5rbGl
+u Z2VsLmRlMRIwEAYDVQQ HDAlQZm9yemhlaW0xHDAaBgNVBAsME1ZlcnNhbmRoYX
+Vz IEtsaW5  nZWwxJzAlBgNVB  AoMHksg4oCTIE1haWw%%gT3JkZXIgR21iSCAmIENvL
+iBL RzEQMA4GA1  UECAwHR2VybWFu  eTEnMCUGCSqGSIb3DQEJARYYbmlscy5zY2hl
+bGVu ekBrbGluZ2VsLmRlMIICIjAN BgkqhkiG9w0BAQEFAAOC  Ag8AMIICCgKCAgE
+''';
+
+  var fixedPem3 =
+      '''MIIFBDCCAuwCAQAwgb4xCzAJBgNVBAYTAkRFMRkwFwYDVQQDDBBzZnRwMi5rbGlu
+Z2VsLmRlMRIwEAYDVQQHDAlQZm9yemhlaW0xHDAaBgNVBAsME1ZlcnNhbmRoYXVz
+IEtsaW5nZWwxJzAlBgNVBAoMHksg4oCTIE1haWwgT3JkZXIgR21iSCAmIENvLiBL
+RzEQMA4GA1UECAwHR2VybWFueTEnMCUGCSqGSIb3DQEJARYYbmlscy5zY2hlbGVu
+ekBrbGluZ2VsLmRlMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgE''';
+
+  var fixedPem2 = '''-----BEGIN CERTIFICATE REQUEST-----
+MIIE2DCCAsACAQAwgZIxCzAJBgNVBAYTAkRFMRswGQYDVQQIDBJCYWRlbi1XdWVy
+QliZqZ+PCWraydu5WpFhdCDdL+6qzc=
+-----END CERTIFICATE REQUEST-----''';
+
+  var fixedPem = '''-----BEGIN CERTIFICATE REQUEST-----
+MIIFBDCCAuwCAQAwgb4xCzAJBgNVBAYTAkRFMRkwFwYDVQQDDBBzZnRwMi5rbGlu
+Z2VsLmRlMRIwEAYDVQQHDAlQZm9yemhlaW0xHDAaBgNVBAsME1ZlcnNhbmRoYXVz
+IEtsaW5nZWwxJzAlBgNVBAoMHksg4oCTIE1haWwgT3JkZXIgR21iSCAmIENvLiBL
+RzEQMA4GA1UECAwHR2VybWFueTEnMCUGCSqGSIb3DQEJARYYbmlscy5zY2hlbGVu
+ekBrbGluZ2VsLmRlMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgE
+-----END CERTIFICATE REQUEST-----''';
+
   var csr = '''-----BEGIN CERTIFICATE REQUEST-----
 MIICvzCCAacCAQAwejELMAkGA1UEBhMCREUxEjAQBgNVBAgMCUZha2VzdGF0ZTER
 MA8GA1UEBwwIRmFrZXRvd24xEzARBgNVBAoMCkVwaGVub2Ryb20xFTATBgNVBAsM
@@ -1662,5 +1710,16 @@ SEQUENCE (1 elem)
       parent: digiCertGlobalRootG2,
     );
     expect(check, false);
+  });
+
+  test('Test fixPem()', () {
+    var data = X509Utils.fixPem(brokenPEM);
+    expect(data, fixedPem);
+
+    data = X509Utils.fixPem(brokenPEM2);
+    expect(data, fixedPem2);
+
+    data = X509Utils.fixPem(brokenPEM3);
+    expect(data, fixedPem3);
   });
 }
