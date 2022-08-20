@@ -1974,4 +1974,41 @@ class X509Utils {
     tmp = formatKeyString(sb.toString(), begin, end);
     return tmp;
   }
+
+  ///
+  /// TODO
+  ///
+  static Future<CertificateChainCheckData> checkChain(
+      List<X509CertificateData> x509) async {
+    var data = CertificateChainCheckData(chain: x509);
+    var errors = <CertificateChainCheckError>[];
+    for (var i = 0; i < x509.length; i++) {
+      var er = CertificateChainCheckError();
+      var current = x509.elementAt(i);
+      if (x509.length > i + 1) {
+        var next = x509.elementAt(i + 1);
+        if (!_dnDataMatch(
+            current.tbsCertificate.issuer, next.tbsCertificate.subject)) {
+          er.dnDataMatch = false;
+        }
+        if (!checkX509Signature(current.plain!, parent: next.plain!)) {
+          er.signatureMatch = false;
+        }
+      }
+    }
+    data.errors = errors;
+    return data;
+  }
+
+  static bool _dnDataMatch(Map<String, String?>? a, Map<String, String?>? b) {
+    if (a == null) return b == null;
+    if (b == null || a.length != b.length) return false;
+    if (identical(a, b)) return true;
+    for (final key in a.keys) {
+      if (!b.containsKey(key) || b[key] != a[key]) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
