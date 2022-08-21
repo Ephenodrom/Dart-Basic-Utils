@@ -1976,10 +1976,9 @@ class X509Utils {
   }
 
   ///
-  /// TODO
+  /// Checks a given certificate chain
   ///
-  static Future<CertificateChainCheckData> checkChain(
-      List<X509CertificateData> x509) async {
+  static CertificateChainCheckData checkChain(List<X509CertificateData> x509) {
     var data = CertificateChainCheckData(chain: x509);
     var errors = <CertificateChainCheckError>[];
     for (var i = 0; i < x509.length; i++) {

@@ -1722,4 +1722,10 @@ SEQUENCE (1 elem)
     data = X509Utils.fixPem(brokenPEM3);
     expect(data, fixedPem3);
   });
+
+  test('Test checkChain()', () {
+    var data = X509Utils.pkcs7fromPem(pkcs7);
+    var result = X509Utils.checkChain(data.certificates!);
+    expect(result.errors!.length, 0);
+  });
 }
