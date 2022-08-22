@@ -50,7 +50,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^5.0.0
+  basic_utils: ^5.1.0
 ```
 
 ## Import
@@ -239,6 +239,7 @@ String crlDerToPem(Uint8List bytes);
 bool checkCsrSignature(String pem);
 bool checkX509Signature(String pem, {String? parent});
 String fixPem(String pem);
+CertificateChainCheckData checkChain(List<X509CertificateData> x509);
 ```
 
 ### IterableUtils

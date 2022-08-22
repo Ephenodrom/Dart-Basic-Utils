@@ -1726,6 +1726,17 @@ SEQUENCE (1 elem)
   test('Test checkChain()', () {
     var data = X509Utils.pkcs7fromPem(pkcs7);
     var result = X509Utils.checkChain(data.certificates!);
-    expect(result.errors!.length, 0);
+    expect(result.pairs!.length, 2);
+    expect(result.pairs!.elementAt(0).isValid(), true);
+    expect(result.pairs!.elementAt(1).isValid(), true);
+
+    var f = File('test_resources/rapid_ssl_broken_chain.pem');
+    var pem = f.readAsStringSync();
+    var chain = X509Utils.parseChainString(pem);
+    result = X509Utils.checkChain(chain);
+    expect(result.pairs!.length, 1);
+    expect(result.pairs!.elementAt(0).isValid(), false);
+    expect(result.pairs!.elementAt(0).dnDataMatch, true);
+    expect(result.pairs!.elementAt(0).signatureMatch, false);
   });
 }

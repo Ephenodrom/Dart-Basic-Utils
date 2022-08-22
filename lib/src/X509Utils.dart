@@ -24,7 +24,7 @@ import 'package:basic_utils/src/model/ocsp/OCSPResponseStatus.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPSingleResponse.dart';
 import 'package:basic_utils/src/model/pkcs7/Pkcs7CertificateData.dart';
 import 'package:basic_utils/src/model/x509/CertificateChainCheckData.dart';
-import 'package:basic_utils/src/model/x509/CertificateChainCheckError.dart';
+import 'package:basic_utils/src/model/x509/CertificateChainPairCheckResult.dart';
 import 'package:basic_utils/src/model/x509/ExtendedKeyUsage.dart';
 import 'package:basic_utils/src/model/x509/TbsCertificate.dart';
 import 'package:basic_utils/src/model/x509/VmcData.dart';
@@ -1976,13 +1976,21 @@ class X509Utils {
   }
 
   ///
-  /// Checks a given certificate chain
+  /// Checks a given certificate chain. For each pair it checks the issuer/subject values and the signature.
+  ///
+  /// Example :
+  /// The root certificate has the correct subject value to match the issuer of the intermediate certificate, but the public key does not match
+  /// the signature of the intermediate certificate.
+  /// ```
+  /// End Certificate <- DN Valid, Signature Valid-> Intermediate Certificate <- DN Valid, Signature Invalid -> Root Certificate
+  /// ```
+  /// The resulting [CertificateChainCheckData] contains all necessary information.
   ///
   static CertificateChainCheckData checkChain(List<X509CertificateData> x509) {
     var data = CertificateChainCheckData(chain: x509);
-    var errors = <CertificateChainCheckError>[];
+    var pairs = <CertificateChainPairCheckResult>[];
     for (var i = 0; i < x509.length; i++) {
-      var er = CertificateChainCheckError();
+      var er = CertificateChainPairCheckResult();
       var current = x509.elementAt(i);
       if (x509.length > i + 1) {
         var next = x509.elementAt(i + 1);
@@ -1993,9 +2001,10 @@ class X509Utils {
         if (!checkX509Signature(current.plain!, parent: next.plain!)) {
           er.signatureMatch = false;
         }
+        pairs.add(er);
       }
     }
-    data.errors = errors;
+    data.pairs = pairs;
     return data;
   }
 

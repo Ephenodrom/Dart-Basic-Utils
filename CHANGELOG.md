@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.0] - 2022-08-23
+
+* Improved X509Utils, added checkChain() method
+* Improved X509Utils, added fixPem() method
+* Added new unit tests
+* Added new models CertificateChainCheckData and CertificateChainPairCheckResult
+
 ## [5.0.0] - 2022-08-18
 
 **IMPORTANT**
