@@ -26,6 +26,9 @@ export 'src/model/x509/X509CertificatePublicKeyData.dart';
 export 'src/model/DnsApiProvider.dart';
 export 'src/model/x509/CertificateChainCheckData.dart';
 export 'src/model/x509/CertificateChainPairCheckResult.dart';
+export 'src/model/x509/TbsCertificate.dart';
+export 'src/model/csr/CertificationRequestInfo.dart';
+export 'src/model/csr/SubjectPublicKeyInfo.dart';
 
 /// OCSP
 export 'src/model/ocsp/BasicOCSPResponse.dart';

@@ -1,6 +1,10 @@
 # Changelog
 
-## [5.1.0] - 2022-08-23
+## [5.1.1] - 2022-08-23
+
+* Add missing models to export
+
+## [5.1.0] - 2022-08-22
 
 * Improved X509Utils, added checkChain() method
 * Improved X509Utils, added fixPem() method
