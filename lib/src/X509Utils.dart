@@ -1685,21 +1685,23 @@ class X509Utils {
   static Map<String, String> _getDnFromSeq(ASN1Sequence issuerSequence) {
     var dnData = <String, String>{};
     for (var s in issuerSequence.elements as dynamic) {
-      var setSequence = s.elements!.elementAt(0) as ASN1Sequence;
-      var o = setSequence.elements!.elementAt(0) as ASN1ObjectIdentifier;
-      var object = setSequence.elements!.elementAt(1);
-      String? value = '';
-      if (object is ASN1UTF8String) {
-        var objectAsUtf8 = object;
-        value = objectAsUtf8.utf8StringValue;
-      } else if (object is ASN1PrintableString) {
-        var objectPrintable = object;
-        value = objectPrintable.stringValue;
-      } else if (object is ASN1TeletextString) {
-        var objectTeletext = object;
-        value = objectTeletext.stringValue;
+      for (var ele in s.elements!) {
+        var seq = ele as ASN1Sequence;
+        var o = seq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+        var object = seq.elements!.elementAt(1);
+        String? value = '';
+        if (object is ASN1UTF8String) {
+          var objectAsUtf8 = object;
+          value = objectAsUtf8.utf8StringValue;
+        } else if (object is ASN1PrintableString) {
+          var objectPrintable = object;
+          value = objectPrintable.stringValue;
+        } else if (object is ASN1TeletextString) {
+          var objectTeletext = object;
+          value = objectTeletext.stringValue;
+        }
+        dnData.putIfAbsent(o.objectIdentifierAsString!, () => value ?? '');
       }
-      dnData.putIfAbsent(o.objectIdentifierAsString!, () => value ?? '');
     }
     return dnData;
   }

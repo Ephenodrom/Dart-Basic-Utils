@@ -969,6 +969,23 @@ YSEY1QSteDwsOoBrp+uvFRTp2InBuThs4pFsiv9kuXclVzDAGySj4dzp30d8tbQk
 CAUw7C29C79Fv1C5qfPrmAESrciIxpg0X40KPMbp1ZWVbd4=
 -----END CERTIFICATE-----''';
 
+  var multiValueDnCsr = '''-----BEGIN CERTIFICATE REQUEST-----
+MIICmjCCAYICAQAwVTFTMAkGA1UEBhMCREUwCQYDVQQIDAJCWTASBgNVBAMMC2V4
+YW1wbGUuY29tMBIGA1UECgwLRXhhbXBsZSBPcmcwEwYDVQQHDAxFeGFtcGxlIENp
+dHkwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDZ3APz9QD2IGLy2XCC
+ZrIXQkLvexS6YiwWYvX/3hr1ECII6rNQdNwuSUVRI0GYpkM4S0OPvmVo3ATenS+Z
+mkW00GhtxFPDKw84IUFiVen+Jse89c04J91Shgxxtg5aUZYk7NP7ewfHC7JpY0AJ
+gN+eyWBQQQxy44KfCymuUG6txtOkJw5/rMTmWTm6a7TVRNXYZFWYZ6ekhsXgin2j
+WHjzBRxhWLsU1DYFJhQxTcGCfiujeNUDeZYtLAzYsxsI+m/7I9zrrFmo6wCvIdOq
+xU1YVihPQU3PsXe5pwLYRpHHgr1piCoUlgMexdJE8ce/J07xMOKZIL7Pw4Z+lmEw
+ESHpAgMBAAGgADANBgkqhkiG9w0BAQsFAAOCAQEAAxH+QPy6gmLRCFbeSU/CENL+
+qFAzhDnFChWApL/8NZvB8O31KwRtskaT0rCT2tITFuYQ3f1r1QdweNYYHflrKJD7
+h++rWZqcMalno/xW+JQFXRF+tPBv8TW8ctYzW78oGXN0G5pVmNg/dUGqtCfgr5vA
+U1QfDr9/25srVZywlxzlVH6jwv39wY2nzsa+0cp1oRixCDRAigBJwpjwwUTgjRLg
+8qd59XnpgXEtJfR5Kt2Rkm6HX/cKe/5NnzH1m28XWOgl1b891J0MmLvszTWVnNNn
+nuA2AnJ5dA8+KfA37mjH9uWQbSnMq8ehnu61MyKj68qN5UWZCqo7OLNI/WVIrA==
+-----END CERTIFICATE REQUEST-----''';
+
   test('Test getBytesFromPEMString', () {
     var bytes = CryptoUtils.getBytesFromPEMString(csr);
     var formatted = X509Utils.formatKeyString(
@@ -1738,5 +1755,21 @@ SEQUENCE (1 elem)
     expect(result.pairs!.elementAt(0).isValid(), false);
     expect(result.pairs!.elementAt(0).dnDataMatch, true);
     expect(result.pairs!.elementAt(0).signatureMatch, false);
+  });
+
+  test('Test csrFromPem with multiValue', () {
+    var data = X509Utils.csrFromPem(multiValueDnCsr);
+    expect(data.subject!.length, 5);
+    expect(data.subject!.containsKey('2.5.4.6'), true);
+    expect(data.subject!['2.5.4.6'], 'DE');
+
+    expect(data.subject!.containsKey('2.5.4.8'), true);
+    expect(data.subject!['2.5.4.8'], 'BY');
+    expect(data.subject!.containsKey('2.5.4.3'), true);
+    expect(data.subject!['2.5.4.3'], 'example.com');
+    expect(data.subject!.containsKey('2.5.4.10'), true);
+    expect(data.subject!['2.5.4.10'], 'Example Org');
+    expect(data.subject!.containsKey('2.5.4.7'), true);
+    expect(data.subject!['2.5.4.7'], 'Example City');
   });
 }

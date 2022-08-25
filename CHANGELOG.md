@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.1.2] - 2022-08-26
+
+* Improved X509Utils, parsing distinguised names from ASN1 Sequence now supports multi value DN. This improves the parsing of CSR and X509 PEMs.
+
 ## [5.1.1] - 2022-08-23
 
 * Add missing models to export
