@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:basic_utils/src/Asn1Utils.dart';
+import 'package:pointycastle/asn1/primitives/asn1_octet_string.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -35,5 +39,33 @@ ga7IcCj2gCeuTdS4Ibhx3hiew7cfuGa9XbVd5JJmV8kIoFlzLrZpKB4eVDKqaNWg
 
   test('Test dump()', () {
     Asn1Utils.dump(x509Pem);
+  });
+
+  test('Test complexDumpFromASN1Object()', () {
+    var dump = Asn1Utils.complexDump(x509Pem);
+    var sb = StringBuffer();
+    var length = 0;
+    for (var l in dump.lines!) {
+      if (length < l.lineInfoToOpenSslString().length) {
+        length = l.lineInfoToOpenSslString().length;
+      }
+    }
+
+    for (var l in dump.lines!) {
+      if (sb.isNotEmpty) {
+        sb.write('\n');
+      }
+      sb.write(l.toOpenSslString(
+          spacing: (length - l.lineInfoToOpenSslString().length) + 4));
+    }
+    print(sb.toString());
+
+    // 0:d=0  hl=2 l=  20 prim: OCTET STRING      [HEX DUMP]:03DE503556D14CBB66F0A3E21B1BC397B23DD155
+    // 04 14 03 DE 50 35 56 D1  4C BB 66 F0 A3 E2 1B 1B C3 97 B2 3D D1 55
+
+    //0:d=0  hl=2 l=inf  cons: OCTET STRING
+    //2:d=1  hl=2 l=   4 prim:  OCTET STRING      [HEX DUMP]:01234567
+    //8:d=1  hl=2 l=   4 prim:  OCTET STRING      [HEX DUMP]:89ABCDEF
+    //14:d=1  hl=2 l=   0 prim:  EOC
   });
 }
