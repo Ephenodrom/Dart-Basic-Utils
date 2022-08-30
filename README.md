@@ -50,7 +50,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^5.1.2
+  basic_utils: ^5.2.0
 ```
 
 ## Import
@@ -310,6 +310,7 @@ Helper class for operation on ASN1 objects.
 
 ```dart
 String dump(String pem, {bool checkHeader = true});
+ASN1DumpWrapper complexDump(String pem, {bool checkHeader = true});
 ```
 
 ### EnumUtils

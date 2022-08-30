@@ -1,6 +1,5 @@
 import 'package:basic_utils/src/model/csr/SubjectPublicKeyInfo.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateDataExtensions.dart';
-import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'X509CertificateValidity.dart';

@@ -1,8 +1,10 @@
 import 'dart:typed_data';
 
-import 'package:basic_utils/basic_utils.dart';
+import 'package:basic_utils/src/CryptoUtils.dart';
 import 'package:basic_utils/src/model/asn1/ASN1DumpLine.dart';
-import 'package:basic_utils/src/model/asn1/Asn1DumpWrapper.dart';
+import 'package:basic_utils/src/model/asn1/ASN1ObjectType.dart';
+import 'package:basic_utils/src/model/asn1/ASN1DumpWrapper.dart';
+import 'package:pointycastle/asn1.dart';
 
 class Asn1Utils {
   ///
@@ -142,6 +144,8 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.CONST,
       ));
       for (var e in object.elements!) {
         var tmp = complexDumpFromASN1Object(e,
@@ -164,6 +168,8 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.PRIM,
       ));
       if (ASN1Utils.isASN1Tag(object.octets!.elementAt(0))) {
         var parser = ASN1Parser(object.octets);
@@ -196,6 +202,8 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.CONST,
       ));
       for (var e in object.elements!) {
         var tmp = complexDumpFromASN1Object(e,
@@ -212,6 +220,8 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.PRIM,
       ));
     }
     return dump;
@@ -237,6 +247,8 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.CONST,
       ));
       for (var e in object.elements!) {
         var tmp = complexDumpFromASN1Object(e,
@@ -253,6 +265,8 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.PRIM,
       ));
     }
     return dump;
@@ -278,6 +292,8 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.CONST,
       ));
       for (var e in object.elements!) {
         var tmp =
@@ -303,6 +319,8 @@ class Asn1Utils {
           headerLength: hl,
           length: l!,
           line: sb.toString(),
+          tag: object.tag!.toRadixString(16),
+          type: ASN1ObjectType.PRIM,
         ));
 
         var unusedBits = object.valueBytes!.elementAt(0) == 0 ? 1 : 0;
@@ -329,6 +347,8 @@ class Asn1Utils {
           headerLength: hl,
           length: l!,
           line: sb.toString(),
+          tag: object.tag!.toRadixString(16),
+          type: ASN1ObjectType.PRIM,
         ));
       }
     }
@@ -355,6 +375,8 @@ class Asn1Utils {
       headerLength: hl,
       length: l!,
       line: sb.toString(),
+      tag: object.tag!.toRadixString(16),
+      type: ASN1ObjectType.PRIM,
     ));
 
     return dump;
@@ -380,6 +402,8 @@ class Asn1Utils {
       headerLength: hl,
       length: l!,
       line: sb.toString(),
+      tag: object.tag!.toRadixString(16),
+      type: ASN1ObjectType.PRIM,
     ));
 
     return dump;
@@ -406,6 +430,8 @@ class Asn1Utils {
       headerLength: hl,
       length: l!,
       line: sb.toString(),
+      tag: object.tag!.toRadixString(16),
+      type: ASN1ObjectType.PRIM,
     ));
 
     return dump;
@@ -430,6 +456,8 @@ class Asn1Utils {
       headerLength: hl,
       length: l!,
       line: sb.toString(),
+      tag: object.tag!.toRadixString(16),
+      type: ASN1ObjectType.PRIM,
     ));
 
     return dump;
@@ -455,6 +483,8 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.CONST,
       ));
       for (var e in object.elements!) {
         var tmp = complexDumpFromASN1Object(e,
@@ -471,6 +501,8 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.PRIM,
       ));
     }
     return dump;
@@ -496,6 +528,8 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.CONST,
       ));
       for (var e in object.elements!) {
         var tmp = complexDumpFromASN1Object(e,
@@ -512,6 +546,8 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.PRIM,
       ));
     }
     return dump;
@@ -536,6 +572,8 @@ class Asn1Utils {
       headerLength: hl,
       length: l!,
       line: sb.toString(),
+      tag: object.tag!.toRadixString(16),
+      type: ASN1ObjectType.PRIM,
     ));
 
     return dump;
@@ -560,6 +598,8 @@ class Asn1Utils {
       headerLength: hl,
       length: l!,
       line: sb.toString(),
+      tag: object.tag!.toRadixString(16),
+      type: ASN1ObjectType.PRIM,
     ));
 
     return dump;
@@ -585,6 +625,8 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.CONST,
       ));
       for (var e in object.elements!) {
         var tmp = complexDumpFromASN1Object(e,
@@ -600,6 +642,8 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.PRIM,
       ));
     }
     return dump;
@@ -624,6 +668,8 @@ class Asn1Utils {
       headerLength: hl,
       length: l!,
       line: sb.toString(),
+      tag: object.tag!.toRadixString(16),
+      type: ASN1ObjectType.CONST,
     ));
     offset = offset + hl;
     for (var e in object.elements!) {
@@ -655,6 +701,8 @@ class Asn1Utils {
       headerLength: hl,
       length: l!,
       line: sb.toString(),
+      tag: object.tag!.toRadixString(16),
+      type: ASN1ObjectType.CONST,
     ));
     offset = offset + hl;
     for (var e in object.elements!) {
@@ -693,16 +741,19 @@ class Asn1Utils {
     }
 
     if (object.tag == 0xA0 || object.tag == 0xA3) {
-      sb.write('[${object.tag}]');
+      sb.write('[${object.tag!.toRadixString(16).toUpperCase()}]');
 
       var parser = ASN1Parser(object.valueBytes);
       if (parser.hasNext()) {
+        sb.write(' (1 elem)');
         dump.add(ASN1DumpLine(
           offset: offset,
           depth: d,
           headerLength: hl,
           length: l!,
           line: sb.toString(),
+          tag: object.tag!.toRadixString(16),
+          type: ASN1ObjectType.CONST,
         ));
         offset = offset + hl;
 
@@ -717,9 +768,13 @@ class Asn1Utils {
           headerLength: hl,
           length: l!,
           line: sb.toString(),
+          tag: object.tag!.toRadixString(16),
+          type: ASN1ObjectType.CONST,
         ));
       }
-    } else if (object.tag == 0x86 || object.tag == 0x80 || object.tag == 0x82) {
+    } else if (object.tag == 0x86 || object.tag == 0x82) {
+      sb.write(
+          '[${object.tag!.toRadixString(16).toUpperCase()}] (${object.valueBytes!.length} byte) ');
       var content = String.fromCharCodes(object.valueBytes!.toList());
       sb.write(content);
       dump.add(ASN1DumpLine(
@@ -728,6 +783,27 @@ class Asn1Utils {
         headerLength: hl,
         length: l!,
         line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.PRIM,
+      ));
+    } else if (object.tag == 0x80) {
+      sb.write(
+          '[${object.tag!.toRadixString(16).toUpperCase()}] (${object.valueBytes!.length} byte) ');
+      for (var o in object.valueBytes!) {
+        var s = o.toRadixString(16).toUpperCase();
+        if (s.length == 1) {
+          s = '0$s';
+        }
+        sb.write(s);
+      }
+      dump.add(ASN1DumpLine(
+        offset: offset,
+        depth: d,
+        headerLength: hl,
+        length: l!,
+        line: sb.toString(),
+        tag: object.tag!.toRadixString(16),
+        type: ASN1ObjectType.PRIM,
       ));
     }
     return dump;

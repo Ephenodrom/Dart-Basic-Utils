@@ -30,6 +30,11 @@ export 'src/model/x509/TbsCertificate.dart';
 export 'src/model/csr/CertificationRequestInfo.dart';
 export 'src/model/csr/SubjectPublicKeyInfo.dart';
 
+/// ASN1
+export 'src/model/asn1/ASN1DumpLine.dart';
+export 'src/model/asn1/ASN1DumpWrapper.dart';
+export 'src/model/asn1/ASN1ObjectType.dart';
+
 /// OCSP
 export 'src/model/ocsp/BasicOCSPResponse.dart';
 export 'src/model/ocsp/OCSPCertStatus.dart';

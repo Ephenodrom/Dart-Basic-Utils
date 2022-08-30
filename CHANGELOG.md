@@ -1,5 +1,11 @@
 # Changelog
 
+## [5.2.0] - 2022-08-30
+
+* Improved ASN1Utils, added complexDump() method
+* Added new models ASN1DumpWrapper, ASN1DumpLine and ASN1ObjectType
+* Added unit tests
+
 ## [5.1.2] - 2022-08-26
 
 * Improved X509Utils, parsing distinguised names from ASN1 Sequence now supports multi value DN. This improves the parsing of CSR and X509 PEMs.
