@@ -1,5 +1,11 @@
 # Changelog
 
+## [5.2.1] - 2022-09-05
+
+* Improved ASN1Utils, improved complexDump()
+* Improved StringUtils, added toPascalCase()
+* Added unit tests
+
 ## [5.2.0] - 2022-08-30
 
 * Improved ASN1Utils, added complexDump() method
