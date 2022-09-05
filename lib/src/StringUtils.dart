@@ -460,4 +460,19 @@ class StringUtils {
 
     return result;
   }
+
+  ///
+  /// Converts the given String [s] to PascalCase
+  /// Example: your name => YourName
+  ///
+  static String toPascalCase(String s) {
+    final separatedWords = s.split(RegExp(r'[!@#<>?":`~;[\]\\|=+)(*&^%-\s_]+'));
+    var newString = '';
+
+    for (final word in separatedWords) {
+      newString += word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }
+
+    return newString;
+  }
 }

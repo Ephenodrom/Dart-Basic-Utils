@@ -191,4 +191,14 @@ void main() {
         StringUtils.generateRandomString(20, numeric: false, alphabet: false);
     expect(!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(isSpecialOnly), true);
   });
+
+  test('Test toPascalCase', () {
+    expect(StringUtils.toPascalCase('hello world'), 'HelloWorld');
+    expect(StringUtils.toPascalCase('Hello World'), 'HelloWorld');
+    expect(StringUtils.toPascalCase('Hello World'), 'HelloWorld');
+    expect(StringUtils.toPascalCase('helloworld'), 'Helloworld');
+    expect(StringUtils.toPascalCase('hello_world'), 'HelloWorld');
+    expect(StringUtils.toPascalCase('Hello_World'), 'HelloWorld');
+    expect(StringUtils.toPascalCase('HELLO_WORLD'), 'HelloWorld');
+  });
 }
