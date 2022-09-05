@@ -171,12 +171,34 @@ class Asn1Utils {
         tag: object.tag!.toRadixString(16),
         type: ASN1ObjectType.PRIM,
       ));
-      if (ASN1Utils.isASN1Tag(object.octets!.elementAt(0))) {
+      if (ASN1Utils.isASN1Tag(object.octets!.elementAt(0)) &&
+          object.octets!.elementAt(1) <= object.octets!.length) {
         var parser = ASN1Parser(object.octets);
-        var next = parser.nextObject();
-        var tmp = complexDumpFromASN1Object(next,
-            intend: intend + 4, offset: offset + hl);
-        dump.addAll(tmp.lines!);
+        if (parser.hasNext()) {
+          var next = parser.nextObject();
+          var tmp = complexDumpFromASN1Object(next,
+              intend: intend + 4, offset: offset + hl);
+          dump.addAll(tmp.lines!);
+        } else {
+          sb.clear();
+          sb.write('OCTET STRING (${object.valueBytes!.length} byte) ');
+          for (var o in object.valueBytes!) {
+            var s = o.toRadixString(16).toUpperCase();
+            if (s.length == 1) {
+              s = '0$s';
+            }
+            sb.write(s);
+          }
+          dump.add(ASN1DumpLine(
+            offset: offset + hl,
+            depth: d,
+            headerLength: hl,
+            length: object.valueBytes!.length,
+            line: sb.toString(),
+            tag: object.tag!.toRadixString(16),
+            type: ASN1ObjectType.PRIM,
+          ));
+        }
       }
     }
     return dump;

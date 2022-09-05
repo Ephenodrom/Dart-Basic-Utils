@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:basic_utils/src/Asn1Utils.dart';
@@ -59,5 +60,52 @@ ga7IcCj2gCeuTdS4Ibhx3hiew7cfuGa9XbVd5JJmV8kIoFlzLrZpKB4eVDKqaNWg
     var f = File('test_resources/test_dump.txt');
     var txt = f.readAsStringSync();
     expect(sb.toString(), txt);
+  });
+
+  test('Test complexDumpFromASN1Object()2', () {
+    var bytes = [
+      0x04,
+      0x16,
+      0x04,
+      0x14,
+      0x08,
+      0xB0,
+      0xD2,
+      0x01,
+      0xF3,
+      0xBF,
+      0x1A,
+      0xBC,
+      0x60,
+      0x3C,
+      0xF1,
+      0x8C,
+      0x37,
+      0x0D,
+      0x78,
+      0xF2,
+      0xF6,
+      0x27,
+      0xAE,
+      0xE9
+    ];
+    var dump = Asn1Utils.complexDump(base64.encode(bytes), checkHeader: false);
+    var sb = StringBuffer();
+    var length = 0;
+    for (var l in dump.lines!) {
+      if (length < l.lineInfoToString().length) {
+        length = l.lineInfoToString().length;
+      }
+    }
+
+    for (var l in dump.lines!) {
+      if (sb.isNotEmpty) {
+        sb.write('\n');
+      }
+      sb.write(l.toString(spacing: (length - l.lineInfoToString().length) + 4));
+    }
+    var expected =
+        '''o=0 d=0 hl=2 l=22 t=4    OCTET STRING (22 byte) 041408B0D201F3BF1ABC603CF18C370D78F2F627AEE9\no=2 d=1 hl=2 l=20 t=4    |----> OCTET STRING (20 byte) 08B0D201F3BF1ABC603CF18C370D78F2F627AEE9''';
+    expect(sb.toString(), expected);
   });
 }
