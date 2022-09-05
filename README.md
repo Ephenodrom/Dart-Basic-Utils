@@ -93,6 +93,7 @@ String removeCharAtPosition(String value, int index);
 String removeExp(String value, String pattern,{bool repeat = true,bool caseSensitive = true,bool multiLine = false,bool dotAll = false,bool unicode = false});
 String truncate(String value, int length, {String symbol = '...'}); 
 String generateRandomString(int length,{alphabet = true,numeric = true,special = true,uppercase = true,lowercase = true,String from = ''});
+String toPascalCase(String s);
 ```
 
 ### DomainUtils
