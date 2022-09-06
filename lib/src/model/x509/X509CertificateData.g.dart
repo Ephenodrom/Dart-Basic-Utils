@@ -15,8 +15,10 @@ X509CertificateData _$X509CertificateDataFromJson(Map<String, dynamic> json) =>
       validity: X509CertificateValidity.fromJson(
           json['validity'] as Map<String, dynamic>),
       subject: Map<String, String?>.from(json['subject'] as Map),
-      tbsCertificate: TbsCertificate.fromJson(
-          json['tbsCertificate'] as Map<String, dynamic>),
+      tbsCertificate: json['tbsCertificate'] == null
+          ? null
+          : TbsCertificate.fromJson(
+              json['tbsCertificate'] as Map<String, dynamic>),
       signatureAlgorithmReadableName:
           json['signatureAlgorithmReadableName'] as String?,
       sha1Thumbprint: json['sha1Thumbprint'] as String?,
@@ -40,12 +42,7 @@ X509CertificateData _$X509CertificateDataFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {
-  final val = <String, dynamic>{
-    'tbsCertificate': instance.tbsCertificate.toJson(),
-    'version': instance.version,
-    'serialNumber': instance.serialNumber.toString(),
-    'signatureAlgorithm': instance.signatureAlgorithm,
-  };
+  final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
     if (value != null) {
@@ -53,6 +50,10 @@ Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {
     }
   }
 
+  writeNotNull('tbsCertificate', instance.tbsCertificate?.toJson());
+  val['version'] = instance.version;
+  val['serialNumber'] = instance.serialNumber.toString();
+  val['signatureAlgorithm'] = instance.signatureAlgorithm;
   writeNotNull('signatureAlgorithmReadableName',
       instance.signatureAlgorithmReadableName);
   val['issuer'] = instance.issuer;
@@ -65,7 +66,7 @@ Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {
   writeNotNull('subjectAlternativNames', instance.subjectAlternativNames);
   writeNotNull('plain', instance.plain);
   writeNotNull('extKeyUsage',
-      instance.extKeyUsage?.map((e) => _$ExtendedKeyUsageEnumMap[e]).toList());
+      instance.extKeyUsage?.map((e) => _$ExtendedKeyUsageEnumMap[e]!).toList());
   writeNotNull('extensions', instance.extensions?.toJson());
   val['signature'] = instance.signature;
   writeNotNull('tbsCertificateSeqAsString', instance.tbsCertificateSeqAsString);

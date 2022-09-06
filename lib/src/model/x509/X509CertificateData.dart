@@ -14,7 +14,7 @@ part 'X509CertificateData.g.dart';
 @JsonSerializable(includeIfNull: false, explicitToJson: true)
 class X509CertificateData {
   /// The tbsCertificate data
-  TbsCertificate tbsCertificate;
+  TbsCertificate? tbsCertificate;
 
   /// The version of the certificate
   @Deprecated('Use tbsCertificate.version instead')

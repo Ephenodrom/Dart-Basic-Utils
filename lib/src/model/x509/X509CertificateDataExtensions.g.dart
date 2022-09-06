@@ -35,7 +35,7 @@ Map<String, dynamic> _$X509CertificateDataExtensionsToJson(
 
   writeNotNull('subjectAlternativNames', instance.subjectAlternativNames);
   writeNotNull('extKeyUsage',
-      instance.extKeyUsage?.map((e) => _$ExtendedKeyUsageEnumMap[e]).toList());
+      instance.extKeyUsage?.map((e) => _$ExtendedKeyUsageEnumMap[e]!).toList());
   writeNotNull('vmc', instance.vmc?.toJson());
   writeNotNull('cRLDistributionPoints', instance.cRLDistributionPoints);
   return val;

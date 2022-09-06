@@ -1,5 +1,10 @@
 # Changelog
 
+## [5.2.2] - 2022-09-06
+
+* Improved X509CertificateData. Field tbsCertificate is now nullable to be backwards compatible.
+* Update dependencies
+
 ## [5.2.1] - 2022-09-05
 
 * Improved ASN1Utils, improved complexDump()

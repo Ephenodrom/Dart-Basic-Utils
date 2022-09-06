@@ -10,11 +10,11 @@ environment:
 dependencies:
   http: ^0.13.3
   logging: ^1.0.1
-  json_annotation: ^4.3.0
+  json_annotation: ^4.6.0
   pointycastle: ^3.6.1
 
 dev_dependencies:
-  build_runner: ^1.11.5
+  build_runner: ^2.2.0
   json_serializable: ^6.0.1
   pedantic: ^1.10.0
   test: ^1.16.8

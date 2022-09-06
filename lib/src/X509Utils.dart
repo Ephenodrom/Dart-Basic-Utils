@@ -1256,7 +1256,7 @@ class X509Utils {
   ///
   static BigInt getModulusFromRSAX509Pem(String pem) {
     var data = x509CertificateFromPem(pem);
-    var bytesString = data.tbsCertificate.subjectPublicKeyInfo.bytes;
+    var bytesString = data.tbsCertificate!.subjectPublicKeyInfo.bytes;
 
     var bytes = _stringAsBytes(bytesString!);
     var parser = ASN1Parser(bytes);
@@ -1574,13 +1574,13 @@ class X509Utils {
 
     // Check if key and algorithm matches
     if (data.signatureAlgorithmReadableName!.toLowerCase().contains('rsa') &&
-        parentData.tbsCertificate.subjectPublicKeyInfo.algorithmReadableName!
+        parentData.tbsCertificate!.subjectPublicKeyInfo.algorithmReadableName!
             .contains('ecPublicKey')) {
       // Algorithm does not match
       return false;
     }
     if (data.signatureAlgorithmReadableName!.toLowerCase().contains('ec') &&
-        parentData.tbsCertificate.subjectPublicKeyInfo.algorithmReadableName!
+        parentData.tbsCertificate!.subjectPublicKeyInfo.algorithmReadableName!
             .contains('rsaEncryption')) {
       // Algorithm does not match
       return false;
@@ -1588,7 +1588,7 @@ class X509Utils {
 
     if (data.signatureAlgorithmReadableName!.toLowerCase().contains('rsa')) {
       var publicKey = CryptoUtils.rsaPublicKeyFromDERBytes(_stringAsBytes(
-          parentData.tbsCertificate.subjectPublicKeyInfo.bytes!));
+          parentData.tbsCertificate!.subjectPublicKeyInfo.bytes!));
       result = CryptoUtils.rsaVerify(
         publicKey,
         base64.decode(data.tbsCertificateSeqAsString!),
@@ -1597,7 +1597,7 @@ class X509Utils {
       );
     } else {
       var publicKey = CryptoUtils.ecPublicKeyFromDerBytes(_stringAsBytes(
-          parentData.tbsCertificate.subjectPublicKeyInfo.bytes!));
+          parentData.tbsCertificate!.subjectPublicKeyInfo.bytes!));
       var sigBytes = _stringAsBytes(data.signature);
       if (sigBytes.first == 0) {
         sigBytes = sigBytes.sublist(1);
@@ -1997,7 +1997,7 @@ class X509Utils {
       if (x509.length > i + 1) {
         var next = x509.elementAt(i + 1);
         if (!_dnDataMatch(
-            current.tbsCertificate.issuer, next.tbsCertificate.subject)) {
+            current.tbsCertificate!.issuer, next.tbsCertificate!.subject)) {
           er.dnDataMatch = false;
         }
         if (!checkX509Signature(current.plain!, parent: next.plain!)) {
