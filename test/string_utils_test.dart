@@ -192,6 +192,11 @@ void main() {
     expect(!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(isSpecialOnly), true);
   });
 
+  test('Test generateRandomString()', () {
+    var l = StringUtils.generateRandomStrings(10, 10);
+    expect(l.length, 10);
+  });
+
   test('Test toPascalCase', () {
     expect(StringUtils.toPascalCase('hello world'), 'HelloWorld');
     expect(StringUtils.toPascalCase('Hello World'), 'HelloWorld');

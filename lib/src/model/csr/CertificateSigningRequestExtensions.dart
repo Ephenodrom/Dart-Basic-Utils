@@ -10,6 +10,14 @@ class CertificateSigningRequestExtensions {
   /// The subject alternative names
   List<String>? subjectAlternativNames;
 
+  // basicConstraints
+  // authorityKeyIdentifier
+  // cRLDistributionPoints
+  // keyUsage
+  // extKeyUsage
+  // certificatePolicies
+  // authorityInfoAccess => OCSP und caIssuers
+
   CertificateSigningRequestExtensions({
     this.subjectAlternativNames,
   });

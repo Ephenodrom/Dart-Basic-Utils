@@ -387,33 +387,35 @@ class StringUtils {
     return result;
   }
 
-  ///Generates a Random string
   ///
-  ///[length]: length of string,
+  /// Generates a Random string
   ///
-  ///[alphabet]:(boolean) add alphabet to string[uppercase]ABCD and [lowercase]abcd,
+  /// * [length] = length of string
+  /// * [alphabet] = add alphabet to string
+  /// * [uppercase] = adds lowercase alphabet to string
+  /// * [lowercase] = adds lowercase alphabet to string
+  /// * [numeric] = add integers to string
+  /// * [special] = add special characters
+  /// * [from] = a string that contains the allowed signs to be used for generating the random string
   ///
-  ///[numeric]:(boolean) add integers to string like 3622737
-  ///
-  ///[special]:(boolean) add special characters like $#@&^
-  ///
-  ///[from]:where you want to generate string from
-  ///
-  static String generateRandomString(int length,
-      {alphabet = true,
-      numeric = true,
-      special = true,
-      uppercase = true,
-      lowercase = true,
-      String from = ''}) {
+  static String generateRandomString(
+    int length, {
+    alphabet = true,
+    numeric = true,
+    special = true,
+    uppercase = true,
+    lowercase = true,
+    String from = '',
+  }) {
     var res = '';
 
     do {
-      res += randomizer(alphabet, numeric, lowercase, uppercase, special, from);
+      res +=
+          _randomizer(alphabet, numeric, lowercase, uppercase, special, from);
     } while (res.length < length);
 
     var possible = res.split('');
-    possible.shuffle(); //all possible combinations shuffled
+    possible.shuffle();
     var result = [];
 
     for (var i = 0; i < length; i++) {
@@ -424,7 +426,7 @@ class StringUtils {
     return result.join();
   }
 
-  static String randomizer(bool alphabet, bool numeric, bool lowercase,
+  static String _randomizer(bool alphabet, bool numeric, bool lowercase,
       bool uppercase, bool special, String from) {
     var a = 'ABCDEFGHIJKLMNOPQRXYZ';
     var la = 'abcdefghijklmnopqrxyz';
@@ -474,5 +476,42 @@ class StringUtils {
     }
 
     return newString;
+  }
+
+  ///
+  /// Generates [amount] random strings
+  ///
+  /// * [length] = length of string
+  /// * [alphabet] = add alphabet to string
+  /// * [uppercase] = adds lowercase alphabet to string
+  /// * [lowercase] = adds lowercase alphabet to string
+  /// * [numeric] = add integers to string
+  /// * [special] = add special characters
+  /// * [from] = a string that contains the allowed signs to be used for generating the random string
+  ///
+  static List<String> generateRandomStrings(
+    int amount,
+    int length, {
+    alphabet = true,
+    numeric = true,
+    special = true,
+    uppercase = true,
+    lowercase = true,
+    String from = '',
+  }) {
+    var l = <String>[];
+    for (var i = 0; i < amount; i++) {
+      var s = generateRandomString(
+        length,
+        alphabet: alphabet,
+        numeric: numeric,
+        special: special,
+        uppercase: uppercase,
+        lowercase: lowercase,
+        from: from,
+      );
+      l.add(s);
+    }
+    return l;
   }
 }
