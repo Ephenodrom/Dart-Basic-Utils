@@ -406,4 +406,11 @@ void main() {
     var test2 = MathUtils.getRandomNumber(max: 150, min: 10);
     expect(test2 <= 150 && test2 >= 10, true);
   });
+
+  test('Test median', () {
+    expect(MathUtils.median([3, 14]), 8.5);
+    expect(MathUtils.median([3.14]), 3.14);
+    expect(MathUtils.median([3.14, 15, 92.6]), 15);
+    expect(MathUtils.median([3.14, 15, 25, 535.9]), 20);
+  });
 }
