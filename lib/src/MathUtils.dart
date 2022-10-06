@@ -308,4 +308,17 @@ class MathUtils {
   ///Generates random between be [min] and [max]
   static int getRandomNumber({int min = 0, int max = 2 ^ 32}) =>
       min + Random().nextInt(max - min);
+
+  ///
+  ///Returns the median of numbers in a sorted list of numbers.
+  ///[sorted] must not be empty.
+  static num median(List<num> sorted) {
+    var isEven = sorted.length % 2 == 0;
+    if (isEven) {
+      var middleIdx = (sorted.length >> 1) - 1;
+      return mean([sorted[middleIdx], sorted[middleIdx + 1]]);
+    } else {
+      return sorted[sorted.length >> 1];
+    }
+  }
 }
