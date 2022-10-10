@@ -413,4 +413,24 @@ void main() {
     expect(MathUtils.median([3.14, 15, 92.6]), 15);
     expect(MathUtils.median([3.14, 15, 25, 535.9]), 20);
   });
+
+  test('Test logBase', () {
+    expect(MathUtils.logBase(9, 3), 2);
+    expect(MathUtils.logBase(3.14, 2), closeTo(1.650764559, 0.00001));
+    expect(MathUtils.logBase(-1, 10), isNaN);
+    expect(MathUtils.logBase(0, 10), double.negativeInfinity);
+    expect(MathUtils.logBase(2, 0), 0);
+    expect(MathUtils.logBase(0, 0), isNaN);
+    expect(MathUtils.logBase(10, -2), isNaN);
+  });
+
+  test('Test log2', () {
+    // See 'Test logBase' for more corner cases.
+    expect(MathUtils.log2(16), 4);
+  });
+
+  test('Test log10', () {
+    // See 'Test logBase' for more corner cases.
+    expect(MathUtils.log10(100), 2);
+  });
 }

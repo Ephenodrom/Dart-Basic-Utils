@@ -321,4 +321,25 @@ class MathUtils {
       return sorted[sorted.length >> 1];
     }
   }
+
+  ///Converts [x] to a double and returns the logarithm with [base] of the
+  ///value.
+  ///Returns negative infinity if [x] is equal to zero.
+  ///Returns NaN if [x] is NaN or less than zero.
+  ///Returns 0 if [base] is 0.
+  static double logBase(num x, num base) {
+    return log(x) / log(base);
+  }
+
+  ///Return the binary logarithm of [x], that is, the logarithm with base 2.
+  ///See also [logBase].
+  static double log2(num x) {
+    return logBase(x, 2);
+  }
+
+  ///Return the common logarithm of [x], that is, the logarithm with base 10.
+  ///See also [logBase].
+  static double log10(num x) {
+    return logBase(x, 10);
+  }
 }
