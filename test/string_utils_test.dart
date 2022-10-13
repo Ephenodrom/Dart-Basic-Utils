@@ -206,4 +206,17 @@ void main() {
     expect(StringUtils.toPascalCase('Hello_World'), 'HelloWorld');
     expect(StringUtils.toPascalCase('HELLO_WORLD'), 'HelloWorld');
   });
+
+  test('Test isIP', () {
+    expect(StringUtils.isIP('127.0.0.1'), true);
+    expect(StringUtils.isIP('0.0.0.0'), true);
+    expect(StringUtils.isIP('255.255.255.255'), true);
+    expect(StringUtils.isIP('1.2.3.4'), true);
+    expect(StringUtils.isIP('::1'), true);
+    expect(StringUtils.isIP('2001:db8:0000:1:1:1:1:1'), true);
+    expect(StringUtils.isIP('abc'), false);
+    expect(StringUtils.isIP('256.0.0.0'), false);
+    expect(StringUtils.isIP('0.0.0.256'), false);
+    expect(StringUtils.isIP('26.0.0.256'), false);
+  });
 }

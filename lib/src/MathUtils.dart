@@ -305,13 +305,15 @@ class MathUtils {
       (value * pow(10, decimals)).round() / pow(10, decimals);
 
   ///
-  ///Generates random between be [min] and [max]
+  /// Generates random between be [min] and [max]
+  ///
   static int getRandomNumber({int min = 0, int max = 2 ^ 32}) =>
       min + Random().nextInt(max - min);
 
   ///
-  ///Returns the median of numbers in a sorted list of numbers.
-  ///[sorted] must not be empty.
+  /// Returns the median of numbers in a sorted list of numbers.
+  /// [sorted] must not be empty.
+  ///
   static num median(List<num> sorted) {
     var isEven = sorted.length % 2 == 0;
     if (isEven) {
@@ -322,23 +324,29 @@ class MathUtils {
     }
   }
 
-  ///Converts [x] to a double and returns the logarithm with [base] of the
-  ///value.
-  ///Returns negative infinity if [x] is equal to zero.
-  ///Returns NaN if [x] is NaN or less than zero.
-  ///Returns 0 if [base] is 0.
+  ///
+  /// Converts [x] to a double and returns the logarithm with [base] of the
+  /// value.
+  /// Returns negative infinity if [x] is equal to zero.
+  /// Returns NaN if [x] is NaN or less than zero.
+  /// Returns 0 if [base] is 0.
+  ///
   static double logBase(num x, num base) {
     return log(x) / log(base);
   }
 
-  ///Return the binary logarithm of [x], that is, the logarithm with base 2.
-  ///See also [logBase].
+  ///
+  /// Return the binary logarithm of [x], that is, the logarithm with base 2.
+  /// See also [logBase].
+  ///
   static double log2(num x) {
     return logBase(x, 2);
   }
 
-  ///Return the common logarithm of [x], that is, the logarithm with base 10.
-  ///See also [logBase].
+  ///
+  /// Return the common logarithm of [x], that is, the logarithm with base 10.
+  /// See also [logBase].
+  ///
   static double log10(num x) {
     return logBase(x, 10);
   }

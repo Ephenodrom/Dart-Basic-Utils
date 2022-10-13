@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.4.0] - 2022-10-13
+
+* Improved MathUtils added median(), logBase(), log2(), log10() method (PR #78, #79)
+* Added unit tests
+
+## [5.3.0] - 2022-09-15
+
+* Improved StringUtils added isIP() method
+* Added unit tests
+
 ## [5.2.2] - 2022-09-06
 
 * Improved X509CertificateData. Field tbsCertificate is now nullable to be backwards compatible.
