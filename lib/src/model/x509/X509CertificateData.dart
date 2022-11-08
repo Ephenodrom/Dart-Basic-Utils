@@ -71,7 +71,7 @@ class X509CertificateData {
   X509CertificateDataExtensions? extensions;
 
   /// The signature
-  String signature;
+  String? signature;
 
   /// The tbsCertificateSeq as base64 string
   String? tbsCertificateSeqAsString;

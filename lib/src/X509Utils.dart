@@ -1423,30 +1423,35 @@ class X509Utils {
 
     // GET REVOKED CERTIFICATES
     var rCertificates = <RevokedCertificate>[];
-    var revokedCertificates =
-        tbsCertList.elements!.elementAt(5) as ASN1Sequence;
-    for (var e in revokedCertificates.elements!) {
-      var revoked = RevokedCertificate();
-      var data = e as ASN1Sequence;
-      var asn1Int = data.elements!.elementAt(0) as ASN1Integer;
-      revoked.serialNumber = asn1Int.integer!;
-      var revokeDate = data.elements!.elementAt(1) as ASN1UtcTime;
-      revoked.revocationDate = revokeDate.time;
-      if (data.elements!.length > 2) {
-        var extensions = CrlEntryExtensionsData();
-        var ext = data.elements!.elementAt(2) as ASN1Sequence;
-        if (ext.elements!.isNotEmpty) {
-          var crlReason = ext.elements!.elementAt(0) as ASN1Sequence;
-          var octedString = crlReason.elements!.elementAt(1) as ASN1OctetString;
-          var parser = ASN1Parser(octedString.octets);
-          var enumerated = parser.nextObject() as ASN1Integer;
-          var int = enumerated.integer;
-          var crlReasonValue = _crlReasonFromInt(int!);
-          extensions.reason = crlReasonValue;
+    if (tbsCertList.elements!.elementAt(5) is ASN1Sequence) {
+      var revokedCertificates =
+          tbsCertList.elements!.elementAt(5) as ASN1Sequence;
+      for (var e in revokedCertificates.elements!) {
+        var revoked = RevokedCertificate();
+        var data = e as ASN1Sequence;
+        var asn1Int = data.elements!.elementAt(0) as ASN1Integer;
+        revoked.serialNumber = asn1Int.integer!;
+        var revokeDate = data.elements!.elementAt(1) as ASN1UtcTime;
+        revoked.revocationDate = revokeDate.time;
+        if (data.elements!.length > 2) {
+          var extensions = CrlEntryExtensionsData();
+          var ext = data.elements!.elementAt(2) as ASN1Sequence;
+          if (ext.elements!.isNotEmpty) {
+            var crlReason = ext.elements!.elementAt(0) as ASN1Sequence;
+            var octedString =
+                crlReason.elements!.elementAt(1) as ASN1OctetString;
+            var parser = ASN1Parser(octedString.octets);
+            var enumerated = parser.nextObject() as ASN1Integer;
+            var int = enumerated.integer;
+            var crlReasonValue = _crlReasonFromInt(int!);
+            extensions.reason = crlReasonValue;
+          }
+          revoked.extensions = extensions;
         }
-        revoked.extensions = extensions;
+        rCertificates.add(revoked);
       }
-      rCertificates.add(revoked);
+    } else {
+      // MISSING SEQUENCE THAT CONTAINS REVOKED CERTIFICATES
     }
     certificateList.revokedCertificates = rCertificates;
 
@@ -1592,13 +1597,13 @@ class X509Utils {
       result = CryptoUtils.rsaVerify(
         publicKey,
         base64.decode(data.tbsCertificateSeqAsString!),
-        _stringAsBytes(data.signature),
+        _stringAsBytes(data.signature!),
         algorithm: '$algorithm/RSA',
       );
     } else {
       var publicKey = CryptoUtils.ecPublicKeyFromDerBytes(_stringAsBytes(
           parentData.tbsCertificate!.subjectPublicKeyInfo.bytes!));
-      var sigBytes = _stringAsBytes(data.signature);
+      var sigBytes = _stringAsBytes(data.signature!);
       if (sigBytes.first == 0) {
         sigBytes = sigBytes.sublist(1);
       }

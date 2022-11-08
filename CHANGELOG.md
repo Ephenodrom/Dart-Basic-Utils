@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.4.2] - 2022-11-08
+
+* Improved X509Utils, improved CRL parsing
+
+## [5.4.1] - 2022-11-04
+
+* Improved X509CertificateData. Field signature is now nullable to be backwards compatible.
+
 ## [5.4.0] - 2022-10-13
 
 * Improved MathUtils added median(), logBase(), log2(), log10() method (PR #78, #79)

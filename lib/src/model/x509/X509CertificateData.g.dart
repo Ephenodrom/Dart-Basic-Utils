@@ -38,7 +38,7 @@ X509CertificateData _$X509CertificateDataFromJson(Map<String, dynamic> json) =>
           : X509CertificateDataExtensions.fromJson(
               json['extensions'] as Map<String, dynamic>),
       tbsCertificateSeqAsString: json['tbsCertificateSeqAsString'] as String?,
-      signature: json['signature'] as String,
+      signature: json['signature'] as String?,
     );
 
 Map<String, dynamic> _$X509CertificateDataToJson(X509CertificateData instance) {

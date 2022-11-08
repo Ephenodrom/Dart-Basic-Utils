@@ -1,6 +1,6 @@
 name: basic_utils
 description: Common util classes providing a solution for different situations.
-version: 5.4.0
+version: 5.4.2
 homepage: https://github.com/Ephenodrom/Dart-Basic-Utils
 #publish_to: https://pub.dartlang.org
 
@@ -14,9 +14,8 @@ dependencies:
   pointycastle: ^3.6.1
 
 dev_dependencies:
-  build_runner: ^2.2.0
+  build_runner: ^2.3.2
   json_serializable: ^6.0.1
-  pedantic: ^1.10.0
   test: ^1.16.8
   convert: ^3.0.0
 

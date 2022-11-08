@@ -50,7 +50,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^5.4.0
+  basic_utils: ^5.4.2
 ```
 
 ## Import
