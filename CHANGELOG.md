@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.3] - 2022-12-28
+
+* Improved X509Utils, generateSelfSignedCertificate() method now supports written DN keys as like CN, O and so on as issuer.
+* Improved CryptoUtils, added rsaPssSign() and rsaPssVerify() method
+* Improved X509Utils, csrFromPem() now reads salt length and pssDigest if PSS algorithm is used for signature
+* Improved model CertificateSigningRequestData added new fields saltLength and pssDigest
+
 ## [5.4.2] - 2022-11-08
 
 * Improved X509Utils, improved CRL parsing

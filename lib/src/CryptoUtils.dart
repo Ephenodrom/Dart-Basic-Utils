@@ -855,6 +855,46 @@ class CryptoUtils {
   }
 
   ///
+  /// Verifying the given [signedData] with the given [publicKey], the given [signature] and the given [saltLength].
+  /// Will return **true** if the given [signature] matches the [signedData].
+  ///
+  /// The default [algorithm] used is **SHA-256/PSS**. All supported algorihms are :
+  ///
+  /// * MD2/PSS
+  /// * MD4/PSS
+  /// * MD5/PSS
+  /// * RIPEMD-128/PSS
+  /// * RIPEMD-160/PSS
+  /// * RIPEMD-256/PSS
+  /// * SHA-1/PSS
+  /// * SHA-224/PSS
+  /// * SHA-256/PSS
+  /// * SHA-384/PSS
+  /// * SHA-512/PSS
+  ///
+  static bool rsaPssVerify(RSAPublicKey publicKey, Uint8List signedData,
+      Uint8List signature, int saltLength,
+      {String algorithm = 'SHA-256/PSS'}) {
+    final sig = PSSSignature(signature);
+
+    final verifier = Signer(algorithm) as PSSSigner;
+
+    var params = ParametersWithSaltConfiguration(
+      PublicKeyParameter<RSAPublicKey>(publicKey),
+      _getSecureRandom(),
+      saltLength,
+    );
+
+    verifier.init(false, params);
+
+    try {
+      return verifier.verifySignature(signedData, sig);
+    } on ArgumentError {
+      return false;
+    }
+  }
+
+  ///
   /// Signing the given [dataToSign] with the given [privateKey].
   ///
   /// The default [algorithm] used is **SHA-1/ECDSA**. All supported algorihms are :
@@ -1071,5 +1111,36 @@ class CryptoUtils {
       number = number >> 8;
     }
     return result;
+  }
+
+  ///
+  /// Signing the given [dataToSign] with the given [privateKey] and the given [salt].
+  ///
+  /// The default [algorithm] used is **SHA-256/PSS**. All supported algorihms are :
+  ///
+  /// * MD2/PSS
+  /// * MD4/PSS
+  /// * MD5/PSS
+  /// * RIPEMD-128/PSS
+  /// * RIPEMD-160/PSS
+  /// * RIPEMD-256/PSS
+  /// * SHA-1/PSS
+  /// * SHA-224/PSS
+  /// * SHA-256/PSS
+  /// * SHA-384/PSS
+  /// * SHA-512/PSS
+  ///
+  static Uint8List rsaPssSign(
+      RSAPrivateKey privateKey, Uint8List dataToSign, Uint8List salt,
+      {String algorithm = 'SHA-256/PSS'}) {
+    var signer = Signer(algorithm) as PSSSigner;
+    signer.init(
+        true,
+        ParametersWithSalt(
+            PrivateKeyParameter<RSAPrivateKey>(privateKey), salt));
+
+    var sig = signer.generateSignature(dataToSign);
+
+    return sig.bytes;
   }
 }

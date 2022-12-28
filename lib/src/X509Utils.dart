@@ -32,6 +32,7 @@ import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateDataExtensions.dart';
 import 'package:basic_utils/src/model/x509/X509CertificatePublicKeyData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateValidity.dart';
+import 'package:pointycastle/asn1/unsupported_object_identifier_exception.dart';
 
 import 'package:pointycastle/export.dart';
 import 'package:pointycastle/pointycastle.dart';
@@ -257,7 +258,7 @@ class X509Utils {
     }
   }
 
-  static String _getSigningAlgorithmFromOi(String oi) {
+  static String _getDigestFromOi(String oi) {
     switch (oi) {
       case 'ecdsaWithSHA1':
       case 'sha1WithRSAEncryption':
@@ -288,7 +289,7 @@ class X509Utils {
   /// * [sans] = Subject alternative names to place within the certificate
   /// * [extKeyUsage] = The key usage definition
   /// * [serialNumber] = The serialnumber. If not set the default will be 1.
-  /// * [issuer] = The issuer. If null, the issuer will be the subject of the given csr
+  /// * [issuer] = The issuer. If null, the issuer will be the subject of the given csr.
   ///
   static String generateSelfSignedCertificate(
     PrivateKey privateKey,
@@ -330,7 +331,12 @@ class X509Utils {
       } else {
         pString = ASN1UTF8String(utf8StringValue: value);
       }
-      var oIdentifier = ASN1ObjectIdentifier.fromIdentifierString(k);
+      var oIdentifier;
+      try {
+        oIdentifier = ASN1ObjectIdentifier.fromIdentifierString(k);
+      } on UnsupportedObjectIdentifierException catch (e) {
+        oIdentifier = ASN1ObjectIdentifier.fromName(k);
+      }
       var innerSequence = ASN1Sequence(elements: [oIdentifier, pString]);
       var s = ASN1Set(elements: [innerSequence]);
       issuerSeq.add(s);
@@ -448,10 +454,10 @@ class X509Utils {
     if (privateKey.runtimeType == RSAPrivateKey) {
       outer.add(ASN1BitString(
           stringValues: _rsaSign(data.encode(), privateKey as RSAPrivateKey,
-              _getSigningAlgorithmFromOi(csrData.signatureAlgorithm!))));
+              _getDigestFromOi(csrData.signatureAlgorithm!))));
     } else {
       var ecSignature = eccSign(data.encode(), privateKey as ECPrivateKey,
-          _getSigningAlgorithmFromOi(csrData.signatureAlgorithm!));
+          _getDigestFromOi(csrData.signatureAlgorithm!));
       var bitStringSequence = ASN1Sequence();
       bitStringSequence.add(ASN1Integer(ecSignature.r));
       bitStringSequence.add(ASN1Integer(ecSignature.s));
@@ -925,6 +931,26 @@ class X509Utils {
 
     // Signature Algorithm
     var pubKeyOid = sigSeq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+    int? saltLength;
+    String? pssDigest;
+    if (pubKeyOid.objectIdentifierAsString == '1.2.840.113549.1.1.10' &&
+        sigSeq.elements!.length == 2) {
+      pubKeyOid.readableName = 'rsaPSS';
+      // We have RSA PSS, check for salt length
+      var parameterSeq = sigSeq.elements!.elementAt(1) as ASN1Sequence;
+      if (parameterSeq.elements!.length == 3) {
+        // Get Digest
+        var digestWrapper = parameterSeq.elements!.elementAt(0);
+        var digestSeq = ASN1Sequence.fromBytes(digestWrapper.valueBytes!);
+        var digestOi = digestSeq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+        digestOi.readableName = 'SHA-256'; // TODO REMOVE LATER
+        pssDigest = digestOi.readableName;
+        // Get Salt
+        var el = parameterSeq.elements!.elementAt(2);
+        var aInteger = ASN1Integer.fromBytes(el.valueBytes!);
+        saltLength = aInteger.integer!.toInt();
+      }
+    }
 
     // Signature
     var sigAsString = _bytesAsString(sig.valueBytes!);
@@ -936,6 +962,8 @@ class X509Utils {
       signatureAlgorithmReadableName: pubKeyOid.readableName,
       signature: sigAsString,
       publicKeyInfo: certificationRequestInfo.publicKeyInfo,
+      saltLength: saltLength,
+      pssDigest: pssDigest,
       plain: pem,
       extensions: certificationRequestInfo.extensions,
       certificationRequestInfo: certificationRequestInfo,
@@ -1532,18 +1560,25 @@ class X509Utils {
   static bool checkCsrSignature(String pem) {
     var data = csrFromPem(pem);
     var result = false;
-    var algorithm = _getSigningAlgorithmFromOi(
-        data.certificationRequestInfo!.publicKeyInfo!.algorithm!);
-
-    if (data.certificationRequestInfo!.publicKeyInfo!.algorithmReadableName!
-        .contains('rsa')) {
+    var algorithm = _getAlgorithmFromOi(data.signatureAlgorithmReadableName!);
+    if (algorithm.contains('PSS')) {
+      var publicKey = CryptoUtils.rsaPublicKeyFromDERBytes(
+          _stringAsBytes(data.certificationRequestInfo!.publicKeyInfo!.bytes!));
+      result = CryptoUtils.rsaPssVerify(
+        publicKey,
+        base64.decode(data.certificationRequestInfoSeq!),
+        _stringAsBytes(data.signature!),
+        data.saltLength!,
+        algorithm: data.pssDigest! + '/PSS',
+      );
+    } else if (algorithm.contains('RSA')) {
       var publicKey = CryptoUtils.rsaPublicKeyFromDERBytes(
           _stringAsBytes(data.certificationRequestInfo!.publicKeyInfo!.bytes!));
       result = CryptoUtils.rsaVerify(
         publicKey,
         base64.decode(data.certificationRequestInfoSeq!),
         _stringAsBytes(data.signature!),
-        algorithm: '$algorithm/RSA',
+        algorithm: algorithm,
       );
     } else {
       var publicKey = CryptoUtils.ecPublicKeyFromDerBytes(
@@ -1558,7 +1593,7 @@ class X509Utils {
         CryptoUtils.ecSignatureFromDerBytes(
           sigBytes,
         ),
-        algorithm: '$algorithm/ECDSA',
+        algorithm: algorithm,
       );
     }
     return result;
@@ -1575,7 +1610,7 @@ class X509Utils {
     parent ??= pem;
     var data = x509CertificateFromPem(pem);
     var parentData = x509CertificateFromPem(parent);
-    var algorithm = _getSigningAlgorithmFromOi(data.signatureAlgorithm);
+    var algorithm = _getDigestFromOi(data.signatureAlgorithm);
 
     // Check if key and algorithm matches
     if (data.signatureAlgorithmReadableName!.toLowerCase().contains('rsa') &&
@@ -2025,5 +2060,34 @@ class X509Utils {
       }
     }
     return true;
+  }
+
+  static String _getAlgorithmFromOi(String oi) {
+    switch (oi) {
+      case 'ecdsaWithSHA1':
+        return 'SHA-1/ECDSA';
+      case 'sha1WithRSAEncryption':
+        return 'SHA-1/RSA';
+      case 'ecdsaWithSHA224':
+        return 'SHA-224/ECDSA';
+      case 'sha224WithRSAEncryption':
+        return 'SHA-224/RSA';
+      case 'ecdsaWithSHA256':
+        return 'SHA-256/ECDSA';
+      case 'sha256WithRSAEncryption':
+        return 'SHA-256/RSA';
+      case 'ecdsaWithSHA384':
+        return 'SHA-384/ECDSA';
+      case 'sha384WithRSAEncryption':
+        return 'SHA-384/RSA';
+      case 'ecdsaWithSHA512':
+        return 'SHA-512/ECDSA';
+      case 'sha512WithRSAEncryption':
+        return 'SHA-512/RSA';
+      case 'rsaPSS':
+        return 'PSS';
+      default:
+        return 'SHA-256/RSA';
+    }
   }
 }

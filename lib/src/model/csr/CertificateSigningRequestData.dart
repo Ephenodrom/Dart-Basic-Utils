@@ -28,6 +28,12 @@ class CertificateSigningRequestData {
   /// The readable name of the signature algorithm
   String? signatureAlgorithmReadableName;
 
+  /// The salt length if algorithm is rsaPSS
+  int? saltLength;
+
+  /// The digest used for PSS signature
+  String? pssDigest;
+
   /// The signature
   String? signature;
 
@@ -52,6 +58,8 @@ class CertificateSigningRequestData {
     this.extensions,
     this.certificationRequestInfoSeq,
     this.certificationRequestInfo,
+    this.saltLength,
+    this.pssDigest,
   });
 
   /*

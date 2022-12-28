@@ -986,6 +986,37 @@ U1QfDr9/25srVZywlxzlVH6jwv39wY2nzsa+0cp1oRixCDRAigBJwpjwwUTgjRLg
 nuA2AnJ5dA8+KfA37mjH9uWQbSnMq8ehnu61MyKj68qN5UWZCqo7OLNI/WVIrA==
 -----END CERTIFICATE REQUEST-----''';
 
+  var rsaPssSignature = '''-----BEGIN CERTIFICATE REQUEST-----
+MIIE/zCCArcCAQAwgYkxCzAJBgNVBAYTAkRFMQswCQYDVQQIDAJCVzEMMAoGA1UE
+BwwDVWxtMRkwFwYDVQQKDBBTV1UgVGVsZW5ldCBHbWJIMRwwGgYDVQQLDBNFbmVy
+Z2lld2lydHNjaGFmdCAzMSYwJAYDVQQDDB1mYWhycGxhbm1hbmFnZW1lbnRAZWRp
+LnN3dS5kZTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAM0ZRsagguJH
+H9UmmzODkiJjUesZyXiY0V5F2DdRwAgI8pQvLAfOUy6lpZk96ojHA/k7chcg0NWe
+I2h6RpaiSSuLGYHcg0lkuXg3Q3QdLNgb40b17byLURj7aWMUIo/nLXqIotvoetCM
+qDnvUd0QrEVpUUBMV6WtjyDBQKxG7b4kJYy32LH6p1CKW5MmRILYN1lGxX6F22WX
+V2vVHVo8LMyrYLFHgNhk0rKtnZI9SOEE2jEFACxgwdVVTATQWFVBuga3yhscq49b
+1JC6Zu1ZtyR81Ckt/SMZnO+Gkk5Elr5+ziVwr8m4rbBVxLFv2FCcnHydZzHpX1EN
+H+xKleuk0sVDyUuoThNmxh7AWS8YUhLkk113XnK4t2jJzCu2mBlMf40qK4JzkMDN
+Q0xlMzSE4/4jkEhr9m0YSl81+X9sn5av9Ine6F70QWGGQnlK2WcO/EpzHeJTcUs5
+ncYcEGaa8l+XJCnhjC/s7C44jCLFxY4iS3u/NiHdRQUdP4m5I529hSJuFBEZo2/g
+nQxTMA/dwCLukSm6H+20SUnI78Tgo1pRKrtM3urSgmvMpEH6nisEbAteUCb4xrvM
+0HcvXzqMbBoXC2LumvRuDz67STb7LhM5euY99flmC1q2rjH9XVlDHX+OnQ/SAzPO
+TxjNIBFRG40w1p26tBNDJnDEWz5BbunLAgMBAAGgADA9BgkqhkiG9w0BAQowMKAN
+MAsGCWCGSAFlAwQCAaEaMBgGCSqGSIb3DQEBCDALBglghkgBZQMEAgGiAwIBIAOC
+AgEAyUcepyNHOowFuJ0+7Cw/nVNxu139CjNLzW6iIynGgDm8hLBNjBVBzCjqRT5X
+exF3yIHT401D8wVDj2Q0XjM+hVE8TA0zER+ScXfIH8DlA0wjaItSzPf85xDkKX3Y
+blSHHJ7a34G2LQFDmkvoMUh7dxaxx/QMBjB+gVH6W8R5z3ZbOUijw17+FtBQuo+R
+1+PqKpaJSB7sfj8VBybD2Zb0NEM40tO9esj4uWVJ535yHIfd1N8ecy/UojKQ4v6X
+W45PiyfMEQODZUK+IaEcf9asyWUFrdmPaiOF/TTqo7IB47+g64DoJQwC5cuucqef
+B7SX1hNT+Alq3QIrYyXYTNXUUPGjWWMM54N05C/gBJAchA5MJ5w4CP8T7BlInMdW
+1vvk/DiVV/M+oNCVYeOCj8cP4N1wOReEuL7slAlzgIAw0twQe5HrXCd/KHusiCaP
+EJa5dxjOJVZxTYbPzdSzzG1wlXpkeArYC23mA+doPPrsLP+3KVztikNaRPhhxwjd
+LW/oNqZMcgg5Os1lkzxPBaTVlb616tQy2T0whzwvRKm7uyEKx0iRUUZdQTfCeb+V
+J8oruF/gUh/G3Naq3ZqnPSr6caJwdLKI9+Di2a4rMYGWkI37kwQN7fhpqquASD8p
+rn6zwvNaIBmG2reX1OyNE7nRlM1SoBNQ4We+Kf5H2JN1v+4=
+-----END CERTIFICATE REQUEST-----
+''';
+
   test('Test getBytesFromPEMString', () {
     var bytes = CryptoUtils.getBytesFromPEMString(csr);
     var formatted = X509Utils.formatKeyString(
@@ -1577,6 +1608,23 @@ SEQUENCE (1 elem)
     expect(x509.subjectAlternativNames!.elementAt(1), 'san2.basic-utils.dev');
     expect(x509.extKeyUsage!.elementAt(0), ExtendedKeyUsage.SERVER_AUTH);
     expect(x509.extKeyUsage!.elementAt(1), ExtendedKeyUsage.CLIENT_AUTH);
+
+    pem = X509Utils.generateSelfSignedCertificate(pair.privateKey, csr, 365,
+        sans: [
+          'san1.basic-utils.dev',
+          'san2.basic-utils.dev'
+        ],
+        extKeyUsage: [
+          ExtendedKeyUsage.SERVER_AUTH,
+          ExtendedKeyUsage.CLIENT_AUTH
+        ],
+        issuer: {
+          'CN': 'foobar.dev',
+          'O': 'Magic Company',
+          'L': 'Fäkecity',
+          'S': 'FakeState',
+          'C': 'DE',
+        });
   });
 
   test('Test generateSelfSignedCertificate with ECC', () {
@@ -1703,6 +1751,9 @@ SEQUENCE (1 elem)
       ecPair.publicKey as ECPublicKey,
     );
     data = X509Utils.checkCsrSignature(ecPem);
+    expect(data, true);
+
+    data = X509Utils.checkCsrSignature(rsaPssSignature);
     expect(data, true);
   });
 

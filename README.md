@@ -50,7 +50,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^5.4.2
+  basic_utils: ^5.4.3
 ```
 
 ## Import
@@ -308,6 +308,8 @@ bool ecVerifyBase64(ECPublicKey publicKey, Uint8List origData, String signature,
 ECSignature ecSignatureFromDerBytes(Uint8List data);
 Uint8List i2osp(BigInt number,{int? outLen, Endian endian = Endian.big});
 BigInt osp2i(Iterable<int> bytes, {Endian endian = Endian.big});
+Uint8List rsaPssSign(RSAPrivateKey privateKey, Uint8List dataToSign, Uint8List salt, {String algorithm = 'SHA-256/PSS'});
+bool rsaPssVerify(RSAPublicKey publicKey, Uint8List signedData, Uint8List signature, Uint8List salt, {String algorithm = 'SHA-256/PSS'});
 ```
 
 ### ASN1Utils

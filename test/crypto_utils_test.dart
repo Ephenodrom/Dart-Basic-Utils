@@ -287,6 +287,26 @@ sF0zEAHkQoYVBEhrfAHOLYkE3u08+q2tug==
     expect(valid, false);
   });
 
+  test('Test rsaPssSign / rsaPssVerify', () {
+    var pair = CryptoUtils.generateRSAKeyPair();
+    var privKey = pair.privateKey as RSAPrivateKey;
+    var pubKey = pair.publicKey as RSAPublicKey;
+    var toSign = 'Hello World! This is Jon Doe.';
+
+    var bytes = Uint8List.fromList(toSign.codeUnits);
+    var salt = Uint8List.fromList([1, 2, 3]);
+    var signature = CryptoUtils.rsaPssSign(privKey, bytes, salt);
+    var valid = CryptoUtils.rsaPssVerify(pubKey, bytes, signature, salt.length);
+
+    expect(valid, true);
+
+    toSign = 'Hello World! This is Jane Doe.';
+
+    bytes = Uint8List.fromList(toSign.codeUnits);
+    valid = CryptoUtils.rsaPssVerify(pubKey, bytes, signature, salt.length);
+    expect(valid, false);
+  });
+
   test('Test rsaPrivateKeyFromPemPkcs1', () {
     var pair = CryptoUtils.generateRSAKeyPair();
     var pem = CryptoUtils.encodeRSAPrivateKeyToPemPkcs1(
