@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 ///
 /// Helper class for String operations
@@ -539,5 +540,39 @@ class StringUtils {
       return _ipv6.hasMatch(s);
     }
     return false;
+  }
+
+  ///
+  /// Converts the given [bytes] to hex string
+  ///
+  static String Uint8ListToHex(Uint8List bytes) {
+    var sb = StringBuffer();
+    for (var b in bytes) {
+      var s = b.toRadixString(16).toUpperCase();
+      if (s.length == 1) {
+        s = '0$s';
+      }
+      sb.write(s);
+    }
+    return sb.toString();
+  }
+
+  ///
+  /// Converts the given [hex] to [Uint8List]
+  ///
+  static Uint8List hexToUint8List(String hex) {
+    if (hex.length % 2 != 0) {
+      throw ArgumentError('Odd number of hex digits');
+    }
+    var l = hex.length ~/ 2;
+    var result = new Uint8List(l);
+    for (var i = 0; i < l; ++i) {
+      var x = int.parse(hex.substring(i * 2, (2 * (i + 1))), radix: 16);
+      if (x.isNaN) {
+        throw ArgumentError('Expected hex string');
+      }
+      result[i] = x;
+    }
+    return result;
   }
 }
