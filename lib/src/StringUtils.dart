@@ -545,7 +545,7 @@ class StringUtils {
   ///
   /// Converts the given [bytes] to hex string
   ///
-  static String Uint8ListToHex(Uint8List bytes) {
+  static String uint8ListToHex(Uint8List bytes) {
     var sb = StringBuffer();
     for (var b in bytes) {
       var s = b.toRadixString(16).toUpperCase();

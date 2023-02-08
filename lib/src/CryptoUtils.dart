@@ -166,6 +166,7 @@ class CryptoUtils {
   /// The following keySize is supported:
   /// * 1024
   /// * 2048
+  /// * 3072
   /// * 4096
   /// * 8192
   ///

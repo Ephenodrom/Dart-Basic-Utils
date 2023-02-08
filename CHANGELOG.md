@@ -1,5 +1,10 @@
 # Changelog
 
+## [5.5.0] - 2022-02-10
+
+* Improved StringUtils, added hexToUint8List() and uint8ListToHex()
+* Added first draft of PKCS12Utils ( BETA )
+
 ## [5.4.3] - 2022-12-28
 
 * Improved X509Utils, generateSelfSignedCertificate() method now supports written DN keys as like CN, O and so on as issuer.

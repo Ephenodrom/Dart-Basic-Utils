@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
-import 'package:basic_utils/src/model/asn1/asn1/pkcs/content_info.dart';
-import 'package:basic_utils/src/model/asn1/asn1/pkcs/mac_data.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/content_info.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/mac_data.dart';
 
 ///
 ///```

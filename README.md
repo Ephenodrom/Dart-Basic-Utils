@@ -25,6 +25,7 @@ A dart package for many helper methods fitting different situations.
     - [ColorUtils](#colorutils)
     - [DateUtils](#dateutils)
     - [X509Utils](#x509utils)
+    - [PKCS12Utils](#pkcs12utils)
     - [IterableUtils](#iterableutils)
     - [CryptoUtils](#cryptoutils)
     - [ASN1Utils](#asn1utils)
@@ -50,7 +51,7 @@ Update pubspec.yaml and add the following line to your dependencies.
 
 ```yaml
 dependencies:
-  basic_utils: ^5.4.3
+  basic_utils: ^5.5.0
 ```
 
 ## Import
@@ -95,6 +96,8 @@ String truncate(String value, int length, {String symbol = '...'});
 String generateRandomString(int length,{alphabet = true,numeric = true,special = true,uppercase = true,lowercase = true,String from = ''});
 String toPascalCase(String s);
 List<String> generateRandomStrings(int amount,int length,{alphabet = true,numeric = true,special = true,uppercase = true,lowercase = true,String from = ''});
+Uint8List hexToUint8List(String hex);
+String uint8ListToHex(Uint8List bytes);
 ```
 
 ### DomainUtils
@@ -246,6 +249,14 @@ bool checkCsrSignature(String pem);
 bool checkX509Signature(String pem, {String? parent});
 String fixPem(String pem);
 CertificateChainCheckData checkChain(List<X509CertificateData> x509);
+```
+
+### PKCS12Utils
+
+Helper class for operations on PKCS12 files.
+
+```dart
+Uint8List generatePkcs12(String privateKey, List<String> certificates, {String? password, String keyPbe = 'NONE', String certPbe = 'NONE', String digetAlgorithm = 'SHA-1', int macIter = 2048, Uint8List? salt, String? friendlyName, Uint8List? localKeyId})
 ```
 
 ### IterableUtils
