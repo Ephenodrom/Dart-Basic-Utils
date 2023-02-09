@@ -4,7 +4,7 @@ import 'package:basic_utils/src/library/crypto/rc2_parameters.dart';
 import 'package:pointycastle/export.dart';
 import 'package:pointycastle/pointycastle.dart';
 
-class RC2Engine {
+class RC2Engine implements BlockCipher {
   RC2Engine();
 
   static Uint8List piTable = Uint8List.fromList([
@@ -273,11 +273,11 @@ class RC2Engine {
   int get blockSize => _BLOCK_SIZE;
 
   bool forEncryption = false;
-  Uint8List? workingKey;
+  List<int>? workingKey;
 
-  Uint8List generateWorkingKey(Uint8List key, int bits) {
+  List<int> generateWorkingKey(Uint8List key, int bits) {
     int x;
-    var xKey = Uint8List(128);
+    var xKey = List<int>.generate(128, (index) => 0);
 
     for (int i = 0; i != key.length; i++) {
       xKey[i] = key[i] & 0xff;
@@ -308,7 +308,7 @@ class RC2Engine {
     }
 
     // Phase 3 - copy to newKey in little-endian order
-    var newKey = Uint8List(64);
+    var newKey = List<int>.generate(64, (index) => 0);
 
     for (int i = 0; i != newKey.length; i++) {
       newKey[i] = (xKey[2 * i] + (xKey[2 * i + 1] << 8));

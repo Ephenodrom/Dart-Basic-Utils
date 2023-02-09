@@ -1144,4 +1144,22 @@ class CryptoUtils {
 
     return sig.bytes;
   }
+
+  ///
+  /// Adds a PKCS7 / PKCS5 padding to the given [bytes] and [blockSizeBytes]
+  ///
+  static Uint8List addPKCS7Padding(Uint8List bytes, int blockSizeBytes) {
+    final padLength = blockSizeBytes - (bytes.length % blockSizeBytes);
+
+    final padded = Uint8List(bytes.length + padLength)..setAll(0, bytes);
+    PKCS7Padding().addPadding(padded, bytes.length);
+
+    return padded;
+  }
+
+  ///
+  /// Revomes the PKCS7 / PKCS5 padding from the [padded] bytes
+  ///
+  static Uint8List removePKCS7Padding(Uint8List padded) =>
+      padded.sublist(0, padded.length - PKCS7Padding().padCount(padded));
 }
