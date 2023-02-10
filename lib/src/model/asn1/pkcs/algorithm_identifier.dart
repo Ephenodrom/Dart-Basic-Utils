@@ -19,15 +19,22 @@ class AlgorithmIdentifier extends ASN1Object {
   ///
   /// Creates a AlgorithmIdentifier instance from the given [identifier] like "1.3.14.3.2.26".
   ///
-  AlgorithmIdentifier.fromIdentifier(String identifier) {
+  AlgorithmIdentifier.fromIdentifier(String identifier, {this.parameters}) {
     algorithm = ASN1ObjectIdentifier.fromIdentifierString(identifier);
   }
 
   ///
   /// Creates a AlgorithmIdentifier instance from the given [name] like "sha1".
   ///
-  AlgorithmIdentifier.fromName(String name) {
+  AlgorithmIdentifier.fromName(String name, {this.parameters}) {
     algorithm = ASN1ObjectIdentifier.fromName(name);
+  }
+
+  AlgorithmIdentifier.fromSequence(ASN1Sequence seq) {
+    algorithm = seq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+    if (seq.elements!.length >= 2) {
+      parameters = seq.elements!.elementAt(1);
+    }
   }
 
   @override

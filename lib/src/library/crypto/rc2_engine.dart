@@ -266,11 +266,11 @@ class RC2Engine implements BlockCipher {
     0xad
   ]);
 
-  static const _BLOCK_SIZE = 8;
+  static const BLOCK_SIZE = 8;
 
   String get algorithmName => 'RC2';
 
-  int get blockSize => _BLOCK_SIZE;
+  int get blockSize => BLOCK_SIZE;
 
   bool forEncryption = false;
   List<int>? workingKey;
@@ -343,11 +343,11 @@ class RC2Engine implements BlockCipher {
       throw ArgumentError("RC2 engine not initialised");
     }
 
-    if ((inputOff + _BLOCK_SIZE) > input.length) {
+    if ((inputOff + BLOCK_SIZE) > input.length) {
       throw ArgumentError("input buffer too short");
     }
 
-    if ((outOff + _BLOCK_SIZE) > out.length) {
+    if ((outOff + BLOCK_SIZE) > out.length) {
       throw ArgumentError("output buffer too short");
     }
 
@@ -357,7 +357,7 @@ class RC2Engine implements BlockCipher {
       decryptBlock(input, inputOff, out, outOff);
     }
 
-    return _BLOCK_SIZE;
+    return BLOCK_SIZE;
   }
 
   void reset() {}

@@ -1,12 +1,17 @@
 import 'dart:typed_data';
 
+import 'package:basic_utils/basic_utils.dart';
 import 'package:basic_utils/src/StringUtils.dart';
+import 'package:basic_utils/src/library/crypto/rc2_engine.dart';
+import 'package:basic_utils/src/library/crypto/rc2_parameters.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/algorithm_identifier.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/attribute.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/authenticated_safe.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/cert_bag.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/content_info.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/digest_info.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/encrypted_content_info.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/encrypted_data.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/key_bag.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/mac_data.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/pfx.dart';
@@ -14,6 +19,7 @@ import 'package:basic_utils/src/model/asn1/pkcs/pkcs12_parameter_generator.dart'
 import 'package:basic_utils/src/model/asn1/pkcs/private_key_info.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/safe_bag.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/safe_contents.dart';
+import 'package:pointycastle/block/modes/cbc.dart';
 import 'package:pointycastle/pointycastle.dart';
 
 class Pkcs12Utils {
@@ -29,7 +35,8 @@ class Pkcs12Utils {
   /// * certPbe = The encryption algorithm used to encrypt the certificates.
   /// * digetAlgorithm = The digest algorithm used for key derivation
   /// * macIter = The iteration count for the key derivation
-  /// * salt = The salt used for the key derivation
+  /// * salt = The salt used for the key derivation, if left out, it will be generated
+  /// * certSalt = The salt used for the key derivation for cert encryption, if left out salt will be used.
   /// * friendlyName =  The name to be used to place as an attribue. If left, it will be generated.
   /// * localKeyId = The id to be used to place as an attribue. If left, it will be generated.
   ///
@@ -49,13 +56,31 @@ class Pkcs12Utils {
     List<String> certificates, {
     String? password,
     String keyPbe = 'NONE',
-    String certPbe = 'NONE',
+    String certPbe = 'RC2-40-CBC',
     String digetAlgorithm = 'SHA-1',
     int macIter = 2048,
     Uint8List? salt,
+    Uint8List? certSalt,
     String? friendlyName,
     Uint8List? localKeyId,
   }) {
+    var pkcs12ParameterGenerator =
+        PKCS12ParametersGenerator(Digest(digetAlgorithm));
+    Uint8List? pwFormatted;
+    if (password != null) {
+      pwFormatted =
+          formatPkcs12Password(Uint8List.fromList(password.codeUnits));
+    }
+
+    // GENERATE SALT
+    if (salt == null) {
+      salt = _generateSalt();
+    }
+
+    if (certSalt == null) {
+      certSalt = salt;
+    }
+
     // GENERATE LOCAL KEY ID
     if (localKeyId == null) {
       localKeyId = _generateLocalKeyId();
@@ -80,8 +105,38 @@ class Pkcs12Utils {
     // CREATE CONTENT INFO
     var contentInfoCert;
     var contentInfoKey;
-    if (certPbe != 'NONE' && password != null) {
-      // TODO ENCRYPT CERTS
+    if (certPbe != 'NONE' && pwFormatted != null) {
+      var params = ASN1Sequence(elements: [
+        ASN1OctetString(octets: certSalt),
+        ASN1Integer(BigInt.from(macIter)),
+      ]);
+      var contentEncryptionAlgorithm = AlgorithmIdentifier(
+        ASN1ObjectIdentifier.fromBytes(
+          Uint8List.fromList(
+            StringUtils.hexToUint8List("060A2A864886F70D010C0106"),
+          ),
+        ),
+        parameters: params,
+      );
+
+      pkcs12ParameterGenerator.init(pwFormatted, certSalt, macIter);
+      late Uint8List encryptedContent;
+      switch (certPbe) {
+        case 'RC2-40-CBC':
+          encryptedContent = encryptRc40Cbc(
+              safeContentsCert.encode(),
+              pkcs12ParameterGenerator.generateDerivedParametersWithIV(
+                  5, RC2Engine.BLOCK_SIZE));
+          break;
+        default:
+          throw ArgumentError('Unknown algorithm for certPbe');
+      }
+
+      var encryptedContentInfo = EncryptedContentInfo.forData(
+          contentEncryptionAlgorithm, encryptedContent);
+
+      var encryptedData = EncryptedData(encryptedContentInfo);
+      contentInfoCert = ContentInfo.forEncryptedData(encryptedData);
     } else {
       contentInfoCert = ContentInfo.forData(
         ASN1OctetString(
@@ -113,10 +168,7 @@ class Pkcs12Utils {
     MacData? macData;
     if (password != null) {
       var bytesForHmac = authSafe.encode();
-      if (salt == null) {
-        // GENERATE SALT
-        salt = _generateSalt();
-      }
+
       var pwFormatted =
           formatPkcs12Password(Uint8List.fromList(password.codeUnits));
 
@@ -213,5 +265,21 @@ class Pkcs12Utils {
       ),
     );
     return safeBagsKey;
+  }
+
+  static Uint8List encryptRc40Cbc(Uint8List bytesToEncrypt,
+      ParametersWithIV generateDerivedParametersWithIV) {
+    var engine = CBCBlockCipher(RC2Engine());
+    engine.reset();
+    engine.init(true, generateDerivedParametersWithIV);
+    var padded = CryptoUtils.addPKCS7Padding(bytesToEncrypt, 8);
+    final encryptedContent = Uint8List(padded.length);
+
+    var offset = 0;
+    while (offset < padded.length) {
+      offset += engine.processBlock(padded, offset, encryptedContent, offset);
+    }
+
+    return encryptedContent;
   }
 }

@@ -39,8 +39,13 @@ class ContentInfo extends ASN1Object {
   }
 
   ContentInfo.forEncryptedData(this.content) {
-    contentType =
-        ASN1ObjectIdentifier.fromIdentifierString('1.2.840.113549.1.7.6');
+    //contentType = ASN1ObjectIdentifier.fromIdentifierString('1.2.840.113549.1.7.6');
+
+    contentType = ASN1ObjectIdentifier.fromBytes(
+      Uint8List.fromList(
+        StringUtils.hexToUint8List("06092A864886F70D010706"),
+      ),
+    );
   }
 
   @override

@@ -31,12 +31,18 @@ class PKCS12ParametersGenerator {
     this.iterationCount = iterationCount;
   }
 
+  ///
+  /// Generates a derived key with the given [keySize] in bytes.
+  ///
   KeyParameter generateDerivedParameters(int keySize) {
     var dKey = _generateDerivedKey(KEY_MATERIAL, keySize);
 
     return KeyParameter(dKey);
   }
 
+  ///
+  /// Generates a derived key with the given [keySize] in bytes and a derived IV with the given [ivSize].
+  ///
   ParametersWithIV generateDerivedParametersWithIV(int keySize, int ivSize) {
     var dKey = _generateDerivedKey(KEY_MATERIAL, keySize);
 
@@ -45,6 +51,9 @@ class PKCS12ParametersGenerator {
     return ParametersWithIV(KeyParameter(dKey), iv);
   }
 
+  ///
+  /// Generates a derived key with the given [keySize] in bytes used for mac generating.
+  ///
   KeyParameter generateDerivedMacParameters(int keySize) {
     var dKey = _generateDerivedKey(MAC_MATERIAL, keySize);
 
