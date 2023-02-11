@@ -42,8 +42,8 @@ class Pkcs12Utils {
   /// * localKeyId = The id to be used to place as an attribue. If left, it will be generated.
   ///
   /// Possible values :
-  /// * keyPbe = RC2-40-CBC (DEFAULT) / RC4 / NONE
-  /// * certPbe = DES-EDE3-CBC (DEFAULT) / NONE
+  /// * keyPbe = RC2-40-CBC (DEFAULT) / RC2-128-CBC / RC4-40 / RC4-128 / DES-EDE-CBC / DES-EDE3-CBC / NONE
+  /// * certPbe = DES-EDE3-CBC (DEFAULT) / RC2-40-CBC / RC2-128-CBC / RC4-40 / RC4-128 / DES-EDE-CBC / NONE
   /// * digetAlgorithm = SHA-1 ( DEFAULT) / SHA-224 / SHA-256 / SHA-384 / SHA-512
   ///
   /// **IMPORTANT:** This method generates a PKCS12 file that only supports PASSWORD PRIVACY and PASSWORD INTEGRITY mode. This
@@ -129,10 +129,24 @@ class Pkcs12Utils {
       late Uint8List encryptedContent;
       switch (certPbe) {
         case 'RC2-40-CBC':
-          encryptedContent = encryptRc40Cbc(
+          encryptedContent = encryptRc2(
               safeContentsCert.encode(),
               pkcs12ParameterGenerator.generateDerivedParametersWithIV(
                   5, RC2Engine.BLOCK_SIZE));
+          break;
+        case 'RC2-128-CBC':
+          encryptedContent = encryptRc2(
+              safeContentsCert.encode(),
+              pkcs12ParameterGenerator.generateDerivedParametersWithIV(
+                  16, RC2Engine.BLOCK_SIZE));
+          break;
+        case 'RC4-40':
+          break;
+        case 'RC4-128':
+          break;
+        case 'DES-EDE-CBC':
+          break;
+        case 'DES-EDE3-CBC':
           break;
         default:
           throw ArgumentError('Unknown algorithm for certPbe');
@@ -287,7 +301,7 @@ class Pkcs12Utils {
     return safeBagsKey;
   }
 
-  static Uint8List encryptRc40Cbc(Uint8List bytesToEncrypt,
+  static Uint8List encryptRc2(Uint8List bytesToEncrypt,
       ParametersWithIV generateDerivedParametersWithIV) {
     var engine = CBCBlockCipher(RC2Engine());
     engine.reset();
