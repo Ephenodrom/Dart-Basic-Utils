@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:basic_utils/src/library/crypto/pss_signer.dart';
 import 'package:pointycastle/asn1/object_identifiers.dart';
 import 'package:pointycastle/export.dart';
 import 'package:pointycastle/pointycastle.dart';
@@ -878,7 +879,10 @@ class CryptoUtils {
       {String algorithm = 'SHA-256/PSS'}) {
     final sig = PSSSignature(signature);
 
-    final verifier = Signer(algorithm) as PSSSigner;
+    //var verifier = Signer(algorithm) as PSSSigner;
+    var digestName = algorithm.substring(0, algorithm.indexOf('/'));
+    var verifier =
+        LocalPSSSigner(RSAEngine(), Digest(digestName), Digest(digestName));
 
     var params = ParametersWithSaltConfiguration(
       PublicKeyParameter<RSAPublicKey>(publicKey),
@@ -1134,7 +1138,10 @@ class CryptoUtils {
   static Uint8List rsaPssSign(
       RSAPrivateKey privateKey, Uint8List dataToSign, Uint8List salt,
       {String algorithm = 'SHA-256/PSS'}) {
-    var signer = Signer(algorithm) as PSSSigner;
+    //var signer = Signer(algorithm) as PSSSigner;
+    var digestName = algorithm.substring(0, algorithm.indexOf('/'));
+    var signer =
+        LocalPSSSigner(RSAEngine(), Digest(digestName), Digest(digestName));
     signer.init(
         true,
         ParametersWithSalt(
