@@ -37,6 +37,7 @@ class Pkcs12Utils {
   /// * macIter = The iteration count for the key derivation
   /// * salt = The salt used for the key derivation, if left out, it will be generated
   /// * certSalt = The salt used for the key derivation for cert encryption, if left out salt will be used.
+  /// * keySalt = The salt used for the key derivation for key encryption, if left out salt will be used.
   /// * friendlyName =  The name to be used to place as an attribue. If left, it will be generated.
   /// * localKeyId = The id to be used to place as an attribue. If left, it will be generated.
   ///
@@ -61,6 +62,7 @@ class Pkcs12Utils {
     int macIter = 2048,
     Uint8List? salt,
     Uint8List? certSalt,
+    Uint8List? keySalt,
     String? friendlyName,
     Uint8List? localKeyId,
   }) {
@@ -78,6 +80,10 @@ class Pkcs12Utils {
     }
 
     if (certSalt == null) {
+      certSalt = salt;
+    }
+
+    if (keySalt == null) {
       certSalt = salt;
     }
 
