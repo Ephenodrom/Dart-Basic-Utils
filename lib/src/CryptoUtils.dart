@@ -1043,7 +1043,7 @@ class CryptoUtils {
   ///
   static BigInt getModulusFromRSAPrivateKeyPem(String pem) {
     RSAPrivateKey privateKey;
-    switch (_getPrivateKeyType(pem)) {
+    switch (getPrivateKeyType(pem)) {
       case 'RSA':
         privateKey = rsaPrivateKeyFromPem(pem);
         return privateKey.modulus!;
@@ -1061,7 +1061,7 @@ class CryptoUtils {
   ///
   /// Returns the private key type of the given [pem]
   ///
-  static String _getPrivateKeyType(String pem) {
+  static String getPrivateKeyType(String pem) {
     if (pem.startsWith(BEGIN_RSA_PRIVATE_KEY)) {
       return 'RSA_PKCS1';
     } else if (pem.startsWith(BEGIN_PRIVATE_KEY)) {

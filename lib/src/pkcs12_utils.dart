@@ -256,11 +256,25 @@ class Pkcs12Utils {
 
   static _generateSafeBagsForKey(
       String privateKey, Uint8List localKeyId, String friendlyName) {
+    var privateKeyInfo;
+    switch (CryptoUtils.getPrivateKeyType(privateKey)) {
+      case "RSA":
+        privateKeyInfo = PrivateKeyInfo.fromPkcs8RsaPem(privateKey);
+        break;
+      case "RSA_PKCS1":
+        privateKeyInfo = PrivateKeyInfo.fromPkcs1RsaPem(privateKey);
+        break;
+      case "ECC":
+        //privateKeyInfo = PrivateKeyInfo.fromPkcs1RsaPem(privateKey);
+        // TODO
+        break;
+    }
+
     var safeBagsKey = <SafeBag>[];
     var attribute = Attribute.localKeyID(localKeyId);
     safeBagsKey.add(
       SafeBag.forKeyBag(
-        KeyBag(PrivateKeyInfo.fromPkcs1RsaPem(privateKey)),
+        KeyBag(privateKeyInfo),
         bagAttributes: ASN1Set(elements: [attribute]),
       ),
     );

@@ -42,6 +42,20 @@ class PrivateKeyInfo extends ASN1Object {
   }
 
   ///
+  /// Creates an instance of PrivateKeyInfo for the given [pem].
+  /// The [pem] should represent a RSA private key in PKCS8.
+  ///
+  PrivateKeyInfo.fromPkcs8RsaPem(String pem) {
+    var bytes = CryptoUtils.getBytesFromPEMString(pem);
+    var asn1Parser = ASN1Parser(bytes);
+    var privateKeySeq = asn1Parser.nextObject() as ASN1Sequence;
+    version = privateKeySeq.elements!.elementAt(0) as ASN1Integer;
+    privateKeyAlgorithm = AlgorithmIdentifier.fromSequence(
+        privateKeySeq.elements!.elementAt(1) as ASN1Sequence);
+    privateKey = privateKeySeq.elements!.elementAt(2) as ASN1OctetString;
+  }
+
+  ///
   /// Creates an instance of PrivateKeyInfo for the given [key].
   /// The [key] should represent a RSA private key in PKCS1 format as an [ASN1Sequence].
   ///
