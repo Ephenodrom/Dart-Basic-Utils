@@ -1,9 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
-import 'package:basic_utils/src/StringUtils.dart';
+import 'package:basic_utils/src/library/crypto/desede_engine.dart';
 import 'package:basic_utils/src/library/crypto/rc2_engine.dart';
-import 'package:basic_utils/src/library/crypto/rc2_parameters.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/algorithm_identifier.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/attribute.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/authenticated_safe.dart';
@@ -20,7 +19,6 @@ import 'package:basic_utils/src/model/asn1/pkcs/private_key_info.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/safe_bag.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/safe_contents.dart';
 import 'package:pointycastle/block/modes/cbc.dart';
-import 'package:pointycastle/pointycastle.dart';
 
 class Pkcs12Utils {
   ///
@@ -30,10 +28,10 @@ class Pkcs12Utils {
   ///
   /// * privateKey = A private key in PEM format.
   /// * certificates = A list of certificates in PEM format.
-  /// * password =
+  /// * password = The password used for encryption.
   /// * keyPbe = The encryption algorithm used to encrypt the private key.
   /// * certPbe = The encryption algorithm used to encrypt the certificates.
-  /// * digetAlgorithm = The digest algorithm used for key derivation
+  /// * digetAlgorithm = The digest algorithm used for the mac key derivation
   /// * macIter = The iteration count for the key derivation
   /// * salt = The salt used for the key derivation, if left out, it will be generated
   /// * certSalt = The salt used for the key derivation for cert encryption, if left out salt will be used.
@@ -42,9 +40,9 @@ class Pkcs12Utils {
   /// * localKeyId = The id to be used to place as an attribue. If left, it will be generated.
   ///
   /// Possible values :
-  /// * keyPbe = RC2-40-CBC (DEFAULT) / RC2-128-CBC / RC4-40 / RC4-128 / DES-EDE-CBC / DES-EDE3-CBC / NONE
-  /// * certPbe = DES-EDE3-CBC (DEFAULT) / RC2-40-CBC / RC2-128-CBC / RC4-40 / RC4-128 / DES-EDE-CBC / NONE
-  /// * digetAlgorithm = SHA-1 ( DEFAULT) / SHA-224 / SHA-256 / SHA-384 / SHA-512
+  /// * keyPbe = RC2-40-CBC (DEFAULT) / DES-EDE3-CBC / NONE
+  /// * certPbe = DES-EDE3-CBC (DEFAULT) / RC2-40-CBC / NONE
+  /// * digestAlgorithm = SHA-1 ( DEFAULT) / SHA-224 / SHA-256 / SHA-384 / SHA-512
   ///
   /// **IMPORTANT:** This method generates a PKCS12 file that only supports PASSWORD PRIVACY and PASSWORD INTEGRITY mode. This
   /// means that the private key and certificates are encrypted with the given password and the HMAC is generated using the given password.
@@ -56,9 +54,9 @@ class Pkcs12Utils {
     String privateKey,
     List<String> certificates, {
     String? password,
-    String keyPbe = 'NONE',
+    String keyPbe = 'DES-EDE3-CBC',
     String certPbe = 'RC2-40-CBC',
-    String digetAlgorithm = 'SHA-1',
+    String digestAlgorithm = 'SHA-1',
     int macIter = 2048,
     Uint8List? salt,
     Uint8List? certSalt,
@@ -66,8 +64,6 @@ class Pkcs12Utils {
     String? friendlyName,
     Uint8List? localKeyId,
   }) {
-    var pkcs12ParameterGenerator =
-        PKCS12ParametersGenerator(Digest(digetAlgorithm));
     Uint8List? pwFormatted;
     if (password != null) {
       pwFormatted =
@@ -84,7 +80,7 @@ class Pkcs12Utils {
     }
 
     if (keySalt == null) {
-      certSalt = salt;
+      keySalt = salt;
     }
 
     // GENERATE LOCAL KEY ID
@@ -92,21 +88,10 @@ class Pkcs12Utils {
       localKeyId = _generateLocalKeyId();
     }
 
-    // GENERATE FRIENDLY NAME
-    if (friendlyName == null) {
-      friendlyName = _generateFriendlyName();
-    }
-
     // CREATE SAFEBAGS WITH PEMS WRAPPED IN CERTBAG
-    var safeBags =
-        _generateSafeBagsForCerts(certificates, localKeyId, friendlyName);
+    var safeBags = _generateSafeBagsForCerts(certificates, localKeyId,
+        friendlyName: friendlyName);
     var safeContentsCert = SafeContents(safeBags);
-
-    // CREATE SAFEBAG FOR PRIVATEKEY WRAPPED IN KEYBAG
-    var safeBagsKey =
-        _generateSafeBagsForKey(privateKey, localKeyId, friendlyName);
-
-    var safeContentsKey = SafeContents(safeBagsKey);
 
     // CREATE CONTENT INFO
     var contentInfoCert;
@@ -125,32 +110,14 @@ class Pkcs12Utils {
         parameters: params,
       );
 
-      pkcs12ParameterGenerator.init(pwFormatted, certSalt, macIter);
-      late Uint8List encryptedContent;
-      switch (certPbe) {
-        case 'RC2-40-CBC':
-          encryptedContent = encryptRc2(
-              safeContentsCert.encode(),
-              pkcs12ParameterGenerator.generateDerivedParametersWithIV(
-                  5, RC2Engine.BLOCK_SIZE));
-          break;
-        case 'RC2-128-CBC':
-          encryptedContent = encryptRc2(
-              safeContentsCert.encode(),
-              pkcs12ParameterGenerator.generateDerivedParametersWithIV(
-                  16, RC2Engine.BLOCK_SIZE));
-          break;
-        case 'RC4-40':
-          break;
-        case 'RC4-128':
-          break;
-        case 'DES-EDE-CBC':
-          break;
-        case 'DES-EDE3-CBC':
-          break;
-        default:
-          throw ArgumentError('Unknown algorithm for certPbe');
-      }
+      Uint8List encryptedContent = _encrypt(
+        safeContentsCert.encode(),
+        certPbe,
+        pwFormatted,
+        certSalt,
+        macIter,
+        'SHA-1',
+      );
 
       var encryptedContentInfo = EncryptedContentInfo.forData(
           contentEncryptionAlgorithm, encryptedContent);
@@ -164,9 +131,55 @@ class Pkcs12Utils {
         ),
       );
     }
-    if (keyPbe != 'NONE' && password != null) {
-      // TODO ENCRYPT PRIVATE KEY
+    if (keyPbe != 'NONE' && pwFormatted != null) {
+      var params = ASN1Sequence(elements: [
+        ASN1OctetString(octets: keySalt),
+        ASN1Integer(BigInt.from(macIter)),
+      ]);
+      var contentEncryptionAlgorithm = AlgorithmIdentifier(
+        ASN1ObjectIdentifier.fromBytes(
+          Uint8List.fromList(
+            StringUtils.hexToUint8List("060A2A864886F70D010C0103"),
+          ),
+        ),
+        parameters: params,
+      );
+      var privateKeyInfo = _getPrivateKeyInfoFromPem(privateKey);
+      Uint8List encryptedContent = _encrypt(
+        privateKeyInfo.encode(),
+        keyPbe,
+        pwFormatted,
+        keySalt,
+        macIter,
+        'SHA-1',
+      );
+
+      // CREATE SAFEBAG FOR PRIVATEKEY WRAPPED IN KEYBAG
+      var safeBagsKey = _generateSafeBagsForShroudedKey(
+        ASN1Sequence(elements: [
+          contentEncryptionAlgorithm,
+          ASN1OctetString(octets: encryptedContent)
+        ]),
+        localKeyId,
+        friendlyName: friendlyName,
+      );
+
+      var safeContentsKey = SafeContents(safeBagsKey);
+      contentInfoKey = ContentInfo.forData(
+        ASN1OctetString(
+          octets: safeContentsKey.encode(),
+        ),
+      );
     } else {
+      // CREATE SAFEBAG FOR PRIVATEKEY WRAPPED IN KEYBAG
+      var safeBagsKey = _generateSafeBagsForKey(
+        privateKey,
+        localKeyId,
+        friendlyName: friendlyName,
+      );
+
+      var safeContentsKey = SafeContents(safeBagsKey);
+
       contentInfoKey = ContentInfo.forData(
         ASN1OctetString(
           octets: safeContentsKey.encode(),
@@ -192,7 +205,7 @@ class Pkcs12Utils {
       var pwFormatted =
           formatPkcs12Password(Uint8List.fromList(password.codeUnits));
 
-      var generator = PKCS12ParametersGenerator(Digest(digetAlgorithm));
+      var generator = PKCS12ParametersGenerator(Digest(digestAlgorithm));
       generator.init(pwFormatted, salt, macIter);
 
       var key = generator.generateDerivedMacParameters(20);
@@ -200,8 +213,8 @@ class Pkcs12Utils {
       macData = MacData(
         DigestInfo(
           m,
-          AlgorithmIdentifier.fromIdentifier(
-              '1.3.14.3.2.26'), // TODO TAKE FROM DIGEST
+          _algorithmIdentifierFromDigest(
+              digestAlgorithm), // TODO TAKE FROM DIGEST
         ),
         salt,
         BigInt.from(2048),
@@ -217,12 +230,15 @@ class Pkcs12Utils {
   }
 
   static Uint8List _generateLocalKeyId() {
-    return StringUtils.hexToUint8List(
-        '4B0BD09492DD36FAB7EAD0D9821068B9C2A60F1E');
+    return CryptoUtils.getSecureRandom().nextBytes(20);
   }
 
   static Uint8List _generateSalt() {
-    return StringUtils.hexToUint8List('9E81107F8BAA0D5F');
+    return CryptoUtils.getSecureRandom().nextBytes(8);
+  }
+
+  static String _generateFriendlyName() {
+    return 'default';
   }
 
   static Uint8List generateHmac(Uint8List bytesForHmac, Uint8List key) {
@@ -250,12 +266,9 @@ class Pkcs12Utils {
     }
   }
 
-  static String _generateFriendlyName() {
-    return 'Foo';
-  }
-
   static _generateSafeBagsForCerts(
-      List<String> certificates, Uint8List localKeyId, String friendlyName) {
+      List<String> certificates, Uint8List localKeyId,
+      {String? friendlyName}) {
     var certBags = <CertBag>[];
     var safeBags = <SafeBag>[];
 
@@ -263,42 +276,73 @@ class Pkcs12Utils {
       certBags.add(CertBag.fromX509Pem(pem));
     }
     for (var certBag in certBags) {
-      var attribute = Attribute.localKeyID(localKeyId);
+      var asn1Set = ASN1Set(elements: []);
+      asn1Set.add(Attribute.localKeyID(localKeyId));
+      if (friendlyName != null) {
+        asn1Set.add(Attribute.friendlyName(friendlyName));
+      }
       safeBags.add(
         SafeBag.forCertBag(
           certBag,
-          bagAttributes: ASN1Set(elements: [attribute]),
+          bagAttributes: asn1Set,
         ),
       );
     }
     return safeBags;
   }
 
-  static _generateSafeBagsForKey(
-      String privateKey, Uint8List localKeyId, String friendlyName) {
-    var privateKeyInfo;
-    switch (CryptoUtils.getPrivateKeyType(privateKey)) {
-      case "RSA":
-        privateKeyInfo = PrivateKeyInfo.fromPkcs8RsaPem(privateKey);
-        break;
-      case "RSA_PKCS1":
-        privateKeyInfo = PrivateKeyInfo.fromPkcs1RsaPem(privateKey);
-        break;
-      case "ECC":
-        //privateKeyInfo = PrivateKeyInfo.fromPkcs1RsaPem(privateKey);
-        // TODO
-        break;
-    }
+  static List<SafeBag> _generateSafeBagsForKey(
+      String privateKey, Uint8List localKeyId,
+      {String? friendlyName}) {
+    late PrivateKeyInfo privateKeyInfo = _getPrivateKeyInfoFromPem(privateKey);
 
     var safeBagsKey = <SafeBag>[];
-    var attribute = Attribute.localKeyID(localKeyId);
+    var asn1Set = ASN1Set(elements: []);
+    asn1Set.add(Attribute.localKeyID(localKeyId));
+    if (friendlyName != null) {
+      asn1Set.add(Attribute.friendlyName(friendlyName));
+    }
     safeBagsKey.add(
       SafeBag.forKeyBag(
         KeyBag(privateKeyInfo),
-        bagAttributes: ASN1Set(elements: [attribute]),
+        bagAttributes: asn1Set,
       ),
     );
     return safeBagsKey;
+  }
+
+  static _generateSafeBagsForShroudedKey(
+      ASN1Object bagValue, Uint8List localKeyId,
+      {String? friendlyName}) {
+    var safeBagsKey = <SafeBag>[];
+    var asn1Set = ASN1Set(elements: []);
+    asn1Set.add(Attribute.localKeyID(localKeyId));
+    if (friendlyName != null) {
+      asn1Set.add(Attribute.friendlyName(friendlyName));
+    }
+    safeBagsKey.add(
+      SafeBag.forPkcs8ShroudedKeyBag(
+        bagValue,
+        bagAttributes: asn1Set,
+      ),
+    );
+    return safeBagsKey;
+  }
+
+  static PrivateKeyInfo _getPrivateKeyInfoFromPem(String pem) {
+    late PrivateKeyInfo privateKeyInfo;
+    switch (CryptoUtils.getPrivateKeyType(pem)) {
+      case "RSA":
+        privateKeyInfo = PrivateKeyInfo.fromPkcs8RsaPem(pem);
+        break;
+      case "RSA_PKCS1":
+        privateKeyInfo = PrivateKeyInfo.fromPkcs1RsaPem(pem);
+        break;
+      case "ECC":
+        privateKeyInfo = PrivateKeyInfo.fromEccPem(pem);
+        break;
+    }
+    return privateKeyInfo;
   }
 
   static Uint8List encryptRc2(Uint8List bytesToEncrypt,
@@ -315,5 +359,83 @@ class Pkcs12Utils {
     }
 
     return encryptedContent;
+  }
+
+  static Uint8List encrypt3des(Uint8List bytesToEncrypt,
+      ParametersWithIV generateDerivedParametersWithIV) {
+    var engine = CBCBlockCipher(DESedeEngine());
+    engine.reset();
+    engine.init(true, generateDerivedParametersWithIV);
+    var padded = CryptoUtils.addPKCS7Padding(bytesToEncrypt, 8);
+    final encryptedContent = Uint8List(padded.length);
+
+    var offset = 0;
+    while (offset < padded.length) {
+      offset += engine.processBlock(padded, offset, encryptedContent, offset);
+    }
+
+    return encryptedContent;
+  }
+
+  static Uint8List _encrypt(
+      Uint8List encode,
+      String certPbe,
+      Uint8List pwFormatted,
+      Uint8List salt,
+      int macIter,
+      String digetAlgorithm) {
+    var pkcs12ParameterGenerator =
+        PKCS12ParametersGenerator(Digest(digetAlgorithm));
+    pkcs12ParameterGenerator.init(pwFormatted, salt, macIter);
+
+    switch (certPbe) {
+      case 'RC2-40-CBC':
+        return encryptRc2(
+            encode,
+            pkcs12ParameterGenerator.generateDerivedParametersWithIV(
+                5, RC2Engine.BLOCK_SIZE));
+      case 'RC2-128-CBC':
+        throw ArgumentError('unsupported algorithm');
+      case 'RC4-40':
+        throw ArgumentError('unsupported algorithm');
+      case 'RC4-128':
+        throw ArgumentError('unsupported algorithm');
+      case 'DES-EDE-CBC':
+        return encrypt3des(
+          encode,
+          pkcs12ParameterGenerator.generateDerivedParametersWithIV(
+            16,
+            DESedeEngine.BLOCK_SIZE,
+          ),
+        );
+      case 'DES-EDE3-CBC':
+        return encrypt3des(
+          encode,
+          pkcs12ParameterGenerator.generateDerivedParametersWithIV(
+            24,
+            DESedeEngine.BLOCK_SIZE,
+          ),
+        );
+      default:
+        throw ArgumentError('unsupported algorithm');
+    }
+  }
+
+  static AlgorithmIdentifier _algorithmIdentifierFromDigest(
+      String digestAlgorithm) {
+    switch (digestAlgorithm) {
+      case 'SHA-1':
+        return AlgorithmIdentifier.fromIdentifier('1.3.14.3.2.26');
+      case 'SHA-224':
+        return AlgorithmIdentifier.fromIdentifier('2.16.840.1.101.3.4.2.4');
+      case 'SHA-256':
+        return AlgorithmIdentifier.fromIdentifier('2.16.840.1.101.3.4.2.1');
+      case 'SHA-384':
+        return AlgorithmIdentifier.fromIdentifier('2.16.840.1.101.3.4.2.2');
+      case 'SHA-512':
+        return AlgorithmIdentifier.fromIdentifier('2.16.840.1.101.3.4.2.3');
+      default:
+        return AlgorithmIdentifier.fromIdentifier('1.3.14.3.2.26');
+    }
   }
 }

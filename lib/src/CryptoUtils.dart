@@ -175,7 +175,7 @@ class CryptoUtils {
     var keyParams =
         RSAKeyGeneratorParameters(BigInt.parse('65537'), keySize, 12);
 
-    var secureRandom = _getSecureRandom();
+    var secureRandom = getSecureRandom();
 
     var rngParams = ParametersWithRandom(keyParams, secureRandom);
     var generator = RSAKeyGenerator();
@@ -237,7 +237,7 @@ class CryptoUtils {
     var ecDomainParameters = ECDomainParameters(curve);
     var keyParams = ECKeyGeneratorParameters(ecDomainParameters);
 
-    var secureRandom = _getSecureRandom();
+    var secureRandom = getSecureRandom();
 
     var rngParams = ParametersWithRandom(keyParams, secureRandom);
     var generator = ECKeyGenerator();
@@ -249,7 +249,7 @@ class CryptoUtils {
   ///
   /// Generates a secure [FortunaRandom]
   ///
-  static SecureRandom _getSecureRandom() {
+  static SecureRandom getSecureRandom() {
     var secureRandom = FortunaRandom();
     var random = Random.secure();
     var seeds = <int>[];
@@ -886,7 +886,7 @@ class CryptoUtils {
 
     var params = ParametersWithSaltConfiguration(
       PublicKeyParameter<RSAPublicKey>(publicKey),
-      _getSecureRandom(),
+      getSecureRandom(),
       saltLength,
     );
 
@@ -920,7 +920,7 @@ class CryptoUtils {
     var signer = Signer(algorithmName) as ECDSASigner;
 
     var params = ParametersWithRandom(
-        PrivateKeyParameter<ECPrivateKey>(privateKey), _getSecureRandom());
+        PrivateKeyParameter<ECPrivateKey>(privateKey), getSecureRandom());
     signer.init(true, params);
 
     var sig = signer.generateSignature(dataToSign) as ECSignature;

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:basic_utils/src/library/crypto/des_base.dart';
 import 'package:pointycastle/export.dart';
 
-class DESedeEngine extends DesBase {
+class DESedeEngine extends DesBase implements BlockCipher {
   static final BLOCK_SIZE = 8;
 
   List<int>? workingKey1;

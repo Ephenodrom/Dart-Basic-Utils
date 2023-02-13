@@ -34,8 +34,10 @@ class SafeBag extends ASN1Object {
   /// Constructor to create the SafeBag for a pkcs-8ShroudedKeyBag.
   ///
   SafeBag.forPkcs8ShroudedKeyBag(this.bagValue, {this.bagAttributes}) {
-    bagId =
-        ASN1ObjectIdentifier.fromIdentifierString('1.2.840.113549.1.12.10.1.2');
+    // bagId =
+    //     ASN1ObjectIdentifier.fromIdentifierString('1.2.840.113549.1.12.10.1.2');
+    bagId = ASN1ObjectIdentifier.fromBytes(
+        StringUtils.hexToUint8List("060B2A864886F70D010C0A0102"));
   }
 
   ///

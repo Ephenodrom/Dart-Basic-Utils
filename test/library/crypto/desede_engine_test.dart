@@ -21,7 +21,12 @@ void main() {
         "3fa40e8a984d48156a271787ab8883f9893d51ec4b563b53");
 
     engine.init(true, params);
-    actual = engine.process(input);
+    actual = Uint8List(input.length);
+
+    var offset = 0;
+    while (offset < input.length) {
+      offset += engine.processBlock(input, offset, actual, offset);
+    }
     expect(actual, output);
 
     params = DESedeParameters(
@@ -32,7 +37,12 @@ void main() {
         "d80a0d8b2bae5e4e6a0094171abcfc2775d2235a706e232c");
 
     engine.init(true, params);
-    actual = engine.process(input);
+    actual = Uint8List(input.length);
+
+    offset = 0;
+    while (offset < input.length) {
+      offset += engine.processBlock(input, offset, actual, offset);
+    }
     expect(actual, output);
 
     params = DESedeParameters(StringUtils.hexToUint8List(
@@ -43,7 +53,12 @@ void main() {
         "3fa40e8a984d48156a271787ab8883f9893d51ec4b563b53");
 
     engine.init(true, params);
-    actual = engine.process(input);
+    actual = Uint8List(input.length);
+
+    offset = 0;
+    while (offset < input.length) {
+      offset += engine.processBlock(input, offset, actual, offset);
+    }
     expect(actual, output);
 
     params = DESedeParameters(StringUtils.hexToUint8List(
@@ -54,7 +69,12 @@ void main() {
         "d80a0d8b2bae5e4e6a0094171abcfc2775d2235a706e232c");
 
     engine.init(true, params);
-    actual = engine.process(input);
+    actual = Uint8List(input.length);
+
+    offset = 0;
+    while (offset < input.length) {
+      offset += engine.processBlock(input, offset, actual, offset);
+    }
     expect(actual, output);
   });
 }
