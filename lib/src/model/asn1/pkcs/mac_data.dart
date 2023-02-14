@@ -13,11 +13,13 @@ import 'package:basic_utils/src/model/asn1/pkcs/digest_info.dart';
 ///```
 ///
 class MacData extends ASN1Object {
-  DigestInfo mac;
-  Uint8List macSalt;
-  BigInt iterationCount;
+  late DigestInfo mac;
+  late Uint8List macSalt;
+  late BigInt iterationCount;
 
   MacData(this.mac, this.macSalt, this.iterationCount);
+
+  MacData.fromSequence(ASN1Sequence seq) {}
 
   @override
   Uint8List encode(

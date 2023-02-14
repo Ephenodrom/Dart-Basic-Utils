@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:basic_utils/src/library/crypto/desede_engine.dart';
 import 'package:basic_utils/src/library/crypto/rc2_engine.dart';
+import 'package:basic_utils/src/library/crypto/rc4_engine.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/algorithm_identifier.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/attribute.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/authenticated_safe.dart';
@@ -22,8 +23,6 @@ import 'package:pointycastle/block/modes/cbc.dart';
 
 class Pkcs12Utils {
   ///
-  /// **BETA, NOT INTENDED FOR USAGE, ONLY A PREVIEW**
-  ///
   /// Generates a PKCS12 file according to RFC 7292.
   ///
   /// * privateKey = A private key in PEM format.
@@ -36,13 +35,23 @@ class Pkcs12Utils {
   /// * salt = The salt used for the key derivation, if left out, it will be generated
   /// * certSalt = The salt used for the key derivation for cert encryption, if left out salt will be used.
   /// * keySalt = The salt used for the key derivation for key encryption, if left out salt will be used.
-  /// * friendlyName =  The name to be used to place as an attribue. If left, it will be generated.
+  /// * friendlyName =  The name to be used to place as an attribue.
   /// * localKeyId = The id to be used to place as an attribue. If left, it will be generated.
   ///
-  /// Possible values :
-  /// * keyPbe = RC2-40-CBC (DEFAULT) / DES-EDE3-CBC / NONE
-  /// * certPbe = DES-EDE3-CBC (DEFAULT) / RC2-40-CBC / NONE
-  /// * digestAlgorithm = SHA-1 ( DEFAULT) / SHA-224 / SHA-256 / SHA-384 / SHA-512
+  /// Possible values for keyPbe and certPbe:
+  /// * PBE-SHA1-RC4-128
+  /// * PBE-SHA1-RC4-40
+  /// * PBE-SHA1-3DES ( default for keyPbe )
+  /// * PBE-SHA1-2DES
+  /// * PBE-SHA1-RC2-128
+  /// * PBE-SHA1-RC2-40 ( default for certPbe)
+  ///
+  /// Possible values for digestAlgorithm:
+  /// * SHA-1 ( DEFAULT)
+  /// * SHA-224
+  /// * SHA-256
+  /// * SHA-384
+  /// * SHA-512
   ///
   /// **IMPORTANT:** This method generates a PKCS12 file that only supports PASSWORD PRIVACY and PASSWORD INTEGRITY mode. This
   /// means that the private key and certificates are encrypted with the given password and the HMAC is generated using the given password.
@@ -50,12 +59,13 @@ class Pkcs12Utils {
   /// If keyPbe or certPbe are set to NONE or the password is left out, there will be no encryption.
   /// If the password is left out, no HMAC is generated
   ///
+  ///
   static Uint8List generatePkcs12(
     String privateKey,
     List<String> certificates, {
     String? password,
-    String keyPbe = 'DES-EDE3-CBC',
-    String certPbe = 'RC2-40-CBC',
+    String keyPbe = 'PBE-SHA1-3DES',
+    String certPbe = 'PBE-SHA1-RC2-40',
     String digestAlgorithm = 'SHA-1',
     int macIter = 2048,
     Uint8List? salt,
@@ -102,11 +112,7 @@ class Pkcs12Utils {
         ASN1Integer(BigInt.from(macIter)),
       ]);
       var contentEncryptionAlgorithm = AlgorithmIdentifier(
-        ASN1ObjectIdentifier.fromBytes(
-          Uint8List.fromList(
-            StringUtils.hexToUint8List("060A2A864886F70D010C0106"),
-          ),
-        ),
+        _oiFromAlgorithm(certPbe),
         parameters: params,
       );
 
@@ -137,11 +143,7 @@ class Pkcs12Utils {
         ASN1Integer(BigInt.from(macIter)),
       ]);
       var contentEncryptionAlgorithm = AlgorithmIdentifier(
-        ASN1ObjectIdentifier.fromBytes(
-          Uint8List.fromList(
-            StringUtils.hexToUint8List("060A2A864886F70D010C0103"),
-          ),
-        ),
+        _oiFromAlgorithm(keyPbe),
         parameters: params,
       );
       var privateKeyInfo = _getPrivateKeyInfoFromPem(privateKey);
@@ -209,12 +211,13 @@ class Pkcs12Utils {
       generator.init(pwFormatted, salt, macIter);
 
       var key = generator.generateDerivedMacParameters(20);
-      var m = generateHmac(bytesForHmac, key.key);
+      var m = _generateHmac(bytesForHmac, key.key, digestAlgorithm);
       macData = MacData(
         DigestInfo(
           m,
           _algorithmIdentifierFromDigest(
-              digestAlgorithm), // TODO TAKE FROM DIGEST
+            digestAlgorithm,
+          ),
         ),
         salt,
         BigInt.from(2048),
@@ -237,12 +240,9 @@ class Pkcs12Utils {
     return CryptoUtils.getSecureRandom().nextBytes(8);
   }
 
-  static String _generateFriendlyName() {
-    return 'default';
-  }
-
-  static Uint8List generateHmac(Uint8List bytesForHmac, Uint8List key) {
-    final hmac = Mac('SHA-1/HMAC')..init(KeyParameter(key));
+  static Uint8List _generateHmac(
+      Uint8List bytesForHmac, Uint8List key, String digestAlgorithm) {
+    final hmac = Mac('$digestAlgorithm/HMAC')..init(KeyParameter(key));
     var m = hmac.process(bytesForHmac);
     return m;
   }
@@ -345,7 +345,7 @@ class Pkcs12Utils {
     return privateKeyInfo;
   }
 
-  static Uint8List encryptRc2(Uint8List bytesToEncrypt,
+  static Uint8List _encryptRc2(Uint8List bytesToEncrypt,
       ParametersWithIV generateDerivedParametersWithIV) {
     var engine = CBCBlockCipher(RC2Engine());
     engine.reset();
@@ -361,7 +361,7 @@ class Pkcs12Utils {
     return encryptedContent;
   }
 
-  static Uint8List encrypt3des(Uint8List bytesToEncrypt,
+  static Uint8List _encrypt3des(Uint8List bytesToEncrypt,
       ParametersWithIV generateDerivedParametersWithIV) {
     var engine = CBCBlockCipher(DESedeEngine());
     engine.reset();
@@ -377,9 +377,20 @@ class Pkcs12Utils {
     return encryptedContent;
   }
 
+  static Uint8List _encryptRc4(
+      Uint8List bytesToEncrypt, KeyParameter generateDerivedParameters) {
+    var engine = RC4Engine();
+    engine.init(true, generateDerivedParameters);
+    engine.reset();
+    //var padded = CryptoUtils.addPKCS7Padding(bytesToEncrypt, 8);
+    final encryptedContent = engine.process(bytesToEncrypt);
+
+    return encryptedContent;
+  }
+
   static Uint8List _encrypt(
       Uint8List encode,
-      String certPbe,
+      String algorithm,
       Uint8List pwFormatted,
       Uint8List salt,
       int macIter,
@@ -388,28 +399,39 @@ class Pkcs12Utils {
         PKCS12ParametersGenerator(Digest(digetAlgorithm));
     pkcs12ParameterGenerator.init(pwFormatted, salt, macIter);
 
-    switch (certPbe) {
-      case 'RC2-40-CBC':
-        return encryptRc2(
-            encode,
-            pkcs12ParameterGenerator.generateDerivedParametersWithIV(
-                5, RC2Engine.BLOCK_SIZE));
-      case 'RC2-128-CBC':
-        throw ArgumentError('unsupported algorithm');
-      case 'RC4-40':
-        throw ArgumentError('unsupported algorithm');
-      case 'RC4-128':
-        throw ArgumentError('unsupported algorithm');
-      case 'DES-EDE-CBC':
-        return encrypt3des(
+    switch (algorithm) {
+      case 'PBE-SHA1-RC2-40':
+        return _encryptRc2(
+          encode,
+          pkcs12ParameterGenerator.generateDerivedParametersWithIV(
+              5, RC2Engine.BLOCK_SIZE),
+        );
+      case 'PBE-SHA1-RC2-128':
+        return _encryptRc2(
+          encode,
+          pkcs12ParameterGenerator.generateDerivedParametersWithIV(
+              16, RC2Engine.BLOCK_SIZE),
+        );
+      case 'PBE-SHA1-RC4-40':
+        return _encryptRc4(
+          encode,
+          pkcs12ParameterGenerator.generateDerivedParameters(5),
+        );
+      case 'PBE-SHA1-RC4-128':
+        return _encryptRc4(
+          encode,
+          pkcs12ParameterGenerator.generateDerivedParameters(16),
+        );
+      case 'PBE-SHA1-2DES':
+        return _encrypt3des(
           encode,
           pkcs12ParameterGenerator.generateDerivedParametersWithIV(
             16,
             DESedeEngine.BLOCK_SIZE,
           ),
         );
-      case 'DES-EDE3-CBC':
-        return encrypt3des(
+      case 'PBE-SHA1-3DES':
+        return _encrypt3des(
           encode,
           pkcs12ParameterGenerator.generateDerivedParametersWithIV(
             24,
@@ -417,7 +439,7 @@ class Pkcs12Utils {
           ),
         );
       default:
-        throw ArgumentError('unsupported algorithm');
+        throw ArgumentError('unsupported algorithm $algorithm');
     }
   }
 
@@ -436,6 +458,55 @@ class Pkcs12Utils {
         return AlgorithmIdentifier.fromIdentifier('2.16.840.1.101.3.4.2.3');
       default:
         return AlgorithmIdentifier.fromIdentifier('1.3.14.3.2.26');
+    }
+  }
+
+  static ASN1ObjectIdentifier _oiFromAlgorithm(String keyPbe) {
+    switch (keyPbe) {
+      case 'PBE-SHA1-RC2-40':
+        // 1.2.840.113549.1.12.1.6
+        return ASN1ObjectIdentifier.fromBytes(
+          Uint8List.fromList(
+            HexUtils.decode("06 0A 2A 86 48 86 F7 0D 01 0C 01 06"),
+          ),
+        );
+      case 'PBE-SHA1-RC2-128':
+        // 1.2.840.113549.1.12.1.5
+        return ASN1ObjectIdentifier.fromBytes(
+          Uint8List.fromList(
+            HexUtils.decode("06 0A 2A 86 48 86 F7 0D 01 0C 01 05"),
+          ),
+        );
+      case 'PBE-SHA1-RC4-40':
+        // 1.2.840.113549.1.12.1.2
+        return ASN1ObjectIdentifier.fromBytes(
+          Uint8List.fromList(
+            HexUtils.decode("06 0A 2A 86 48 86 F7 0D 01 0C 01 02"),
+          ),
+        );
+      case 'PBE-SHA1-RC4-128':
+        // 1.2.840.113549.1.12.1.1
+        return ASN1ObjectIdentifier.fromBytes(
+          Uint8List.fromList(
+            HexUtils.decode("06 0A 2A 86 48 86 F7 0D 01 0C 01 01"),
+          ),
+        );
+      case 'PBE-SHA1-2DES':
+        // 1.2.840.113549.1.12.1.4
+        return ASN1ObjectIdentifier.fromBytes(
+          Uint8List.fromList(
+            HexUtils.decode("06 0A 2A 86 48 86 F7 0D 01 0C 01 04"),
+          ),
+        );
+      case 'PBE-SHA1-3DES':
+        // 1.2.840.113549.1.12.1.3
+        return ASN1ObjectIdentifier.fromBytes(
+          Uint8List.fromList(
+            HexUtils.decode("06 0A 2A 86 48 86 F7 0D 01 0C 01 03"),
+          ),
+        );
+      default:
+        throw ArgumentError('unsupported algorithm');
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
+import 'package:basic_utils/src/hex_utils.dart';
 
 ///
 ///
@@ -43,7 +44,7 @@ class ContentInfo extends ASN1Object {
 
     contentType = ASN1ObjectIdentifier.fromBytes(
       Uint8List.fromList(
-        StringUtils.hexToUint8List("06092A864886F70D010706"),
+        HexUtils.decode("06092A864886F70D010706"),
       ),
     );
   }

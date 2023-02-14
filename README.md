@@ -29,6 +29,7 @@ A dart package for many helper methods fitting different situations.
     - [IterableUtils](#iterableutils)
     - [CryptoUtils](#cryptoutils)
     - [ASN1Utils](#asn1utils)
+    - [HexUtils](#hexutils)
     - [EnumUtils](#enumutils)
     - [BooleanUtils](#booleanutils)
     - [FunctionDefs](#functiondefs)
@@ -96,8 +97,6 @@ String truncate(String value, int length, {String symbol = '...'});
 String generateRandomString(int length,{alphabet = true,numeric = true,special = true,uppercase = true,lowercase = true,String from = ''});
 String toPascalCase(String s);
 List<String> generateRandomStrings(int amount,int length,{alphabet = true,numeric = true,special = true,uppercase = true,lowercase = true,String from = ''});
-Uint8List hexToUint8List(String hex);
-String uint8ListToHex(Uint8List bytes);
 ```
 
 ### DomainUtils
@@ -256,7 +255,7 @@ CertificateChainCheckData checkChain(List<X509CertificateData> x509);
 Helper class for operations on PKCS12 files.
 
 ```dart
-Uint8List generatePkcs12(String privateKey, List<String> certificates, {String? password, String keyPbe = 'NONE', String certPbe = 'NONE', String digetAlgorithm = 'SHA-1', int macIter = 2048, Uint8List? salt, String? friendlyName, Uint8List? localKeyId})
+Uint8List generatePkcs12(String privateKey, List<String> certificates, {String? password, String keyPbe = 'PBE-SHA1-3DES', String certPbe = 'PBE-SHA1-RC2-40', String digestAlgorithm = 'SHA-1', int macIter = 2048, Uint8List? salt, Uint8List? certSalt, Uint8List? keySalt, String? friendlyName, Uint8List? localKeyId});
 ```
 
 ### IterableUtils
@@ -332,6 +331,15 @@ String dump(String pem, {bool checkHeader = true});
 ASN1DumpWrapper complexDump(String pem, {bool checkHeader = true});
 ```
 
+### HexUtils
+
+Helper class for converting hexadecimal string/bytes.
+
+```dart
+Uint8List decode(String hex);
+String encode(Uint8List bytes);
+```
+
 ### EnumUtils
 
 Helper class for operation on enums.
@@ -390,7 +398,7 @@ All-in-one crossplatform ([Android](https://play.google.com/store/apps/details?i
 
 MIT License
 
-Copyright (c) 2022 Ephenodrom
+Copyright (c) 2023 Ephenodrom
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -696,16 +696,16 @@ class DesBase {
     for (int j = 0; j < 56; j++) {
       int l = pc1[j];
 
-      pc1m[j] = ((key[l >>> 3] & bytebit[l & 07]) != 0);
+      pc1m[j] = ((key[shiftr32(l, 3)] & bytebit[l & 07]) != 0);
     }
 
     for (int i = 0; i < 16; i++) {
       int l, m, n;
 
       if (encrypting) {
-        m = i << 1;
+        m = shiftl32(i, 1);
       } else {
-        m = (15 - i) << 1;
+        m = shiftl32((15 - i), 1);
       }
 
       n = m + 1;
@@ -749,14 +749,14 @@ class DesBase {
       i1 = newKey[i];
       i2 = newKey[i + 1];
 
-      newKey[i] = ((i1 & 0x00fc0000) << 6) |
-          ((i1 & 0x00000fc0) << 10) |
-          ((i2 & 0x00fc0000) >>> 10) |
-          ((i2 & 0x00000fc0) >>> 6);
+      newKey[i] = (shiftl32((i1 & 0x00fc0000), 6)) |
+          (shiftl32((i1 & 0x00000fc0), 10)) |
+          (shiftr32((i2 & 0x00fc0000), 10)) |
+          (shiftr32((i2 & 0x00000fc0), 6));
 
-      newKey[i + 1] = ((i1 & 0x0003f000) << 12) |
-          ((i1 & 0x0000003f) << 16) |
-          ((i2 & 0x0003f000) >>> 4) |
+      newKey[i + 1] = (shiftl32((i1 & 0x0003f000), 12)) |
+          (shiftl32((i1 & 0x0000003f), 16)) |
+          (shiftr32((i2 & 0x0003f000), 4)) |
           (i2 & 0x0000003f);
     }
 

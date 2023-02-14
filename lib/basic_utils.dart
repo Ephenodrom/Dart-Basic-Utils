@@ -68,6 +68,8 @@ export 'src/CryptoUtils.dart';
 export 'src/Asn1Utils.dart';
 export 'src/FunctionDefs.dart';
 export 'src/EnumUtils.dart';
+export 'src/pkcs12_utils.dart';
+export 'src/hex_utils.dart';
 
 // Export other libraries
 export 'package:pointycastle/ecc/api.dart';

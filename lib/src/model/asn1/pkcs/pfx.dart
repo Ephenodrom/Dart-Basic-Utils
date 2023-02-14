@@ -20,10 +20,25 @@ class Pfx extends ASN1Object {
 
   Pfx(this.version, this.authSafe, {this.macData});
 
+  ///
+  /// Creates an instance of [PFX] from the given [sequence]. The sequence must have at least 2 elements.
+  ///
   Pfx.fromSequence(ASN1Sequence seq) {
+    if (IterableUtils.isNotNullOrEmpty(seq.elements)) {
+      throw ArgumentError('Empty sequence');
+    }
+    if (seq.elements!.length == 1) {
+      throw ArgumentError('Sequence has not enough elements');
+    }
     version = seq.elements!.elementAt(0) as ASN1Integer;
     if (version.integer!.toInt() != 3) {
-      throw ArgumentError('wrong version for PFX PDU');
+      throw ArgumentError('Wrong version for PFX PDU');
+    }
+    authSafe =
+        ContentInfo.fromSequence(seq.elements!.elementAt(1) as ASN1Sequence);
+    if (seq.elements!.length == 3) {
+      macData =
+          MacData.fromSequence(seq.elements!.elementAt(2) as ASN1Sequence);
     }
   }
 

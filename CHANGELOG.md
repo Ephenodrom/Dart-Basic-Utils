@@ -2,8 +2,8 @@
 
 ## [5.5.0] - 2022-02-10
 
-* Improved StringUtils, added hexToUint8List() and uint8ListToHex()
-* Added first draft of PKCS12Utils ( BETA )
+* Added HexUtils
+* Added PKCS12Utils
 
 ## [5.4.3] - 2022-12-28
 

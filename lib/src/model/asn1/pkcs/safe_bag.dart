@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
+import 'package:basic_utils/src/hex_utils.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/cert_bag.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/encrypted_private_key_info.dart';
 
@@ -37,7 +38,7 @@ class SafeBag extends ASN1Object {
     // bagId =
     //     ASN1ObjectIdentifier.fromIdentifierString('1.2.840.113549.1.12.10.1.2');
     bagId = ASN1ObjectIdentifier.fromBytes(
-        StringUtils.hexToUint8List("060B2A864886F70D010C0A0102"));
+        HexUtils.decode("060B2A864886F70D010C0A0102"));
   }
 
   ///

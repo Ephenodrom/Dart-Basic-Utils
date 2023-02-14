@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:basic_utils/src/StringUtils.dart';
+import 'package:basic_utils/src/hex_utils.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/pkcs12_parameter_generator.dart';
 import 'package:basic_utils/src/pkcs12_utils.dart';
 import 'package:pointycastle/pointycastle.dart';
@@ -9,10 +9,10 @@ import 'package:test/test.dart';
 void main() {
   test('test generateDerivedParameters()', () {
     var password1 = Uint8List.fromList('smeg'.codeUnits);
-    var salt1 = StringUtils.hexToUint8List('0A58CF64530D823F');
+    var salt1 = HexUtils.decode('0A58CF64530D823F');
     var itCount1 = 1;
-    var result1 = StringUtils.hexToUint8List(
-        '8AAAE6297B6CB04642AB5B077851284EB7128F1A2A7FBCA3');
+    var result1 =
+        HexUtils.decode('8AAAE6297B6CB04642AB5B077851284EB7128F1A2A7FBCA3');
 
     var generator = PKCS12ParametersGenerator(Digest('SHA-1'));
     generator.init(
@@ -21,10 +21,10 @@ void main() {
     expect(bytes.key, result1);
 
     password1 = Uint8List.fromList('queeg'.codeUnits);
-    salt1 = StringUtils.hexToUint8List('1682C0FC5B3F7EC5');
+    salt1 = HexUtils.decode('1682C0FC5B3F7EC5');
     itCount1 = 1000;
-    result1 = StringUtils.hexToUint8List(
-        '483DD6E919D7DE2E8E648BA8F862F3FBFBDC2BCB2C02957F');
+    result1 =
+        HexUtils.decode('483DD6E919D7DE2E8E648BA8F862F3FBFBDC2BCB2C02957F');
 
     generator = PKCS12ParametersGenerator(Digest('SHA-1'));
     generator.init(
@@ -35,10 +35,9 @@ void main() {
 
   test('test generateDerivedMacParameters()', () {
     var password1 = Uint8List.fromList('smeg'.codeUnits);
-    var salt1 = StringUtils.hexToUint8List('3D83C0E4546AC140');
+    var salt1 = HexUtils.decode('3D83C0E4546AC140');
     var itCount1 = 1;
-    var result1 =
-        StringUtils.hexToUint8List('8D967D88F6CAA9D714800AB3D48051D63F73A312');
+    var result1 = HexUtils.decode('8D967D88F6CAA9D714800AB3D48051D63F73A312');
 
     var generator = PKCS12ParametersGenerator(Digest('SHA-1'));
     generator.init(
@@ -47,10 +46,9 @@ void main() {
     expect(bytes.key, result1);
 
     password1 = Uint8List.fromList('queeg'.codeUnits);
-    salt1 = StringUtils.hexToUint8List('263216FCC2FAB31C');
+    salt1 = HexUtils.decode('263216FCC2FAB31C');
     itCount1 = 1000;
-    result1 =
-        StringUtils.hexToUint8List('5EC4C7A80DF652294C3925B6489A7AB857C83476');
+    result1 = HexUtils.decode('5EC4C7A80DF652294C3925B6489A7AB857C83476');
 
     generator = PKCS12ParametersGenerator(Digest('SHA-1'));
     generator.init(
@@ -61,9 +59,9 @@ void main() {
 
   test('test generateDerivedParametersWithIV()', () {
     var password1 = Uint8List.fromList('smeg'.codeUnits);
-    var salt1 = StringUtils.hexToUint8List('0A58CF64530D823F');
+    var salt1 = HexUtils.decode('0A58CF64530D823F');
     var itCount1 = 1;
-    var result1 = StringUtils.hexToUint8List('79993DFE048D3B76');
+    var result1 = HexUtils.decode('79993DFE048D3B76');
 
     var generator = PKCS12ParametersGenerator(Digest('SHA-1'));
     generator.init(
@@ -73,9 +71,9 @@ void main() {
     expect(bytes.iv, result1);
 
     password1 = Uint8List.fromList('queeg'.codeUnits);
-    salt1 = StringUtils.hexToUint8List('05DEC959ACFF72F7');
+    salt1 = HexUtils.decode('05DEC959ACFF72F7');
     itCount1 = 1000;
-    result1 = StringUtils.hexToUint8List('11DEDAD7758D4860');
+    result1 = HexUtils.decode('11DEDAD7758D4860');
 
     generator = PKCS12ParametersGenerator(Digest('SHA-1'));
     generator.init(
