@@ -3,7 +3,6 @@
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
-import 'package:convert/convert.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -105,7 +104,7 @@ sF0zEAHkQoYVBEhrfAHOLYkE3u08+q2tug==
   test('Test rsaPublicKeyModulusToBytes', () {
     var key = CryptoUtils.rsaPublicKeyFromPem(publicKey);
     var bytes = CryptoUtils.rsaPublicKeyModulusToBytes(key);
-    var hexString = hex.encode(bytes);
+    var hexString = HexUtils.encode(bytes);
     expect(hexString,
         '008df00cad13a55ad4cf8b83f619ded73aa128abd2f5f208671d268ec24910aded5ddd92c4a337ffbf5595b1f9a3a51e0725910c44a09ab4e19c996fa0ce3437cba8579c39105e6c63249bfaa53a7198534a348b1101fa4ff584303609474d875724c214489d8cd1bbe3e039bf5a501b7fbd59ea673f95917a05d45cdfe8cf1b66d543940e682b7a46482ab1dde0815b43259665faa956830a593191016aff8401c12ea6cf520e78fe760bcbef24aa007e111fefec0ba8dcd6cc0c6fc110a59820015c105ca01b713d17628de2e70b12a87f8875dc393d8891a13acac254092a695235897f7d1cc0f38a71902eabd37f336b0a46486456a87a51c35ddb83c7ffc7');
   });
@@ -113,14 +112,14 @@ sF0zEAHkQoYVBEhrfAHOLYkE3u08+q2tug==
   test('Test rsaPublicKeyExponentToBytes', () {
     var key = CryptoUtils.rsaPublicKeyFromPem(publicKey);
     var bytes = CryptoUtils.rsaPublicKeyExponentToBytes(key);
-    var hexString = hex.encode(bytes);
+    var hexString = HexUtils.encode(bytes);
     expect(hexString, '010001');
   });
 
   test('Test rsaPrivateKeyModulusToBytes', () {
     var key = CryptoUtils.rsaPrivateKeyFromPem(privateKey);
     var bytes = CryptoUtils.rsaPrivateKeyModulusToBytes(key);
-    var hexString = hex.encode(bytes);
+    var hexString = HexUtils.encode(bytes);
     expect(hexString,
         '00d105f87bca002a90fdd5e28a2cbfc476b1f4d8dfd4960df96dd0894a8cc7b9b9e80c6ed95e210b4c5b8f0c034d986e079b1554a47bf5bb1995adbcc40a7a81044ce32d6e4d696d93f54ef8002a36dc798315026a89317f69515c7c4ccac075ed65e5550ab5d4e4c12f9c58c3ac43ab819205778e801254adfc853a77acca465171ea962007ae263d6dcbe74b0dae0e8e36409f5edec74f9bb67edce8fe23f9aa2e3506dcc9524d9d4bd0ec91bc1e43c9afe0a46cb636b08a841fd908dec3f96069549fe55e581055a7bc72c2875e7f2f06cde59e843742acee2d2091e7ca7e0fbbc9d77b794e231ca866135e4a6eee7db96812f5cb302788e65cf3eaba4bac65');
   });
