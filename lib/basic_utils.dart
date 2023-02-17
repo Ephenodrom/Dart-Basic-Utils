@@ -20,6 +20,7 @@ export 'src/model/x509/VmcData.dart';
 export 'src/model/x509/X509CertificateDataExtensions.dart';
 export 'src/model/x509/X509CertificateValidity.dart';
 export 'src/model/x509/ExtendedKeyUsage.dart';
+export 'src/model/x509/KeyUsage.dart';
 export 'src/model/csr/CertificateSigningRequestData.dart';
 export 'src/model/csr/CertificateSigningRequestExtensions.dart';
 export 'src/model/x509/X509CertificatePublicKeyData.dart';
