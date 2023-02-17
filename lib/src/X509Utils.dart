@@ -26,6 +26,7 @@ import 'package:basic_utils/src/model/pkcs7/Pkcs7CertificateData.dart';
 import 'package:basic_utils/src/model/x509/CertificateChainCheckData.dart';
 import 'package:basic_utils/src/model/x509/CertificateChainPairCheckResult.dart';
 import 'package:basic_utils/src/model/x509/ExtendedKeyUsage.dart';
+import 'package:basic_utils/src/model/x509/KeyUsage.dart';
 import 'package:basic_utils/src/model/x509/TbsCertificate.dart';
 import 'package:basic_utils/src/model/x509/VmcData.dart';
 import 'package:basic_utils/src/model/x509/X509CertificateData.dart';
@@ -287,7 +288,8 @@ class X509Utils {
   /// * [csr] = The CSR containing the DN and public key
   /// * [days] = The validity in days
   /// * [sans] = Subject alternative names to place within the certificate
-  /// * [extKeyUsage] = The key usage definition
+  /// * [keyUsage] = The key usage definition extension
+  /// * [extKeyUsage] = The extended key usage definition
   /// * [serialNumber] = The serialnumber. If not set the default will be 1.
   /// * [issuer] = The issuer. If null, the issuer will be the subject of the given csr.
   ///
@@ -296,6 +298,7 @@ class X509Utils {
     String csr,
     int days, {
     List<String>? sans,
+    List<KeyUsage>? keyUsage,
     List<ExtendedKeyUsage>? extKeyUsage,
     String serialNumber = '1',
     Map<String, String>? issuer,
@@ -312,7 +315,7 @@ class X509Utils {
     // Add serial number
     data.add(ASN1Integer(BigInt.parse(serialNumber)));
 
-    // Add protocoll
+    // Add protocol
     var blockProtocol = ASN1Sequence();
     blockProtocol.add(
         ASN1ObjectIdentifier.fromIdentifierString(csrData.signatureAlgorithm));
@@ -389,8 +392,38 @@ class X509Utils {
 
     // Add Extensions
     if (IterableUtils.isNotNullOrEmpty(sans) ||
+        IterableUtils.isNotNullOrEmpty(keyUsage) ||
         IterableUtils.isNotNullOrEmpty(extKeyUsage)) {
       var extensionTopSequence = ASN1Sequence();
+
+      if (IterableUtils.isNotNullOrEmpty(keyUsage)) {
+        int valueBytes = 1; // the last bit of the 2 bytes is always set
+        for (KeyUsage keyUsage in keyUsage!) {
+          final int shiftedBit = int.parse("8000", radix: 16) >> keyUsage.index;
+          valueBytes |= shiftedBit; // bit shift from the first bit of the 2 bytes depending on which flag is set
+        }
+
+        final int firstValueByte = (valueBytes & int.parse("ff00", radix: 16)) >> 8;
+        final int secondValueByte = (valueBytes & int.parse("00ff", radix: 16));
+
+        final Uint8List keyUsageBytes = Uint8List.fromList(<int>[
+          // BitString identifier
+          3,
+          // Length
+          3,
+          // Unused bytes at the end
+          1,
+          firstValueByte,
+          secondValueByte
+        ]);
+
+        var octetString = ASN1OctetString(octets: ASN1BitString.fromBytes(keyUsageBytes).encode());
+
+        var keyUsageSequence = ASN1Sequence();
+        keyUsageSequence.add(ASN1ObjectIdentifier.fromIdentifierString('2.5.29.15'));
+        keyUsageSequence.add(octetString);
+        extensionTopSequence.add(keyUsageSequence);
+      }
 
       if (IterableUtils.isNotNullOrEmpty(extKeyUsage)) {
         var extKeyUsageList = ASN1Sequence();
@@ -442,6 +475,7 @@ class X509Utils {
         sanSequence.add(octetString);
         extensionTopSequence.add(sanSequence);
       }
+
       var extObj = ASN1Object(tag: 0xA3);
       extObj.valueBytes = extensionTopSequence.encode();
 
@@ -1376,6 +1410,50 @@ class X509Utils {
   }
 
   ///
+  /// Parses the given object identifier values to the internal enum
+  ///
+  static List<KeyUsage> _fetchKeyUsageFromExtension(ASN1Object extData) {
+    var keyUsage = <KeyUsage>[];
+    var octet = extData as ASN1OctetString;
+    var keyUsageParser = ASN1Parser(octet.valueBytes);
+    var keyUsageBitString = keyUsageParser.nextObject() as ASN1BitString;
+    if (keyUsageBitString.valueBytes?.isEmpty ?? true) {
+      return keyUsage;
+    }
+
+    final Uint8List bytes = keyUsageBitString.valueBytes!;
+    final int lastBitsToSkip = bytes.first;
+    final int amountOfBytes = bytes.length - 1; //don't count the first byte
+
+    for (int bitCounter = 0; bitCounter < amountOfBytes * 8 - lastBitsToSkip; ++bitCounter) {
+      final int byteIndex = bitCounter ~/ 8; // the current byte
+      final int bitIndex = bitCounter % 8; // the current bit
+      if (byteIndex >= amountOfBytes) {
+        return keyUsage;
+      }
+
+      final int byte = bytes[1 + byteIndex]; //skip the first byte
+      final bool keyBit = _getBitOfByte(byte, bitIndex);
+
+      if (keyBit == true && KeyUsage.values.length > bitCounter) {
+        keyUsage.add(KeyUsage.values[bitCounter]);
+      }
+    }
+    return keyUsage;
+  }
+
+  /// From left to right. Returns [true] for 1 and [false] for [0].
+  static bool _getBitOfByte(int byte, int bitIndex) {
+    final int shift = 7 - bitIndex;
+    final int shiftedByte = byte >> shift;
+    if (shiftedByte & 1 == 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  ///
   /// Converts the given [chain] to a list of [X509CertificateData]
   ///
   static List<X509CertificateData> parseChainString(String chain) {
@@ -1836,6 +1914,7 @@ class X509Utils {
   static X509CertificateDataExtensions _getExtensionsFromSeq(
       ASN1Sequence extSequence) {
     List<String>? sans;
+    List<KeyUsage>? keyUsage;
     List<ExtendedKeyUsage>? extKeyUsage;
     var extensions = X509CertificateDataExtensions();
     extSequence.elements!.forEach(
@@ -1849,6 +1928,19 @@ class X509Utils {
             sans = _fetchSansFromExtension(seq.elements!.elementAt(1));
           }
           extensions.subjectAlternativNames = sans;
+        }
+
+
+        var keyUsageSequence = ASN1Sequence();
+        keyUsageSequence.add(ASN1ObjectIdentifier.fromIdentifierString('2.5.29.15'));
+
+        if (oi.objectIdentifierAsString == '2.5.29.15') {
+          if (seq.elements!.length == 3) {
+            keyUsage = _fetchKeyUsageFromExtension(seq.elements!.elementAt(2));
+          } else {
+            keyUsage = _fetchKeyUsageFromExtension(seq.elements!.elementAt(1));
+          }
+          extensions.keyUsage = keyUsage;
         }
         if (oi.objectIdentifierAsString == '2.5.29.37') {
           if (seq.elements!.length == 3) {
