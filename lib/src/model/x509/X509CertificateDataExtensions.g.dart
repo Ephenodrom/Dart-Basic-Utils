@@ -15,6 +15,9 @@ X509CertificateDataExtensions _$X509CertificateDataExtensionsFromJson(
       extKeyUsage: (json['extKeyUsage'] as List<dynamic>?)
           ?.map((e) => $enumDecode(_$ExtendedKeyUsageEnumMap, e))
           .toList(),
+      keyUsage: (json['keyUsage'] as List<dynamic>?)
+          ?.map((e) => $enumDecode(_$KeyUsageEnumMap, e))
+          .toList(),
       vmc: json['vmc'] == null
           ? null
           : VmcData.fromJson(json['vmc'] as Map<String, dynamic>),
@@ -36,6 +39,8 @@ Map<String, dynamic> _$X509CertificateDataExtensionsToJson(
   writeNotNull('subjectAlternativNames', instance.subjectAlternativNames);
   writeNotNull('extKeyUsage',
       instance.extKeyUsage?.map((e) => _$ExtendedKeyUsageEnumMap[e]!).toList());
+  writeNotNull('keyUsage',
+      instance.keyUsage?.map((e) => _$KeyUsageEnumMap[e]!).toList());
   writeNotNull('vmc', instance.vmc?.toJson());
   writeNotNull('cRLDistributionPoints', instance.cRLDistributionPoints);
   return val;
@@ -49,4 +54,16 @@ const _$ExtendedKeyUsageEnumMap = {
   ExtendedKeyUsage.TIME_STAMPING: 'TIME_STAMPING',
   ExtendedKeyUsage.OCSP_SIGNING: 'OCSP_SIGNING',
   ExtendedKeyUsage.BIMI: 'BIMI',
+};
+
+const _$KeyUsageEnumMap = {
+  KeyUsage.DIGITAL_SIGNATURE: 'DIGITAL_SIGNATURE',
+  KeyUsage.NON_REPUDIATION: 'NON_REPUDIATION',
+  KeyUsage.KEY_ENCIPHERMENT: 'KEY_ENCIPHERMENT',
+  KeyUsage.DATA_ENCIPHERMENT: 'DATA_ENCIPHERMENT',
+  KeyUsage.KEY_AGREEMENT: 'KEY_AGREEMENT',
+  KeyUsage.KEY_CERT_SIGN: 'KEY_CERT_SIGN',
+  KeyUsage.CRL_SIGN: 'CRL_SIGN',
+  KeyUsage.ENCIPHER_ONLY: 'ENCIPHER_ONLY',
+  KeyUsage.DECIPHER_ONLY: 'DECIPHER_ONLY',
 };

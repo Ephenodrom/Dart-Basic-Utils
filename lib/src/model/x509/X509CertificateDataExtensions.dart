@@ -1,3 +1,4 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:basic_utils/src/model/x509/ExtendedKeyUsage.dart';
 import 'package:basic_utils/src/model/x509/VmcData.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -15,6 +16,9 @@ class X509CertificateDataExtensions {
   /// The extended key usage extension
   List<ExtendedKeyUsage>? extKeyUsage;
 
+  /// The key usage extension
+  List<KeyUsage>? keyUsage;
+
   /// The base64 encoded VMC logo
   VmcData? vmc;
 
@@ -24,6 +28,7 @@ class X509CertificateDataExtensions {
   X509CertificateDataExtensions({
     this.subjectAlternativNames,
     this.extKeyUsage,
+    this.keyUsage,
     this.vmc,
     this.cRLDistributionPoints,
   });
