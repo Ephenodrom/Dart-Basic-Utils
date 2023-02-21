@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.5.1] - 2022-02-21
+
+* Improved X509Utils, X509 parsing and generation supports now KeyUsage extensions. (PR #81)
+
 ## [5.5.0] - 2022-02-10
 
 * Added HexUtils
