@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:basic_utils/src/model/asn1/pkcs/encrypted_content_info.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs7/encrypted_content_info.dart';
 import 'package:pointycastle/pointycastle.dart';
 
 ///

@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:basic_utils/src/model/asn1/pkcs/algorithm_identifier.dart';
+import 'package:basic_utils/src/model/asn1/x509/algorithm_identifier.dart';
 import 'package:pointycastle/asn1.dart';
 
 ///
@@ -14,10 +14,22 @@ import 'package:pointycastle/asn1.dart';
 ///```
 ///
 class DigestInfo extends ASN1Object {
-  AlgorithmIdentifier digestAlgorithm;
-  Uint8List digest;
+  late AlgorithmIdentifier digestAlgorithm;
+  late Uint8List digest;
 
   DigestInfo(this.digest, this.digestAlgorithm);
+
+  DigestInfo.fromSequence(ASN1Sequence seq) {
+    if (seq.elements!.length != 2) {
+      throw ArgumentError('Sequence has not enough elements');
+    }
+    digestAlgorithm = AlgorithmIdentifier.fromSequence(
+        seq.elements!.elementAt(0) as ASN1Sequence);
+    var o = seq.elements!.elementAt(1) as ASN1OctetString;
+    if (o.valueBytes != null) {
+      digest = o.valueBytes!;
+    }
+  }
 
   @override
   Uint8List encode(

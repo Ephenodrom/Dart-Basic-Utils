@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:basic_utils/src/hex_utils.dart';
-import 'package:basic_utils/src/pkcs12_utils.dart';
+import 'package:basic_utils/basic_utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -55,6 +54,34 @@ Th6rDWCgxKJ3R/rAeMdNBG7tEuP+qKJQZ+mJbw2I2pmz3skpl437c+S8pWJWD5dL
 tvvnyl47ae1QC/VAOpxmCv3n
 -----END PRIVATE KEY-----''';
 
+  var privateKeyPkcs12 = '''-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEArFIMAPjk50ZsvRolBnAc76u2X3odNI+TeHg3WoP0L3VCvjVh
+ZbYCz90IGJE9EjJozWHPArbiKvLBWuvuxQveW4wo2+0PxqPo0f6oUd2cjl4XyBRx
+4H1/X338x55RfibKTYvTELdLKMt8pidDb0yG5OUrcgNox8J3EJh2ZAVe4058zAHk
+iR2ZxeIG7qVHp7k9G4zBaU0ga3KxL+cCU3F6a4Oc9Q2ze+CKz7sUKvY7dKR39lqC
+u5sG2wqgY0XkRkWNPb8McRxKHonkfLEpPc6n/5BMQshXWBvPw2KhhHwFbp0gIlN6
+C7zdRP8fjlsoIQ0jriafU1ejd+hMHaQVTDY+BQIDAQABAoIBAGizgW+lyw9rDu7n
+T8/Vlv9ZCfqBK/Wfty7ffGKXAmtDiEYiEQfHy3WZCy5CMSU5U8xWvX0cudb2oN0p
+tW4sg/KD+t+F7qv3M6NEY+k6CcHHEhQTuA16s0XGOyze2Q0ZbJopdxkVBanH2fjq
+qmKZ0OyLAhbIU4XsdoOy31xulvTs3mWtNqY7oQ4o15liBAxvzUrQl0q48b14QNos
+St1vMuGY15LaCFV33vYM7k9TK9/WzCYz23SJDWsnc0aGyGfLFY2wlvCjMDk79pDm
+XgGnipYr1hV5XJiE2HECWsPkFhxDTUvhkppxmRBs1mk1d2y9Pn92ayp6E7D3a+5x
+0cFszJECgYEA7XjClmD0SrVa7xv00xDPD3RxXiz+pXrf5SJX2pDaQ2nzrNeNXAYf
+Tfk8/pjKFsEAqh3Gx6po5PUeL4ZNx68wrWdazC+2+uk86MijYhFja3JOJhwjucVp
+xlOOy6NIBPGv8BJ0xgY0RemNUY+V9VIl5AF1IytQI+pkA/ocUN4CExsCgYEAucP2
+OBiqdTCBgF5rChxUMXEeGZcU38FsdzoXao73SWnXXmLfPOYbAir+vNmgfIb67dR2
+Z3Z8nkikAoEZcjT6tntK8VN10Dikfr6+3Q61EJe1iKjRz3mjmqrTu+sIrwtHmBzw
+17BwXsUFZQlDWxCaSVbSlwYGbhJ/mIOeZVau5V8CgYEAsD/dpIDnL3+0sxz7s5+Z
+Hq5c6fnZMfalsEmyDN1PsZM0sQb2uuMsXtHqbEf4TbUHijs5ar3WxoAK3FkA54Dm
+Tv0TzdJoK4fqlhc79DBVqsyWpgBin6GepP0lUYypiknbPAJmuwaly3HRWkSIlyBW
+UQin6OdfvphbjPwYAgkUXxsCgYA5kxrE2CA8ogQBHUJfp9gQWtbRZ5n4n6JWcZLA
+W/8Yqc0uW8aEwWyth1XcgjbTYaJ0A92Ow5JsHGd4vzp7wx/RXvUjRpLFLkkNX2EY
+cm577gk9idU9UJ38WeW14GqYlg5iftXGg9DQDpBVeEF//+1Rva8XT66+fs09H83/
+6pXaUQKBgQC8Mcvyo/mI6ZLRA4K9GTqqOsK/7zSYA5lpb4+hyEe7nhz2XZwqHsXd
+ufWKgT/66U1nHT4ws6nLTbk4b/jovU4eqw1goMSid0f6wHjHTQRu7RLj/qiiUGfp
+iW8NiNqZs97JKZeN+3PkvKViVg+XS7b758peO2ntUAv1QDqcZgr95w==
+-----END RSA PRIVATE KEY-----''';
+
   var eccPrivateKey = '''-----BEGIN EC PRIVATE KEY-----
 MHcCAQEEIBigV8Oa9QGv47zqjqEaPtA6B8BxrzQJsuG56cjITVDHoAoGCCqGSM49
 AwEHoUQDQgAE4rDUyLjLFkTvP+6UtHBKMnLdJVTriUQTGcF7dst78x7kYxs8Axx2
@@ -90,6 +117,9 @@ qwLrsstLa4GIYU0x
 
   var openSslWithRc2128AndRc440 =
       '''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''';
+
+  var openSslWithPkcs1Privatekey =
+      '''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''';
   test('Test generatePkcs12() without encryption', () {
     // openssl pkcs12 -export -keypbe NONE -certpbe NONE -passout pass:Beavis -out bundle.pfx -inkey priv.key -in chain.pem
     var localKeyId =
@@ -164,8 +194,29 @@ qwLrsstLa4GIYU0x
     expect(base64.encode(bytes), openSslWithDefaultEncryption);
   });
 
-  test('Test generatePkcs12() with default settings', () {
+  test('Test generatePkcs12() with default encryption and PKCS1 private key',
+      () {
+    // openssl pkcs12 -export -passout pass:Beavis -out bundle.pfx -inkey priv.key -in chain.pem
+    var localKeyId =
+        HexUtils.decode('FC5CD1EF029C6EF8A98AF6D1397F9E88F94AD9EC');
+    var salt = HexUtils.decode('0F9B4D771FB232F7');
+    var certSalt = HexUtils.decode('BBC984A31DE07F4E');
+    var keySalt = HexUtils.decode('804C7F2286FD4C6C');
+
     var bytes = Pkcs12Utils.generatePkcs12(
+      privateKeyPkcs12,
+      chain,
+      password: 'Beavis',
+      localKeyId: localKeyId,
+      salt: salt,
+      certSalt: certSalt,
+      keySalt: keySalt,
+    );
+    expect(base64.encode(bytes), openSslWithPkcs1Privatekey);
+  });
+
+  test('Test generatePkcs12() with default settings', () {
+    Pkcs12Utils.generatePkcs12(
       privateKey,
       chain,
       password: 'Beavis',
@@ -217,5 +268,63 @@ qwLrsstLa4GIYU0x
       certPbe: 'PBE-SHA1-RC2-128',
     );
     expect(base64.encode(bytes), openSslWithRc2128AndRc440);
+  });
+
+  test(
+      'Test parsePkcs12() with certPbe = PBE-SHA1-RC2-128 and keyPbe = PBE-SHA1-RC4-40',
+      () {
+    var bytes = base64.decode(openSslWithRc2128AndRc440);
+    var pems = Pkcs12Utils.parsePkcs12(
+      bytes,
+      password: 'Beavis',
+    );
+    expect(pems.length, 2);
+    expect(pems.elementAt(0), privateKey);
+    expect(pems.elementAt(1), chain.elementAt(0));
+  });
+
+  test(
+      'Test parsePkcs12() with certPbe = PBE-SHA1-2DES and keyPbe = PBE-SHA1-RC4-128',
+      () {
+    var bytes = base64.decode(openSslWithRc4128And2Des);
+    var pems = Pkcs12Utils.parsePkcs12(
+      bytes,
+      password: 'Beavis',
+    );
+    expect(pems.length, 2);
+    expect(pems.elementAt(0), privateKey);
+    expect(pems.elementAt(1), chain.elementAt(0));
+  });
+
+  test('Test parsePkcs12() with default encryption', () {
+    var bytes = base64.decode(openSslWithDefaultEncryption);
+    var pems = Pkcs12Utils.parsePkcs12(
+      bytes,
+      password: 'Beavis',
+    );
+    expect(pems.length, 2);
+    expect(pems.elementAt(0), privateKey);
+    expect(pems.elementAt(1), chain.elementAt(0));
+  });
+
+  test('Test parsePkcs12() with default encryption and PKCS1 private key', () {
+    var bytes = base64.decode(openSslWithPkcs1Privatekey);
+    var pems = Pkcs12Utils.parsePkcs12(
+      bytes,
+      password: 'Beavis',
+    );
+    expect(pems.length, 2);
+    expect(pems.elementAt(0), privateKey);
+    expect(pems.elementAt(1), chain.elementAt(0));
+  });
+
+  test('Test parsePkcs12() without encryption', () {
+    var bytes = base64.decode(openSslWithoutEncryption);
+    var pems = Pkcs12Utils.parsePkcs12(
+      bytes,
+    );
+    expect(pems.length, 2);
+    expect(pems.elementAt(0), privateKey);
+    expect(pems.elementAt(1), chain.elementAt(0));
   });
 }

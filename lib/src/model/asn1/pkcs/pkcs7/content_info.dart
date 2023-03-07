@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
-import 'package:basic_utils/src/hex_utils.dart';
 
 ///
 ///

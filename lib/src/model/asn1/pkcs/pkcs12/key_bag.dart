@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/private_key_info.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs8/private_key_info.dart';
 
 ///
 ///```

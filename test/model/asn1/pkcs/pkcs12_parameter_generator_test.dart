@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:basic_utils/src/hex_utils.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs12_parameter_generator.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/pkcs12_parameter_generator.dart';
 import 'package:basic_utils/src/pkcs12_utils.dart';
 import 'package:pointycastle/pointycastle.dart';
 import 'package:test/test.dart';

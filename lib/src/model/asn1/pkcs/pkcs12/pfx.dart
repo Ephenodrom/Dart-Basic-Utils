@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/content_info.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/mac_data.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs7/content_info.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/mac_data.dart';
 
 ///
 ///```
@@ -24,7 +24,7 @@ class Pfx extends ASN1Object {
   /// Creates an instance of [PFX] from the given [sequence]. The sequence must have at least 2 elements.
   ///
   Pfx.fromSequence(ASN1Sequence seq) {
-    if (IterableUtils.isNotNullOrEmpty(seq.elements)) {
+    if (IterableUtils.isNullOrEmpty(seq.elements)) {
       throw ArgumentError('Empty sequence');
     }
     if (seq.elements!.length == 1) {

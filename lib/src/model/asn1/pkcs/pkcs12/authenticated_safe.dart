@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/content_info.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs7/content_info.dart';
 
 ///
 /// Taken from [RFC 7292](https://www.rfc-editor.org/rfc/rfc7292#page-10).

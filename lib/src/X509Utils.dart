@@ -400,10 +400,12 @@ class X509Utils {
         int valueBytes = 1; // the last bit of the 2 bytes is always set
         for (KeyUsage keyUsage in keyUsage!) {
           final int shiftedBit = int.parse("8000", radix: 16) >> keyUsage.index;
-          valueBytes |= shiftedBit; // bit shift from the first bit of the 2 bytes depending on which flag is set
+          valueBytes |=
+              shiftedBit; // bit shift from the first bit of the 2 bytes depending on which flag is set
         }
 
-        final int firstValueByte = (valueBytes & int.parse("ff00", radix: 16)) >> 8;
+        final int firstValueByte =
+            (valueBytes & int.parse("ff00", radix: 16)) >> 8;
         final int secondValueByte = (valueBytes & int.parse("00ff", radix: 16));
 
         final Uint8List keyUsageBytes = Uint8List.fromList(<int>[
@@ -417,10 +419,12 @@ class X509Utils {
           secondValueByte
         ]);
 
-        var octetString = ASN1OctetString(octets: ASN1BitString.fromBytes(keyUsageBytes).encode());
+        var octetString = ASN1OctetString(
+            octets: ASN1BitString.fromBytes(keyUsageBytes).encode());
 
         var keyUsageSequence = ASN1Sequence();
-        keyUsageSequence.add(ASN1ObjectIdentifier.fromIdentifierString('2.5.29.15'));
+        keyUsageSequence
+            .add(ASN1ObjectIdentifier.fromIdentifierString('2.5.29.15'));
         keyUsageSequence.add(octetString);
         extensionTopSequence.add(keyUsageSequence);
       }
@@ -1425,7 +1429,9 @@ class X509Utils {
     final int lastBitsToSkip = bytes.first;
     final int amountOfBytes = bytes.length - 1; //don't count the first byte
 
-    for (int bitCounter = 0; bitCounter < amountOfBytes * 8 - lastBitsToSkip; ++bitCounter) {
+    for (int bitCounter = 0;
+        bitCounter < amountOfBytes * 8 - lastBitsToSkip;
+        ++bitCounter) {
       final int byteIndex = bitCounter ~/ 8; // the current byte
       final int bitIndex = bitCounter % 8; // the current bit
       if (byteIndex >= amountOfBytes) {
@@ -1930,9 +1936,9 @@ class X509Utils {
           extensions.subjectAlternativNames = sans;
         }
 
-
         var keyUsageSequence = ASN1Sequence();
-        keyUsageSequence.add(ASN1ObjectIdentifier.fromIdentifierString('2.5.29.15'));
+        keyUsageSequence
+            .add(ASN1ObjectIdentifier.fromIdentifierString('2.5.29.15'));
 
         if (oi.objectIdentifierAsString == '2.5.29.15') {
           if (seq.elements!.length == 3) {

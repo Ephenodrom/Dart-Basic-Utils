@@ -4,21 +4,21 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:basic_utils/src/library/crypto/desede_engine.dart';
 import 'package:basic_utils/src/library/crypto/rc2_engine.dart';
 import 'package:basic_utils/src/library/crypto/rc4_engine.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/algorithm_identifier.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/attribute.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/authenticated_safe.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/cert_bag.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/content_info.dart';
+import 'package:basic_utils/src/model/asn1/x509/algorithm_identifier.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/pkcs12_attribute.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/authenticated_safe.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/cert_bag.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs7/content_info.dart';
 import 'package:basic_utils/src/model/asn1/pkcs/digest_info.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/encrypted_content_info.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/encrypted_data.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/key_bag.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/mac_data.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pfx.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs12_parameter_generator.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/private_key_info.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/safe_bag.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/safe_contents.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs7/encrypted_content_info.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs8/encrypted_data.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/key_bag.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/mac_data.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/pfx.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/pkcs12_parameter_generator.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs8/private_key_info.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/safe_bag.dart';
+import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/safe_contents.dart';
 import 'package:pointycastle/block/modes/cbc.dart';
 
 class Pkcs12Utils {
@@ -107,10 +107,14 @@ class Pkcs12Utils {
     var contentInfoCert;
     var contentInfoKey;
     if (certPbe != 'NONE' && pwFormatted != null) {
-      var params = ASN1Sequence(elements: [
-        ASN1OctetString(octets: certSalt),
-        ASN1Integer(BigInt.from(macIter)),
-      ]);
+      var params = ASN1Sequence(
+        elements: [
+          ASN1OctetString(octets: certSalt),
+          ASN1Integer(
+            BigInt.from(macIter),
+          ),
+        ],
+      );
       var contentEncryptionAlgorithm = AlgorithmIdentifier(
         _oiFromAlgorithm(certPbe),
         parameters: params,
@@ -277,9 +281,9 @@ class Pkcs12Utils {
     }
     for (var certBag in certBags) {
       var asn1Set = ASN1Set(elements: []);
-      asn1Set.add(Attribute.localKeyID(localKeyId));
+      asn1Set.add(Pkcs12Attribute.localKeyID(localKeyId));
       if (friendlyName != null) {
-        asn1Set.add(Attribute.friendlyName(friendlyName));
+        asn1Set.add(Pkcs12Attribute.friendlyName(friendlyName));
       }
       safeBags.add(
         SafeBag.forCertBag(
@@ -298,9 +302,9 @@ class Pkcs12Utils {
 
     var safeBagsKey = <SafeBag>[];
     var asn1Set = ASN1Set(elements: []);
-    asn1Set.add(Attribute.localKeyID(localKeyId));
+    asn1Set.add(Pkcs12Attribute.localKeyID(localKeyId));
     if (friendlyName != null) {
-      asn1Set.add(Attribute.friendlyName(friendlyName));
+      asn1Set.add(Pkcs12Attribute.friendlyName(friendlyName));
     }
     safeBagsKey.add(
       SafeBag.forKeyBag(
@@ -316,9 +320,9 @@ class Pkcs12Utils {
       {String? friendlyName}) {
     var safeBagsKey = <SafeBag>[];
     var asn1Set = ASN1Set(elements: []);
-    asn1Set.add(Attribute.localKeyID(localKeyId));
+    asn1Set.add(Pkcs12Attribute.localKeyID(localKeyId));
     if (friendlyName != null) {
-      asn1Set.add(Attribute.friendlyName(friendlyName));
+      asn1Set.add(Pkcs12Attribute.friendlyName(friendlyName));
     }
     safeBagsKey.add(
       SafeBag.forPkcs8ShroudedKeyBag(
@@ -347,10 +351,20 @@ class Pkcs12Utils {
 
   static Uint8List _encryptRc2(Uint8List bytesToEncrypt,
       ParametersWithIV generateDerivedParametersWithIV) {
+    return _processRc2(bytesToEncrypt, generateDerivedParametersWithIV, true);
+  }
+
+  static Uint8List _decryptRc2(Uint8List bytesToDecrypt,
+      ParametersWithIV generateDerivedParametersWithIV) {
+    return _processRc2(bytesToDecrypt, generateDerivedParametersWithIV, false);
+  }
+
+  static Uint8List _processRc2(Uint8List bytes,
+      ParametersWithIV generateDerivedParametersWithIV, bool encrypt) {
     var engine = CBCBlockCipher(RC2Engine());
     engine.reset();
-    engine.init(true, generateDerivedParametersWithIV);
-    var padded = CryptoUtils.addPKCS7Padding(bytesToEncrypt, 8);
+    engine.init(encrypt, generateDerivedParametersWithIV);
+    var padded = CryptoUtils.addPKCS7Padding(bytes, 8);
     final encryptedContent = Uint8List(padded.length);
 
     var offset = 0;
@@ -363,22 +377,51 @@ class Pkcs12Utils {
 
   static Uint8List _encrypt3des(Uint8List bytesToEncrypt,
       ParametersWithIV generateDerivedParametersWithIV) {
+    return _process3des(bytesToEncrypt, generateDerivedParametersWithIV, true);
+  }
+
+  static Uint8List _decrypt3des(Uint8List bytesToDecrypt,
+      ParametersWithIV generateDerivedParametersWithIV) {
+    return _process3des(bytesToDecrypt, generateDerivedParametersWithIV, false);
+  }
+
+  static Uint8List _process3des(Uint8List bytes,
+      ParametersWithIV generateDerivedParametersWithIV, bool encrypt) {
     var engine = CBCBlockCipher(DESedeEngine());
     engine.reset();
-    engine.init(true, generateDerivedParametersWithIV);
-    var padded = CryptoUtils.addPKCS7Padding(bytesToEncrypt, 8);
-    final encryptedContent = Uint8List(padded.length);
+    engine.init(encrypt, generateDerivedParametersWithIV);
+    Uint8List padded;
+    if (encrypt) {
+      padded = CryptoUtils.addPKCS7Padding(bytes, 8);
+    } else {
+      padded = bytes;
+    }
+
+    final content = Uint8List(padded.length);
 
     var offset = 0;
     while (offset < padded.length) {
-      offset += engine.processBlock(padded, offset, encryptedContent, offset);
+      offset += engine.processBlock(padded, offset, content, offset);
     }
-
-    return encryptedContent;
+    if (encrypt) {
+      return content;
+    } else {
+      return CryptoUtils.removePKCS7Padding(content);
+    }
   }
 
   static Uint8List _encryptRc4(
       Uint8List bytesToEncrypt, KeyParameter generateDerivedParameters) {
+    return _processRc4(bytesToEncrypt, generateDerivedParameters, true);
+  }
+
+  static Uint8List _decryptRc4(
+      Uint8List bytesToDecrypt, KeyParameter generateDerivedParameters) {
+    return _processRc4(bytesToDecrypt, generateDerivedParameters, false);
+  }
+
+  static Uint8List _processRc4(Uint8List bytesToEncrypt,
+      KeyParameter generateDerivedParameters, bool encrypt) {
     var engine = RC4Engine();
     engine.init(true, generateDerivedParameters);
     engine.reset();
@@ -433,6 +476,61 @@ class Pkcs12Utils {
       case 'PBE-SHA1-3DES':
         return _encrypt3des(
           encode,
+          pkcs12ParameterGenerator.generateDerivedParametersWithIV(
+            24,
+            DESedeEngine.BLOCK_SIZE,
+          ),
+        );
+      default:
+        throw ArgumentError('unsupported algorithm $algorithm');
+    }
+  }
+
+  static Uint8List _decrypt(
+      Uint8List toDecrypt,
+      String algorithm,
+      Uint8List pwFormatted,
+      Uint8List salt,
+      int macIter,
+      String digetAlgorithm) {
+    var pkcs12ParameterGenerator =
+        PKCS12ParametersGenerator(Digest(digetAlgorithm));
+    pkcs12ParameterGenerator.init(pwFormatted, salt, macIter);
+
+    switch (algorithm) {
+      case 'PBE-SHA1-RC2-40':
+        return _decryptRc2(
+          toDecrypt,
+          pkcs12ParameterGenerator.generateDerivedParametersWithIV(
+              5, RC2Engine.BLOCK_SIZE),
+        );
+      case 'PBE-SHA1-RC2-128':
+        return _decryptRc2(
+          toDecrypt,
+          pkcs12ParameterGenerator.generateDerivedParametersWithIV(
+              16, RC2Engine.BLOCK_SIZE),
+        );
+      case 'PBE-SHA1-RC4-40':
+        return _decryptRc4(
+          toDecrypt,
+          pkcs12ParameterGenerator.generateDerivedParameters(5),
+        );
+      case 'PBE-SHA1-RC4-128':
+        return _decryptRc4(
+          toDecrypt,
+          pkcs12ParameterGenerator.generateDerivedParameters(16),
+        );
+      case 'PBE-SHA1-2DES':
+        return _decrypt3des(
+          toDecrypt,
+          pkcs12ParameterGenerator.generateDerivedParametersWithIV(
+            16,
+            DESedeEngine.BLOCK_SIZE,
+          ),
+        );
+      case 'PBE-SHA1-3DES':
+        return _decrypt3des(
+          toDecrypt,
           pkcs12ParameterGenerator.generateDerivedParametersWithIV(
             24,
             DESedeEngine.BLOCK_SIZE,
@@ -508,5 +606,231 @@ class Pkcs12Utils {
       default:
         throw ArgumentError('unsupported algorithm');
     }
+  }
+
+  ///
+  ///
+  ///
+  static List<String> parsePkcs12(
+    Uint8List pkcs12, {
+    String? password,
+  }) {
+    Uint8List? pwFormatted;
+    if (password != null) {
+      pwFormatted =
+          formatPkcs12Password(Uint8List.fromList(password.codeUnits));
+    }
+
+    var pems = <String>[];
+    var parser = ASN1Parser(pkcs12);
+    var wrapperSeq = parser.nextObject() as ASN1Sequence;
+    var pfx = Pfx.fromSequence(wrapperSeq);
+
+    var authSafeContent = pfx.authSafe.content as ASN1OctetString;
+    parser = ASN1Parser(authSafeContent.valueBytes);
+    wrapperSeq = parser.nextObject() as ASN1Sequence;
+    if (wrapperSeq.elements == null || wrapperSeq.elements!.isEmpty) {
+      // TODO
+    }
+    for (var e in wrapperSeq.elements!) {
+      if (e is ASN1Sequence) {
+        if (e.elements == null || e.elements!.isEmpty) {
+          // TODO
+        }
+        var contentInfo = ContentInfo.fromSequence(e);
+
+        switch (contentInfo.contentType.objectIdentifierAsString) {
+          case '1.2.840.113549.1.7.6': // encryptedData
+            var encryptedData =
+                EncryptedData.fromSequence(contentInfo.content as ASN1Sequence);
+            var encryptedContentInfo = encryptedData.encryptedContentInfo;
+
+            // GET ALGORITHM
+            var contentEncryptionAlgorithm =
+                encryptedContentInfo.contentEncryptionAlgorithm;
+            var encryptionAlgorithm = _algorithmFromOi(
+                contentEncryptionAlgorithm.algorithm.objectIdentifierAsString!);
+            // GET SALT AND MACITER AND DIGEST ALGORITHM
+            Uint8List salt = _getSaltFromAlgorithmParameters(
+                contentEncryptionAlgorithm.parameters);
+            int macIter = _getMacIterFromAlgorithmParameters(
+                contentEncryptionAlgorithm.parameters);
+            var digestAlgorithm =
+                _getDigestAlgorithmFromEncryptionAlgorithm(encryptionAlgorithm);
+            // DECRYPT
+            var decryptedContent = _decrypt(
+              encryptedContentInfo.encryptedContent!,
+              encryptionAlgorithm,
+              pwFormatted!,
+              salt,
+              macIter,
+              digestAlgorithm,
+            );
+            var contentType = encryptedContentInfo.contentType;
+            switch (contentType.objectIdentifierAsString) {
+              case '1.2.840.113549.1.7.1': // CERTIFICATES
+                var safeContents = SafeContents.fromSequence(
+                  ASN1Sequence.fromBytes(decryptedContent),
+                );
+                safeContents.safeBags.forEach((element) {
+                  var pem = _pemFromSafeBag(element);
+                  pems.add(pem);
+                });
+                break;
+            }
+            print('');
+            break;
+          case '1.2.840.113549.1.7.1': // data (PKCS #7)
+
+            var safeContents = SafeContents.fromSequence(
+              ASN1Sequence.fromBytes(contentInfo.content!.valueBytes!),
+            );
+            safeContents.safeBags.forEach((element) {
+              var bagValueSeq = element.bagValue as ASN1Sequence;
+              switch (element.bagId.objectIdentifierAsString!) {
+                case "1.2.840.113549.1.12.10.1.3": // pkcs-12-certBag
+                  var seq = element.bagValue as ASN1Sequence;
+                  var octet = ASN1OctetString.fromBytes(
+                      seq.elements!.elementAt(1).valueBytes!);
+                  var asn1o = ASN1Sequence.fromBytes(octet.valueBytes!);
+                  pems.insert(
+                    0,
+                    X509Utils.encodeASN1ObjectToPem(
+                      asn1o,
+                      X509Utils.BEGIN_CERT,
+                      X509Utils.END_CERT,
+                    ),
+                  );
+                  break;
+                case "1.2.840.113549.1.12.10.1.2": // pkcs-12-pkcs-8ShroudedKeyBag
+                  var contentEncryptionAlgorithm =
+                      AlgorithmIdentifier.fromSequence(
+                          bagValueSeq.elements!.elementAt(0) as ASN1Sequence);
+                  // GET ALGORITHM
+                  var encryptionAlgorithm = _algorithmFromOi(
+                      contentEncryptionAlgorithm
+                          .algorithm.objectIdentifierAsString!);
+                  // GET SALT AND MACITER AND DIGEST ALGORITHM
+                  Uint8List salt = _getSaltFromAlgorithmParameters(
+                      contentEncryptionAlgorithm.parameters);
+                  int macIter = _getMacIterFromAlgorithmParameters(
+                      contentEncryptionAlgorithm.parameters);
+                  var digestAlgorithm =
+                      _getDigestAlgorithmFromEncryptionAlgorithm(
+                          encryptionAlgorithm);
+                  // DECRYPT
+                  var decryptedContent = _decrypt(
+                    bagValueSeq.elements!.elementAt(1).valueBytes!,
+                    encryptionAlgorithm,
+                    pwFormatted!,
+                    salt,
+                    macIter,
+                    digestAlgorithm,
+                  );
+                  var s = ASN1Sequence.fromBytes(decryptedContent);
+                  pems.insert(
+                    0,
+                    X509Utils.encodeASN1ObjectToPem(
+                        s,
+                        CryptoUtils.BEGIN_PRIVATE_KEY,
+                        CryptoUtils.END_PRIVATE_KEY),
+                  ); // TODO ECC ?
+                  break;
+                case "1.2.840.113549.1.12.10.1.1": // pkcs-12-keyBag
+                  var seq = bagValueSeq.elements!.elementAt(1) as ASN1Sequence;
+                  var identifier =
+                      seq.elements!.elementAt(0) as ASN1ObjectIdentifier;
+                  switch (identifier.objectIdentifierAsString!) {
+                    case "1.2.840.113549.1.1.1": // rsaEncryption
+                      pems.insert(
+                        0,
+                        X509Utils.encodeASN1ObjectToPem(
+                            bagValueSeq,
+                            CryptoUtils.BEGIN_PRIVATE_KEY,
+                            CryptoUtils.END_PRIVATE_KEY),
+                      );
+                      break;
+                  }
+                  break;
+              }
+            });
+
+            break;
+        }
+      }
+    }
+    return pems;
+  }
+
+  static String _algorithmFromOi(String keyPbe) {
+    switch (keyPbe) {
+      case '1.2.840.113549.1.12.1.6':
+        return "PBE-SHA1-RC2-40";
+      case '1.2.840.113549.1.12.1.5':
+        return "PBE-SHA1-RC2-128";
+      case '1.2.840.113549.1.12.1.2':
+        return "PBE-SHA1-RC4-40";
+      case '1.2.840.113549.1.12.1.1':
+        return "PBE-SHA1-RC4-128";
+      case '1.2.840.113549.1.12.1.4':
+        return "PBE-SHA1-2DES";
+      case '1.2.840.113549.1.12.1.3':
+        return "PBE-SHA1-3DES";
+      default:
+        throw ArgumentError('unsupported algorithm');
+    }
+  }
+
+  static String _getDigestAlgorithmFromEncryptionAlgorithm(String keyPbe) {
+    switch (keyPbe) {
+      case 'PBE-SHA1-RC2-40':
+      case 'PBE-SHA1-RC2-128':
+      case "PBE-SHA1-RC4-40":
+      case "PBE-SHA1-RC4-128":
+      case "PBE-SHA1-2DES":
+      case 'PBE-SHA1-3DES':
+        return "SHA-1";
+      default:
+        throw ArgumentError('unsupported algorithm');
+    }
+  }
+
+  static Uint8List _getSaltFromAlgorithmParameters(ASN1Object? parameters) {
+    var seq = parameters as ASN1Sequence;
+    if (seq.elements != null && seq.elements!.isNotEmpty) {
+      var asn1Octet = seq.elements!.elementAt(0) as ASN1OctetString;
+      return asn1Octet.valueBytes!;
+    }
+    return Uint8List.fromList([]);
+  }
+
+  static int _getMacIterFromAlgorithmParameters(ASN1Object? parameters) {
+    var seq = parameters as ASN1Sequence;
+    if (seq.elements != null && seq.elements!.isNotEmpty) {
+      var asn1Int = seq.elements!.elementAt(1) as ASN1Integer;
+      return asn1Int.integer!.toInt();
+    }
+    return 1;
+  }
+
+  static String _pemFromSafeBag(SafeBag element) {
+    switch (element.bagId.objectIdentifierAsString) {
+      case "1.2.840.113549.1.12.10.1.1": // KEYBAG
+        break;
+      case "1.2.840.113549.1.12.10.1.2": // PKCS-8SHROUDEDKEYBAG
+        break;
+      case "1.2.840.113549.1.12.10.1.3": // CERTIFICATE
+        var seq = element.bagValue as ASN1Sequence;
+        var a0 = seq.elements!.elementAt(1);
+        var asn1OctetString = ASN1OctetString.fromBytes(a0.valueBytes!);
+        var x509Seq = ASN1Sequence.fromBytes(asn1OctetString.valueBytes!);
+        return X509Utils.encodeASN1ObjectToPem(
+            x509Seq, X509Utils.BEGIN_CERT, X509Utils.END_CERT);
+      case "1.2.840.113549.1.12.10.1.4": // CRL
+      case "1.2.840.113549.1.12.10.1.5": // SECRET BAG
+      case "1.2.840.113549.1.12.10.1.6": // SAFECONTENTSBAG
+        return "";
+    }
+    return "";
   }
 }

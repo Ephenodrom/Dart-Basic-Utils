@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:basic_utils/src/model/asn1/pkcs/algorithm_identifier.dart';
+import 'package:basic_utils/src/model/asn1/x509/algorithm_identifier.dart';
 import 'package:pointycastle/pointycastle.dart';
 
 ///
