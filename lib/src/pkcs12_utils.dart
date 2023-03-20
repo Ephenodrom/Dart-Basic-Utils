@@ -1,25 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
-import 'package:basic_utils/src/library/crypto/desede_engine.dart';
-import 'package:basic_utils/src/library/crypto/rc2_engine.dart';
-import 'package:basic_utils/src/library/crypto/rc4_engine.dart';
-import 'package:basic_utils/src/model/asn1/x509/algorithm_identifier.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/pkcs12_attribute.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/authenticated_safe.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/cert_bag.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs7/content_info.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/digest_info.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs7/encrypted_content_info.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs8/encrypted_data.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/key_bag.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/mac_data.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/pfx.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/pkcs12_parameter_generator.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs8/private_key_info.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/safe_bag.dart';
-import 'package:basic_utils/src/model/asn1/pkcs/pkcs12/safe_contents.dart';
-import 'package:pointycastle/block/modes/cbc.dart';
+import 'package:pointycastle/asn1.dart';
+import 'package:pointycastle/export.dart';
 
 class Pkcs12Utils {
   ///
@@ -101,7 +84,7 @@ class Pkcs12Utils {
     // CREATE SAFEBAGS WITH PEMS WRAPPED IN CERTBAG
     var safeBags = _generateSafeBagsForCerts(certificates, localKeyId,
         friendlyName: friendlyName);
-    var safeContentsCert = SafeContents(safeBags);
+    var safeContentsCert = ASN1SafeContents(safeBags);
 
     // CREATE CONTENT INFO
     var contentInfoCert;
@@ -115,7 +98,7 @@ class Pkcs12Utils {
           ),
         ],
       );
-      var contentEncryptionAlgorithm = AlgorithmIdentifier(
+      var contentEncryptionAlgorithm = ASN1AlgorithmIdentifier(
         _oiFromAlgorithm(certPbe),
         parameters: params,
       );
@@ -129,13 +112,13 @@ class Pkcs12Utils {
         'SHA-1',
       );
 
-      var encryptedContentInfo = EncryptedContentInfo.forData(
+      var encryptedContentInfo = ASN1EncryptedContentInfo.forData(
           contentEncryptionAlgorithm, encryptedContent);
 
-      var encryptedData = EncryptedData(encryptedContentInfo);
-      contentInfoCert = ContentInfo.forEncryptedData(encryptedData);
+      var encryptedData = ASN1EncryptedData(encryptedContentInfo);
+      contentInfoCert = ASN1ContentInfo.forEncryptedData(encryptedData);
     } else {
-      contentInfoCert = ContentInfo.forData(
+      contentInfoCert = ASN1ContentInfo.forData(
         ASN1OctetString(
           octets: safeContentsCert.encode(),
         ),
@@ -146,7 +129,7 @@ class Pkcs12Utils {
         ASN1OctetString(octets: keySalt),
         ASN1Integer(BigInt.from(macIter)),
       ]);
-      var contentEncryptionAlgorithm = AlgorithmIdentifier(
+      var contentEncryptionAlgorithm = ASN1AlgorithmIdentifier(
         _oiFromAlgorithm(keyPbe),
         parameters: params,
       );
@@ -170,8 +153,8 @@ class Pkcs12Utils {
         friendlyName: friendlyName,
       );
 
-      var safeContentsKey = SafeContents(safeBagsKey);
-      contentInfoKey = ContentInfo.forData(
+      var safeContentsKey = ASN1SafeContents(safeBagsKey);
+      contentInfoKey = ASN1ContentInfo.forData(
         ASN1OctetString(
           octets: safeContentsKey.encode(),
         ),
@@ -184,9 +167,9 @@ class Pkcs12Utils {
         friendlyName: friendlyName,
       );
 
-      var safeContentsKey = SafeContents(safeBagsKey);
+      var safeContentsKey = ASN1SafeContents(safeBagsKey);
 
-      contentInfoKey = ContentInfo.forData(
+      contentInfoKey = ASN1ContentInfo.forData(
         ASN1OctetString(
           octets: safeContentsKey.encode(),
         ),
@@ -194,17 +177,17 @@ class Pkcs12Utils {
     }
 
     // CREATE AUTHENTICATED SAFE WITH CONTENTINFO ( CERT AND KEY )
-    var authSafe = AuthenticatedSafe([contentInfoCert, contentInfoKey]);
+    var authSafe = ASN1AuthenticatedSafe([contentInfoCert, contentInfoKey]);
 
     // WRAP AUTHENTICATED SAFE WITHIN A CONTENTINFO
-    var T = ContentInfo.forData(
+    var T = ASN1ContentInfo.forData(
       ASN1OctetString(
         octets: authSafe.encode(),
       ),
     );
 
     // GENERATE HMAC IF PASSWORD IS GIVEN
-    MacData? macData;
+    ASN1MacData? macData;
     if (password != null) {
       var bytesForHmac = authSafe.encode();
 
@@ -216,8 +199,8 @@ class Pkcs12Utils {
 
       var key = generator.generateDerivedMacParameters(20);
       var m = _generateHmac(bytesForHmac, key.key, digestAlgorithm);
-      macData = MacData(
-        DigestInfo(
+      macData = ASN1MacData(
+        ASN1DigestInfo(
           m,
           _algorithmIdentifierFromDigest(
             digestAlgorithm,
@@ -227,7 +210,7 @@ class Pkcs12Utils {
         BigInt.from(2048),
       );
     }
-    var pfx = Pfx(
+    var pfx = ASN1Pfx(
       ASN1Integer(BigInt.from(3)),
       T,
       macData: macData,
@@ -273,20 +256,20 @@ class Pkcs12Utils {
   static _generateSafeBagsForCerts(
       List<String> certificates, Uint8List localKeyId,
       {String? friendlyName}) {
-    var certBags = <CertBag>[];
-    var safeBags = <SafeBag>[];
+    var certBags = <ASN1CertBag>[];
+    var safeBags = <ASN1SafeBag>[];
 
     for (var pem in certificates) {
-      certBags.add(CertBag.fromX509Pem(pem));
+      certBags.add(ASN1CertBag.fromX509Pem(pem));
     }
     for (var certBag in certBags) {
       var asn1Set = ASN1Set(elements: []);
-      asn1Set.add(Pkcs12Attribute.localKeyID(localKeyId));
+      asn1Set.add(ASN1Pkcs12Attribute.localKeyID(localKeyId));
       if (friendlyName != null) {
-        asn1Set.add(Pkcs12Attribute.friendlyName(friendlyName));
+        asn1Set.add(ASN1Pkcs12Attribute.friendlyName(friendlyName));
       }
       safeBags.add(
-        SafeBag.forCertBag(
+        ASN1SafeBag.forCertBag(
           certBag,
           bagAttributes: asn1Set,
         ),
@@ -295,20 +278,21 @@ class Pkcs12Utils {
     return safeBags;
   }
 
-  static List<SafeBag> _generateSafeBagsForKey(
+  static List<ASN1SafeBag> _generateSafeBagsForKey(
       String privateKey, Uint8List localKeyId,
       {String? friendlyName}) {
-    late PrivateKeyInfo privateKeyInfo = _getPrivateKeyInfoFromPem(privateKey);
+    late ASN1PrivateKeyInfo privateKeyInfo =
+        _getPrivateKeyInfoFromPem(privateKey);
 
-    var safeBagsKey = <SafeBag>[];
+    var safeBagsKey = <ASN1SafeBag>[];
     var asn1Set = ASN1Set(elements: []);
-    asn1Set.add(Pkcs12Attribute.localKeyID(localKeyId));
+    asn1Set.add(ASN1Pkcs12Attribute.localKeyID(localKeyId));
     if (friendlyName != null) {
-      asn1Set.add(Pkcs12Attribute.friendlyName(friendlyName));
+      asn1Set.add(ASN1Pkcs12Attribute.friendlyName(friendlyName));
     }
     safeBagsKey.add(
-      SafeBag.forKeyBag(
-        KeyBag(privateKeyInfo),
+      ASN1SafeBag.forKeyBag(
+        ASN1KeyBag(privateKeyInfo),
         bagAttributes: asn1Set,
       ),
     );
@@ -318,14 +302,14 @@ class Pkcs12Utils {
   static _generateSafeBagsForShroudedKey(
       ASN1Object bagValue, Uint8List localKeyId,
       {String? friendlyName}) {
-    var safeBagsKey = <SafeBag>[];
+    var safeBagsKey = <ASN1SafeBag>[];
     var asn1Set = ASN1Set(elements: []);
-    asn1Set.add(Pkcs12Attribute.localKeyID(localKeyId));
+    asn1Set.add(ASN1Pkcs12Attribute.localKeyID(localKeyId));
     if (friendlyName != null) {
-      asn1Set.add(Pkcs12Attribute.friendlyName(friendlyName));
+      asn1Set.add(ASN1Pkcs12Attribute.friendlyName(friendlyName));
     }
     safeBagsKey.add(
-      SafeBag.forPkcs8ShroudedKeyBag(
+      ASN1SafeBag.forPkcs8ShroudedKeyBag(
         bagValue,
         bagAttributes: asn1Set,
       ),
@@ -333,17 +317,17 @@ class Pkcs12Utils {
     return safeBagsKey;
   }
 
-  static PrivateKeyInfo _getPrivateKeyInfoFromPem(String pem) {
-    late PrivateKeyInfo privateKeyInfo;
+  static ASN1PrivateKeyInfo _getPrivateKeyInfoFromPem(String pem) {
+    late ASN1PrivateKeyInfo privateKeyInfo;
     switch (CryptoUtils.getPrivateKeyType(pem)) {
       case "RSA":
-        privateKeyInfo = PrivateKeyInfo.fromPkcs8RsaPem(pem);
+        privateKeyInfo = ASN1PrivateKeyInfo.fromPkcs8RsaPem(pem);
         break;
       case "RSA_PKCS1":
-        privateKeyInfo = PrivateKeyInfo.fromPkcs1RsaPem(pem);
+        privateKeyInfo = ASN1PrivateKeyInfo.fromPkcs1RsaPem(pem);
         break;
       case "ECC":
-        privateKeyInfo = PrivateKeyInfo.fromEccPem(pem);
+        privateKeyInfo = ASN1PrivateKeyInfo.fromEccPem(pem);
         break;
     }
     return privateKeyInfo;
@@ -541,21 +525,21 @@ class Pkcs12Utils {
     }
   }
 
-  static AlgorithmIdentifier _algorithmIdentifierFromDigest(
+  static ASN1AlgorithmIdentifier _algorithmIdentifierFromDigest(
       String digestAlgorithm) {
     switch (digestAlgorithm) {
       case 'SHA-1':
-        return AlgorithmIdentifier.fromIdentifier('1.3.14.3.2.26');
+        return ASN1AlgorithmIdentifier.fromIdentifier('1.3.14.3.2.26');
       case 'SHA-224':
-        return AlgorithmIdentifier.fromIdentifier('2.16.840.1.101.3.4.2.4');
+        return ASN1AlgorithmIdentifier.fromIdentifier('2.16.840.1.101.3.4.2.4');
       case 'SHA-256':
-        return AlgorithmIdentifier.fromIdentifier('2.16.840.1.101.3.4.2.1');
+        return ASN1AlgorithmIdentifier.fromIdentifier('2.16.840.1.101.3.4.2.1');
       case 'SHA-384':
-        return AlgorithmIdentifier.fromIdentifier('2.16.840.1.101.3.4.2.2');
+        return ASN1AlgorithmIdentifier.fromIdentifier('2.16.840.1.101.3.4.2.2');
       case 'SHA-512':
-        return AlgorithmIdentifier.fromIdentifier('2.16.840.1.101.3.4.2.3');
+        return ASN1AlgorithmIdentifier.fromIdentifier('2.16.840.1.101.3.4.2.3');
       default:
-        return AlgorithmIdentifier.fromIdentifier('1.3.14.3.2.26');
+        return ASN1AlgorithmIdentifier.fromIdentifier('1.3.14.3.2.26');
     }
   }
 
@@ -624,7 +608,7 @@ class Pkcs12Utils {
     var pems = <String>[];
     var parser = ASN1Parser(pkcs12);
     var wrapperSeq = parser.nextObject() as ASN1Sequence;
-    var pfx = Pfx.fromSequence(wrapperSeq);
+    var pfx = ASN1Pfx.fromSequence(wrapperSeq);
 
     var authSafeContent = pfx.authSafe.content as ASN1OctetString;
     parser = ASN1Parser(authSafeContent.valueBytes);
@@ -637,12 +621,12 @@ class Pkcs12Utils {
         if (e.elements == null || e.elements!.isEmpty) {
           // TODO
         }
-        var contentInfo = ContentInfo.fromSequence(e);
+        var contentInfo = ASN1ContentInfo.fromSequence(e);
 
         switch (contentInfo.contentType.objectIdentifierAsString) {
           case '1.2.840.113549.1.7.6': // encryptedData
-            var encryptedData =
-                EncryptedData.fromSequence(contentInfo.content as ASN1Sequence);
+            var encryptedData = ASN1EncryptedData.fromSequence(
+                contentInfo.content as ASN1Sequence);
             var encryptedContentInfo = encryptedData.encryptedContentInfo;
 
             // GET ALGORITHM
@@ -669,7 +653,7 @@ class Pkcs12Utils {
             var contentType = encryptedContentInfo.contentType;
             switch (contentType.objectIdentifierAsString) {
               case '1.2.840.113549.1.7.1': // CERTIFICATES
-                var safeContents = SafeContents.fromSequence(
+                var safeContents = ASN1SafeContents.fromSequence(
                   ASN1Sequence.fromBytes(decryptedContent),
                 );
                 safeContents.safeBags.forEach((element) {
@@ -682,7 +666,7 @@ class Pkcs12Utils {
             break;
           case '1.2.840.113549.1.7.1': // data (PKCS #7)
 
-            var safeContents = SafeContents.fromSequence(
+            var safeContents = ASN1SafeContents.fromSequence(
               ASN1Sequence.fromBytes(contentInfo.content!.valueBytes!),
             );
             safeContents.safeBags.forEach((element) {
@@ -704,7 +688,7 @@ class Pkcs12Utils {
                   break;
                 case "1.2.840.113549.1.12.10.1.2": // pkcs-12-pkcs-8ShroudedKeyBag
                   var contentEncryptionAlgorithm =
-                      AlgorithmIdentifier.fromSequence(
+                      ASN1AlgorithmIdentifier.fromSequence(
                           bagValueSeq.elements!.elementAt(0) as ASN1Sequence);
                   // GET ALGORITHM
                   var encryptionAlgorithm = _algorithmFromOi(
@@ -813,7 +797,7 @@ class Pkcs12Utils {
     return 1;
   }
 
-  static String _pemFromSafeBag(SafeBag element) {
+  static String _pemFromSafeBag(ASN1SafeBag element) {
     switch (element.bagId.objectIdentifierAsString) {
       case "1.2.840.113549.1.12.10.1.1": // KEYBAG
         break;

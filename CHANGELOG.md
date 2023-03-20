@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.5.2] - 2022-03-20
+
+* Remove ported classes from package to be compatible with the latest release of pointycastle
+
 ## [5.5.1] - 2022-02-21
 
 * Improved X509Utils, X509 parsing and generation supports now KeyUsage extensions. (PR #81)

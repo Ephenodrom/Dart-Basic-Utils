@@ -75,5 +75,4 @@ export 'src/hex_utils.dart';
 // Export other libraries
 export 'package:pointycastle/ecc/api.dart';
 export 'package:pointycastle/asymmetric/api.dart';
-export 'package:pointycastle/asn1.dart';
 export 'package:pointycastle/api.dart' hide Padding;

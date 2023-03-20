@@ -13,8 +13,8 @@ import 'package:basic_utils/src/model/crl/CrlReason.dart';
 import 'package:basic_utils/src/model/crl/RevokedCertificate.dart';
 import 'package:basic_utils/src/model/csr/CertificateSigningRequestData.dart';
 import 'package:basic_utils/src/model/csr/CertificateSigningRequestExtensions.dart';
-import 'package:basic_utils/src/model/csr/CertificationRequestInfo.dart';
-import 'package:basic_utils/src/model/csr/SubjectPublicKeyInfo.dart';
+import 'package:basic_utils/src/model/csr/CertificationRequestInfo.dart' as bu;
+import 'package:basic_utils/src/model/csr/SubjectPublicKeyInfo.dart' as bu;
 import 'package:basic_utils/src/model/ocsp/BasicOCSPResponse.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPCertStatus.dart';
 import 'package:basic_utils/src/model/ocsp/OCSPCertStatusValues.dart';
@@ -336,9 +336,9 @@ class X509Utils {
       }
       var oIdentifier;
       try {
-        oIdentifier = ASN1ObjectIdentifier.fromIdentifierString(k);
-      } on UnsupportedObjectIdentifierException catch (e) {
         oIdentifier = ASN1ObjectIdentifier.fromName(k);
+      } on UnsupportedObjectIdentifierException catch (e) {
+        oIdentifier = ASN1ObjectIdentifier.fromIdentifierString(k);
       }
       var innerSequence = ASN1Sequence(elements: [oIdentifier, pString]);
       var s = ASN1Set(elements: [innerSequence]);
@@ -1857,7 +1857,7 @@ class X509Utils {
     );
   }
 
-  static SubjectPublicKeyInfo _getSubjectPublicKeyInfoFromSeq(
+  static bu.SubjectPublicKeyInfo _getSubjectPublicKeyInfoFromSeq(
       ASN1Sequence pubKeySequence) {
     var algSeq = pubKeySequence.elements!.elementAt(0) as ASN1Sequence;
     var algOi = algSeq.elements!.elementAt(0) as ASN1ObjectIdentifier;
@@ -1903,7 +1903,7 @@ class X509Utils {
         pubKeySequence.encodedBytes!,
         algorithmName: 'SHA-256');
 
-    return SubjectPublicKeyInfo(
+    return bu.SubjectPublicKeyInfo(
       algorithm: algOi.objectIdentifierAsString,
       algorithmReadableName: algOi.readableName,
       parameter: algParameters != '' ? algParameters : null,
@@ -1972,7 +1972,7 @@ class X509Utils {
     return extensions;
   }
 
-  static CertificationRequestInfo _getCertificateSigningRequestDataFromSeq(
+  static bu.CertificationRequestInfo _getCertificateSigningRequestDataFromSeq(
       ASN1Sequence infoSeq) {
     // Version
     var asn1Version = infoSeq.elements!.elementAt(0) as ASN1Integer;
@@ -2017,7 +2017,7 @@ class X509Utils {
         }
       }
     }
-    return CertificationRequestInfo(
+    return bu.CertificationRequestInfo(
       version: asn1Version.integer!.toInt(),
       subject: subject,
       publicKeyInfo: pubInfo,
