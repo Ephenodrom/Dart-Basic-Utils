@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.5.3] - 2022-03-23
+
+* Update to latest pointycastle release
+
 ## [5.5.2] - 2022-03-20
 
 * Remove ported classes from package to be compatible with the latest release of pointycastle
