@@ -1694,7 +1694,7 @@ class X509Utils {
     parent ??= pem;
     var data = x509CertificateFromPem(pem);
     var parentData = x509CertificateFromPem(parent);
-    var algorithm = _getDigestFromOi(data.signatureAlgorithm);
+    var algorithm = _getDigestFromOi(data.signatureAlgorithmReadableName ?? '');
 
     // Check if key and algorithm matches
     if (data.signatureAlgorithmReadableName!.toLowerCase().contains('rsa') &&

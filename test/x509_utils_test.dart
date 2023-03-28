@@ -1646,7 +1646,11 @@ SEQUENCE (1 elem)
       csr,
       365,
       sans: ['san1.basic-utils.dev', 'san2.basic-utils.dev'],
-      keyUsage: [KeyUsage.DIGITAL_SIGNATURE, KeyUsage.DATA_ENCIPHERMENT, KeyUsage.DECIPHER_ONLY],
+      keyUsage: [
+        KeyUsage.DIGITAL_SIGNATURE,
+        KeyUsage.DATA_ENCIPHERMENT,
+        KeyUsage.DECIPHER_ONLY
+      ],
       extKeyUsage: [ExtendedKeyUsage.SERVER_AUTH, ExtendedKeyUsage.CLIENT_AUTH],
     );
     var x509 = X509Utils.x509CertificateFromPem(pem);
@@ -1663,9 +1667,12 @@ SEQUENCE (1 elem)
     expect(x509.subjectAlternativNames!.elementAt(1), 'san2.basic-utils.dev');
     expect(x509.extKeyUsage!.elementAt(0), ExtendedKeyUsage.SERVER_AUTH);
     expect(x509.extKeyUsage!.elementAt(1), ExtendedKeyUsage.CLIENT_AUTH);
-    expect(x509.tbsCertificate?.extensions?.keyUsage?.elementAt(0), KeyUsage.DIGITAL_SIGNATURE);
-    expect(x509.tbsCertificate?.extensions?.keyUsage?.elementAt(1), KeyUsage.DATA_ENCIPHERMENT);
-    expect(x509.tbsCertificate?.extensions?.keyUsage?.elementAt(2), KeyUsage.DECIPHER_ONLY);
+    expect(x509.tbsCertificate?.extensions?.keyUsage?.elementAt(0),
+        KeyUsage.DIGITAL_SIGNATURE);
+    expect(x509.tbsCertificate?.extensions?.keyUsage?.elementAt(1),
+        KeyUsage.DATA_ENCIPHERMENT);
+    expect(x509.tbsCertificate?.extensions?.keyUsage?.elementAt(2),
+        KeyUsage.DECIPHER_ONLY);
   });
 
   test('Test x509CertificateFromPem with vmc', () {
@@ -1785,6 +1792,26 @@ SEQUENCE (1 elem)
     expect(check, false);
   });
 
+  test('Test checkX509Signature2()', () {
+    var f = File('test_resources/github_com_cert_chain.pem');
+    var pem = f.readAsStringSync();
+    var chain = X509Utils.parseChainString(pem);
+    var endCertificate = chain.elementAt(0).plain!;
+    var intermediate = chain.elementAt(1).plain!;
+    var root = chain.elementAt(2).plain!;
+    var check = X509Utils.checkX509Signature(
+      endCertificate,
+      parent: intermediate,
+    );
+    expect(check, true);
+
+    check = X509Utils.checkX509Signature(
+      intermediate,
+      parent: root,
+    );
+    expect(check, true);
+  });
+
   test('Test fixPem()', () {
     var data = X509Utils.fixPem(brokenPEM);
     expect(data, fixedPem);
@@ -1828,5 +1855,4 @@ SEQUENCE (1 elem)
     expect(data.subject!.containsKey('2.5.4.7'), true);
     expect(data.subject!['2.5.4.7'], 'Example City');
   });
-
 }
