@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.5.4] - 2022-04-14
+
+* Improve X509Utils, fix signature check
+
 ## [5.5.3] - 2022-03-23
 
 * Update to latest pointycastle release
