@@ -254,7 +254,7 @@ class CryptoUtils {
     var random = Random.secure();
     var seeds = <int>[];
     for (var i = 0; i < 32; i++) {
-      seeds.add(random.nextInt(255));
+      seeds.add(random.nextInt(255 + 1));
     }
     secureRandom.seed(KeyParameter(Uint8List.fromList(seeds)));
     return secureRandom;
