@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.6.0] - 2022-06-10
+
+* Update dependencies to be ready for Dart 3.
+
 ## [5.5.4] - 2022-04-14
 
 * Improve X509Utils, fix signature check
