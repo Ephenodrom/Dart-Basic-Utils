@@ -680,7 +680,7 @@ class CryptoUtils {
   /// Supports SEC1 (<https://tools.ietf.org/html/rfc5915>) and PKCS8 (<https://datatracker.ietf.org/doc/html/rfc5208>)
   ///
   static ECPrivateKey ecPrivateKeyFromDerBytes(Uint8List bytes,
-      {bool pkcs8 = false}) {
+      {bool pkcs8 = false, ECDomainParameters? parameters}) {
     var asn1Parser = ASN1Parser(bytes);
     var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
     var curveName;
@@ -722,13 +722,17 @@ class CryptoUtils {
       x = privateKeyAsOctetString.valueBytes!;
     }
 
-    return ECPrivateKey(osp2i(x), ECDomainParameters(curveName));
+    return ECPrivateKey(
+      osp2i(x),
+      parameters ?? ECDomainParameters(curveName),
+    );
   }
 
   ///
   /// Decode the given [bytes] into an [ECPublicKey].
   ///
-  static ECPublicKey ecPublicKeyFromDerBytes(Uint8List bytes) {
+  static ECPublicKey ecPublicKeyFromDerBytes(Uint8List bytes,
+      {ECDomainParameters? parameters}) {
     if (bytes.elementAt(0) == 0) {
       bytes = bytes.sublist(1);
     }
@@ -759,7 +763,7 @@ class CryptoUtils {
     }
     var x = pubBytes.sublist(1, (pubBytes.length / 2).round());
     var y = pubBytes.sublist(1 + x.length, pubBytes.length);
-    var params = ECDomainParameters(curveName);
+    var params = parameters ?? ECDomainParameters(curveName);
     var bigX = decodeBigIntWithSign(1, x);
     var bigY = decodeBigIntWithSign(1, y);
     var pubKey = ECPublicKey(
