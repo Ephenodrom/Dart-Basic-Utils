@@ -8,15 +8,15 @@ environment:
   sdk: '>=2.18.0 <4.0.0'
 
 dependencies:
-  http: ^1.0.0
-  logging: ^1.1.1
-  json_annotation: ^4.6.0
-  pointycastle: ^3.7.2
+  http: ^1.1.0
+  logging: ^1.2.0
+  json_annotation: ^4.8.1
+  pointycastle: ^3.7.3
 
 dev_dependencies:
-  build_runner: ^2.3.3
-  json_serializable: ^6.0.1
-  test: ^1.22.2
+  build_runner: ^2.4.6
+  json_serializable: ^6.7.1
+  test: ^1.24.4
 
 false_secrets:
  - /test/crypto_utils_test.dart
