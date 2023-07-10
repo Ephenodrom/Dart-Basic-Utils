@@ -71,6 +71,7 @@ export 'src/FunctionDefs.dart';
 export 'src/EnumUtils.dart';
 export 'src/pkcs12_utils.dart';
 export 'src/hex_utils.dart';
+export 'src/BooleanUtils.dart';
 
 // Export other libraries
 export 'package:pointycastle/ecc/api.dart';
