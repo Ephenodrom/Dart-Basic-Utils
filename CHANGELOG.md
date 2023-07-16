@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.6.1] - 2022-07-16
+
+* Added missing BooleanUtils export
+
 ## [5.6.0] - 2022-06-10
 
 * Update dependencies to be ready for Dart 3.
