@@ -429,4 +429,11 @@ sF0zEAHkQoYVBEhrfAHOLYkE3u08+q2tug==
     );
     expect(pem, opensslEcKey);
   });
+
+  test('Test encodeEcPrivateKeyToPkcs8', () {
+    var ecdsaKeypair = CryptoUtils.generateEcKeyPair(); 
+    var ecPrivateKeyPkcs8 = CryptoUtils.encodePrivateEcdsaKeyToPkcs8(ecdsaKeypair.privateKey as ECPrivateKey); 
+
+    expect(ecPrivateKeyPkcs8.startsWith('-----BEGIN PRIVATE KEY-----'), true); 
+  });
 }

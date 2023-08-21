@@ -1173,4 +1173,15 @@ class CryptoUtils {
   ///
   static Uint8List removePKCS7Padding(Uint8List padded) =>
       padded.sublist(0, padded.length - PKCS7Padding().padCount(padded));
+
+  ///
+  /// Encode a private ECDSA key to PKCS8 format
+  ///
+  static String encodePrivateEcdsaKeyToPkcs8(ECPrivateKey privateKey) {
+    final privateKeyPem = CryptoUtils.encodeEcPrivateKeyToPem(privateKey);
+    final base64Encoded = base64.encode(ASN1PrivateKeyInfo.fromEccPem(privateKeyPem).encode());
+    final base64Formatted = base64Encoded.replaceAllMapped(RegExp(r".{64}"), (match) => "${match.group(0)}\n");
+
+    return '$BEGIN_PRIVATE_KEY\n$base64Formatted\n$END_PRIVATE_KEY';
+  }
 }
