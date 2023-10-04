@@ -1628,6 +1628,38 @@ SEQUENCE (1 elem)
         });
   });
 
+  test('Test generateSelfSignedCertificate custom validity', () {
+    final int days = 365;
+    final DateTime notBefore = DateTime.now();
+    final DateTime notAfter = notBefore.add(Duration(days: days));
+    var pair = CryptoUtils.generateRSAKeyPair();
+    var dn = {
+      'CN': 'basic-utils.dev',
+      'O': 'Magic Company',
+      'L': 'Fäkecity',
+      'S': 'FakeState',
+      'C': 'DE',
+    };
+    var csr = X509Utils.generateRsaCsrPem(
+        dn, pair.privateKey as RSAPrivateKey, pair.publicKey as RSAPublicKey,
+        san: ['san1.basic-utils.dev', 'san2.basic-utils.dev']);
+    var pem = X509Utils.generateSelfSignedCertificate(
+      pair.privateKey,
+      csr,
+      days,
+      sans: ['san1.basic-utils.dev', 'san2.basic-utils.dev'],
+      extKeyUsage: [ExtendedKeyUsage.SERVER_AUTH, ExtendedKeyUsage.CLIENT_AUTH],
+      notBefore: notBefore,
+    );
+    var x509 = X509Utils.x509CertificateFromPem(pem);
+    expect(x509.tbsCertificate?.validity.notBefore.toIso8601String().substring(0, 10),
+        notBefore.toUtc().toIso8601String().substring(0, 10),
+        reason: "notBefore match except milliseconds as utc");
+    expect(x509.tbsCertificate?.validity.notAfter.toIso8601String().substring(0, 10),
+        notAfter.toUtc().toIso8601String().substring(0, 10),
+        reason: "notAfter match except milliseconds as utc");
+  });
+
   test('Test generateSelfSignedCertificate with ECC', () {
     var pair = CryptoUtils.generateEcKeyPair();
     var dn = {
