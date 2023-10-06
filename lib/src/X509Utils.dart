@@ -292,6 +292,8 @@ class X509Utils {
   /// * [extKeyUsage] = The extended key usage definition
   /// * [serialNumber] = The serialnumber. If not set the default will be 1.
   /// * [issuer] = The issuer. If null, the issuer will be the subject of the given csr.
+  /// * [notBefore] = The Timestamp after when the certificate is valid. If null, this will be [DateTime.now].
+  /// The "Not After" property of the certificate will have the [days] added to [notBefore].
   ///
   static String generateSelfSignedCertificate(
     PrivateKey privateKey,
@@ -302,6 +304,7 @@ class X509Utils {
     List<ExtendedKeyUsage>? extKeyUsage,
     String serialNumber = '1',
     Map<String, String>? issuer,
+    DateTime? notBefore,
   }) {
     var csrData = csrFromPem(csr);
 
@@ -348,8 +351,9 @@ class X509Utils {
 
     // Add Validity
     var validitySeq = ASN1Sequence();
-    validitySeq.add(ASN1UtcTime(DateTime.now()));
-    validitySeq.add(ASN1UtcTime(DateTime.now().add(Duration(days: days))));
+    final DateTime from = notBefore ?? DateTime.now();
+    validitySeq.add(ASN1UtcTime(from));
+    validitySeq.add(ASN1UtcTime(from.add(Duration(days: days))));
     data.add(validitySeq);
 
     // Add Subject
