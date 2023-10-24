@@ -1,5 +1,10 @@
 # Changelog
 
+## [5.7.0] - 2022-10-24
+
+* ECDSA Keypair SEC1 to Pkcs8 converting (PR #101)
+* Added a new param for the "Not Before" flag of self signed x.509 certificates (PR #105)
+
 ## [5.6.1] - 2022-07-16
 
 * Added missing BooleanUtils export
