@@ -290,6 +290,8 @@ class X509Utils {
   /// * [sans] = Subject alternative names to place within the certificate
   /// * [keyUsage] = The key usage definition extension
   /// * [extKeyUsage] = The extended key usage definition
+  /// * [cA] = The cA boolean of the basic constraints extension, which indicates whether the certificate is a CA
+  /// * [pathLenConstraint] = The pathLenConstraint field of the basic constraints extension. This is ignored if cA is null or false, or if pathLenConstraint is less than 0.
   /// * [serialNumber] = The serialnumber. If not set the default will be 1.
   /// * [issuer] = The issuer. If null, the issuer will be the subject of the given csr.
   /// * [notBefore] = The Timestamp after when the certificate is valid. If null, this will be [DateTime.now].
@@ -302,6 +304,8 @@ class X509Utils {
     List<String>? sans,
     List<KeyUsage>? keyUsage,
     List<ExtendedKeyUsage>? extKeyUsage,
+    bool? cA,
+    int? pathLenConstraint,
     String serialNumber = '1',
     Map<String, String>? issuer,
     DateTime? notBefore,
@@ -397,7 +401,8 @@ class X509Utils {
     // Add Extensions
     if (IterableUtils.isNotNullOrEmpty(sans) ||
         IterableUtils.isNotNullOrEmpty(keyUsage) ||
-        IterableUtils.isNotNullOrEmpty(extKeyUsage)) {
+        IterableUtils.isNotNullOrEmpty(extKeyUsage) ||
+        cA != null) {
       var extensionTopSequence = ASN1Sequence();
 
       if (IterableUtils.isNotNullOrEmpty(keyUsage)) {
@@ -482,6 +487,27 @@ class X509Utils {
         sanSequence.add(ASN1ObjectIdentifier.fromIdentifierString('2.5.29.17'));
         sanSequence.add(octetString);
         extensionTopSequence.add(sanSequence);
+      }
+
+      if (cA != null) {
+        var basicConstraintsSequence = ASN1Sequence();
+
+        basicConstraintsSequence
+            .add(ASN1ObjectIdentifier.fromIdentifierString("2.5.29.19"));
+        basicConstraintsSequence.add(ASN1Boolean(true));
+
+        var basicConstraintsList = ASN1Sequence();
+        basicConstraintsList.add(ASN1Boolean(cA));
+
+        // check if CA to allow pathLenConstraint
+        if (pathLenConstraint != null && cA && pathLenConstraint >= 0) {
+          basicConstraintsList.add(ASN1Integer.fromtInt(pathLenConstraint));
+        }
+
+        basicConstraintsSequence
+            .add(ASN1OctetString(octets: basicConstraintsList.encode()));
+
+        extensionTopSequence.add(basicConstraintsSequence);
       }
 
       var extObj = ASN1Object(tag: 0xA3);
