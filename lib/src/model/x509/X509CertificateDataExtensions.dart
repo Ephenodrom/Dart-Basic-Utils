@@ -19,6 +19,12 @@ class X509CertificateDataExtensions {
   /// The key usage extension
   List<KeyUsage>? keyUsage;
 
+  /// The cA field of the basic constraints extension
+  bool? cA;
+
+  /// The pathLenConstraint field of the basic constraints extension
+  int? pathLenConstraint;
+
   /// The base64 encoded VMC logo
   VmcData? vmc;
 
@@ -29,6 +35,8 @@ class X509CertificateDataExtensions {
     this.subjectAlternativNames,
     this.extKeyUsage,
     this.keyUsage,
+    this.cA,
+    this.pathLenConstraint,
     this.vmc,
     this.cRLDistributionPoints,
   });
