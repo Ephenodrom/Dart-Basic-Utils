@@ -497,7 +497,10 @@ class X509Utils {
         basicConstraintsSequence.add(ASN1Boolean(true));
 
         var basicConstraintsList = ASN1Sequence();
-        basicConstraintsList.add(ASN1Boolean(cA));
+
+        if (cA) {
+          basicConstraintsList.add(ASN1Boolean(cA));
+        }
 
         // check if CA to allow pathLenConstraint
         if (pathLenConstraint != null && cA && pathLenConstraint >= 0) {
@@ -1444,6 +1447,28 @@ class X509Utils {
   }
 
   ///
+  /// Parses the given ASN1Object to the two basic constraint
+  /// fields cA and pathLenConstraint. Returns a list of types [bool, int] if
+  /// cA is true and a valid pathLenConstraint is specified, else the
+  /// corresponding element will be null.
+  ///
+  static List<dynamic> _fetchBasicConstraintsFromExtension(ASN1Object extData) {
+    var basicConstraints = <dynamic>[null, null];
+    var octet = extData as ASN1OctetString;
+    var constraintParser = ASN1Parser(octet.valueBytes);
+    var constraintSeq = constraintParser.nextObject() as ASN1Sequence;
+    constraintSeq.elements!.forEach((ASN1Object obj) {
+      if (obj is ASN1Boolean) {
+        basicConstraints[0] = obj.boolValue;
+      }
+      if (obj is ASN1Integer) {
+        basicConstraints[1] = obj.integer!.toInt();
+      }
+    });
+    return basicConstraints;
+  }
+
+  ///
   /// Parses the given object identifier values to the internal enum
   ///
   static List<KeyUsage> _fetchKeyUsageFromExtension(ASN1Object extData) {
@@ -1952,6 +1977,7 @@ class X509Utils {
     List<String>? sans;
     List<KeyUsage>? keyUsage;
     List<ExtendedKeyUsage>? extKeyUsage;
+    List<dynamic> basicConstraints;
     var extensions = X509CertificateDataExtensions();
     extSequence.elements!.forEach(
       (ASN1Object subseq) {
@@ -1987,6 +2013,17 @@ class X509Utils {
                 _fetchExtendedKeyUsageFromExtension(seq.elements!.elementAt(1));
           }
           extensions.extKeyUsage = extKeyUsage;
+        }
+        if (oi.objectIdentifierAsString == '2.5.29.19') {
+          if (seq.elements!.length == 3) {
+            basicConstraints =
+                _fetchBasicConstraintsFromExtension(seq.elements!.elementAt(2));
+          } else {
+            basicConstraints = [null, null];
+          }
+
+          extensions.cA = basicConstraints[0];
+          extensions.pathLenConstraint = basicConstraints[1];
         }
         if (oi.objectIdentifierAsString == '1.3.6.1.5.5.7.1.12') {
           var vmcData = _fetchVmcLogo(seq.elements!.elementAt(1));
