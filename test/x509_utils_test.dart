@@ -1652,10 +1652,16 @@ SEQUENCE (1 elem)
       notBefore: notBefore,
     );
     var x509 = X509Utils.x509CertificateFromPem(pem);
-    expect(x509.tbsCertificate?.validity.notBefore.toIso8601String().substring(0, 10),
+    expect(
+        x509.tbsCertificate?.validity.notBefore
+            .toIso8601String()
+            .substring(0, 10),
         notBefore.toUtc().toIso8601String().substring(0, 10),
         reason: "notBefore match except milliseconds as utc");
-    expect(x509.tbsCertificate?.validity.notAfter.toIso8601String().substring(0, 10),
+    expect(
+        x509.tbsCertificate?.validity.notAfter
+            .toIso8601String()
+            .substring(0, 10),
         notAfter.toUtc().toIso8601String().substring(0, 10),
         reason: "notAfter match except milliseconds as utc");
   });
@@ -1705,6 +1711,93 @@ SEQUENCE (1 elem)
         KeyUsage.DATA_ENCIPHERMENT);
     expect(x509.tbsCertificate?.extensions?.keyUsage?.elementAt(2),
         KeyUsage.DECIPHER_ONLY);
+  });
+
+  test('Test generateSelfSignedCertificate with cA true and valid pathlen', () {
+    var pair = CryptoUtils.generateEcKeyPair();
+    var dn = {
+      'CN': 'basic-utils.dev',
+      'O': 'Magic Company',
+      'L': 'Fakecity',
+      'S': 'FakeState',
+      'C': 'DE',
+    };
+    var csr = X509Utils.generateEccCsrPem(
+        dn, pair.privateKey as ECPrivateKey, pair.publicKey as ECPublicKey,
+        san: ['san1.basic-utils.dev', 'san2.basic-utils.dev']);
+
+    var pem = X509Utils.generateSelfSignedCertificate(pair.privateKey, csr, 365,
+        cA: true, pathLenConstraint: 10);
+    var x509 = X509Utils.x509CertificateFromPem(pem);
+
+    expect(x509.tbsCertificate?.extensions?.cA, true);
+    expect(x509.tbsCertificate?.extensions?.pathLenConstraint, 10);
+  });
+
+  test('Test generateSelfSignedCertificate with cA false and valid pathLen',
+      () {
+    var pair = CryptoUtils.generateEcKeyPair();
+    var dn = {
+      'CN': 'basic-utils.dev',
+      'O': 'Magic Company',
+      'L': 'Fakecity',
+      'S': 'FakeState',
+      'C': 'DE',
+    };
+    var csr = X509Utils.generateEccCsrPem(
+        dn, pair.privateKey as ECPrivateKey, pair.publicKey as ECPublicKey,
+        san: ['san1.basic-utils.dev', 'san2.basic-utils.dev']);
+
+    var pem = X509Utils.generateSelfSignedCertificate(pair.privateKey, csr, 365,
+        cA: false, pathLenConstraint: 10);
+    var x509 = X509Utils.x509CertificateFromPem(pem);
+
+    expect(x509.tbsCertificate?.extensions?.cA, null);
+    expect(x509.tbsCertificate?.extensions?.pathLenConstraint, null);
+  });
+
+  test('Test generateSelfSignedCertificate with cA true and invalid pathLen',
+      () {
+    var pair = CryptoUtils.generateEcKeyPair();
+    var dn = {
+      'CN': 'basic-utils.dev',
+      'O': 'Magic Company',
+      'L': 'Fakecity',
+      'S': 'FakeState',
+      'C': 'DE',
+    };
+    var csr = X509Utils.generateEccCsrPem(
+        dn, pair.privateKey as ECPrivateKey, pair.publicKey as ECPublicKey,
+        san: ['san1.basic-utils.dev', 'san2.basic-utils.dev']);
+
+    var pem = X509Utils.generateSelfSignedCertificate(pair.privateKey, csr, 365,
+        cA: true, pathLenConstraint: -10);
+    var x509 = X509Utils.x509CertificateFromPem(pem);
+
+    expect(x509.tbsCertificate?.extensions?.cA, true);
+    expect(x509.tbsCertificate?.extensions?.pathLenConstraint, null);
+  });
+
+  test('Test generateSelfSignedCertificate with cA false and invalid pathLen',
+      () {
+    var pair = CryptoUtils.generateEcKeyPair();
+    var dn = {
+      'CN': 'basic-utils.dev',
+      'O': 'Magic Company',
+      'L': 'Fakecity',
+      'S': 'FakeState',
+      'C': 'DE',
+    };
+    var csr = X509Utils.generateEccCsrPem(
+        dn, pair.privateKey as ECPrivateKey, pair.publicKey as ECPublicKey,
+        san: ['san1.basic-utils.dev', 'san2.basic-utils.dev']);
+
+    var pem = X509Utils.generateSelfSignedCertificate(pair.privateKey, csr, 365,
+        cA: false, pathLenConstraint: -10);
+    var x509 = X509Utils.x509CertificateFromPem(pem);
+
+    expect(x509.tbsCertificate?.extensions?.cA, null);
+    expect(x509.tbsCertificate?.extensions?.pathLenConstraint, null);
   });
 
   test('Test x509CertificateFromPem with vmc', () {
