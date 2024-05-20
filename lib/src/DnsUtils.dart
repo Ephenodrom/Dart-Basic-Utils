@@ -19,14 +19,18 @@ class DnsUtils {
   ///
   static Future<List<RRecord>?> lookupRecord(String name, RRecordType type,
       {bool dnssec = false,
-      DnsApiProvider provider = DnsApiProvider.GOOGLE}) async {
+      DnsApiProvider provider = DnsApiProvider.GOOGLE,
+      String? dnsApiUrl}) async {
     var queryParameters = <String, dynamic>{};
     queryParameters.putIfAbsent('name', () => name);
     queryParameters.putIfAbsent('type', () => _getTypeFromType(type));
     queryParameters.putIfAbsent('dnssec', () => dnssec.toString());
 
-    assert(_dnsApiProviderUrl.length == DnsApiProvider.values.length);
-    var _baseUrl = _dnsApiProviderUrl[provider];
+    var _baseUrl = dnsApiUrl;
+    if (_baseUrl == null) {
+      assert(_dnsApiProviderUrl.length == DnsApiProvider.values.length);
+      _baseUrl = _dnsApiProviderUrl[provider];
+    }
 
     var headers = {'Accept': 'application/dns-json'};
 
