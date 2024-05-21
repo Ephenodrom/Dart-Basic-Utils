@@ -17,6 +17,9 @@ class DnsUtils {
   ///
   /// Lookup for records of the given [type] and [name]. It also supports [dnssec]
   ///
+  /// [dnsApiUrl] allows the caller to specify a custom DNS API URL. If this parameter
+  /// is not provided, the URL will be determined based on the [provider].
+  ///
   static Future<List<RRecord>?> lookupRecord(String name, RRecordType type,
       {bool dnssec = false,
       DnsApiProvider provider = DnsApiProvider.GOOGLE,
