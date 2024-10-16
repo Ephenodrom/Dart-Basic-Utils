@@ -692,7 +692,7 @@ class CryptoUtils {
       var b2Data = b2.objectIdentifierAsString;
       var b2Curvedata = ObjectIdentifiers.getIdentifierByIdentifier(b2Data);
       if (b2Curvedata != null) {
-        curveName = b2Curvedata['readableName'];
+        curveName = b2Curvedata['readableName'].toLowerCase();
       }
 
       var octetString = topLevelSeq.elements!.elementAt(2) as ASN1OctetString;
@@ -716,7 +716,7 @@ class CryptoUtils {
       var data = ObjectIdentifiers.getIdentifierByIdentifier(
           curveNameOi.objectIdentifierAsString);
       if (data != null) {
-        curveName = data['readableName'];
+        curveName = data['readableName'].toLowerCase();
       }
 
       x = privateKeyAsOctetString.valueBytes!;
@@ -746,7 +746,7 @@ class CryptoUtils {
     var data = ObjectIdentifiers.getIdentifierByIdentifier(
         curveNameOi.objectIdentifierAsString);
     if (data != null) {
-      curveName = data['readableName'];
+      curveName = data['readableName'].toLowerCase();
     }
 
     var subjectPublicKey = topLevelSeq.elements![1] as ASN1BitString;
