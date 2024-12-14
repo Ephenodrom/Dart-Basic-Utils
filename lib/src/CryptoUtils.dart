@@ -261,9 +261,9 @@ class CryptoUtils {
   }
 
   ///
-  /// Enode the given [publicKey] to PEM format using the PKCS#8 standard.
+  /// Enode the given [publicKey] to DER bytes using the PKCS#8 standard.
   ///
-  static String encodeRSAPublicKeyToPem(RSAPublicKey publicKey) {
+  static Uint8List encodeRSAPublicKeyToDERBytes(RSAPublicKey publicKey) {
     var algorithmSeq = ASN1Sequence();
     var paramsAsn1Obj = ASN1Object.fromBytes(Uint8List.fromList([0x5, 0x0]));
     algorithmSeq.add(ASN1ObjectIdentifier.fromName('rsaEncryption'));
@@ -278,7 +278,15 @@ class CryptoUtils {
     var topLevelSeq = ASN1Sequence();
     topLevelSeq.add(algorithmSeq);
     topLevelSeq.add(publicKeySeqBitString);
-    var dataBase64 = base64.encode(topLevelSeq.encode());
+
+    return topLevelSeq.encode();
+  }
+
+  ///
+  /// Enode the given [publicKey] to PEM format using the PKCS#8 standard.
+  ///
+  static String encodeRSAPublicKeyToPem(RSAPublicKey publicKey) {
+    var dataBase64 = base64.encode(encodeRSAPublicKeyToDERBytes(publicKey));
     var chunks = StringUtils.chunk(dataBase64, 64);
 
     return '$BEGIN_PUBLIC_KEY\n${chunks.join('\n')}\n$END_PUBLIC_KEY';
@@ -359,7 +367,7 @@ class CryptoUtils {
   }
 
   ///
-  /// Enode the given [rsaPrivateKey] to PEM format using the PKCS#8 standard.
+  /// Enode the given [rsaPrivateKey] to DER Bytes using the PKCS#8 standard.
   ///
   /// The ASN1 structure is decripted at <https://tools.ietf.org/html/rfc5208>.
   /// ```
@@ -370,7 +378,7 @@ class CryptoUtils {
   /// }
   /// ```
   ///
-  static String encodeRSAPrivateKeyToPem(RSAPrivateKey rsaPrivateKey) {
+  static Uint8List encodeRSAPrivateKeyToDERBytes(RSAPrivateKey rsaPrivateKey) {
     var version = ASN1Integer(BigInt.from(0));
 
     var algorithmSeq = ASN1Sequence();
@@ -411,7 +419,25 @@ class CryptoUtils {
     topLevelSeq.add(version);
     topLevelSeq.add(algorithmSeq);
     topLevelSeq.add(publicKeySeqOctetString);
-    var dataBase64 = base64.encode(topLevelSeq.encode());
+
+    return topLevelSeq.encode();
+  }
+
+  ///
+  /// Enode the given [rsaPrivateKey] to PEM format using the PKCS#8 standard.
+  ///
+  /// The ASN1 structure is decripted at <https://tools.ietf.org/html/rfc5208>.
+  /// ```
+  /// PrivateKeyInfo ::= SEQUENCE {
+  ///   version         Version,
+  ///   algorithm       AlgorithmIdentifier,
+  ///   PrivateKey      BIT STRING
+  /// }
+  /// ```
+  ///
+  static String encodeRSAPrivateKeyToPem(RSAPrivateKey rsaPrivateKey) {
+    var dataBase64 =
+        base64.encode(encodeRSAPrivateKeyToDERBytes(rsaPrivateKey));
     var chunks = StringUtils.chunk(dataBase64, 64);
     return '$BEGIN_PRIVATE_KEY\n${chunks.join('\n')}\n$END_PRIVATE_KEY';
   }
@@ -1179,8 +1205,10 @@ class CryptoUtils {
   ///
   static String encodePrivateEcdsaKeyToPkcs8(ECPrivateKey privateKey) {
     final privateKeyPem = CryptoUtils.encodeEcPrivateKeyToPem(privateKey);
-    final base64Encoded = base64.encode(ASN1PrivateKeyInfo.fromEccPem(privateKeyPem).encode());
-    final base64Formatted = base64Encoded.replaceAllMapped(RegExp(r".{64}"), (match) => "${match.group(0)}\n");
+    final base64Encoded =
+        base64.encode(ASN1PrivateKeyInfo.fromEccPem(privateKeyPem).encode());
+    final base64Formatted = base64Encoded.replaceAllMapped(
+        RegExp(r".{64}"), (match) => "${match.group(0)}\n");
 
     return '$BEGIN_PRIVATE_KEY\n$base64Formatted\n$END_PRIVATE_KEY';
   }
