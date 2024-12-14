@@ -151,12 +151,28 @@ sF0zEAHkQoYVBEhrfAHOLYkE3u08+q2tug==
     expect(pem.endsWith('-----END PRIVATE KEY-----'), true);
   });
 
+  test('Test encodeRSAPrivateKeyToDERBytes', () {
+    var pair = CryptoUtils.generateRSAKeyPair();
+    var derBytes = CryptoUtils.encodeRSAPrivateKeyToDERBytes(
+        pair.privateKey as RSAPrivateKey);
+    var privateKey = CryptoUtils.rsaPrivateKeyFromDERBytes(derBytes);
+    expect(privateKey, pair.privateKey);
+  });
+
   test('Test encodeRSAPublicKeyToPem', () {
     var pair = CryptoUtils.generateRSAKeyPair();
     var pem =
         CryptoUtils.encodeRSAPublicKeyToPem(pair.publicKey as RSAPublicKey);
     expect(pem.startsWith('-----BEGIN PUBLIC KEY-----'), true);
     expect(pem.endsWith('-----END PUBLIC KEY-----'), true);
+  });
+
+  test('Test encodeRSAPublicKeyToDERBytes', () {
+    var pair = CryptoUtils.generateRSAKeyPair();
+    var derBytes = CryptoUtils.encodeRSAPublicKeyToDERBytes(
+        pair.publicKey as RSAPublicKey);
+    var publicKey = CryptoUtils.rsaPublicKeyFromDERBytes(derBytes);
+    expect(publicKey, pair.publicKey);
   });
 
   test('Test encodeRSAPrivateKeyToPemPkcs1', () {
@@ -431,9 +447,10 @@ sF0zEAHkQoYVBEhrfAHOLYkE3u08+q2tug==
   });
 
   test('Test encodeEcPrivateKeyToPkcs8', () {
-    var ecdsaKeypair = CryptoUtils.generateEcKeyPair(); 
-    var ecPrivateKeyPkcs8 = CryptoUtils.encodePrivateEcdsaKeyToPkcs8(ecdsaKeypair.privateKey as ECPrivateKey); 
+    var ecdsaKeypair = CryptoUtils.generateEcKeyPair();
+    var ecPrivateKeyPkcs8 = CryptoUtils.encodePrivateEcdsaKeyToPkcs8(
+        ecdsaKeypair.privateKey as ECPrivateKey);
 
-    expect(ecPrivateKeyPkcs8.startsWith('-----BEGIN PRIVATE KEY-----'), true); 
+    expect(ecPrivateKeyPkcs8.startsWith('-----BEGIN PRIVATE KEY-----'), true);
   });
 }
