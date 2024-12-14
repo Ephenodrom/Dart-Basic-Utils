@@ -287,6 +287,8 @@ AsymmetricKeyPair generateRSAKeyPair({int keySize = 2048});
 AsymmetricKeyPair generateEcKeyPair({String curve = 'prime256v1'});
 String encodeRSAPublicKeyToPem(RSAPublicKey publicKey);
 String encodeRSAPrivateKeyToPem(RSAPrivateKey rsaPrivateKey);
+Uint8List encodeRSAPublicKeyToDERBytes(RSAPublicKey publicKey);
+Uint8List encodeRSAPrivateKeyToDERBytes(RSAPrivateKey privateKey);
 RSAPrivateKey rsaPrivateKeyFromPem(String pem);
 RSAPublicKey rsaPublicKeyFromPem(String pem);
 RSAPrivateKey rsaPrivateKeyFromDERBytes(Uint8List bytes);
