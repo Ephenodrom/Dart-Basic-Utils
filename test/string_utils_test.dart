@@ -219,4 +219,127 @@ void main() {
     expect(StringUtils.isIP('0.0.0.256'), false);
     expect(StringUtils.isIP('26.0.0.256'), false);
   });
+
+  group('strip extension', () {
+    test('strip', () {
+      // tested function's comment
+      expect('@£^£Some @£^ Thing@@£@^'.strip('@£^'), 'Some @£^ Thing');
+
+      // edge cases that doesn't modify the string
+      expect('something'.strip('@'), 'something');
+      expect('something'.strip('@£^'), 'something');
+      expect('something'.strip(''), 'something');
+
+      // remove a single character at either end from the source
+      expect('@something'.strip('@'), 'something');
+      expect('@something@'.strip('@'), 'something');
+      expect('something@'.strip('@'), 'something');
+
+      // remove more than one character at either end from the source
+      expect('@@@something'.strip('@'), 'something');
+      expect('@@something@@@'.strip('@'), 'something');
+      expect('something@@@'.strip('@'), 'something');
+
+      // search-string with multiple characters in it
+      expect('@£something'.strip('@£'), 'something');
+      expect('@£something@£^'.strip('@£^'), 'something');
+      expect('something@£^'.strip('@£^'), 'something');
+
+      // source string with strip-chars in the middle
+      expect('@£some@£^thing'.strip('@£'), 'some@£^thing');
+      expect('@£some@£^thing@£@'.strip('@£'), 'some@£^thing');
+      expect('some@£^thing@£@'.strip('@£'), 'some@£^thing');
+
+      // strip returns an empty string
+      expect('@@@@@£^^£@£'.strip('@£^'), '');
+      expect(''.strip('@£^'), '');
+      expect(''.strip(''), '');
+      expect('2'.strip('2'), '');
+
+      // results in a string with one character in it
+      expect('£@£@£@£@3@££££@^'.strip('£@^'), '3');
+
+      // ensure that strip works with unicode chars: this text in in the script "Malayalam"
+      expect('വ മലയാളം'.strip(''), 'വ മലയാളം');
+      expect('വ മലയാളം'.strip('വ'), ' മലയാളം');
+      expect('വ മലയാളംx'.strip('xവ'), ' മലയാളം');
+      expect('kമലയാളംx'.strip('xk'), 'മലയാളം');
+    });
+    test('stripLeft', () {
+      // tested function's comment
+      expect('@£^£Some @£^ Thing@@£@^'.stripLeft('@£^'), 'Some @£^ Thing@@£@^');
+
+      // edge cases that doesn't modify the string
+      expect('something'.stripLeft('@'), 'something');
+      expect('something'.stripLeft('@£^'), 'something');
+      expect('something'.stripLeft(''), 'something');
+
+      // remove a single character at the beginning
+      expect('@something'.stripLeft('@'), 'something');
+      expect('@something@'.stripLeft('@'), 'something@');
+      expect('something@'.stripLeft('@'), 'something@');
+
+      // remove more than one character from the beginning
+      expect('@@@something'.stripLeft('@'), 'something');
+      expect('@@something@@@'.stripLeft('@'), 'something@@@');
+      expect('something@@@'.stripLeft('@'), 'something@@@');
+
+      // search-string with multiple characters in it
+      expect('@£something'.stripLeft('@£'), 'something');
+      expect('@£something@£@'.stripLeft('@£'), 'something@£@');
+      expect('something@£@'.stripLeft('@£'), 'something@£@');
+
+      // source string with strip-chars in the middle
+      expect('@£some@£^thing'.stripLeft('@£'), 'some@£^thing');
+      expect('@£some@£^thing@£@'.stripLeft('@£'), 'some@£^thing@£@');
+      expect('some@£^thing@£@'.stripLeft('@£'), 'some@£^thing@£@');
+
+      // strip returns an empty string
+      expect('@@@@@£^£@£'.stripLeft('@£^'), '');
+      expect(''.stripLeft('@£^'), '');
+      expect(''.stripLeft(''), '');
+      expect('2'.stripLeft('2'), '');
+
+      // results in a string with one character in it
+      expect('£@£@£@£@3'.stripLeft('£@^'), '3');
+    });
+    test('stripRight', () {
+      // tested function's comment
+      expect('@£^£Some @£^ Thing@@£@^'.stripRight('@£^'),'@£^£Some @£^ Thing');
+
+      // edge cases that doesn't modify the string
+      expect('something'.stripRight('@'), 'something');
+      expect('something'.stripRight('@£^'), 'something');
+      expect('something'.stripRight(''), 'something');
+
+      // remove a single character at the end
+      expect('@something'.stripRight('@'), '@something');
+      expect('@something@'.stripRight('@'), '@something');
+      expect('something@'.stripRight('@'), 'something');
+
+      // remove more than one character from the end
+      expect('@@@something'.stripRight('@'), '@@@something');
+      expect('@@something@@@'.stripRight('@'), '@@something');
+      expect('something@@@'.stripRight('@'), 'something');
+
+      // search-string with multiple characters in it
+      expect('@£something'.stripRight('£@'), '@£something');
+      expect('@£something@£@'.stripRight('@£'), '@£something');
+      expect('something@£@'.stripRight('@£'), 'something');
+
+      // source string with strip-chars in the middle
+      expect('@£some@£^thing'.stripRight('@£'), '@£some@£^thing');
+      expect('@£some@£^thing@£@'.stripRight('@£'), '@£some@£^thing');
+      expect('some@£^thing@£@'.stripRight('@£'), 'some@£^thing');
+
+      // strip returns an empty string
+      expect('@@@@@£^£@£'.stripRight('@£^'), '');
+      expect(''.stripRight('@£^'), '');
+      expect(''.stripRight(''), '');
+      expect('2'.stripRight('2'), '');
+
+      // results in a string with one character in it
+      expect('3@££££@^'.strip('£@^'), '3');
+    });
+  });
 }

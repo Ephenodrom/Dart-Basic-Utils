@@ -541,3 +541,58 @@ class StringUtils {
     return false;
   }
 }
+
+extension Strip on String {
+  /// Implementation of strip, stripLeft and stripRight
+  String _strip(
+    String stripChars, {
+    bool left = true,
+    bool right = true,
+  }) {
+    if (!left && !right) {
+      throw ArgumentError('either left or right shall be true in _strip: <$this>');
+    }
+    int start = 0;
+    int end = length;
+    List<int> sourceChars = runes.toList();
+    List<int> searchChars = stripChars.runes.toList();
+    if (left) {
+      for (int i = 0; i < sourceChars.length; i++) {
+        if (searchChars.contains(sourceChars[i])) {
+          start++;
+        } else {
+          break;
+        }
+      }
+    }
+    if (right) {
+      for (int i = sourceChars.length - 1; i >= 0; i--) {
+        if (searchChars.contains(sourceChars[i])) {
+          end--;
+        } else {
+          break;
+        }
+      }
+    }
+
+    if (start >= end) {
+      return '';
+    }
+    return substring(start, end);
+  }
+
+  /// Return a string after removing any leading and trailing characters specified in [chars]
+  ///
+  /// '@£^£Some @£^ Thing@@£@^'.strip('@£^') => 'Some @£^ Thing'
+  String strip(String chars) => _strip(chars, left: true, right: true);
+
+  /// Return a string after removing any leading characters specified in [chars]
+  ///
+  /// '@£^£Some @£^ Thing@@£@^'.stripLeft('@£^') => 'Some @£^ Thing@@£@^'
+  String stripLeft(String chars) => _strip(chars, left: true, right: false);
+
+  /// Return a string after removing any trailing characters specified in [chars]
+  ///
+  /// '@£^£Some @£^ Thing@@£@^'.strip('@£^') => '@£^£Some @£^ Thing'
+  String stripRight(String chars) => _strip(chars, left: false, right: true);
+}
