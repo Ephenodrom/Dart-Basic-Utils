@@ -249,7 +249,7 @@ class Pkcs12Utils {
 
       return bytes;
     } else {
-      return Uint8List(0);
+      return Uint8List.fromList([0, 0]);
     }
   }
 

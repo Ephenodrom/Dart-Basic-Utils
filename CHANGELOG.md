@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.8.0] - 2025-01-28
+
+* Improve pkcs12_utils to be more align with the RFC according empty passwords
+* Added DER Bytes encoding as alternative to PEM (PR #116)
+* Basic Constraints extension (PR #107)
+* Add optional ECDomainParameters to ec key from bytes method (PR #95)
+
 ## [5.7.0] - 2022-10-24
 
 * ECDSA Keypair SEC1 to Pkcs8 converting (PR #101)
