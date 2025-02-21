@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:archive/archive_io.dart';
+import 'package:archive/archive.dart';
 import 'package:basic_utils/src/CryptoUtils.dart';
 import 'package:basic_utils/src/IterableUtils.dart';
 import 'package:basic_utils/src/StringUtils.dart';

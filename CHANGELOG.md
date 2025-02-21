@@ -1,12 +1,25 @@
 # Changelog
 
-## [5.8.0] - 2025-01-28
+## [5.8.2] - 2025-02-21
+
+* Fix pub dev static analysis
+* Renamed file names to lower case with underscore. X509Utils.dart => x509_utils.dart
+
+## [5.8.1] - 2025-02-21
+
+* Remove dart.io imports to be compatible with web
+
+## [5.8.0] - 2025-02-21
 
 * Improve pkcs12_utils to be more align with the RFC according empty passwords
 * Added DER Bytes encoding as alternative to PEM (PR #116)
 * Basic Constraints extension (PR #107)
 * Add optional ECDomainParameters to ec key from bytes method (PR #95)
 * Remove dart.io imports to be compatible with web
+
+### BREAKING CHANGES**
+
+* StringUtils->isIP changed type of ipType to String, see code doc.
 
 ## [5.7.0] - 2022-10-24
 
