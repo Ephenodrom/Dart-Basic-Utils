@@ -6,6 +6,7 @@
 * Added DER Bytes encoding as alternative to PEM (PR #116)
 * Basic Constraints extension (PR #107)
 * Add optional ECDomainParameters to ec key from bytes method (PR #95)
+* Remove dart.io imports to be compatible with web
 
 ## [5.7.0] - 2022-10-24
 

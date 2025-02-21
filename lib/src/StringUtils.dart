@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+
 import 'dart:math';
 
 ///
@@ -523,19 +523,19 @@ class StringUtils {
 
   ///
   /// Checks whether the given String [s] is an IPv4 or IPv6 address.
+  /// The [ipType] can be of value "any", "ipv4" or "ipv6"
   ///
-  static bool isIP(String s, {InternetAddressType? ipType}) {
-    if (ipType == null || ipType == InternetAddressType.any) {
-      return isIP(s, ipType: InternetAddressType.IPv4) ||
-          isIP(s, ipType: InternetAddressType.IPv6);
-    } else if (ipType == InternetAddressType.IPv4) {
+  static bool isIP(String s, {String? ipType}) {
+    if (ipType == null || ipType == "any") {
+      return isIP(s, ipType: "ipv4") || isIP(s, ipType: "ipv6");
+    } else if (ipType == "ipv4") {
       if (!_ipv4Maybe.hasMatch(s)) {
         return false;
       }
       var parts = s.split('.');
       parts.sort((a, b) => int.parse(a) - int.parse(b));
       return int.parse(parts[3]) <= 255;
-    } else if (ipType == InternetAddressType.IPv6) {
+    } else if (ipType == "ipv6") {
       return _ipv6.hasMatch(s);
     }
     return false;

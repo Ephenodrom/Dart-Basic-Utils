@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
+
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:archive/archive_io.dart';
 import 'package:basic_utils/src/CryptoUtils.dart';
 import 'package:basic_utils/src/IterableUtils.dart';
 import 'package:basic_utils/src/StringUtils.dart';
@@ -947,7 +948,7 @@ class X509Utils {
     var ia5Logo = logoSeq.elements!.elementAt(0) as ASN1IA5String;
     var base64LogoGzip = ia5Logo.stringValue;
     var gzip = base64LogoGzip!.substring(base64LogoGzip.indexOf(',') + 1);
-    final decoded_data = GZipCodec().decode(base64.decode(gzip));
+    final decoded_data = GZipDecoder().decodeBytes(base64.decode(gzip));
     var base64Logo = base64.encode(decoded_data);
 
     data.base64Logo = base64Logo;
