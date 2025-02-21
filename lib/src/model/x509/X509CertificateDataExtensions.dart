@@ -1,5 +1,5 @@
-import 'package:basic_utils/basic_utils.dart';
 import 'package:basic_utils/src/model/x509/ExtendedKeyUsage.dart';
+import 'package:basic_utils/src/model/x509/KeyUsage.dart';
 import 'package:basic_utils/src/model/x509/VmcData.dart';
 import 'package:json_annotation/json_annotation.dart';
 

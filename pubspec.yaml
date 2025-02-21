@@ -1,6 +1,6 @@
 name: basic_utils
 description: Common util classes for Strings, Dates, X509, PKCS, Cryptographie and more.
-version: 5.7.0
+version: 5.8.0
 homepage: https://github.com/Ephenodrom/Dart-Basic-Utils
 #publish_to: https://pub.dartlang.org
 
