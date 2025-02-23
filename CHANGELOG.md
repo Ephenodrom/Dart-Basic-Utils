@@ -1,9 +1,8 @@
 # Changelog
 
-## [5.8.2] - 2025-02-21
+## [5.8.2] - 2025-02-23
 
-* Fix pub dev static analysis
-* Renamed file names to lower case with underscore. X509Utils.dart => x509_utils.dart
+* Revert changs in pkcs12_utils.formatPkcs12Password() method
 
 ## [5.8.1] - 2025-02-21
 
