@@ -9,6 +9,22 @@ class ColorUtils {
   static const String BASIC_COLOR_BLUE = 'blue';
   static const String HEX_BLACK = '#000000';
   static const String HEX_WHITE = '#FFFFFF';
+  
+  /// 
+  /// Lerps multiple colors according to [t]
+  /// 
+  /// Similar to Color.lerp, but with support for more than two colors instead
+  /// 
+  static Color lerp(List<Color> colors, double t) {
+    final double newT = math.min(1.0, math.max(0.0, t));
+    if (newT == 1.0) {
+      return colors.last;
+    }
+    final double x = newT * (colors.length - 1);
+    final Color oldColor = colors[x.floor()];
+    final Color newColor = colors[(x + 1).floor()];
+    return Color.lerp(oldColor, newColor, x - x.floor())!;
+  }
 
   ///
   /// Converts the given [hex] color string to the corresponding int.
